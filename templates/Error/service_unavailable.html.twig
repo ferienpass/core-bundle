@@ -1,0 +1,13 @@
+{% extends "@FerienpassCore/Error/base.html.twig" %}
+
+{% block title %}
+    {{ 'error503.title'|trans }}
+{% endblock %}
+
+{% block description %}
+    {{ 'error503.description'|trans }}
+{% endblock %}
+
+{% block image %}
+    <img class="mt-16 h-auto w-full max-w-xs" src="{{ asset('images/error503.svg', 'ferienpass_core') }}" alt=""/>
+{% endblock %}

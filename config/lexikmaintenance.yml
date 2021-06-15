@@ -1,0 +1,8 @@
+lexik_maintenance:
+    authorized:
+        path: ^/admin($|/)
+        attributes:
+            _bypass_maintenance: true
+    driver:
+        class: Lexik\Bundle\MaintenanceBundle\Drivers\FileDriver
+        options: { file_path: '%kernel.project_dir%/var/maintenance_lock' }

@@ -1,0 +1,33 @@
+<?php $this->extend('form_row'); ?>
+
+<?php $this->block('label'); ?>
+<?php if ($this->label): ?>
+    <label class="block text-sm font-medium leading-5 text-gray-700 sm:mt-px sm:pt-2"
+           for="ctrl_<?= $this->id ?>">
+        <?php if ($this->mandatory): ?>
+            <span class="sr-only"><?= $this->mandatoryField ?> </span><?= $this->label ?><span
+                    class="mandatory">*</span>
+        <?php else: ?>
+            <?= $this->label ?>
+        <?php endif; ?>
+    </label>
+<?php endif; ?>
+<?php $this->endblock(); ?>
+
+<?php $this->block('field'); ?>
+<?php if ($this->hasErrors()): ?>
+    <p class="text-xs text-red-500"><?= $this->getErrorAsString() ?></p>
+<?php endif; ?>
+
+<div class="mt-1 max-w-lg flex rounded-md shadow-sm">
+    <textarea
+            class="form-textarea block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5<?php
+            if ($this->hasErrors()): ?> outline-none shadow-outline-red border-red-300<?php endif ?>"
+            name="<?= $this->name ?>"
+            id="ctrl_<?= $this->id ?>"
+            rows="<?= $this->rows ?>"
+            cols="<?= $this->cols ?>"
+    <?= $this->getAttributes() ?>><?= $this->value ?></textarea>
+</div>
+
+<?php $this->endblock(); ?>

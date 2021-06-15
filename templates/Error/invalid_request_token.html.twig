@@ -1,0 +1,10 @@
+{% trans_default_domain 'contao_exception' %}
+{% extends "@FerienpassCore/Error/base.html.twig" %}
+
+{% block title %}
+    {{ 'XPT.requestToken'|trans }}
+{% endblock %}
+
+{% block description %}
+    {{ 'XPT.invalidToken'|trans }} {{ 'XPT.tokenRetry'|trans|raw }}
+{% endblock %}

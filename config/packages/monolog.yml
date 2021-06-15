@@ -1,0 +1,7 @@
+monolog:
+  channels: [ ferienpass_event ]
+  handlers:
+    ferienpass_event:
+      channels: ['ferienpass_event']
+      type: service
+      id: Ferienpass\CoreBundle\Monolog\EventLogHandler

@@ -1,0 +1,32 @@
+services:
+  richardhj.ferienpass.listener.host_invited_registration:
+    class: Ferienpass\CoreBundle\HookListener\HostInvitedRegistrationListener
+    tags:
+      - { name: 'contao.hook', hook: 'createNewUser' }
+    arguments:
+      [ '@database_connection' ]
+
+  richardhj.ferienpass.listener.visible_element:
+    class: Ferienpass\CoreBundle\HookListener\VisibleElementListener
+    tags:
+      - { name: 'contao.hook', hook: 'isVisibleElement' }
+    arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository', '@contao.security.token_checker' ]
+
+  richardhj.ferienpass.listener.callback.tl_member.ferienpass_host:
+    class: Ferienpass\CoreBundle\EventListener\Callback\Table\Member\FerienpassHostCallbackListener
+    tags:
+      - { name: contao.callback, table: tl_member, target: config.onsubmit }
+      - { name: contao.callback, table: tl_member, target: fields.ferienpass_host.save }
+    arguments:
+      [ '@database_connection' ]
+
+  Ferienpass\CoreBundle\EventListener\PrettyErrorScreenListener:
+    arguments:
+      - '%contao.pretty_error_screens%'
+      - '@twig'
+      - '@assets.packages'
+      - ''
+      - '@Ferienpass\CoreBundle\Page\PageBuilderFactory'
+    tags:
+      # The priority must be higher than the one of the one of contao.listener.pretty_error_screens
+      - { name: kernel.event_listener, priority: -48 }

@@ -1,0 +1,8 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Vendor
+composer.lock
+vendor/
+node_modules/

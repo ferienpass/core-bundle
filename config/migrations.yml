@@ -1,0 +1,32 @@
+services:
+  _instanceof:
+    Contao\CoreBundle\Migration\MigrationInterface:
+      tags:
+        - { name: contao.migration }
+
+  Ferienpass\CoreBundle\Migration\RoutingUrlSuffixMigration:
+    arguments: ['@database_connection']
+
+  Ferienpass\CoreBundle\Migration\EntityParticipantMigration:
+    arguments: ['@database_connection']
+
+  Ferienpass\CoreBundle\Migration\EntityHostMigration:
+    arguments: ['@database_connection', '@doctrine', '@Ferienpass\CoreBundle\Repository\HostRepository']
+
+  Ferienpass\CoreBundle\Migration\EntityAttendanceMigration:
+    arguments: ['@database_connection']
+
+  Ferienpass\CoreBundle\Migration\EntityOfferMigration:
+    arguments: ['@database_connection']
+
+  Ferienpass\CoreBundle\Migration\EntityOfferCategoryMigration:
+    arguments: ['@database_connection']
+
+  Ferienpass\CoreBundle\Migration\EditionTaskTimeMigration:
+    arguments: ['@database_connection']
+
+  Ferienpass\CoreBundle\Migration\PageControllerMigration:
+    arguments:
+      - '@database_connection'
+      - '@contao.slug'
+      - '@contao.framework'

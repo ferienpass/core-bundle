@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+<head>
+
+    {% block head %}
+        <meta charset="{{ charset }}">
+        <title>{{ title }}</title>
+        <base href="{{ base }}">
+
+        {% block meta %}
+            <meta name="robots" content="{{ robots|default }}">
+            <meta name="description" content="{{ description }}">
+            <meta name="generator" content="Contao Open Source CMS">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="apple-touch-icon" sizes="180x180"
+                  href="{{ asset('favicon/apple-touch-icon.png', 'ferienpass_core') }}">
+            <link rel="icon" type="image/png" sizes="32x32"
+                  href="{{ asset('favicon/favicon-16x16.png', 'ferienpass_core') }}">
+            <link rel="icon" type="image/png" sizes="16x16"
+                  href="{{ asset('favicon/favicon-16x16.png', 'ferienpass_core') }} ?>">
+            <link rel="manifest" href="{{ asset ('favicon/site.webmanifest', 'ferienpass_core') }}">
+            <link rel="mask-icon" href="{{ asset('favicon/safari-pinned-tab.svg', 'ferienpass_core') }}"
+                  color="#209bc9">
+            <link rel="shortcut icon" href="{{ asset('favicon/favicon.ico', 'ferienpass_core') }}">
+            <meta name="msapplication-TileColor" content="#2d89ef">
+            <meta name="msapplication-config" content="{{ asset('favicon/browserconfig.xml', 'ferienpass_core') }}">
+            <meta name="theme-color" content="#209bc9">
+        {% endblock %}
+
+        {{ theme_link_tags('app') }}
+        {{ theme_script_tags('app') }}
+
+        {{ head|default }}
+    {% endblock %}
+
+</head>
+<body id="top" itemscope itemtype="http://schema.org/WebPage">
+
+{% block body %}
+
+    {% include '@FerienpassCore/Page/_flash_banners.html.twig' %}
+
+    <div id="wrapper">
+
+        {% block header %}
+            {% if header|default %}
+                <header id="header">
+                    <div class="inside">
+                        {{ header|raw }}
+                    </div>
+                </header>
+            {% endif %}
+        {% endblock %}
+
+        {% block container %}
+            <div id="container" class="bg-gray-50">
+
+                {% include '@FerienpassCore/Page/_flashes.html.twig' %}
+
+                {% block main %}
+                    <main id="main" class="">
+                        <div class="inside">
+                            {{ main|raw }}
+                        </div>
+                    </main>
+                {% endblock %}
+            </div>
+        {% endblock %}
+
+        {% block footer %}
+            {% if footer|default %}
+                <footer id="footer">
+                    <div class="inside">
+                        {{ footer|raw }}
+                    </div>
+                </footer>
+            {% endif %}
+        {% endblock %}
+
+    </div>
+
+    {% include '@FerienpassCore/Page/_flash_modals.html.twig' %}
+
+{% endblock %}
+
+</body>
+</html>

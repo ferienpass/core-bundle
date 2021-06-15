@@ -1,0 +1,28 @@
+{% if app.request.hasPreviousSession %}
+
+    {% for message in app.flashes('confirmation') %}
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
+            {% include "@FerienpassCore/Alert/confirmation.html.twig" with {
+                headline: message.headline,
+                message:  message.text
+            } %}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('warning') %}
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
+            {% include "@FerienpassCore/Alert/warning.html.twig" with {
+                headline: message.headline,
+                message:  message.text
+            } %}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
+            {% include "@FerienpassCore/Alert/error.html.twig" with {
+                headline: message.headline,
+                message:  message.text
+            } %}
+        </div>
+    {% endfor %}
+
+{% endif %}

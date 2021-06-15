@@ -1,0 +1,23 @@
+richardhj_privacy_dump:
+  options:
+    contao:
+      tables:
+        tl_ferienpass_host_privacy_consent:
+          truncate: true
+        tl_nc_queue:
+          truncate: true
+
+        mm_participant:
+          converters:
+            firstname:
+              converter: 'anonymizeText'
+            lastname:
+              converter: 'anonymizeText'
+            alias:
+              converter: 'setNull'
+            name:
+              converter: 'setNull'
+            email:
+              converter: 'setNull'
+            phone:
+              converter: 'setNull'

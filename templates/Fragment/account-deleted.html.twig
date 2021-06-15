@@ -1,0 +1,121 @@
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="md:flex py-10">
+        <div class="max-w-xs mx-auto md:max-w-full md:flex-1 flex justify-center">
+            <div class="">
+
+                <style>
+                    .paper1 {
+                        animation-name: shred1;
+                        animation-duration: 2s;
+                        animation-fill-mode: forwards;
+                        animation-timing-function: linear;
+                        animation-delay: 1s;
+                        transform: translate3d(64px, 0, 0);
+                    }
+
+                    @keyframes shred1 {
+                        0% { transform: translate3d(64px, 0, 0); }
+                        100% { transform: translate3d(64px, 180px, 0); }
+                    }
+
+                    .shredded-paper1 {
+                        animation-name: shred2;
+                        animation-duration: 3.8s;
+                        animation-fill-mode: forwards;
+                        animation-timing-function: ease-in;
+                        animation-delay: 300ms;
+                    }
+
+                    @keyframes shred2 {
+                        0% { transform: translate3d(74px, 180px, 0); }
+                        50% { transform: translate3d(74px, 180px, 0); opacity: 1; }
+                        80% { opacity: 1; }
+                        100% { transform: translate3d(74px, 390px, 0); opacity: 0; }
+                    }
+
+                    #shred-face {
+                        animation-name: shred-face;
+                        animation-duration: 3.6s;
+                        animation-fill-mode: forwards;
+                        animation-timing-function: ease-out;
+                        animation-delay: 900ms;
+                        opacity: 0;
+                    }
+
+                    @keyframes shred-face {
+                        0% { opacity: 0; }
+                        9% { opacity: 0; }
+                        10% { opacity: 1; }
+                        90% { opacity: 1; }
+                        91% { opacity: 0; }
+                        100% { opacity: 0; }
+                    }
+
+                    #no-shred-face {
+                        animation-name: no-shred-face;
+                        animation-duration: 3.6s;
+                        animation-fill-mode: forwards;
+                        animation-timing-function: ease-out;
+                        animation-delay: 900ms;
+                    }
+
+                    @keyframes no-shred-face {
+                        0% { opacity: 1; }
+                        9% { opacity: 1; }
+                        10% { opacity: 0; }
+                        90% { opacity: 0; }
+                        91% { opacity: 1; }
+                        100% { opacity: 1; }
+                    }
+
+                    #main-body {
+                        animation-name: body-shake;
+                        animation-duration: 2.3s;
+                        animation-fill-mode: forwards;
+                        animation-timing-function: linear;
+                        animation-delay: 1200ms;
+                        transform-origin: 50% 50%;
+                    }
+
+                    @keyframes body-shake {
+                        0% { transform: rotate(.5deg); }
+                        5% { transform: rotate(-.5deg); }
+                        10% { transform: rotate(.5deg); }
+                        15% { transform: rotate(-.5deg); }
+                        20% { transform: rotate(.5deg); }
+                        25% { transform: rotate(-.5deg); }
+                        30% { transform: rotate(.5deg); }
+                        35% { transform: rotate(-.5deg); }
+                        40% { transform: rotate(.5deg); }
+                        45% { transform: rotate(-.5deg); }
+                        50% { transform: rotate(.5deg); }
+                        55% { transform: rotate(-.5deg); }
+                        60% { transform: rotate(.5deg); }
+                        65% { transform: rotate(-.5deg); }
+                        70% { transform: rotate(.5deg); }
+                        75% { transform: rotate(-.5deg); }
+                        80% { transform: rotate(.5deg); }
+                        85% { transform: rotate(-.5deg); }
+                        90% { transform: rotate(.5deg); }
+                        95% { transform: rotate(-.5deg); }
+                        100% { transform: rotate(0deg); }
+                    }
+
+                </style>
+
+                {% include '@FerienpassCore/Svg/shredder.svg.twig' %}
+            </div>
+        </div>
+
+        <div class="mt-8 sm:mt-0 sm:flex sm:items-center sm:w-full sm:max-w-md">
+
+            <div class="text-xl text-gray-500">
+                <h1 class="mb-8">Account gelöscht</h1>
+
+                <p>Ihr Account wurde gelöscht und alle Ihre Daten vernichtet.</p>
+                <p>Gegebenenfalls bestehende Anmeldungen zu Angeboten wurden entfernt.</p>
+            </div>
+
+        </div>
+    </div>
+</div>

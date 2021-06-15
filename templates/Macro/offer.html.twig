@@ -1,0 +1,42 @@
+{% macro date_single(date, noTime=false) %}
+    {% apply trim %}
+        {% if date.begin|date('Ymd') == date.end|date('Ymd') %}
+            {% if noTime %}
+                {{ date.begin|format_datetime(pattern='E, dd.MM.') }}
+            {% else %}
+                {{ date.begin|format_datetime(pattern='E, dd.MM. HH:mm') ~ ' – ' ~ date.end|format_datetime(pattern='HH:mm') }}
+            {% endif %}
+        {% else %}
+            {{ date.begin|format_datetime(pattern='E, dd.MM. HH:mm') ~' – ' ~ date.end|format_datetime(pattern='E, dd.MM. HH:mm') }}
+        {% endif %}
+    {% endapply %}
+{% endmacro %}
+
+{% macro date_combined(OfferDates, delimiter=' + ') %}
+    {% apply trim %}
+        {% set beginTimes = OfferDates|map(d => d.begin|date('Hi')) %}
+        {% set endTimes = OfferDates|map(d => d.end|date('Hi')) %}
+        {% set sameBeginTime = beginTimes|reduce((times, time) => time in times ? times : times|merge([time]), [])|length == 1 %}
+        {% set sameEndTime = endTimes|reduce((times, time) => time in times ? times : times|merge([time]), [])|length == 1 %}
+
+        {% set dates = [] %}
+        {% for date in OfferDates %}
+            {% set noTime = sameBeginTime and sameEndTime and not loop.last %}
+            {% set dates = dates|merge([_self.date_single(date, noTime)]) %}
+        {% endfor %}
+
+        {{ dates|join(delimiter) }}
+    {% endapply %}
+{% endmacro %}
+
+{% macro age(Offer) %}
+    {% if Offer.minAge and Offer.maxAge %}
+        {{ Offer.minAge ~ ' - ' ~ Offer.maxAge ~' Jahre' }}
+    {% elseif Offer.minAge %}
+        {{ 'ab '~Offer.minAge~' Jahre' }}
+    {% elseif Offer.maxAge %}
+        {{ 'bis '~Offer.maxAge~' Jahre' }}
+    {% else %}
+        {{ 'alle Kinder' }}
+    {% endif %}
+{% endmacro %}

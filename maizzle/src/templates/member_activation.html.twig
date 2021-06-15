@@ -1,0 +1,36 @@
+---
+bodyClass: bg-gray-postmark-lighter
+---
+
+<extends src="src/layouts/master.html">
+  <block name="template">
+    <table class="email-wrapper w-full bg-gray-postmark-lighter font-sans">
+      <tr>
+        <td align="center">
+          <table class="email-content w-full">
+            <component src="src/components/header.html"></component>
+            <raw>
+              <tr>
+                <td class="email-body w-full">
+                  <table align="center" class="email-body_inner w-570 bg-white mx-auto sm:w-full">
+                    <tr>
+                      <td class="p-45">
+                        <div class="text-base">
+                          <h1 class="mt-0 text-2xl font-bold text-left text-gray-postmark-darker">Hallo, {{ member_firstname|default }} {{ member_lastname|default }}!</h1>
+                          <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
+                            {{ email_text|nl2br }}
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </raw>
+            <component src="src/components/footer.html"></component>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </block>
+</extends>

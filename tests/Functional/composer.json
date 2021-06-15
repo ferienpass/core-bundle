@@ -1,0 +1,27 @@
+{
+  "name": "ferienpass/testcase",
+  "description": "",
+  "type": "project",
+  "require": {
+    "ferienpass/ferienpass": "3.x-dev@dev"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../../../",
+      "options": {
+        "symlink": true
+      }
+    }
+  ],
+  "prefer-stable": true,
+  "minimum-stability": "dev",
+  "scripts": {
+    "post-install-cmd": [
+      "@php vendor/bin/contao-setup --ansi"
+    ],
+    "post-update-cmd": [
+      "@php vendor/bin/contao-setup --ansi"
+    ]
+  }
+}

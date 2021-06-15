@@ -1,0 +1,16 @@
+<div class="mb-10 mt-10 sm:mt-16 sm:mb-16 md:flex">
+
+    <div class="md:mr-10">
+        <div class="mx-auto mb-6 rounded-full bg-gray-100 h-32 w-32 sm:h-40 sm:w-40 md:h-56 md:w-56 overflow-hidden shadow-sm border">
+            {{ contao_figure(image, '_greeting_avatar') }}
+        </div>
+    </div>
+
+    <div class="">
+        {% if headline %}<h2 class="md:mt-4">{{ headline }}</h2>{% endif %}
+
+        <div class="text-lg text-gray-700">{{ text|raw }}
+        </div>
+
+    </div>
+</div>

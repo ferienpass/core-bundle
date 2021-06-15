@@ -1,0 +1,33 @@
+<div class="">
+    {% for article in articles %}
+        <div class="flex py-8" itemscope itemtype="http://schema.org/Article">
+            <div class="pr-8 pt-1">
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                     stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                    <path d="M9 5l7 7-7 7"></path>
+                </svg>
+            </div>
+            <div class="md:flex md:space-x-12">
+                <div class="border-b-2 border-gray-200 pb-8">
+                    <h3 class="mb-0" itemprop="name">{{ article.headline }}</h3>
+
+                    <p class="text-gray-600 text-sm mb-4">
+                        <time datetime="{{ article.date|date('Y-m-d\TH:i:sP') }}"
+                              itemprop="datePublished">{{ article.date|date('d. M Y') }}</time>
+                    </p>
+
+                    <div class="prose" itemprop="description">
+                        {{ article.teaser|raw }}
+                    </div>
+                </div>
+                {% if article.addImage and article.singleSRC %}
+                    <div class="md:flex-1">
+                        {{ contao_figure(article.singleSRC, []) }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+
+    {% endfor %}
+</div>

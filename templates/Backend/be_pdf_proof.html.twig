@@ -1,0 +1,49 @@
+{% extends "@ContaoCore/Backend/be_page.html.twig" %}
+
+{% block headline %}
+    {{ 'PDFs' }}
+{% endblock %}
+
+{% block error %}
+    {%- if error is defined -%}
+        {{- error -}}
+    {%- endif -%}
+{% endblock %}
+
+{% block main %}
+
+    <div class="h-screen">
+        <div class="relative z-0 flex overflow-hidden h-full" x-data="{ offers: {{ offers|map(o => [o.id, o.name])|json_encode }}, prototype: '{{ path('pdf-proof', {'id': '99999', '_format':'pdf'}) }}', pdf: '' }">
+            <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none xl:order-last" tabindex="0">
+                <article class="h-full">
+                    <embed :src="pdf" width="100%" height="100%"
+                           type="application/pdf">
+                </article>
+            </main>
+            <aside class="hidden xl:order-first xl:flex xl:flex-col flex-shrink-0 w-96 border-r border-gray-200">
+                <div class="px-6 pt-6 pb-4 border-b">
+                    <h2 class="text-lg font-medium text-gray-900">Angebote</h2>
+                </div>
+                <!-- Directory list -->
+                <nav class="flex-1 min-h-0 overflow-y-auto" aria-label="Directory">
+                    <ul class="relative z-0 divide-y divide-gray-200">
+                        <template x-for="(item, index, collection) in offers" :key="index">
+                            <li>
+                                <div class="relative px-6 py-5 flex items-center space-x-3 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-pink-500">
+                                    <div class="flex-1 min-w-0">
+                                        <a href="#" class="focus:outline-none" @click.prevent="pdf = prototype.replace(99999, item[0])">
+                                            <span class="absolute inset-0" aria-hidden="true"></span>
+                                            <p class="text-sm text-gray-500 truncate" x-text="item[0]"></p>
+                                            <p class="text-sm font-medium text-gray-900" x-text="item[1]"></p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+
+{% endblock %}

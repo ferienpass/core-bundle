@@ -1,0 +1,73 @@
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-white overflow-hidden shadow rounded-lg"
+         x-data="{ participants: [] }"
+         {% if participants|default is empty %}x-init="participants.push({})"{% endif %}
+    >
+
+        {{ form_start(form) }}
+        <div class="px-4 py-5 sm:p-6">
+            <div>
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Kinder</h3>
+                <p class="mt-1 text-sm leading-5 text-gray-500">Folgende Kinder können Sie zu Veranstaltungen
+                    anmelden. Haben Sie wen vergessen?</p>
+            </div>
+            <div class="grid gap-4 mt-6">
+                {% for participant in participants %}
+                    <div class="flex">
+                            <span class="w-7 h-7 text-gray-700 block mr-2">
+                                <svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                     stroke="currentColor" viewBox="0 0 24 24"><path
+                                            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </span>
+                        <div>
+                            <p class="text-lg">{{ participant.firstname }} {{ participant.lastname }}</p>
+                            <p class="text-sm mt-0"><span class="">geboren am </span><span
+                                        class="font-medium">{{ participant.dateOfBirth|date('d.m.Y') }}</span>
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if error|default is not empty %}
+                    <div class="">
+                        {% embed '@FerienpassCore/Alert/error.html.twig' %}
+                            {% block content %}
+                                {{ error }}
+                            {% endblock %}
+                        {% endembed %}
+                    </div>
+                {% endif %}
+
+                {% set prototype = form_widget(form.participants.vars.prototype, {'attr': {'class': 'grid grid-cols-3 gap-6'}}) %}
+                <div x-data="{ index: 0 }">
+
+                    <div x-ref="list" class="space-y-4">{{ form_widget(form.participants) }}</div>
+
+                    <template x-ref="prototype">
+                        <div>
+                            {{ prototype|raw }}
+                        </div>
+                    </template>
+
+                    <div class="mt-4">
+                        <button type="button"
+                                class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                                @click="$refs.list.insertAdjacentHTML('beforeend', $refs.prototype.innerHTML.replace(/__name__/g, ++index))">
+                            <span class="h-5 w-5 -ml-1 mr-1 block">{% include '@FerienpassCore/Icons/plus-circle-solid.svg.twig' %}</span>
+                            Zusätzliches Kind erfassen
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="bg-gray-50 px-4 py-4 sm:px-6">
+            <div class="flex justify-start">
+                {{ form_widget(form.submit) }}
+            </div>
+        </div>
+        {{ form_end(form) }}
+
+    </div>
+</div>

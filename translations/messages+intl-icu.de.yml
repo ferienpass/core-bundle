@@ -1,0 +1,118 @@
+pageTitle: Ferienpass
+hostPortal: Veranstalter:innen-Portal
+
+error500.title: Ein Fehler ist aufgetreten
+error500.description: Ein unerwarteter Fehler ist aufgetreten. Das geht auf unsere Kappe. Wir arbeiten daran, etwas Bessers zu schaffen – wird nicht zu lange dauern!
+error503.title: Wartungsarbeiten
+error503.description: Wir arbeiten gerade an der Webseite. Bitte versuchen Sie es später noch einmal.
+
+application.inPast: Dieses Angebot liegt in der Vergangenheit.
+application.pastDeadline: Der Anmeldezeitraum für dieses Angebot ist beendet.
+application.procedure.lot: Es läuft aktuell das Los-Verfahren. Eine Zusage für die Anmeldung bekommen Sie erst nach dem Stichtag.
+application.procedure.firstcome: Sie werden sofort auf die Teilnehmerliste geschrieben und bekommen die Zusage sofort im Anschluss.
+application.signIn: 'Sie müssen angemeldet sein, wenn Sie sich zum Angebot anmelden wollen. %link_start%Bitte melden Sie sich an.%link_end%'
+application.disabled: Aktuell sind keine Anmeldungen möglich.
+
+application.apply: Sie können {name} jetzt für das Angebot anmelden.
+
+ineligible.alreadyApplied: '{name} ist bereits angemeldet für dieses Angebot.'
+ineligible.invalidAge: Sie können {name} nicht anmelden, da das Alter nicht passt.
+ineligible.overlap: Sie können {name} nicht anmelden, da es eine Überschneidung mit einer anderen Anmeldung gibt.
+application.limitReached: >-
+  {max, plural,
+      one   {Sie können {name} nicht anmelden, da maximal eine Anmeldung in dieser Anmeldephase möglich ist.}
+      other {Sie können {name} nicht anmelden, da maximal # Anmeldungen in diese Anmeldephase möglich ist.}
+  }
+application.dayLimitReached: >-
+  {max, plural,
+      one   {Sie können {name} nicht anmelden, da maximal eine Anmeldung pro Tag möglich ist.}
+      other {Sie können {name} nicht anmelden, da maximal # Anmeldungen pro Tag möglich sind.}
+  }
+
+application.spareSpots: >-
+  {count, plural,
+      one   {1 freier Platz}
+      other {# freie Plätze}
+  }
+
+countOverallApplications: >-
+  {count, plural,
+      one   {Eine Anmeldung gesamt}
+      other {# Anmeldungen gesamt}
+  }
+
+enrolledBefore: >-
+  {days, plural,
+      zero   {heute angemeldet}
+      one   {gestern angemeldet}
+      other {vor # Tagen angemeldet}
+  }
+
+applications.status:
+  confirmed.title: angemeldet
+  confirmed.caption: Kinder sind zugesagt und nehmen am Angebot teil.
+
+  waitlisted.title: auf Warteliste
+  waitlisted.caption: Kinder rücken automatisch nach, WENN Windhundverfahren aktiv.
+
+  waiting.title: unbestimmt
+  waiting.caption: Bitte weisen Sie diesen Kindern einen Status zu.
+
+  withdrawn.title: abgemeldet
+  withdrawn.caption: Anmeldung wurde auf Wunsch zurückgezogen.
+
+  error.title: fehlerhaft
+  error.caption: Irgendwas ist hier schief gelaufen.
+
+confirmed: nimmt teil
+waiting: nicht zugeteilt
+waitlisted: auf Warteliste
+error: fehlerhaft
+withdrawn: abgemeldet
+
+noApplications: Sie haben sich noch zu keinen Veranstaltugen angemeldet.
+
+accessibility:
+  barrierefrei:
+    label: barrierefrei
+    help: Das Angebot ist barrierefrei
+  assistenz:
+    label: Assistenz notwendig
+    help: Rollstuhlfahrer können mit Assistenz teilnehmen
+  koerperliches-handicap:
+    label: geeignet mit körperlichem Handicap
+    help: Das Angebot ist für Kinder/Jugendliche mit körperlichem Handicap geeignet
+  geistiges-handicap:
+    label: geeignet mit geistigem Handicap
+    help: Das Angebot ist für Kinder/Jugendliche mit geistigem Handicap geeignet
+
+email.reason:
+  applied: Sie erhalten diese E-Mail, da Sie sich für Angebote des Ferienpasses angemeldet haben.
+  registered: Sie erhalten diese E-Mail, da Sie sich auf unserer Webseite registriert haben.
+
+eventLog:
+  message:
+    AttendanceCreated: Neue Anmeldung
+    ParticipantListUpdated: Die Teilnahmeliste hat sich aktualisiert
+    AccountCreated: Nutzer-Account wurde angelegt
+    AccountActivated: Nutzer-Account wurde freigeschaltet
+    ConfirmApplications: Teilnehmer:innen wurden über Zusagen informiert
+    AttendanceStatusChanged: Der Teilnahmestatus hat sich geändert
+    OfferCancelled: Das Angebot wurde abgesagt
+    OfferRelaunched: Das Angebot wurde wiederhergestellt
+    AccountDeleted: Der Account wurde gelöscht
+  notification:
+    clockworksms:
+      label: SMS
+      description: Eine SMS wurde an {mobile} gesendet
+    email:
+      label: E-Mail
+      description: Eine E-Mail wurde an {email} geschickt
+    queue:
+      label: Queue
+      description: Eine Nachricht wurde für den späteren Versand angelegt
+
+days: Tage
+hours: Stunden
+minutes: Minuten
+seconds: Sekunden

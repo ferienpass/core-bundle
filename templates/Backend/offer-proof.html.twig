@@ -1,0 +1,75 @@
+{% extends "@ContaoCore/Backend/be_page.html.twig" %}
+
+{% block headline %}
+    Korrekturabzug Angebot ID {{ offer.id }}
+{% endblock %}
+
+{% block error %}
+{% endblock %}
+
+{% block main %}
+    <div class="" x-data="{ tab: 'web' }">
+        <div class="border-b border-gray-200">
+            <nav class="-mb-px flex px-4 sm:px-6">
+                <a href="#" @click.prevent="tab = 'web'"
+                   class="whitespace-no-wrap py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none"
+                        {# :class="tab === 'web' ? 'border-primary-500 text-gray-900 focus:text-gray-800 focus:border-primary-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300'" #}
+                   :aria-current="tab === 'web' ? 'page' : ''">
+                    Korrekturabzug Web
+                </a>
+                {% if hasPdf %}
+                    <a href="#" @click.prevent="tab = 'print'"
+                       class="ml-8 whitespace-no-wrap py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none"
+                            {# :class="tab === 'print' ? 'border-primary-500 text-gray-900 focus:text-gray-800 focus:border-primary-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300'" #}
+                       :aria-current="tab === 'print' ? 'page' : ''">
+                        Korrekturabzug Druck
+                    </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% if hasPdf %}
+            <div x-show="tab === 'print'">
+                <embed class="w-full" src="{{ path('pdf-proof', { id: offer.id, _format: 'pdf' }) }}"
+                       width="500" height="500" type="application/pdf">
+
+                <div class="px-4 py-5 sm:p-6">
+                    {% include '@FerienpassHostPortal/components/button-default.html.twig' with {
+                        uri: path('pdf-proof', { id: offer.id, '_format': 'pdf', dl: '1' }),
+                        link: 'Korrekturabzug (PDF) herunterladen'
+                    } %}
+                </div>
+            </div>
+        {% endif %}
+        <div x-show="tab === 'web'">
+            {% if offer.alias is null %}
+                {% embed '@FerienpassCore/Alert/error.html.twig' %}
+                    {% block headline %}{{ 'ERR.general'|trans([], 'contao_default') }}{% endblock %}
+                    {% block content %}Das Angebot hat keinen Alias.{% endblock %}
+                {% endembed %}
+            {% else %}
+                <div style="height: 500px" class="overflow-y-scroll">
+                    <div x-data="{}"
+                         class="bg-gray-300 pointer-events-none"
+                         x-init="$refs.shadow.attachShadow({mode: 'open'}); $refs.shadow.shadowRoot.appendChild( $refs.template.content.cloneNode(true) )">
+                        <div class="transform scale-90">
+                            <article x-ref="shadow"></article>
+                        </div>
+
+                        <template x-ref="template">
+                            {{ theme_link_tags('app', null, 'main') }}
+                            {{ render(controller('Ferienpass\\CoreBundle\\Controller\\Fragment\\OfferDetailsController', { offer: offer })) }}
+                        </template>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="px-4 py-5 sm:p-6">
+                {% if offer.alias %}
+                    {% include '@FerienpassHostPortal/components/button-default.html.twig' with {
+                        uri: path('contao_backend_preview', { url: path('offer_details', { alias: offer.alias }) }),
+                        link: 'Webseite aufrufen'
+                    } %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,66 @@
+<div>
+
+    <div class="flex items-center flex-col">
+        <h2 class="text-center">{{ headline }}</h2>
+
+        <div x-data="countdown()" x-init="init()">
+            <div class="flex space-x-4">
+                {% for time in ['days', 'hours', 'minutes', 'seconds'] %}
+                    <span class="block rounded-md shadow-inner w-28 h-20 bg-tint text-white leading-none flex items-center justify-center flex-col">
+                        <span class="font-extrabold text-5xl" x-text="{{ time }}"></span>
+                            <span class="font-medium uppercase text-xs tracking-wide">{{ time|trans }}</span>
+                        </span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    function countdown() {
+        return {
+            end: new Date(Date.parse("{{ task.periodBegin.format('c') }}")),
+            remainder: null,
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+
+            init() {
+                this.update()
+                setInterval(() => {
+                    this.update();
+                }, 1000);
+            },
+            update() {
+                const diff = this.end - new Date().getTime();
+                this.remainder = parseInt(diff / 1000);
+
+                this.time();
+            },
+            format(value) {
+                return ("0" + parseInt(value)).slice(-2)
+            },
+            time() {
+                let remainder = this.remainder;
+                let days, hours, minutes, seconds;
+
+                days = remainder / 86400;
+                remainder = remainder % 86400;
+                hours = remainder / 3600;
+                remainder = remainder % 3600;
+                minutes = remainder / 60;
+                remainder = remainder % 60;
+                seconds = remainder / 60;
+                seconds = remainder % 60;
+
+                this.days = this.format(days);
+                this.hours = this.format(hours);
+                this.minutes = this.format(minutes);
+                this.seconds = this.format(seconds);
+            },
+        }
+    }
+</script>

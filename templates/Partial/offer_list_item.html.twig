@@ -1,0 +1,84 @@
+{% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
+
+<div class="bg-white flex rounded-md overflow-hidden shadow-sm divide-x">
+
+    {% if offer.cancelled %}
+        <span class="text-center font-medium absolute text-sm transform rotate-45 bg-red-600 text-white w-32 right-0 top-0 translate-x-7 translate-y-7 z-10">abgesagt</span>
+    {% endif %}
+
+    <div class="max-w-2xl{% if offer.cancelled %} opacity-50{% endif %}">
+        {% if offer.image|default %}
+            <div class="">
+                {{ contao_figure(offer.image, [672, 200, 'crop'], { options: { img_attr: { class: 'object-cover w-full h-auto'}}}) }}
+                {% set caption = offer.caption|default %}
+                {% if caption %}
+                    <p class="text-xs pt-1 text-right text-gray-400">{{ caption }}</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="px-4 py-5 sm:p-6 ">
+
+            <div class="flex items-center mb-3">
+                {% if offer.dates is not empty %}
+                    {% set startDate = offer.dates|first.begin %}
+                    <span class="inline-block shadow-sm mr-3">
+                            <span class="block px-2 text-sm text-center uppercase text-white font-medium bg-red-600 border border-red-700 rounded-t">{{ startDate|date('M') }}</span>
+                            <span class="block px-2 text-xl font-light text-gray-800 text-center border-r border-l border-b border-gray-300 rounded-b">{{ startDate|date('d') }}</span>
+                        </span>
+                {% endif %}
+                <div class="overflow-hidden">
+                    <a href="{{ path('offer_details', { 'alias': offer.alias }) }}"
+                       class="hover:underline">
+                        <h2 class="text-xl leading-6 font-semibold truncate">{{ offer.name|raw }}</h2></a>
+                    {% if offer.hosts|first|default %}
+                        {% if app.request.get('_route') == 'host_details' %}
+                            <span class="font-medium truncate text-gray-700">{{ offer.hosts|first.name|raw }}</span>
+                        {% else %}
+                            <a href="{{ path('host_details', { 'alias': offer.hosts|first.alias }) }}"
+                               title="Infos zum Veranstalter"
+                               class="hover:underline font-medium truncate text-gray-700">{{ offer.hosts|first.name|raw }}</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <p class="mt-2 text-gray-500 text-sm">{{ offer.description|encodeEmail }}</p>
+        </div>
+    </div>
+
+    <div class="px-4 py-4 flex-1 flex flex-col justify-between">
+
+        <div class="text-gray-500">
+            {% block meta %}
+                <p><span class="font-semibold">Alter:</span> {{ offer_macro.age(offer) }}</p>
+                <p><span class="font-semibold">Kosten:</span> {{ offer.fee/100 }} €</p>
+            {% endblock %}
+        </div>
+
+        <div class="flex items-center justify-between space-x-3 leading-4">
+            <div x-data="{ saved: {{ offer.saved ? 'true' : 'false' }} }"
+                 x-init="$watch('saved', v => fetch('/api/offer/{{ offer.id }}/save', { method: 'PUT' }))" x-cloak>
+                <button @click="saved = !saved" class="text-red-600 font-medium hover:text-red-700 flex items-center">
+                    <span class="block w-5 h-5 mr-1">
+                        <span :class="saved ? 'hidden' : 'inline'">
+                        {{ source('@FerienpassCore/Icons/heart.svg') }}
+                        </span>
+                         <span :class="!saved ? 'hidden' : 'inline'">
+                        {{ source('@FerienpassCore/Icons/heart-solid.svg') }}
+                        </span>
+                    </span>
+                    <span :class="saved ? 'hidden' : 'inline'">merken</span>
+                    <span :class="!saved ? 'hidden' : 'inline'">gemerkt</span>
+                </button>
+            </div>
+
+            <div class="flex align-end text-right">
+                <a class="font-semibold text-primary-500 hover:underline"
+                   href="{{ path('offer_details', {alias: offer.alias}) }}">
+                    {{ offer.onlineApplication ? 'Infos & Anmeldung' : 'Infos' }}&nbsp;&srarr;
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

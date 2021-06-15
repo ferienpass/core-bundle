@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "NODE_ENV=development node_modules/.bin/encore dev",
+    "watch": "NODE_ENV=development node_modules/.bin/encore dev --watch",
+    "prod": "NODE_ENV=production node_modules/.bin/encore production"
+  },
+  "devDependencies": {
+    "@symfony/webpack-encore": "^1.0",
+    "autoprefixer": "^10.2.3",
+    "image-webpack-loader": "^7.0.0",
+    "node-sass": "^5.0.0",
+    "postcss": "^8.2.9",
+    "postcss-loader": "^5.0.0",
+    "sass-loader": "^10.0.0"
+  },
+  "dependencies": {
+    "@tailwindcss/forms": "^0.3.2",
+    "alpinejs": "^2.3.3",
+    "frappe-charts": "^1.6.0",
+    "frappe-gantt": "^0.5.0",
+    "sortablejs": "^1.10.2",
+    "tailwindcss": "^2.1.0"
+  }
+}

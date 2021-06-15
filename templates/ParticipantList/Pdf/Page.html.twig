@@ -1,0 +1,114 @@
+<style>
+    @page {
+        header: html_myHeader;
+        footer: html_myFooter;
+        font-family: helvetica;
+    }
+
+    h1 {
+        text-align: center;
+        font-weight: bold;
+        font-size: 14pt;
+    }
+
+    h2 {
+        font-weight: bold;
+        font-size: 16pt;
+        margin: 0;
+    }
+
+    p.date {
+        font-weight: bold;
+        font-size: 12pt;
+    }
+
+    table {
+        border: 1px solid #ddd;
+        width: 100%;
+        padding: 0;
+    }
+
+    td {
+        padding: 2px;
+        height: 20px;
+    }
+
+    tr:nth-child(1) td {
+        font-weight: bold;
+    }
+
+    tr:nth-child(2n) {
+        background-color: #eee;
+    }
+</style>
+
+<div>
+
+    <htmlpageheader name="myHeader" style="display:none">
+        <div style="text-align: right; border-bottom: 1px solid #000000; font-weight: bold; font-size: 10pt;">
+            Teilnahmeliste
+        </div>
+    </htmlpageheader>
+
+    <htmlpagefooter name="myFooter" style="display:none">
+        <table width="100%">
+            <tr>
+                <td width="33%">
+                    <span style="font-weight: bold; font-style: italic;">{DATE j.m.Y}</span>
+                </td>
+                <td width="33%" align="center" style="font-weight: bold; font-style: italic;">
+                    Seite {PAGENO}/{nbpg}
+                </td>
+                <td width="33%" style="text-align: right;">
+                    Teilnahmeliste
+                </td>
+            </tr>
+        </table>
+    </htmlpagefooter>
+
+    <h1>Teilnahmeliste</h1>
+    <h2>{{ offer.name }}</h2>
+    {% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
+    <p class="date">{{ offer_macro.date_combined(offer.dates) }}</p>
+
+    {% if attendances is empty %}
+        <p>Es sind keine Anmeldungen vorhanden.</p>
+    {% else %}
+        <table>
+            <tr>
+                <td>{{ 'participantList.headerFields.name'|trans }}</td>
+                <td>{{ 'participantList.headerFields.phone'|trans }}</td>
+                <td>{{ 'participantList.headerFields.email'|trans }}</td>
+                <td>&nbsp;</td>
+            </tr>
+            {% for attendance in attendances|filter(a => a.status == 'confirmed') -%}
+                {% set participant = attendance.participant %}
+                <tr>
+                    <td>{{ participant.firstname ~' '~ participant.lastname }}</td>
+                    <td>{{ ((participant.phone ?: (participant.member and participant.member.phone ? participant.member.phone : '')) ~ ' / ' ~ (participant.mobile ?: (participant.member and participant.member.mobile ? participant.member.mobile : '')))|trim('/ ') }}</td>
+                    <td>{{ participant.email ?: (participant.member and participant.member.email ? participant.member.email : '-') }}</td>
+                    <td style="width: 22%"></td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <p>Auf Warteliste:</p>
+        <table>
+            <tr>
+                <td>{{ 'participantList.headerFields.name'|trans }}</td>
+                <td>{{ 'participantList.headerFields.phone'|trans }}</td>
+                <td>{{ 'participantList.headerFields.email'|trans }}</td>
+                <td>&nbsp;</td>
+            </tr>
+            {% for attendance in attendances|filter(a => a.status == 'waitlisted') -%}
+                {% set participant = attendance.participant %}
+                <tr>
+                    <td>{{ participant.firstname ~' '~ participant.lastname }}</td>
+                    <td>{{ ((participant.phone ?: (participant.member and participant.member.phone ? participant.member.phone : '')) ~ ' / ' ~ (participant.mobile ?: (participant.member and participant.member.mobile ? participant.member.mobile : '')))|trim('/ ') }}</td>
+                    <td>{{ participant.email ?: (participant.member and participant.member.email ? participant.member.email : '-') }}</td>
+                    <td style="width: 22%"></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</div>

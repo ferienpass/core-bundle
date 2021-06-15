@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="<?= $this->language ?>">
+<head>
+
+    <?php $this->block('head'); ?>
+    <meta charset="<?= $this->charset ?>">
+    <title><?= $this->title ?> | <?= $this->trans('pageTitle', [], 'messages') ?></title>
+    <base href="<?= $this->base ?>">
+
+    <?php $this->block('meta'); ?>
+    <meta name="generator" content="Contao Open Source CMS">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,shrink-to-fit=no">
+    <meta name="referrer" content="origin">
+    <link rel="apple-touch-icon" sizes="180x180"
+          href="<?= $this->asset('favicon/apple-touch-icon.png', 'ferienpass_core') ?>">
+    <link rel="icon" type="image/png" sizes="32x32"
+          href="<?= $this->asset('favicon/favicon-16x16.png', 'ferienpass_core') ?>">
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="<?= $this->asset('favicon/favicon-16x16.png', 'ferienpass_core') ?>">
+    <link rel="manifest" href="<?= $this->asset('favicon/site.webmanifest', 'ferienpass_core') ?>">
+    <link rel="mask-icon" href="<?= $this->asset('favicon/safari-pinned-tab.svg', 'ferienpass_core') ?>"
+          color="#209bc9">
+    <link rel="shortcut icon" href="<?= $this->asset('favicon/favicon.ico', 'ferienpass_core') ?>">
+    <meta name="msapplication-TileColor" content="#2d89ef">
+    <meta name="msapplication-config" content="<?= $this->asset('favicon/browserconfig.xml', 'ferienpass_core') ?>">
+    <meta name="theme-color" content="#209bc9">
+    <?php $this->endblock(); ?>
+
+    <link rel="stylesheet" href="<?php
+    $objCombiner = new Contao\Combiner();
+    $objCombiner->add('assets/colorpicker/css/mooRainbow.min.css');
+    $objCombiner->add('assets/chosen/css/chosen.min.css');
+    $objCombiner->add('assets/simplemodal/css/simplemodal.min.css');
+    $objCombiner->add('assets/datepicker/css/datepicker.min.css');
+    echo $objCombiner->getCombinedFile();
+    ?>">
+    <link rel="stylesheet" href="<?= $this->asset('theme/css/main.css', 'ferienpass_core') ?>">
+    <?= $this->stylesheets ?>
+
+    <script><?= $this->getLocaleString() ?></script>
+    <script src="<?php
+    $objCombiner = new Contao\Combiner();
+    $objCombiner->add('assets/mootools/js/mootools.min.js');
+    $objCombiner->add('assets/colorpicker/js/mooRainbow.min.js');
+    $objCombiner->add('assets/chosen/js/chosen.min.js');
+    $objCombiner->add('assets/simplemodal/js/simplemodal.min.js');
+    $objCombiner->add('assets/datepicker/js/datepicker.min.js');
+    $objCombiner->add('bundles/contaocore/mootao.min.js');
+    $objCombiner->add('bundles/contaocore/core.min.js');
+    $objCombiner->add('system/themes/' . $this->theme . '/hover.min.js');
+    echo $objCombiner->getCombinedFile();
+    ?>"></script>
+    <script><?= $this->getDateString() ?></script>
+    <script src="<?= $this->asset('theme/js/main.js', 'ferienpass_core') ?>"></script>
+    <?= $this->javascripts ?>
+    <?php $this->endblock(); ?>
+
+</head>
+<body id="top" class="<?php if ($this->isPopup): ?> popup<?php endif; ?>">
+
+<div <?php if (!$this->isPopup): ?>class="bg-gray-100 h-screen flex flex-col overflow-hidden"<?php endif; ?>
+     x-data="{ sidebarOpen: false }">
+    <?php if (!$this->isPopup): ?>
+        <div class="relative z-10 flex-shrink-0 flex h-16 bg-primary-500 shadow">
+            <button @click="sidebarOpen = true"
+                    class="px-4 text-primary-50 bg-primary-600 focus:outline-none focus:bg-gray-900 focus:text-white md:hidden"
+                    aria-label="Open sidebar">
+                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+                </svg>
+            </button>
+            <div class="flex-1 px-4 flex justify-between">
+                <div class="flex-1 flex">
+                    <div class="hidden md:flex items-center justify-end flex-shrink-0">
+                        <a href="<?= $this->route('contao_backend') ?>" accesskey="h" id="home"
+                           title="<?= $this->home ?>">
+                            <img class="h-10 w-auto"
+                                 src="<?= $this->asset('img/ferienpass-logo--on-blue.svg', 'ferienpass_core') ?>"
+                                 alt="Ferienpass Logo"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="ml-4 flex items-center md:ml-6">
+                    <?php echo $this->headerProfile ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <div <?php if (!$this->isPopup): ?>class="flex overflow-hidden h-full bg-gray-100"<?php endif ?>>
+        <!-- Off-canvas menu for mobile -->
+        <div class="md:hidden" x-show="sidebarOpen" @click.away="sidebarOpen = false">
+            <div class="fixed inset-0 flex z-40">
+                <div x-show="sidebarOpen"
+                     x-transition:enter="transition-opacity ease-linear duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition-opacity ease-linear duration-300"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     class="fixed inset-0">
+                    <div class="absolute inset-0 bg-gray-600 opacity-75"></div>
+                </div>
+                <div x-show="sidebarOpen"
+                     x-transition:enter="transition ease-in-out duration-300 transform"
+                     x-transition:enter-start="-translate-x-full"
+                     x-transition:enter-end="translate-x-0"
+                     x-transition:leave="transition ease-in-out duration-300 transform"
+                     x-transition:leave-start="translate-x-0"
+                     x-transition:leave-end="-translate-x-full"
+                     class="relative flex-1 flex flex-col max-w-xs w-full bg-gray-800">
+                    <div class="absolute top-0 right-0 -mr-14 p-1">
+                        <button @click="sidebarOpen = false"
+                                class="flex items-center justify-center h-12 w-12 rounded-full focus:outline-none focus:bg-gray-600"
+                                aria-label="Close sidebar">
+                            <svg class="h-6 w-6 text-white" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex-shrink-0 flex items-center px-4">
+                        <img class="h-8 w-auto"
+                             src="<?= $this->asset('img/ferienpass-logo--on-dark.svg', 'ferienpass_core') ?>"
+                             alt="Ferienpass Logo"/>
+                        </a>
+                    </div>
+                    <div class="h-0 flex-1 flex flex-col overflow-y-auto">
+                        <div class="flex-1 py-4">
+                            <?= $this->menu ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 w-14">
+                    <!-- Dummy element to force sidebar to shrink to fit close icon -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Static sidebar for desktop -->
+        <?php if (!$this->isPopup): ?>
+            <div class="hidden md:flex md:flex-shrink-0">
+                <div class="flex flex-col w-64 bg-gray-800">
+                    <div class="h-0 flex-1 flex flex-col overflow-y-auto">
+                        <div class="flex-1 py-4">
+                            <?= $this->menu ?>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 flex bg-gray-700 p-4">
+                        <div class="flex items-center justify-end flex-shrink-0 w-full">
+                            <a href="https://ferienpass.online" target="_blank">
+                                <img class="h-6 w-auto"
+                                     src="<?= $this->asset('img/ferienpass-logo--on-dark.svg', 'ferienpass_core') ?>"
+                                     alt="Ferienpass Logo"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Main content -->
+        <?php if (!$this->isPopup): ?>
+            <div class="flex flex-col w-0 flex-1 overflow-hidden">
+                <main id="main" aria-labelledby="main_headline"
+                      class="flex-1 relative z-0 overflow-y-auto focus:outline-none" tabindex="0">
+                    <?php if (!$this->noMainPanel): ?>
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-10 md:py-12">
+                            <h1 class="text-2xl font-semibold text-gray-900"><?= $this->headline ?></h1>
+                        </div>
+                    <?php endif ?>
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-10 md:py-12">
+                        <?php if (!$this->noMainPanel): ?>
+                            <div class="bg-white overflow-hidden shadow rounded-lg mb-12">
+                                <?php if ($this->pickerMenu): ?>
+                                    <div id="picker-menu">
+                                        <?= $this->pickerMenu ?>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($this->error): ?>
+                                    <p class="tl_gerror"><?= $this->error ?></p>
+                                <?php endif; ?>
+                                <?= $this->main ?>
+                            </div>
+                        <?php else: ?>
+                            <?= $this->main ?>
+                        <?php endif ?>
+                    </div>
+                </main>
+            </div>
+        <?php else: ?>
+            <main id="main" aria-labelledby="main_headline" tabindex="0">
+                <div class="px-4 sm:px-6 md:px-8">
+                    <?php if ($this->pickerMenu): ?>
+                        <div id="picker-menu">
+                            <?= $this->pickerMenu ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($this->error): ?>
+                        <p class="tl_gerror"><?= $this->error ?></p>
+                    <?php endif; ?>
+                    <?= $this->main ?>
+                </div>
+            </main>
+        <?php endif; ?>
+    </div>
+</div>
+
+<?php if ($this->isPopup): ?>
+    <script>
+        if (!document.location.search.test('act=select') && $$('.tl_tree_checkbox,.tl_tree_radio').length > 0) {
+            parent.document.getElements('.simple-modal-footer a.primary').removeClass('btn-disabled');
+        } else {
+            parent.document.getElements('.simple-modal-footer a.primary').addClass('btn-disabled');
+        }
+    </script>
+<?php endif; ?>
+
+<?= $this->mootools ?>
+
+<script>Backend.initScrollOffset()</script>
+
+</body>
+</html>

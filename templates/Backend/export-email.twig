@@ -1,0 +1,19 @@
+{% extends "@ContaoCore/Backend/be_page.html.twig" %}
+
+{% block headline %}
+    {{ headline }}
+{% endblock %}
+
+{% block error %}
+    {%- if error is defined -%}
+        {{- error -}}
+    {%- endif -%}
+{% endblock %}
+
+{% block main %}
+    <div class="tl_listing_container create-attendance">
+        <div class="create-attendance__form">
+            {{ form | raw }}
+        </div>
+    </div>
+{% endblock %}

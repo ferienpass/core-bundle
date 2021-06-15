@@ -1,0 +1,89 @@
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="flex flex-col py-12 sm:py-16">
+        <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+            <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+
+                <table class="min-w-full">
+
+                    <thead>
+                    <tr>
+                        {% for head in ['Veranstaltung', 'Teilnehmer', 'Anmeldestatus', ''] %}
+                            <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+
+                    {% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
+                    <tbody class="bg-white">
+                    {% for attendance in attendances %}
+                        {% set applicationSystem = attribute(applicationSystems, attendance.id) %}
+                        <tr class="">
+                            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500">
+                                <p class="truncate font-medium text-gray-700">
+                                    <a class="hover:underline"
+                                       href="{{ path('offer_details', { alias: attendance.offer.alias }) }}">{{ attendance.offer.name }}</a>
+                                </p>
+                                <p class="truncate">{{ offer_macro.date_combined(attendance.offer.dates) }}</p>
+                            </td>
+                            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500">
+                                {{ attendance.participant.firstname }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500">
+                                {% if attendance.isWithdrawn %}
+                                    <p class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800 whitespace-nowrap">
+                                        <span class="block -ml-1 mr-1.5 h-4 w-4 text-red-500">{{ source('@FerienpassCore/Icons/x-solid.svg') }}</span>
+                                        abgesagt
+                                    </p>
+                                {% elseif attendance.isErrored %}
+                                    <p class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800 whitespace-nowrap">
+                                        <span class="block -ml-1 mr-1.5 h-4 w-4 text-red-500">{{ source('@FerienpassCore/Icons/x-solid.svg') }}</span>
+                                        fehlerhaft
+                                    </p>
+                                {% elseif attendance.isWaiting or (applicationSystem and applicationSystem.task and applicationSystem.task.hideStatus|default) or (attendance.offer.edition and not attendance.offer.edition.activeTasks('allocation').isEmpty) %}
+                                    <p class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-gray-100 text-gray-800 whitespace-nowrap">
+                                        <span class="block -ml-1 mr-1.5 h-4 w-4 text-gray-400">{{ source('@FerienpassCore/Icons/refresh-solid.svg') }}</span>
+                                        nicht zugeteilt
+                                    </p>
+                                {% elseif attendance.isConfirmed %}
+                                    <p class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800 whitespace-nowrap">
+                                        <span class="block -ml-1 mr-1.5 h-4 w-4 text-green-500">{{ source('@FerienpassCore/Icons/check-solid.svg') }}</span>
+                                        nimmt teil
+                                    </p>
+                                {% elseif attendance.isWaitlisted %}
+                                    <p class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 whitespace-nowrap">
+                                        <span class="block -ml-1 mr-1.5 h-4 w-4 text-yellow-500">{{ source('@FerienpassCore/Icons/upload-solid.svg') }}</span>
+                                        Warteliste
+                                    </p>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500">
+                                {% set form = attribute(withdraw, attendance.id)|default %}
+                                {% if form %}
+                                    {% do form.submit.setRendered %}
+                                    {{ form_start(form) }}
+                                    <button type="submit"
+                                            class="inline-flex items-center text-sm leading-4 font-semibold text-red-700"
+                                            name="{{ form.submit.vars['full_name'] }}"
+                                            id="{{ form.submit.vars['id'] }}">
+                                        <span class="mr-1 block w-5 h-5">{{ source('@FerienpassCore/Icons/trash.svg') }}</span>
+                                        {{ form.submit.vars['label'] }}
+                                    </button>
+                                    {{ form_end(form) }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 ">
+                                {% include "@FerienpassCore/Alert/information.html.twig" with { message: 'noApplications'|trans } %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

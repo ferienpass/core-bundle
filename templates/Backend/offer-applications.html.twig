@@ -1,0 +1,480 @@
+{% extends "@FerienpassCore/Backend/be_page.html.twig" %}
+
+{% block headline %}Anmeldungen zu Angebot ID {{ offer.id }}{% endblock %}
+
+{% block main %}
+    <div x-data="{ modalCancel: false }">
+        <div class="mb-12">
+            <div>
+                <nav class="sm:hidden">
+                    <a href="javascript:history.go(-1)"
+                       class="flex items-center text-sm leading-5 font-medium text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out">
+                        <svg class="flex-shrink-0 -ml-1 mr-1 h-5 w-5 text-gray-400" fill="currentColor"
+                             viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                        Zurück
+                    </a>
+                </nav>
+                <nav class="hidden sm:flex items-center text-sm leading-5 font-medium">
+                    <a href="javascript:history.go(-1)"
+                       class="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out">{{ 'Ferienpass-Angebote' }}</a>
+                    <svg class="flex-shrink-0 mx-2 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                              clip-rule="evenodd"/>
+                    </svg>
+                    {% if offer.edition %}
+                    <a href="javascript:history.go(-1)"
+                       class="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out">{{ offer.edition.name }}</a>
+                    <svg class="flex-shrink-0 mx-2 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                              clip-rule="evenodd"/>
+                        {% endif %}
+                    </svg>
+                    <span class="text-gray-500">{{ offer.name }}</span>
+                </nav>
+            </div>
+            <div class="mt-2 lg:flex lg:items-center lg:justify-between">
+                <div class="flex-1 min-w-0">
+                    <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9">
+                        {{ offer.name }}
+
+                        {% if variants|default is not empty %}
+                            <div class="relative inline-block text-left" x-data="{ dropdownOpen: false }">
+                                <div>
+                                    <button @click="dropdownOpen = !dropdownOpen"
+                                            @click.away="dropdownOpen = false"
+                                            class="flex items-center text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600">
+                                        <span class="h-6 w-6">{% include '@FerienpassCore/Icons/chevron-down-solid.svg.twig' %}</span>
+                                    </button>
+                                </div>
+
+                                <div x-show="dropdownOpen"
+                                     x-transition:enter="transition ease-out duration-100"
+                                     x-transition:enter-start="transform opacity-0 scale-95"
+                                     x-transition:enter-end="transform opacity-100 scale-100"
+                                     x-transition:leave="transition ease-in duration-75"
+                                     x-transition:leave-start="transform opacity-100 scale-100"
+                                     x-transition:leave-end="transform opacity-0 scale-95"
+                                     class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
+                                    <div class="rounded-md bg-white shadow-xs">
+                                        <div class="py-1">
+                                            {% for variant in variants %}
+                                                <a href="{{ path('backend_offer_participant_list', { 'itemId': variant.raw.id}) }}"
+                                                   class="group flex items-center font-normal px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
+                                                    <span class="h-5 w-5 mr-2 text-gray-400 group-hover:text-gray-500">{% include '@FerienpassCore/Icons/calendar.svg.twig' %}</span>
+                                                    {{ variant.text.date_period }}</a>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if offer.cancelled %}
+                            <span class="px-2.5 py-1 rounded-md text-base font-medium leading-5 bg-red-100 text-red-800">abgesagt</span>
+                        {% endif %}
+                    </h2>
+                    <div class="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap">
+                        <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mr-6">
+                        <span class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400">
+                        {% include '@FerienpassCore/Icons/hashtag-solid.svg.twig' %}
+                        </span>
+                            ID {{ offer.id }}
+                        </div>
+                        <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mr-6">
+                        <span class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400">
+                            {% include'@FerienpassCore/Icons/user-circle-solid.svg.twig' %}
+                               </span>
+                            {{ offer.hosts|map(h => h.name)|join(', ') }}
+                        </div>
+                        <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mr-6">
+                        <span class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400">
+                            {% include '@FerienpassCore/Icons/calendar-solid.svg.twig' %}
+                        </span>
+                            {% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
+                            {{ offer_macro.date_combined(offer.dates) }}
+                        </div>
+                        <div class="mt-2 flex items-center text-sm leading-5 text-gray-500">
+                            <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400">
+                                {% include '@FerienpassCore/Icons/user-group-solid.svg.twig' %}
+                            </svg>
+                            {{ 'min. ' ~ offer.minParticipants }} /
+                            {{ 'max. ' ~ offer.maxParticipants ~ ' TN' }}
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5 flex lg:mt-0 lg:ml-4">
+
+                    {# Operations container #}
+                    <div class="" x-data="{ dropdownOpen: false, modalCancel: false, modalEmailAddresses: false }">
+                        {# Dropdown button #}
+                        <div class="relative z-0 inline-flex shadow-sm rounded-md">
+                            <a href="{{ path('backend_offer_applications_pdf', {id: offer.id}) }}"
+                               class="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
+                                <span class="-ml-1 mr-2 h-5 w-5 text-gray-500">{% include'@FerienpassCore/Icons/document-download-solid.svg.twig' %}</span>
+                                PDF-Export
+                            </a>
+                            <div class="-ml-px relative block">
+                                <button type="button" @click="dropdownOpen = !dropdownOpen"
+                                        @click.away="dropdownOpen = false"
+                                        class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
+                                        aria-label="Expand">
+                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                              clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
+                                <div x-show="dropdownOpen" x-cloak
+                                     x-transition:enter="transition ease-out duration-100"
+                                     x-transition:enter-start="transform opacity-0 scale-95"
+                                     x-transition:enter-end="transform opacity-100 scale-100"
+                                     x-transition:leave="transition-opacity ease-linear duration-300"
+                                     x-transition:leave-start="transform opacity-100 scale-100"
+                                     x-transition:leave-end="transform opacity-0 scale-95"
+                                     class="origin-top-right absolute right-0 mt-2 -mr-1 w-56 rounded-md shadow-lg">
+                                    <div class="rounded-md bg-white shadow-xs" role="menu" aria-orientation="vertical"
+                                         aria-labelledby="options-menu">
+                                        <div class="py-1">
+                                            <a href="{{ path('contao_backend_preview', { url: path('offer_details', { alias: offer.alias })|trim('/', 'left')}) }}"
+                                               target="_blank"
+                                               class="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                               role="menuitem">
+                                                <span class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500">{% include '@FerienpassCore/Icons/external-link-solid.svg.twig' %}</span>
+                                                Ansehen
+                                            </a>
+                                            <a href="{{ path('contao_backend', { do: 'offers', act: 'edit', id: offer.id, rt: contao_request_token() }) }}"
+                                               target="_blank"
+                                               class="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                               role="menuitem">
+                                                <span class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500">{% include '@FerienpassCore/Icons/pencil-solid.svg.twig' %}</span>
+                                                Bearbeiten
+                                            </a>
+                                        </div>
+                                        <div class="border-t border-gray-100"></div>
+                                        <div class="py-1">
+                                            <a href="{{ path('backend_offer_applications_pdf', {id: offer.id}) }}"
+                                               target="_blank"
+                                               class="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                               role="menuitem">
+                                                <span class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500">{% include '@FerienpassCore/Icons/document-download-solid.svg.twig' %}</span>
+                                                PDF-Export
+                                            </a>
+                                            <a href="{{ path('backend_offer_applications_docx', {id: offer.id}) }}"
+                                               target="_blank"
+                                               class="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                               role="menuitem">
+                                                <span class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500">{% include '@FerienpassCore/Icons/document-download-solid.svg.twig' %}</span>
+                                                DOCX-Export
+                                            </a>
+                                            <button type="button" @click="modalEmailAddresses = true"
+                                                    class="w-full group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                                    role="menuitem">
+                                                <span class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500">{% include '@FerienpassCore/Icons/at-symbol-solid.svg.twig' %}</span>
+                                                E-Mail-Adressen
+                                            </button>
+                                        </div>
+                                        <div class="border-t border-gray-100"></div>
+                                        {% if not offer.cancelled %}
+                                            <div class="py-1">
+                                                <button type="button" @click="modalCancel = true"
+                                                        class="w-full group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                                        role="menuitem">
+                                                    <span class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500">{% include '@FerienpassCore/Icons/ban-solid.svg.twig' %}</span>
+                                                    Absagen
+                                                </button>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Modal cancel #}
+                        <div class="fixed bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center"
+                             x-show="modalCancel" x-cloak>
+                            <div x-show="modalCancel"
+                                 x-transition:enter="ease-out duration-300"
+                                 x-transition:enter-start="opacity-0"
+                                 x-transition:enter-end="opacity-100"
+                                 x-transition:leave="ease-in duration-200"
+                                 x-transition:leave-start="opacity-100"
+                                 x-transition:leave-end="opacity-0"
+                                 class="fixed inset-0 transition-opacity">
+                                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                            </div>
+                            <div x-show="modalCancel"
+                                 @click.away="modalCancel = false"
+                                 x-transition:enter="ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                                 x-transition:leave="ease-in duration-200"
+                                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                 class="relative bg-white rounded-lg px-4 pt-5 pb-4 overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full sm:p-6"
+                                 role="dialog"
+                                 :aria-modal="!!modalCancel"
+                                 aria-labelledby="modal-headline">
+                                <form method="post"
+                                      action="{{ path('backend_api_offer_cancel', { id: offer.id }) }}"
+                                      @submit.prevent="
+                          fetch($event.target.action, { method: 'POST', headers: {'X-Requested-With': 'XMLHttpRequest'} })
+                            .then(response => {if (response.ok) { window.location.reload(); return; } alert(response.statusText);})">
+                                    <input type="hidden" name="REQUEST_TOKEN" value="{{ contao_request_token() }}">
+                                    <div class="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+                                        <button @click="modalCancel = false"
+                                                type="button"
+                                                class="text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500 transition ease-in-out duration-150"
+                                                aria-label="Schließen">
+                                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="sm:flex sm:items-start">
+                                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                            <svg class="h-6 w-6 text-red-600" stroke="currentColor" fill="none"
+                                                 viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
+                                                Angebot absagen</h3>
+                                            <div class="mt-2">
+                                                <p class="text-sm leading-5 text-gray-500">
+                                                    Das Angebot wird abgesagt. Alle Kinder werden über die Absage
+                                                    informiert, wenn Anmeldungen über das Online-System laufen.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                    <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                        <button type="submit"
+                                class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-red-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5">Angebot absagen</button>
+                    </span>
+                                        <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                        <button @click="modalCancel = false"
+                                type="button"
+                                class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">Abbrechen</button>
+                    </span>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        {# Modal e-mail addresses #}
+                        <div class="fixed bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center"
+                             x-show="modalEmailAddresses" x-cloak>
+                            <div x-show="modalEmailAddresses"
+                                 x-transition:enter="ease-out duration-300"
+                                 x-transition:enter-start="opacity-0"
+                                 x-transition:enter-end="opacity-100"
+                                 x-transition:leave="ease-in duration-200"
+                                 x-transition:leave-start="opacity-100"
+                                 x-transition:leave-end="opacity-0"
+                                 class="fixed inset-0 transition-opacity">
+                                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                            </div>
+                            <div x-show="modalEmailAddresses"
+                                 @click.away="modalEmailAddresses = false"
+                                 x-transition:enter="ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                                 x-transition:leave="ease-in duration-200"
+                                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                 class="relative bg-white rounded-lg px-4 pt-5 pb-4 overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full sm:p-6"
+                                 role="dialog"
+                                 :aria-modal="!!modalEmailAddresses"
+                                 aria-labelledby="modal-headline">
+                                <div>
+                                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                                        <span class="h-6 w-6 text-green-600">{% include '@FerienpassCore/Icons/at-symbol-solid.svg.twig' %}</span>
+                                    </div>
+                                    <div class="mt-3 text-center sm:mt-5">
+                                        <h3 class="text-lg leading-6 font-medium text-gray-900">E-Mail-Adressen</h3>
+                                        <div class="mt-2">
+                                            <p class="text-sm leading-5 text-gray-500">
+                                                Sie können sich die E-Mail-Adressen der Teilnehmenden in die
+                                                Zwischenablage kopieren.
+                                            </p>
+                                            <textarea rows="3"
+                                                      x-ref="emailsTextarea"
+                                                      class="mt-4 form-textarea block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5">{{ emails|join("; ") }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+                                    <button type="button"
+                                            @click="$refs.emailsTextarea.select(); document.execCommand('copy'); modalEmailAddresses=false"
+                                            class="inline-flex w-full justify-center text-base sm:text-sm sm:mt-0 sm:w-auto border-transparent text-white bg-primary-600 hover:bg-primary-500 focus:border-primary-700 active:bg-primary-700 relative shadow-sm inline-flex px-4 py-2 items-center border border-transparent text-sm leading-5 font-medium rounded-md focus:outline-none focus:shadow-outline-blue">
+                                        In Zwischenablage
+                                    </button>
+                                    <button @click="modalEmailAddresses = false"
+                                            type="button"
+                                            class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                                        Abbrechen
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if offer.cancelled %}
+            <div class="mb-6 shadow rounded-md overflow-hidden mb-6">
+                {% embed '@FerienpassCore/Alert/error.html.twig' %}
+                    {% block headline %}Angebot abgesagt{% endblock %}
+                    {% block content %}Kinder verbleiben auf der Teilnahmeliste für den Fall, dass das Angebot wiederhergestell wird.{% endblock %}
+                {% endembed %}
+            </div>
+        {% endif %}
+
+        {% if not offer.onlineApplication %}
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    {% embed '@FerienpassCore/Alert/information.html.twig' %}
+                        {% block headline %}Keine Online-Anmeldungen{% endblock %}
+                        {% block content %}Die Anmeldungen laufen über den Veranstalter oder es sind keine Anmeldungen notwendig.{% endblock %}
+                    {% endembed %}
+                </div>
+            </div>
+        {% else %}
+            {% if attendances is empty %}
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="px-4 py-5 sm:p-6">
+                        {% embed '@FerienpassCore/Alert/information.html.twig' %}
+                            {% block headline %}Keine Anmeldungen{% endblock %}
+                            {% block content %}Es haben sich noch keine Kinder zum Angebot angemeldet.{% endblock %}
+                        {% endembed %}
+                    </div>
+                </div>
+            {% else %}
+
+                {% macro participantList(status, attendances, max = null) %}
+                    {% if status == 'confirmed' %}
+                        {% set colorClass = 'bg-green-100 text-green-800' %}
+                    {% elseif status == 'waitlisted' %}
+                        {% set colorClass = 'bg-yellow-100 text-yellow-800' %}
+                    {% elseif status == 'error' or status == 'withdrawn' %}
+                        {% set colorClass = 'bg-red-100 text-red-800' %}
+                    {% else %}
+                        {% set colorClass = 'bg-gray-100 text-gray-800' %}
+                    {% endif %}
+
+                    <div class="bg-white overflow-hidden shadow rounded-lg"
+                         x-data=" { count: {{ attendances|length }} } "
+                         x-init="() => { Sortable.create($el.querySelector('ul'), { group: 'assign', ghostClass: 'bg-yellow-50', selectedClass: 'bg-blue-50', multiDrag: true, onAdd: assignAttendanceOnAdd(event), onUpdate: assignAttendanceOnUpdate(event), onSort: event => { count = $el.querySelectorAll('ul > li').length } }); }">
+                        <div class="border-b border-gray-200 px-4 py-5 sm:px-6">
+                            <div class="flex justify-between">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                                    <span class="inline-flex items-center px-2.5 -ml-2.5 py-1 rounded-md text-base font-medium leading-5 {{ colorClass }}">{{ ('applications.status.'~status~'.title')|trans() }}</span>
+                                </h3>
+                                <div class="flex items-center">
+                                    {% if max is null %}
+                                        <span class="ml-auto inline-block py-0.5 px-3 font-medium text-gray-600 text-xs leading-4 rounded-full bg-gray-100 font-normal"
+                                              x-text="count"></span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <p class="mt-2 text-xs leading-4 text-gray-500">{{ ('applications.status.'~status~'.caption')|trans() }}</p>
+                        </div>
+                        {% if max is not null %}
+                            <div class="px-4 border-b border-t -mt-px py-2 sm:px-6"
+                                 :class="{ 'bg-yellow-50 border-orange-200': count > {{ max }}, 'bg-gray-50 border-gray-200': count <= {{ max }} }">
+                                <p class="leading-5"
+                                   :class="{ 'text-orange-700': count > {{ max }}, 'text-gray-700': count <= {{ max }} }">
+                                    <span class="ml-auto inline-block py-0.5 px-3 mr-1 -ml-2 text-xs leading-4 rounded-full font-medium"
+                                          :class="{ 'bg-yellow-200 text-orange-700': count > {{ max }}, 'bg-gray-200 text-gray-600': count <= {{ max }} }"
+                                          x-text="count">0</span>von {% if max %}{{ max }} Kindern{% else %}∞{% endif %}
+                                </p>
+                            </div>
+                        {% endif %}
+                        <div class="px-4 py-5 sm:py-6">
+                            {% if status == 'waiting' and attendances|default|length > 0 %}
+                                <form method="post" class="mb-6 text-center">
+                                    <input type="hidden" name="REQUEST_TOKEN" value="{{ contao_request_token() }}">
+                                    <span class="inline-flex rounded-md shadow-sm">
+                                        <button type="submit" name="FORM_SUBMIT" value="confirm_all_waiting"
+                                                class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
+                                        <span class="-ml-0.5 mr-2 h-4 w-4">{{ source('@FerienpassCore/Icons/check-solid.svg') }}</span>alle zulassen
+                                    </button>
+                                </span>
+                                </form>
+                            {% endif %}
+                            <ul data-attendance-status="{{ status }}">
+                                {% for participant in attendances|default %}
+                                    <li class="group cursor-move bg-gray-50 px-2 py-2 border border-transparent rounded mb-4 hover:bg-gray-100 hover:border-gray-100 hover:shadow-sm"
+                                        data-attendance-id="{{ participant.attendanceId }}">
+                                        <div class="flex">
+                                            <div class="mr-1">
+                                                <span class="h-5 w-5 block -ml-1 text-gray-400 group-hover:text-gray-500">{% include '@FerienpassCore/Icons/dots-vertical.svg.twig' %}</span>
+                                            </div>
+
+                                            <div class="w-full">
+                                                <div class="flex justify-between">
+                                                    <a href="{{ path('contao_backend', { do: 'participants', act: 'edit', id: participant.id, popup: '1', rt: contao_request_token()}) }}"
+                                                       @click.prevent="Backend.openModalIframe({'title':'Kind bearbeiten','url':'{{ path('contao_backend', { do: 'participants', act: 'edit', id: participant.id, popup: '1', rt: contao_request_token()}) }}'})"
+                                                       class="font-medium mb-1 block text-gray-700 truncate">{{ participant.firstname ~ ' ' ~participant.lastname }}</a>
+                                                    <div>
+                                                        {% if participant.parentId %}
+                                                            <a class="text-gray-400 hover:text-gray-500"
+                                                               href="{{ path('contao_backend', { do: 'member_parents', act: 'edit', id: participant.parentId, popup: '1', rt: contao_request_token()}) }}"
+                                                               @click.prevent="Backend.openModalIframe({'title':'Eltern bearbeiten','url':'{{ path('contao_backend', { do: 'member_parents', act: 'edit', id: participant.parentId, popup: '1', rt: contao_request_token()}) }}'})">
+                                                                <span class="w-5 h-5 block">{{ source('@FerienpassCore/Icons/user-circle-solid.svg.twig') }}</span>
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <p class="text-gray-500 mb-1">{{ participant.age }} Jahre</p>
+                                                <p class="text-gray-500 text-xs flex items-center">
+                                                    <span>{{ 'enrolledBefore'|trans({days: date(participant.enrolled_at).diff(date()).days}) }}</span>
+                                                </p>
+                                                <a class="text-gray-500 text-xs"
+                                                   href="{{ path('contao_backend', { do: 'participants', table: 'Attendance', id: participant.id, popup: '1'}) }}"
+                                                   @click.prevent="Backend.openModalIframe({'title':'Anmeldungen von {{ participant.firstname ~ ' '~participant.lastname }}','url':$event.target.href})">{{ 'countOverallApplications'|trans({count: participant.count}) }}</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endmacro participantList %}
+
+                <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+
+                    {{ _self.participantList('confirmed', attendances.confirmed|default, offer.maxParticipants) }}
+
+                    {{ _self.participantList('waitlisted', attendances.waitlisted|default) }}
+
+                    {{ _self.participantList('waiting', attendances.waiting|default) }}
+
+                    {% if attendances.error is defined %}
+                    <div>{% endif %}
+
+                        {{ _self.participantList('withdrawn', attendances.withdrawn|default) }}
+
+                        {% if attendances.error|default is not empty %}
+                            <div class="mt-6">
+                                {{ _self.participantList('error', attendances.error) }}
+                            </div>
+                        {% endif %}
+
+                        {% if attendances.error is defined %}</div>{% endif %}
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

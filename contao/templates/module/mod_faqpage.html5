@@ -1,0 +1,67 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<div x-data="{ openPanel: null }">
+    <div class="py-12 sm:py-16">
+        <div class="max-w-3xl mx-auto">
+            <h1 class="text-center text-3xl leading-9 font-extrabold text-gray-900 sm:text-4xl sm:leading-10">
+                Häufig gestellte Fragen
+            </h1>
+
+            <?php foreach ($this->faq as $category): ?>
+                <article class="<?= $category['class'] ?>">
+                    <?php //echo $category['headline']?>
+
+                    <?php foreach ($category['items'] as $faq): ?>
+
+                        <div class="mt-6 border-t-2 border-gray-200 pt-6">
+                            <dl>
+                                <div>
+                                    <dt class="text-lg leading-7">
+                                        <button @click="openPanel = (openPanel === '<?= $faq->alias ?>' ? null : '<?= $faq->alias ?>')"
+                                                class="text-left w-full flex justify-between items-start text-gray-400 focus:outline-none focus:text-gray-900"
+                                                :aria-expanded="openPanel === '<?= $faq->alias ?>' ? true : false"
+                                                id="btn-<?= $faq->alias ?>"
+                                                aria-controls="answer-<?= $faq->alias ?>">
+                                            <span class="font-medium text-gray-900"><?= $faq->question ?></span>
+                                            <span class="ml-6 h-7 flex items-center">
+                                              <svg class="-rotate-180 h-6 w-6 transform"
+                                                   :class="{ '-rotate-180': openPanel === '<?= $faq->alias ?>', 'rotate-0': !(openPanel === '<?= $faq->alias ?>') }"
+                                                   stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M19 9l-7 7-7-7"></path>
+                                              </svg>
+                                            </span>
+                                        </button>
+                                    </dt>
+                                    <dd class="mt-2 pr-12" x-show="openPanel === '<?= $faq->alias ?>'">
+                                        <div class="text-base leading-6 text-gray-500" id="answer-<?= $faq->alias ?>"
+                                             role="region" aria-labelledby="btn-<?= $faq->alias ?>">
+                                            <?= $faq->answer ?>
+                                        </div>
+
+                                        <?php if ($faq->enclosure): ?>
+                                            <ul class="enclosure">
+                                                <?php foreach ($faq->enclosure as $enclosure): ?>
+                                                    <li class="download-element ext-<?= $enclosure['extension'] ?>">
+                                                        <a href="<?= $enclosure['href'] ?>"
+                                                           title="<?= $enclosure['title'] ?>"><?= $enclosure['link'] ?>
+                                                            <span
+                                                                    class="size">(<?= $enclosure['filesize'] ?>)</span></a>
+                                                    </li>
+                                                <?php endforeach; ?>
+                                            </ul>
+                                        <?php endif; ?>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    <?php endforeach; ?>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+
+<?php $this->endblock(); ?>

@@ -1,0 +1,38 @@
+<div>
+
+    {% if values is not empty %}
+        <h2 class="text-gray-500 text-xs font-medium uppercase tracking-wide">Anmeldungen pro Tag</h2>
+        <div class="mt-3 rounded-lg bg-white overflow-hidden shadow">
+            <div class="flex justify-center"
+                 x-data="{ chart: null }"
+                 x-init='chart = new Chart($refs.chart, { type: "heatmap", colors: ["#ebedf0", "#c0ddf9", "#73b3f3", "#3886e1", "#17459e"],
+                data: {
+                    dataPoints: {{ values|json_encode|raw }},
+                    start: new Date({{ min(values|keys) * 1000 }}),
+                    end: new Date()
+                },
+            })'>
+
+                <div x-ref="chart"></div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if count_offers_by_day|default is not empty %}
+        <h2 class="text-gray-500 text-xs font-medium uppercase tracking-wide">Angebotstermine</h2>
+        <div class="mt-3 rounded-lg bg-white overflow-hidden shadow">
+            <div class="flex justify-center"
+                 x-data="{ chart: null }"
+                 x-init='chart = new Chart($refs.chart, { type: "heatmap", colors: ["#ebedf0", "#c0ddf9", "#73b3f3", "#3886e1", "#17459e"],
+                data: {
+                    dataPoints: {{ count_offers_by_day|json_encode|raw }},
+                    start: new Date({{ min(count_offers_by_day|keys) * 1000 }}),
+                    end: new Date(),
+                },
+            })'>
+
+                <div x-ref="chart"></div>
+            </div>
+        </div>
+    {% endif %}
+</div>

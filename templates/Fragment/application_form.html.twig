@@ -1,0 +1,231 @@
+<div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
+    <div class="relative bg-white mt-16">
+        <div class="absolute inset-0">
+            <div class="absolute inset-y-0 left-0 w-1/2 bg-gray-50"></div>
+        </div>
+        <div class="relative max-w-7xl mx-auto lg:grid lg:grid-cols-6">
+            <div class="bg-gray-50 py-16 px-4 sm:px-6 lg:col-span-2 lg:px-8 lg:py-24 xl:pr-12">
+                <div class="max-w-lg mx-auto"></div>
+            </div>
+            <div class="bg-white py-12 px-4 sm:px-6 lg:col-span-4 lg:px-8 xl:pl-12">
+                <div class="max-w-lg mx-auto lg:max-w-none">
+                    <h2 class="font-semibold text-xl leading-6">Zum Angebot anmelden</h2>
+
+                    <div class="py-4 sm:py-6" x-data="{ choices: [] }">
+
+                        {% if not applicationSystem %}
+                            {% include "@FerienpassCore/Alert/error.html.twig" with { message: 'application.disabled'|trans } %}
+                        {% elseif offer.dates|first and offer.dates|first.begin < date() %}
+                            {% include "@FerienpassCore/Alert/information.html.twig" with { message: 'application.inPast'|trans } %}
+                        {% elseif offer.applicationDeadline and offer.applicationDeadline < date() %}
+                            {% include "@FerienpassCore/Alert/information.html.twig" with { message: 'application.pastDeadline'|trans } %}
+                        {% else %}
+
+                            {# progress bar #}
+                            {% if applicationSystem.task.applicationSystem == 'firstcome' %}
+                                {% if vacant < 2 %}
+                                    {% set color1 ='bg-red-200' %}
+                                    {% set color2 ='bg-red-500' %}
+                                    {% set color3 ='text-red-600' %}
+                                {% elseif vacant < 4 %}
+                                    {% set color1 ='bg-yellow-200' %}
+                                    {% set color2 ='bg-yellow-500' %}
+                                    {% set color3 ='text-yellow-600' %}
+                                {% else %}
+                                    {% set color1 ='bg-green-200' %}
+                                    {% set color2 ='bg-green-500' %}
+                                    {% set color3 ='text-green-600' %}
+                                {% endif %}
+                                <div class="relative -mt-4">
+                                    <div class="flex mb-2 items-center justify-between">
+                                        <div></div>
+                                        <div class="text-right">
+                                            <span class="text-xs font-semibold inline-block {{ color3 }}">{{ 'application.spareSpots'|trans({'count': vacant}) }}</span>
+                                        </div>
+                                    </div>
+
+                                    {% if offer.maxParticipants %}
+                                        <div class="overflow-hidden h-2 mb-4 text-xs flex rounded {{ color1 }}">
+                                            <div role="progressbar"
+                                                 style="width:{{ vacant / offer.maxParticipants * 100 }}%"
+                                                 class="flex flex-col text-center whitespace-nowrap text-white justify-center {{ color2 }}"
+                                                 aria-valuenow="{{ vacant }}"
+                                                 aria-valuemin="0"
+                                                 aria-valuemax="{{ offer.maxParticipants }}">
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+
+                            {# Not logged in #}
+                            {% if not app.user %}
+                                {% include "@FerienpassCore/Alert/information.html.twig" with {
+                                    headline: 'Anmeldung erforderlich',
+                                    message: 'application.signIn'|trans|replace({'%link_start%': '<a class="font-medium underline text-blue-700 hover:text-blue-600 transition ease-in-out duration-150" href="'~ path('offer_details', { 'alias': offer.alias, 'login': '1' }) ~'">', '%link_end%': '</a>'})|raw
+                                } %}
+                            {% endif %}
+
+
+                            {# Info text #}
+                            {% if app.user and form.participants.vars.choices is not empty %}
+                                <div class="flex mb-8 pb-4 border-b-2 border-gray-100">
+                                    <div>
+                                        <span class="h-5 w-5 mr-2 text-gray-400 block">{% include '@FerienpassCore/Icons/chevron-right.svg.twig' %}</span>
+                                    </div>
+
+                                    {% set info = 'application.procedure.'~applicationSystem.task.applicationSystem %}
+                                    <p class="text-gray-500 text-sm">{{ info|trans }}</p>
+                                </div>
+                            {% endif %}
+
+
+                            {# No participants #}
+                            {% if app.user and form.participants.vars.choices is empty %}
+                                {% include '@FerienpassCore/Alert/warning.html.twig' with {
+                                    'headline': 'Keine Kinder gefunden',
+                                    'message': 'Wenn Sie ein Kind zu dem Angebot anmelden wollen, müssen Sie für das Kind ein Profil erstellen.',
+                                } %}
+                            {% endif %}
+
+
+                            {# Form #}
+                            {% if app.user and form.participants.vars.choices is not empty %}
+                                <div>
+                                    <p class="text-sm leading-5 text-gray-500">
+                                        Bitte wählen Sie die Kinder aus, die Sie zum Angebot anmelden möchten und senden
+                                        das Anmeldeformular ab.
+                                    </p>
+                                </div>
+
+                                {% set choices = form.participants.vars.choices %}
+
+                                <div class="mt-5">
+                                    {{ form_start(form) }}
+
+                                    <div>
+                                        {% for choice in choices %}
+                                            {% set participant = choice.data %}
+                                            <div class="flex mt-5 sm:border-t sm:border-gray-200 pt-5{% if choice.attr.disabled|default %} pointer-events-none opacity-50{% endif %}">
+                                                <div class="pr-4">
+
+                                                    {% if choice.attr.selected|default %}
+                                                        <span role="checkbox"
+                                                              aria-checked="true"
+                                                              class="relative inline-block flex-shrink-0 h-6 w-11 bg-green-600 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline bg-gray-200">
+                                                            <span aria-hidden="true"
+                                                                  class="relative inline-block h-5 w-5 translate-x-5 rounded-full bg-white shadow transform transition ease-in-out duration-200 translate-x-0">
+                                                              <span class="absolute inset-0 h-full w-full flex items-center justify-center">
+                                                                <svg class="h-3 w-3 text-green-600" fill="currentColor" viewBox="0 0 12 12">
+                                                                  <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z"></path>
+                                                                </svg>
+                                                              </span>
+                                                            </span>
+                                                          </span>
+                                                    {% elseif choice.attr.disabled|default %}
+                                                        <span role="checkbox"
+                                                              tabindex="0"
+                                                              aria-checked="false"
+                                                              class="relative inline-block bg-gray-200 flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline bg-gray-200">
+                                                            <span aria-hidden="true"
+                                                                  class="relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200 translate-x-0">
+                                                              <span class="absolute inset-0 h-full w-full flex items-center justify-center">
+                                                                <svg class="h-3 w-3 text-gray-400" fill="none" viewBox="0 0 12 12">
+                                                                  <path d="M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2" stroke="currentColor"
+                                                                        stroke-width="2" stroke-linecap="round"
+                                                                        stroke-linejoin="round"></path>
+                                                                </svg>
+                                                              </span>
+                                                            </span>
+                                                          </span>
+                                                    {% else %}
+                                                        {% set widget = attribute(form.participants.children, choice.value) %}
+                                                        <input type="hidden" name="{{ widget.vars.full_name }}"
+                                                               :value="choices.includes({{ choice.value }}) ? {{ widget.vars.value }} : null"
+                                                               id="{{ widget.vars.id }}">
+                                                        <span role="checkbox"
+                                                              tabindex="0"
+                                                              @click="choices.includes({{ choice.value }}) ? choices = choices.filter(i => i !== {{ choice.value }}) : choices.push({{ choice.value }})"
+                                                              @keydown.space.prevent="choices.includes({{ choice.value }}) ? choices = choices.filter(i => i !== {{ choice.value }}) : choices.push({{ choice.value }})"
+                                                              :aria-checked="choices.includes({{ choice.value }}).toString()"
+                                                              aria-checked="false"
+                                                              :class="{ 'bg-gray-200': !choices.includes({{ choice.value }}), 'bg-green-600': choices.includes({{ choice.value }}) }"
+                                                              class="relative inline-block flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline bg-gray-200">
+                                                        <span aria-hidden="true"
+                                                              :class="{ 'translate-x-5': choices.includes({{ choice.value }}), 'translate-x-0': !choices.includes({{ choice.value }}) }"
+                                                              class="relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200 translate-x-0">
+                                                          <span :class="{ 'opacity-0 ease-out duration-100': choices.includes({{ choice.value }}), 'opacity-100 ease-in duration-200': !choices.includes({{ choice.value }}) }"
+                                                                class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity opacity-100 ease-in duration-200">
+                                                            <svg class="h-3 w-3 text-gray-400" fill="none" viewBox="0 0 12 12">
+                                                              <path d="M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2" stroke="currentColor"
+                                                                    stroke-width="2" stroke-linecap="round"
+                                                                    stroke-linejoin="round"></path>
+                                                            </svg>
+                                                          </span>
+                                                          <span :class="{ 'opacity-100 ease-in duration-200': choices.includes({{ choice.value }}), 'opacity-0 ease-out duration-100': !choices.includes({{ choice.value }}) }"
+                                                                class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity opacity-0 ease-out duration-100">
+                                                            <svg class="h-3 w-3 text-green-600" fill="currentColor" viewBox="0 0 12 12">
+                                                              <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z"></path>
+                                                            </svg>
+                                                          </span>
+                                                        </span>
+                                                      </span>
+                                                    {% endif %}
+
+                                                </div>
+                                                <div class="">
+                                                    <label class="text-base block leading-5 font-medium text-gray-900"
+                                                           @click="choices.includes({{ choice.value }}) ? choices = choices.filter(i => i !== {{ choice.value }}) : choices.push({{ choice.value }})"
+                                                           for="{{ 'cbx_participant_'~ participant.id }}">{{ choice.label }}</label>
+                                                    <p class="mt-1 text-sm leading-5 text-gray-700 sm:mt-0 sm:col-span-2">
+                                                        {% if choice.attr.selected|default %}
+                                                            {{ 'ineligible.alreadyApplied'|trans({ name: participant.firstname }) }}
+                                                        {% elseif choice.attr.disabled|default %}
+                                                            {{ choice.attr.message|trans }}
+                                                        {% else %}
+                                                            {{ 'application.apply'|trans({ name: participant.firstname }) }}
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="mt-6 pt-5 sm:border-t sm:border-gray-200">
+                                        <template x-if="choices.length">
+                                            <p class="text-sm font-medium text-green-700">Ja, ich melde meine Kinder zu
+                                                diesem Angebot an.</p>
+                                        </template>
+                                        <template x-if="!choices.length">
+                                            <p class="text-sm text-gray-400">Noch keine Auswahl getroffen.</p>
+                                        </template>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <span class="inline-flex rounded-md shadow-sm"
+                                              :class="{ 'cursor-not-allowed': !choices.length }">
+                                              <button type="submit"
+                                                      :disabled="!choices.length"
+                                                      :class="{ 'opacity-50 pointer-events-none': !choices.length }"
+                                                      class="text-white bg-primary-600 hover:bg-primary-500 inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md focus:outline-none focus:border-primary-700 focus:shadow-outline-primary active:bg-primary-700 transition ease-in-out duration-150">
+                                                Zum Angebot anmelden
+                                              </button>
+                                        </span>
+                                    </div>
+
+                                    {{ form_widget(form.request_token) }}
+                                    {{ form_end(form, {'render_rest': false}) }}
+
+                                </div>
+                            {% endif %}
+
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

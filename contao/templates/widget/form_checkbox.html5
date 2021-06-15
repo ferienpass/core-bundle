@@ -1,0 +1,51 @@
+<?php $this->extend('form_row'); ?>
+
+<?php $this->block('field'); ?>
+<fieldset id="ctrl_<?= $this->id ?>">
+
+    <?php if ($this->label): ?>
+        <legend class="text-base leading-6 font-medium text-gray-900 sm:text-sm sm:leading-5 sm:text-gray-700">
+            <?php if ($this->mandatory): ?>
+                <span class="sr-only"><?= $this->mandatoryField ?> </span><?= $this->label ?><span
+                        class="mandatory">*</span>
+            <?php else: ?>
+                <?= $this->label ?>
+            <?php endif; ?>
+        </legend>
+    <?php endif; ?>
+
+    <?php if ($this->hasErrors()): ?>
+        <p class="text-xs text-red-500"><?= $this->getErrorAsString() ?></p>
+    <?php endif; ?>
+
+    <input type="hidden" name="<?= $this->name ?>" value="">
+
+    <?php foreach ($this->getOptions() as $option): ?>
+        <?php if ('group_start' === $option['type']): ?>
+            <fieldset>
+            <legend><?= $option['label'] ?></legend>
+        <?php endif; ?>
+
+        <?php if ('option' === $option['type']): ?>
+            <div class="flex">
+                <input type="checkbox"
+                       class="form-checkbox h-4 w-4 text-primary-600 transition duration-150 ease-in-out"
+                       name="<?= $option['name'] ?>"
+                       id="opt_<?= $option['id'] ?>"
+                       class="checkbox"
+                       value="<?= $option['value'] ?>"<?= $option['checked'] ?><?= $option['attributes'] ?>>
+                <label id="lbl_<?= $option['id'] ?>"
+                       class="ml-3"
+                       for="opt_<?= $option['id'] ?>">
+                    <span class="block text-sm leading-5 font-medium text-gray-700"><?= $option['label'] ?></span>
+                </label>
+            </div>
+        <?php endif; ?>
+
+        <?php if ('group_end' === $option['type']): ?>
+            </fieldset>
+        <?php endif; ?>
+    <?php endforeach; ?>
+
+</fieldset>
+<?php $this->endblock(); ?>

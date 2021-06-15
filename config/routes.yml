@@ -1,0 +1,31 @@
+ferienpass.frontend:
+    resource: '../src/Controller/Frontend/'
+    type: annotation
+    defaults:
+        _scope: frontend
+        _token_check: true
+        _locale: de
+
+ferienpass.backend:
+    resource: '../src/Controller/Backend/'
+    type: annotation
+    prefix: /admin
+    defaults:
+        _scope: backend
+        _token_check: true
+
+ferienpass.backend_api:
+    resource: '../src/Controller/Backend/Api'
+    type: annotation
+    prefix: /admin/api
+    defaults:
+        _scope: backend
+        _token_check: false
+
+ferienpass.frontend_api:
+    resource: '../src/Controller/Frontend/Api'
+    type: annotation
+    prefix: /api
+    defaults:
+        _scope: frontend
+        _token_check: false

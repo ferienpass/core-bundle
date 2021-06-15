@@ -1,0 +1,102 @@
+---
+preheader: "Wir haben die Plätze zugeteilt und informieren Sie über Ihre Ferienpass-Anmeldungen."
+bodyClass: bg-gray-postmark-lighter
+---
+
+<extends src="src/layouts/master.html">
+    <block name="template">
+        <table class="email-wrapper w-full bg-gray-postmark-lighter font-sans">
+            <tr>
+                <td align="center">
+                    <table class="email-content w-full">
+                        <component src="src/components/header.html"></component>
+                        <raw>
+                            {% set content = email_text|split('##admissions##', 2) %}
+                            <tr>
+                                <td class="email-body w-full">
+                                    <table align="center" class="email-body_inner w-570 bg-white mx-auto sm:w-full">
+                                        <tr>
+                                            <td class="p-45">
+                                                <div class="text-base">
+                                                    <h1 class="mt-0 text-2xl font-bold text-left text-gray-postmark-darker">
+                                                        Hallo {{ recipient_firstname }},</h1>
+                                                    <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
+                                                        {{ content|first|trim|nl2br }}</p>
+                                                    {% for participant in participants %}
+                                                    <table class="w-full py-35">
+                                                        <tr>
+                                                            <td>
+                                                                <h3 class="mt-0 mb-0 text-sm text-left text-gray-postmark-darker font-bold">
+                                                                    {{ attribute(participant|first,'participant_firstname') ~' '~ attribute(participant|first, 'participant_lastname') }}</h3>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <table class="w-full pt-25">
+                                                                    {% for attendance in participant %}
+                                                                    <tr>
+                                                                        <td class="border-t border-solid border-b-0 border-l-0 border-r-0 border-gray-200 w-3/5 text-base leading-18 py-10 text-gray-postmark-dark">
+                                                                            {{ attendance.offer_name|raw }}<br><span
+                                                                                class="text-gray-500">{{ attendance.offer_date_start|date('d.m.Y H:i') }}</span>
+                                                                            {% if attendance.offer_cancelled %}
+                                                                            <div class="mt-2 rounded bg-red-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-red-100">
+                                                                                <p class="text-sm mt-0 mb-0 leading-5 text-red-700">
+                                                                                    Das Angebot wurde abgesagt.</p>
+                                                                            </div>
+                                                                            {% elseif attendance.offer_agreement_letter %}
+                                                                            <div class="mt-2 rounded bg-yellow-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-yellow-100">
+                                                                                <p class="text-sm mt-0 mb-0 leading-5 text-yellow-700">Bitte Einverständniserklärung mitgeben.</p>
+                                                                            </div>
+                                                                            {% endif %}
+                                                                        </td>
+                                                                        <td align="right"
+                                                                            class="border-t border-solid border-b-0 border-l-0 border-r-0 border-gray-200 w-2/5 text-base text-right">
+                                                                            {% if attendance.attendance_status == "confirmed" %}
+                                                                            <span class="inline-block border-solid border-l-8 border-r-8 border-t-2 border-b-2 border-green-100 rounded-full text-sm font-medium leading-5 bg-green-100 text-green-800">{{ attendance.attendance_status|trans }}</span>
+                                                                            {% elseif attendance.attendance_status == "error" %}
+                                                                            <span class="inline-block border-solid border-l-8 border-r-8 border-t-2 border-b-2 border-red-100 rounded-full text-sm font-medium leading-5 bg-red-100 text-red-800">{{ attendance.attendance_status|trans }}</span>
+                                                                            {% else %}
+                                                                            <span class="inline-block border-solid border-l-8 border-r-8 border-t-2 border-b-2 border-yellow-100 rounded-full text-sm font-medium leading-5 bg-yellow-100 text-yellow-800">{{ attendance.attendance_status|trans }}</span>
+                                                                            {% endif %}
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endfor %}
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    {% endfor %}
+                                                    {% if link|default %}
+                                                    <table align="center" class="w-full text-center my-30 mx-auto">
+                                                        <tr>
+                                                            <td align="center">
+                                                                <table class="w-full">
+                                                                    <tr>
+                                                                        <td align="center" class="text-base">
+                                                                            <a href="{{ link }}"
+                                                                               class="button button--blue"
+                                                                               target="_blank">Ferienpass-Webseite
+                                                                                aufrufen</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    {% endif %}
+                                                    <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
+                                                        {{ content|last|trim|nl2br }}</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </raw>
+                        <component src="src/components/footer.html"></component>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </block>
+</extends>

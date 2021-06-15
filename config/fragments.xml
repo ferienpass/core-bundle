@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults autoconfigure="true">
+            <tag name="ferienpass.fragment"/>
+        </defaults>
+
+        <instanceof id="Symfony\Bundle\FrameworkBundle\Controller\AbstractController">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </instanceof>
+
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\OfferDetailsController">
+            <argument>%kernel.project_dir%</argument>
+        </service>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\ParticipantsController">
+            <argument type="service" id="Ferienpass\CoreBundle\Repository\ParticipantRepository"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\HostDetailsController">
+            <argument type="service" id="Ferienpass\CoreBundle\Repository\OfferRepository"/>
+            <argument type="service" id="Ferienpass\CoreBundle\Repository\EditionRepository"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\Error404"/>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\AccountDeletedController"/>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\ChangePassword"/>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\ArticleController"/>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\RegistrationConfirm"/>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\LostPasswordConfirmController"/>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\RegistrationWelcomeController"/>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\Error403"/>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\NotificationsController"/>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\PersonalData"/>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\SignInController">
+            <argument type="service" id="security.encoder_factory"/>
+            <argument type="service" id="security.authentication_utils"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\CloseAccount">
+            <argument type="service" id="security.encoder_factory"/>
+            <argument type="service" id="logger"/>
+            <tag name="monolog.logger" channel="ferienpass"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\RegistrationActivateController">
+            <argument type="service" id="contao.security.frontend_user_provider"/>
+            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="contao.security.user_checker"/>
+            <argument type="service" id="contao.security.authentication_success_handler"/>
+            <argument type="service" id="contao.opt-in"/>
+            <argument type="service" id="contao.security.token_checker"/>
+            <tag name="monolog.logger" channel="ferienpass"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\Error401">
+            <argument type="service" id="Ferienpass\CoreBundle\Repository\EditionRepository"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\OfferListController">
+            <argument type="service" id="Ferienpass\CoreBundle\Repository\EditionRepository"/>
+            <argument type="service" id="Ferienpass\CoreBundle\Repository\OfferRepository"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\ApplicationFormController">
+            <argument type="service" id="Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems"/>
+            <argument type="service" id="Ferienpass\CoreBundle\Facade\AttendanceFacade"/>
+            <argument type="service" id="Ferienpass\CoreBundle\Repository\AttendanceRepository"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\ApplicationListController">
+            <argument type="service" id="Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems"/>
+            <argument type="service" id="Ferienpass\CoreBundle\Facade\AttendanceFacade"/>
+            <argument type="service" id="Ferienpass\CoreBundle\Repository\AttendanceRepository"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\LostPasswordController">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="contao.opt-in"/>
+            <tag name="monolog.logger" channel="ferienpass"/>
+        </service>
+
+    </services>
+</container>

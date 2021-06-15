@@ -1,0 +1,334 @@
+services:
+  _defaults:
+    autoconfigure: true
+
+  _instanceof:
+    Symfony\Bundle\FrameworkBundle\Controller\AbstractController:
+      calls:
+        - [ setContainer, [ '@Psr\Container\ContainerInterface' ] ]
+
+  Ferienpass\CoreBundle\Controller\Frontend\RedirectShortUrlController: ~
+
+  Ferienpass\CoreBundle\Controller\Frontend\ExportAttendancesController:
+    arguments: [ '%secret%', '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport', '@Ferienpass\CoreBundle\Repository\OfferRepository' ]
+
+  Ferienpass\CoreBundle\Controller\Frontend\CodeValidationController:
+    tags: [ 'controller.service_arguments' ]
+    arguments: [ '@database_connection' ]
+
+  Ferienpass\CoreBundle\Controller\Backend\ExportController:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\OfferRepository', '@Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports', '@Ferienpass\CoreBundle\Export\Offer\Excel\ExcelExports', '@Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports' ]
+
+  Ferienpass\CoreBundle\Controller\Backend\ProofController: ~
+
+  Ferienpass\CoreBundle\Controller\Backend\DashboardController:
+    arguments: [ '@contao.fragment.registry', '@contao.fragment.handler' ]
+
+  Ferienpass\CoreBundle\Controller\BackendDashboard\SendAcceptancesController:
+    arguments: [ '@Ferienpass\CoreBundle\Applications\UnconfirmedApplications' ]
+    tags: [ 'contao.dashboard_widget' ]
+
+  Ferienpass\CoreBundle\Controller\BackendDashboard\EraseDataController:
+    arguments: [ '@database_connection' ]
+    tags: [ 'contao.dashboard_widget' ]
+
+  Ferienpass\CoreBundle\Controller\BackendDashboard\InformSleepController:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
+    tags: [ 'contao.dashboard_widget' ]
+
+  Ferienpass\CoreBundle\Controller\BackendDashboard\GanttController:
+    arguments: [ '@translator' ]
+    tags: [ 'contao.dashboard_widget' ]
+
+  Ferienpass\CoreBundle\Controller\BackendDashboard\CreateSeasonController:
+    arguments: [ '@database_connection' ]
+    tags: [ 'contao.dashboard_widget' ]
+
+  Ferienpass\CoreBundle\Controller\BackendDashboard\CreateAttendanceController:
+    arguments: [ '@Ferienpass\CoreBundle\Facade\AttendanceFacade' ]
+    tags: [ 'contao.dashboard_widget' ]
+
+  Ferienpass\CoreBundle\Controller\BackendDashboard\EditionMenuController:
+    arguments: [ '@database_connection' ]
+    tags: [ 'contao.dashboard_widget' ]
+
+  Ferienpass\CoreBundle\Controller\BackendDashboard\HeatmapController:
+    arguments: [ '@database_connection' ]
+    tags: [ 'contao.dashboard_widget' ]
+
+  Ferienpass\CoreBundle\Controller\Backend\NotificationCenterController:
+    arguments: [ '@Ferienpass\CoreBundle\Applications\UnconfirmedApplications' ]
+  Ferienpass\CoreBundle\Applications\UnconfirmedApplications:
+    arguments: [ '@database_connection' ]
+
+  Ferienpass\CoreBundle\Controller\Backend\Api\OfferController:
+    calls:
+      - [ setContainer, [ '@service_container' ] ]
+
+  Ferienpass\CoreBundle\Controller\Backend\Api\AttendanceController:
+    calls:
+      - [ setContainer, [ '@service_container' ] ]
+
+  Ferienpass\CoreBundle\Controller\Backend\Api\CreateAttendanceController:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\OfferRepository', '@Ferienpass\CoreBundle\Repository\ParticipantRepository', '@Ferienpass\CoreBundle\Facade\AttendanceFacade' ]
+    calls:
+      - [ setContainer, [ '@service_container' ] ]
+
+  Ferienpass\CoreBundle\Controller\Frontend\Api\SecurityController:
+    calls:
+      - [ setContainer, [ '@service_container' ] ]
+
+  Ferienpass\CoreBundle\Controller\Frontend\Api\OfferController:
+    arguments: ['@session']
+    calls:
+      - [ setContainer, [ '@service_container' ] ]
+
+  Ferienpass\CoreBundle\Controller\Backend\EventLogController:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\EventLogRepository' ]
+    tags:
+      - { name: contao.backend_module, key: 'event_log', priority: 10, category: 'content' }
+
+  Ferienpass\CoreBundle\Controller\Backend\PdfProofController:
+    arguments: [ '@Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports' ]
+
+  Ferienpass\CoreBundle\Messenger\EventLogMiddleware:
+    arguments: [ '@logger' ]
+    tags:
+      - { name: 'monolog.logger', channel: 'ferienpass_event' }
+
+  Ferienpass\CoreBundle\Monolog\EventLogHandler:
+    arguments: [ '@doctrine.orm.entity_manager' ]
+
+  Ferienpass\CoreBundle\Controller\Backend\OfferApplicationsController:
+    arguments: [ '@database_connection', '@Ferienpass\CoreBundle\Export\ParticipantList\PdfExport', '@Ferienpass\CoreBundle\Export\ParticipantList\WordExport' ]
+
+  Ferienpass\CoreBundle\Controller\Frontend\FaviconIcoController:
+    tags: [ 'controller.service_arguments' ]
+    arguments: [ '%contao.web_dir%' ]
+
+  Ferienpass\CoreBundle\Controller\Frontend\PrintSheetProofController:
+    arguments: [ '@contao.security.token_checker', '@Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports' ]
+
+  Ferienpass\CoreBundle\Controller\Frontend\WebProofController:
+    arguments: [ '@contao.security.token_checker', '@Ferienpass\CoreBundle\Export\Offer\Web\ImgExport' ]
+
+  Ferienpass\CoreBundle\Controller\Frontend\SecurityTxtController:
+    tags: [ 'controller.service_arguments' ]
+
+  Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems:
+    arguments: [ '@Psr\Container\ContainerInterface' ]
+
+  Ferienpass\CoreBundle\ApplicationSystem\FirstComeApplicationSystem: ~
+  Ferienpass\CoreBundle\ApplicationSystem\LotApplicationSystem: ~
+
+  Ferienpass\CoreBundle\Facade\AttendanceFacade:
+    arguments: [ '@messenger.default_bus', '@doctrine', '@Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems' ]
+
+  Ferienpass\CoreBundle\Repository\HostRepository:
+    arguments: [ '@doctrine' ]
+  Ferienpass\CoreBundle\Repository\OfferRepository:
+    public: true
+    arguments: [ '@doctrine' ]
+  Ferienpass\CoreBundle\Repository\ParticipantRepository:
+    arguments: [ '@doctrine' ]
+  Ferienpass\CoreBundle\Repository\AttendanceRepository:
+    arguments: [ '@doctrine' ]
+  Ferienpass\CoreBundle\Repository\EditionRepository:
+    arguments: [ '@doctrine' ]
+  Ferienpass\CoreBundle\Repository\EventLogRepository:
+    arguments: [ '@doctrine' ]
+  Ferienpass\CoreBundle\Repository\NotificationLogRepository:
+    arguments: [ '@doctrine' ]
+
+  Ferienpass\CoreBundle\Backend\PassEditionStatistics:
+    arguments: [ '@database_connection', '@twig', '@translator' ]
+    public: true
+
+  Ferienpass\CoreBundle\Backend\GenerateCodes:
+    public: true
+
+  Ferienpass\CoreBundle\HttpCache\UserContext\UserContextProvider:
+    arguments: [ '@security.token_storage', '@contao.framework', '@contao.security.token_checker' ]
+    tags: [ 'fos_http_cache.user_context_provider' ]
+
+  Ferienpass\CoreBundle\Controller\ContentElement\SignInController:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
+
+  Ferienpass\CoreBundle\Controller\ContentElement\GreetingWithPicture: ~
+  Ferienpass\CoreBundle\Controller\ContentElement\TextBlockController:
+    arguments: [ '@contao.assets.files_context', '%kernel.project_dir%' ]
+
+  Ferienpass\CoreBundle\Controller\ContentElement\HomeNewsList: ~
+  Ferienpass\CoreBundle\Controller\ContentElement\HyperlinkController: ~
+  Ferienpass\CoreBundle\Controller\ContentElement\Contact: ~
+  Ferienpass\CoreBundle\Controller\ContentElement\CountdownController: ~
+
+  Ferienpass\CoreBundle\Menu\MenuBuilder:
+    arguments: [ "@knp_menu.factory", '@security.logout_url_generator', '@request_stack' ]
+    tags:
+      - { name: knp_menu.menu_builder, method: userNavigation, alias: user_navigation }
+
+  Ferienpass\CoreBundle\EventListener\DataContainer\Edition\GenerateAliasListener:
+    arguments: [ '@database_connection', '@contao.slug' ]
+
+  Ferienpass\CoreBundle\EventListener\Doctrine\Offer\AliasListener:
+    arguments: [ '@contao.slug' ]
+    tags:
+      - { name: 'doctrine.event_listener', event: 'preUpdate' }
+
+  Ferienpass\CoreBundle\EventListener\Doctrine\Offer\VariantListener:
+    tags:
+      - { name: 'doctrine.event_listener', event: 'preUpdate' }
+
+  Ferienpass\CoreBundle\EventListener\Doctrine\Offer\SetSavedListener:
+    arguments: ['@session']
+    tags:
+      - { name: 'doctrine.event_listener', event: 'postLoad' }
+
+  Ferienpass\CoreBundle\EventListener\Doctrine\Offer\SetHostListener:
+    arguments: [ '@security.helper' ]
+    tags:
+      - { name: 'doctrine.event_listener', event: 'prePersist' }
+
+  Ferienpass\CoreBundle\EventListener\DataContainer\Member\LoadListener:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\HostRepository' ]
+
+  Ferienpass\CoreBundle\EventListener\DataContainer\Offer\AliasListener:
+    arguments: [ '@contao.slug', '@database_connection' ]
+
+  Ferienpass\CoreBundle\EventListener\DataContainer\Offer\LabelListener:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository', '@Ferienpass\CoreBundle\Repository\OfferRepository', '@database_connection', '@router' ]
+
+  Ferienpass\CoreBundle\EventListener\DataContainer\Attendance\LabelListener:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository', '@Ferienpass\CoreBundle\Repository\OfferRepository', '@database_connection', '@router', '@translator' ]
+
+  Ferienpass\CoreBundle\EventListener\DataContainer\Offer\HostOptionsListener:
+    arguments: [ '@database_connection' ]
+
+  Ferienpass\CoreBundle\EventListener\DataContainer\Host\LabelListener:
+    arguments: [ '@Contao\CoreBundle\Image\Studio\Studio' ]
+
+  Ferienpass\CoreBundle\EventListener\DataContainer\Offer\SaveAccessibilityListener:
+    arguments: [ '@doctrine' ]
+
+  Ferienpass\CoreBundle\EventListener\DataContainer\EditionTask\LabelListener:
+    arguments: [ '@translator' ]
+
+  Ferienpass\CoreBundle\EventListener\DataContainer\Participant\LabelListener: ~
+  Ferienpass\CoreBundle\EventListener\DataContainer\Files\PaletteListener: ~
+
+  Ferienpass\CoreBundle\Export\Offer\Excel\ExcelExports:
+    arguments: [ !tagged_iterator { tag: 'ferienpass.export.offer.xlsx', index_by: 'key' } ]
+
+  Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports:
+    arguments: [ '@Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExport' ]
+
+  Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExport:
+    arguments: [ '@filesystem', '%kernel.project_dir%', '@twig' ]
+
+  Ferienpass\CoreBundle\Export\Offer\Xml\XmlExport:
+    arguments: [ '@twig' ]
+
+  Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports:
+    arguments: [ '@Ferienpass\CoreBundle\Export\Offer\Xml\XmlExport' ]
+
+  Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport: ~
+
+  Ferienpass\CoreBundle\Export\Offer\Web\ImgExport:
+    arguments: [ '@kernel', '@filesystem', '@knp_snappy.image', '%kernel.project_dir%' ]
+
+  Ferienpass\CoreBundle\Security\Authentication\AuthenticationFailureHandler: ~
+
+  Ferienpass\CoreBundle\Form\ApplyFormType:
+    arguments: [ '@security.helper', '@doctrine' ]
+
+  Ferienpass\CoreBundle\Form\UserLostPasswordType:
+    arguments: [ '@translator' ]
+
+  Ferienpass\CoreBundle\Form\SimpleType\ContaoLoginUsernameType:
+    arguments: [ '@security.authentication_utils' ]
+
+  Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType:
+    arguments: [ '@contao.csrf.token_manager', '%contao.csrf_token_name%' ]
+
+  Ferienpass\CoreBundle\Security\Voter\HostVoter:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\HostRepository' ]
+    tags:
+      - { name: security.voter }
+
+  Ferienpass\CoreBundle\Security\Voter\AttendanceVoter:
+    tags:
+      - { name: security.voter }
+
+  Ferienpass\CoreBundle\Security\Voter\OfferVoter:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@Ferienpass\CoreBundle\Repository\HostRepository' ]
+    tags:
+      - { name: security.voter }
+
+  Ferienpass\CoreBundle\EventListener\ForwardDashboardControllerListener:
+    arguments: [ '@request_stack', '@kernel' ]
+
+  Ferienpass\CoreBundle\Twig\Extension\RequestTokenExtension:
+    arguments:
+      - '@contao.csrf.token_manager'
+      - '%contao.csrf_token_name%'
+
+  Ferienpass\CoreBundle\EventListener\Routing\PageUrlGeneratorListener:
+    tags:
+      - { name: kernel.event_listener, event: cmf_routing.pre_dynamic_generate }
+
+  Ferienpass\CoreBundle\Twig\Extension\StringUtilExtension: ~
+
+  Ferienpass\CoreBundle\Page\PageBuilderFactory:
+    arguments: [ '@fragment.handler', '@translator', '@contao.framework', '@request_stack' ]
+    public: true
+
+  Ferienpass\CoreBundle\MessageHandler\WhenOfferCancelledThenNotify:
+    arguments: [ '@doctrine' ]
+
+  Ferienpass\CoreBundle\MessageHandler\WhenAccountDeletedDeleteParticipants:
+    arguments: [ '@messenger.default_bus', '@Ferienpass\CoreBundle\Repository\ParticipantRepository', '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@Ferienpass\CoreBundle\Repository\OfferRepository' ]
+
+  Ferienpass\CoreBundle\MessageHandler\WhenAccountCreatedThenNotify:
+    arguments: [ '@contao.opt-in', '@router' ]
+
+  Ferienpass\CoreBundle\MessageHandler\WhenAccountActivatedThenNotify: ~
+
+  Ferienpass\CoreBundle\MessageHandler\WhenOfferRelaunchedThenNotify:
+    arguments: [ '@doctrine' ]
+
+  Ferienpass\CoreBundle\MessageHandler\WhenConfirmApplicationsThenNotify:
+    arguments: [ '@Ferienpass\CoreBundle\Applications\UnconfirmedApplications', '@translator' ]
+  Ferienpass\CoreBundle\MessageHandler\WhenAttendanceConfirmedThenNotify:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@translator', '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport' ]
+  Ferienpass\CoreBundle\MessageHandler\WhenAttendanceWithdrawnThenNotify:
+    arguments: [ '@doctrine', '@translator' ]
+
+  Ferienpass\CoreBundle\MessageHandler\WhenAttendanceCreatedThenNotify:
+    arguments: [ '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport', '@translator', '@Ferienpass\CoreBundle\Repository\AttendanceRepository' ]
+
+  Ferienpass\CoreBundle\MessageHandler\WhenParticipantListChangedThenReorder:
+    arguments: [ '@Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems', '@messenger.default_bus', '@doctrine' ]
+
+  Ferienpass\CoreBundle\EventListener\DataContainer\PurgeDcaListener: ~
+  Ferienpass\CoreBundle\Routing\RouteLoader:
+    arguments: [ '@file_locator', '@routing.loader.annotation' ]
+    tags: [ routing.loader ]
+
+  Ferienpass\CoreBundle\EventListener\Backend\BackendMainListener:
+    arguments: [ '@twig', '@contao.framework' ]
+
+  Ferienpass\CoreBundle\EventListener\Notification\AddNotificationTokens:
+    arguments: [ '@translator' ]
+
+  Ferienpass\CoreBundle\Export\ParticipantList\PdfExport:
+    arguments: [ '@filesystem', '@twig', '%kernel.project_dir%' ]
+
+  Ferienpass\CoreBundle\Export\ParticipantList\WordExport:
+    arguments: [ '@filesystem', '@serializer', '@?' ]
+
+  Ferienpass\CoreBundle\CronJob\TriggerCronRemindersListener:
+    arguments: [ '@database_connection' ]
+
+  Monolog\Processor\PsrLogMessageProcessor:
+    tags: { name: monolog.processor, handler: sentry }

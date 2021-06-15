@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+    <file>
+        <body>
+            <trans-unit id="Participant.name_legend">
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="Participant.contact_legend">
+                <target>Kontakt</target>
+            </trans-unit>
+            <trans-unit id="Participant.firstname.0">
+                <target>Vorname</target>
+            </trans-unit>
+            <trans-unit id="Participant.firstname.1">
+                <target>Geben Sie den Vornamen des Kindes ein.</target>
+            </trans-unit>
+            <trans-unit id="Participant.lastname.0">
+                <target>Nachname</target>
+            </trans-unit>
+            <trans-unit id="Participant.lastname.1">
+                <target>Geben Sie den Nachnamen des Kindes ein.</target>
+            </trans-unit>
+            <trans-unit id="Participant.dateOfBirth.0">
+                <target>Geburtsdatum</target>
+            </trans-unit>
+            <trans-unit id="Participant.dateOfBirth.1">
+                <target>Wählen Sie das Geburtsdatum aus.</target>
+            </trans-unit>
+            <trans-unit id="Participant.member_id.0">
+                <target>Eltern-Datensatz</target>
+            </trans-unit>
+            <trans-unit id="Participant.member_id.1">
+                <target>Bitte wählen Sie den Eltern-Datensatz aus, falls vorhanden.</target>
+            </trans-unit>
+            <trans-unit id="Participant.phone.0">
+                <target>Telefonnummer</target>
+            </trans-unit>
+            <trans-unit id="Participant.phone.1">
+                <target>Bitte geben Sie die Telefonnummer ein.</target>
+            </trans-unit>
+            <trans-unit id="Participant.mobile.0">
+                <target>Handynummer</target>
+            </trans-unit>
+            <trans-unit id="Participant.mobile.1">
+                <target>Geben Sie die Handynummer (für SMS) ein.</target>
+            </trans-unit>
+            <trans-unit id="Participant.email.0">
+                <target>E-Mail-Adresse</target>
+            </trans-unit>
+            <trans-unit id="Participant.email.1">
+                <target>Bitte geben Sie die E-Mail-Adresse ein.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

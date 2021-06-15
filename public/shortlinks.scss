@@ -1,0 +1,30 @@
+.shortlinks {
+  padding: 1em 4em;
+  margin-bottom: 2em;
+
+  li {
+    font-size: 1.5em;
+    line-height: 1.5;
+
+    a {
+      color: #fba61f;
+      font-weight: 600;
+      text-decoration: underline;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    &:before {
+      content: '';
+      background: url("img/shortlink.svg") no-repeat center;
+      background-size: contain;
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+      vertical-align: bottom;
+      margin-right: .5em;
+    }
+  }
+}

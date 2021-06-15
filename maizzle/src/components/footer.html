@@ -1,0 +1,28 @@
+<tr>
+    <td>
+        <table align="center" class="email-footer w-570 mx-auto text-center sm:w-full">
+            <tr>
+                <td align="center" class="content-cell p-45 text-base">
+                    <raw>
+                        {% if copyright|default %}
+                        <p class="mt-6 mb-20 text-xs leading-24 text-center text-gray-postmark-light">
+                            @{{ copyright | nl2br }}</p>
+                        {% endif %}
+
+                        {% if footer_reason|default %}
+                        <p class="mt-6 mb-20 text-xs leading-24 text-center text-gray-postmark-light">
+                            @{{ footer_reason | nl2br }}</p>
+                        {% endif %}
+
+                        {% if notificationLink|default %}
+                        <p class="mt-6 mb-20 text-xs leading-24 text-center text-gray-postmark-light">
+                            <a class="text-gray-postmark-light font-medium no-underline hover:underline"
+                               href="@{{ notificationLink }}">Benachrichtigungseinstellungen</a>
+                        </p>
+                        {% endif %}
+                    </raw>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>

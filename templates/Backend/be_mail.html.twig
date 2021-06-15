@@ -1,0 +1,19 @@
+{% extends "@ContaoCore/Backend/be_page.html.twig" %}
+
+{% block headline %}
+    {{ 'E-Mail verfassen' }}
+{% endblock %}
+
+{% block error %}
+    {%- if error is defined -%}
+        {{- error -}}
+    {%- endif -%}
+{% endblock %}
+
+{% block main %}
+    {% form_theme form 'form_div_layout.html.twig' %}
+
+    <div class="px-6 py-4">
+        {{ form(form) }}
+    </div>
+{% endblock %}

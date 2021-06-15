@@ -1,0 +1,20 @@
+<div class="rounded-md bg-red-50 p-4" role="alert">
+    <div class="flex">
+        <div class="flex-shrink-0">
+            <span class="h-5 w-5 text-red-400 block">
+                {% include '@FerienpassCore/Icons/x-circle-contrast.svg.twig' %}
+            </span>
+        </div>
+        <div class="ml-3 flex-1">
+            {% set _headline = block('headline') %}
+            {% if _headline is not empty %}
+                <h3 class="text-sm leading-5 font-medium text-red-800">
+                    {% block headline %}{{ headline|default }}{% endblock %}
+                </h3>
+            {% endif %}
+            <div class="{% if _headline is not empty %}mt-2 {% endif %}text-sm leading-5 text-red-700">
+                {% block content %}{{ message }}{% endblock %}
+            </div>
+        </div>
+    </div>
+</div>

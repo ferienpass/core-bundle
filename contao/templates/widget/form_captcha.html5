@@ -1,0 +1,49 @@
+<?php $this->extend('form_row'); ?>
+
+<?php $this->block('label'); ?>
+<?php if ($this->label): ?>
+    <label for="ctrl_<?= $this->id ?>"
+           class="mb-1 block text-sm font-medium leading-5 text-gray-700 dark:text-gray-100">
+        <span class="sr-only"><?= $this->mandatoryField ?> </span><?= $this->label ?><span class="mandatory">*</span>
+    </label>
+<?php endif; ?>
+<?php $this->endblock(); ?>
+
+<?php $this->block('field'); ?>
+<?php if ($this->hasErrors()): ?>
+    <p class="text-xs text-red-500"><?= $this->getErrorAsString() ?></p>
+<?php endif; ?>
+
+<div class="mt-1 relative rounded-md shadow-sm">
+<input class="form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 dark:bg-gray-100<?php
+if ($this->hasErrors()): ?> outline-none shadow-outline-red border-red-300<?php endif ?>"
+       type="text"
+       name="<?= $this->name ?>"
+       id="ctrl_<?= $this->id ?>"
+       value=""
+       aria-describedby="captcha_text_<?= $this->id ?>"<?= $this->getAttributes() ?>>
+</div>
+<p id="captcha_text_<?= $this->id ?>"
+      class="mt-2 text-sm text-gray-500"><?= $this->getQuestion() ?></p>
+<input type="hidden" name="<?= $this->name ?>_hash" value="<?= $this->getHash() ?>">
+
+<?php if (!$this->hasErrors()): ?>
+    <div style="display:none">
+        <label for="ctrl_<?= $this->id ?>_hp">Do not fill in this field</label>
+        <input type="text" name="<?= $this->name ?>_name" id="ctrl_<?= $this->id ?>_hp" value="">
+    </div>
+    <script>
+        (function () {
+            var e = document.getElementById('ctrl_<?= $this->id ?>'), p = e.closest('.widget');
+
+            e.required = false;
+            p.style.display = 'none';
+
+            setTimeout(function () {
+                e.value = '<?= $this->getSum() ?>';
+            }, 5000);
+        })();
+    </script>
+<?php endif ?>
+
+<?php $this->endblock(); ?>

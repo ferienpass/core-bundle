@@ -1,0 +1,18 @@
+{% if offers is empty %}
+    {% embed '@FerienpassCore/Alert/warning.html.twig' %}
+        {% block headline %}
+            Keine Angebote gefunden
+        {% endblock %}
+        {% block content %}
+            Es wurden keine Angebote gefunden. Versuchen Sie, Ihre Sucheinstellungen zu verändern.
+        {% endblock %}
+    {% endembed %}
+{% else %}
+    {% block list %}
+        <section class="space-y-6" aria-label="Liste mit Angeboten">
+            {% for offer in offers %}
+                {% include '@FerienpassCore/Partial/offer_list_item.html.twig' %}
+            {% endfor %}
+        </section>
+    {% endblock %}
+{% endif %}

@@ -1,0 +1,199 @@
+.create-attendance {
+  h2 {
+    margin-bottom: 1rem;
+  }
+
+  .tl_formbody_edit {
+    border-top: none;
+  }
+
+  .widget-text {
+    display: none;
+  }
+
+  label {
+    font-weight: 500;
+  }
+
+  .widget-select {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .add-participant .widget-text {
+    display: block;
+  }
+}
+
+#ctrl_participant + .selectize-control {
+  .selectize-input {
+    > div {
+      //font-weight: 500;
+    }
+  }
+
+  div[data-selectable] {
+    padding: .5em 1em;
+
+    .name {
+      font-weight: bold;
+    }
+
+    .by {
+      color: #bbbbbb;
+    }
+
+    .meta {
+      font-size: .8em;
+      margin-top: .25rem;
+
+      .dateOfBirth {
+        &:before {
+          content: "";
+          display: inline-block;
+          position: relative;
+          width: 1rem;
+          height: .9rem;
+          background: url("../img/child-head-with-smiling-face.svg") no-repeat;
+          background-size: contain;
+          vertical-align: middle;
+          padding-right: .25rem;
+        }
+      }
+
+      .email {
+        &:before {
+          content: '';
+          width: 1rem;
+          height: 1rem;
+          background: url("../img/email.svg") no-repeat;
+          background-size: contain;
+          position: relative;
+          padding-right: .25rem;
+          display: inline-block;
+          vertical-align: middle;
+          font-weight: 400;
+        }
+      }
+
+      .phone {
+        &:before {
+          content: '';
+          width: 1rem;
+          height: 1rem;
+          background: url("../img/phone.svg") no-repeat;
+          background-size: contain;
+          position: relative;
+          padding-right: .25rem;
+          display: inline-block;
+          vertical-align: middle;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+}
+
+#ctrl_offer + .selectize-control {
+  .status {
+    display: block;
+    margin-top: .5rem;
+    font-weight: 600;
+
+    &:before {
+      content: '';
+      display: inline-block;
+      width: .8rem;
+      height: .8rem;
+      border-radius: 100%;
+      background: #666666;
+      vertical-align: middle;
+      margin-right: .6rem;
+      margin-left: .1rem;
+    }
+
+    &--green:before {
+      background: seagreen;
+    }
+
+    &--red:before {
+      background: #d65a2f;
+    }
+
+    &--orange:before {
+      background: #cda41c;
+    }
+  }
+
+  .selectize-input {
+    > div {
+      .status {
+        display: inline;
+      }
+    }
+  }
+
+  div[data-selectable] {
+    padding: .5em 1em;
+
+    .name, .id {
+      font-weight: bold;
+    }
+
+    .meta {
+      font-size: .8em;
+      margin-top: .25rem;
+
+      .date_period {
+        &--past {
+          span {
+            background: #d65a2f;
+            color: #fff;
+            padding: 0 .15em;
+          }
+        }
+
+        &:before {
+          content: '';
+          width: 1rem;
+          height: .9rem;
+          background: url("../img/calendar.svg") no-repeat;
+          background-size: contain;
+          position: relative;
+          padding-right: .5rem;
+          display: inline-block;
+          vertical-align: middle;
+          font-weight: 400;
+        }
+      }
+
+      .fee {
+        &:before {
+          content: "";
+          display: inline-block;
+          position: relative;
+          width: .85rem;
+          height: .85rem;
+          background: url("../img/euro.svg") no-repeat;
+          background-size: contain;
+          vertical-align: baseline;
+          padding-right: .75rem;
+        }
+      }
+
+      .age {
+        &:before {
+          content: "";
+          display: inline-block;
+          position: relative;
+          width: 1rem;
+          height: .9rem;
+          background: url("../img/child-head-with-smiling-face.svg") no-repeat;
+          background-size: contain;
+          vertical-align: middle;
+          padding-right: .5rem;
+        }
+      }
+    }
+  }
+}

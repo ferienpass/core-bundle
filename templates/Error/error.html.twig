@@ -1,0 +1,29 @@
+{% extends "@FerienpassCore/Error/base.html.twig" %}
+
+{% block title %}
+    {{ 'error500.title'|trans }}
+{% endblock %}
+
+{% block description %}
+    {{ 'error500.description'|trans }}
+    <div class="mt-4 sm:mt-8 flex justify-center items-center">
+    <a href="/" class="mr-3 relative shadow-sm inline-flex px-4 py-2 items-center border border-transparent text-sm leading-5 font-medium rounded-md focus:outline-none focus:shadow-outline-blue border-transparent text-white bg-primary-600 hover:bg-primary-500 focus:border-primary-700 active:bg-primary-700">Startseite</a>
+    <a id="btn_report" href="#" class="relative shadow-sm inline-flex px-4 py-2 items-center border border-transparent text-sm leading-5 font-medium rounded-md focus:outline-none focus:shadow-outline-blue border-gray-300 text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline">Fehler melden</a>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {% set sentry_id = ''|sentry_last_event_id %}
+    {% if sentry_id %}
+        <script src="https://browser.sentry-cdn.com/5.7.1/bundle.min.js"
+                integrity="sha384-KMv6bBTABABhv0NI+rVWly6PIRvdippFEgjpKyxUcpEmDWZTkDOiueL5xW+cztZZ"
+                crossorigin="anonymous"></script>
+        <script>
+            Sentry.init({dsn: '{{ ''|sentry_dsn }}'});
+            document.getElementById('btn_report').addEventListener('click', function (e) {
+                e.preventDefault();
+                Sentry.showReportDialog({eventId: '{{ sentry_id }}', title: 'Ein Fehler ist aufgetreten.'})
+            });
+        </script>
+    {% endif %}
+{% endblock %}

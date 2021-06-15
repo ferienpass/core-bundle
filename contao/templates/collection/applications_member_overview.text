@@ -1,0 +1,7 @@
+<?php /** @var Ferienpass\CoreBundle\Model\Attendance $attendance */
+foreach ($this->attendances as $attendance): ?><?=
+    $attendance->getParticipant()->parseAttribute('name', 'text', $this->participantRenderSettings)['text'] ?> (<?=
+    $attendance->getOffer()->parseAttribute('name', 'text', $this->offerRenderSettings)['text'] ?>, <?=
+    $attendance->getOffer()->parseAttribute('date_period', 'text', $this->offerRenderSettings)['text'] ?>): <?=
+    $attendance->getStatus()->title ?>
+<?php endforeach; ?>

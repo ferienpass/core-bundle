@@ -1,0 +1,13 @@
+framework:
+  default_locale: de
+  translator:
+    fallbacks: ['de']
+  messenger:
+    transports:
+      #async: "%env(MESSENGER_TRANSPORT_DSN)%"
+
+    routing:
+      # async is whatever name you gave your transport above
+      #'App\Message\SmsNotification':  async
+
+# See https://symfony.com/doc/4.4/messenger.html#deploying-to-production
