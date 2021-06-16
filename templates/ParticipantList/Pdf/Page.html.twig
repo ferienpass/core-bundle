@@ -31,7 +31,7 @@
         vertical-align: top;
     }
 
-    table.attendances tr:nth-child(1n) {
+    table.attendances tr:nth-child(2n+1) {
         background-color: cmyk(0, 0, 0, 4);
     }
 </style>
@@ -69,7 +69,9 @@
                             </span>
                     </p>
                 </td>
-                <td style="color: cmyk(0,0,0,70)">Gebühr: {{ (participant.discounted ? offer.fee/2 : offer.fee)/100 }} €</td>
+                <td style="color: cmyk(0,0,0,70)">Gebühr: {{ (participant.discounted ? offer.fee/2 : offer.fee)/100 }}
+                    €
+                </td>
                 <td style="width: 22%"></td>
             </tr>
         {% endfor %}
@@ -114,14 +116,18 @@
     </htmlpagefooter>
 
     {% if attendances is empty %}
-        <p>Es sind keine Anmeldungen vorhanden.</p>
+    <p>Es sind keine Anmeldungen vorhanden.</p>
     {% else %}
-        <div>
-            {{ _self.table(attendances|filter(a => a.status == 'confirmed'), offer) }}
-        </div>
 
+    {% set attendances = attendances|filter(a => a.status == 'confirmed') %}
+    <div>
+        {{ _self.table(attendances, offer) }}
+    </div>
+
+    {% set attendances = attendances|filter(a => a.status == 'waitlisted') %}
+    {% if attendances|length %}
         <div style="page: waitlist; page-break-before: always;">
-            {{ _self.table(attendances|filter(a => a.status == 'waitlisted'), offer) }}
+            {{ _self.table(attendances, offer) }}
         </div>
 
     {% endif %}
