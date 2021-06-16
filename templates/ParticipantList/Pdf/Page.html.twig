@@ -115,16 +115,16 @@
         </table>
     </htmlpagefooter>
 
-    {% if attendances is empty %}
-    <p>Es sind keine Anmeldungen vorhanden.</p>
-    {% else %}
+    {% if offer.attendancesNotWithdrawn is empty %}
+        <p>Es sind keine Anmeldungen vorhanden.</p>
+    {% endif %}
 
-    {% set attendances = attendances|filter(a => a.status == 'confirmed') %}
+    {% set attendances = offer.attendancesConfirmed %}
     <div>
         {{ _self.table(attendances, offer) }}
     </div>
 
-    {% set attendances = attendances|filter(a => a.status == 'waitlisted') %}
+    {% set attendances = offer.attendancesWaitlisted %}
     {% if attendances|length %}
         <div style="page: waitlist; page-break-before: always;">
             {{ _self.table(attendances, offer) }}

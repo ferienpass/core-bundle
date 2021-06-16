@@ -50,10 +50,7 @@ final class PdfExport implements OfferExportInterface
 
     private function renderHtml(Offer $offer): string
     {
-        $attendances = $offer->getAttendancesNotWithdrawn();
-
         return $this->twig->render('@FerienpassCore/ParticipantList/Pdf/Page.html.twig', [
-            'attendances' => $attendances,
             'offer' => $offer,
         ]);
     }
