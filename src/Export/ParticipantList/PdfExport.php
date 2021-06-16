@@ -24,20 +24,18 @@ final class PdfExport implements OfferExportInterface
 {
     private Filesystem $filesystem;
     private TwigEnvironment $twig;
-    private string $rootDir;
 
-    public function __construct(Filesystem $filesystem, TwigEnvironment $twig, string $rootDir)
+    public function __construct(Filesystem $filesystem, TwigEnvironment $twig)
     {
         $this->filesystem = $filesystem;
         $this->twig = $twig;
-        $this->rootDir = $rootDir;
     }
 
     public function generate(Offer $offer, string $destination = null): string
     {
         $html = $this->renderHtml($offer);
         $hash = md5($html);
-        $tmpPath = $this->rootDir.'/system/tmp/pdf';
+        $tmpPath = sys_get_temp_dir().'/system/tmp/pdf';
         $pdfPath = sprintf('%s/%s.pdf', $tmpPath, $hash);
 
         $this->filesystem->mkdir($tmpPath);
@@ -68,7 +66,23 @@ final class PdfExport implements OfferExportInterface
 
         $mPdfConfig = array_merge([
             'default_font_size' => 12,
-            'default_font' => 'helvetica',
+            'default_font' => 'roboto',
+            'fontDir' => \dirname(__DIR__).'/../../fonts/Roboto',
+            'fontdata' => [
+                'roboto' => [
+                    'R' => 'Roboto-Regular.ttf',
+                    'B' => 'Roboto-Bold.ttf',
+                    'I' => 'Roboto-Italic.ttf',
+                ],
+                'roboto-light' => [
+                    'R' => 'Roboto-Light.ttf',
+                    'I' => 'Roboto-LightItalic.ttf',
+                ],
+                'roboto-thin' => [
+                    'R' => 'Roboto-Thin.ttf',
+                    'I' => 'Roboto-ThinItalic.ttf',
+                ],
+            ],
         ], $mPdfConfig);
 
         $mPdf = new Mpdf($mPdfConfig);

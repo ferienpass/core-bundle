@@ -71,6 +71,11 @@ class Participant
     private ?string $email = null;
 
     /**
+     * @ORM\Column(type="boolean", options={"default"=0})
+     */
+    private bool $discounted = false;
+
+    /**
      * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\Attendance", mappedBy="participant")
      *
      * @psalm-var Collection<int, Attendance>
@@ -189,5 +194,15 @@ class Participant
     public function setEmail(?string $email): void
     {
         $this->email = $email;
+    }
+
+    public function isDiscounted(): bool
+    {
+        return $this->discounted;
+    }
+
+    public function setDiscounted(bool $discounted): void
+    {
+        $this->discounted = $discounted;
     }
 }

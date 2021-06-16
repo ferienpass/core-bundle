@@ -322,7 +322,7 @@ services:
     arguments: [ '@translator' ]
 
   Ferienpass\CoreBundle\Export\ParticipantList\PdfExport:
-    arguments: [ '@filesystem', '@twig', '%kernel.project_dir%' ]
+    arguments: [ '@filesystem', '@twig' ]
 
   Ferienpass\CoreBundle\Export\ParticipantList\WordExport:
     arguments: [ '@filesystem', '@serializer', '@?' ]
