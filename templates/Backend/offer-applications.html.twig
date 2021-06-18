@@ -332,6 +332,43 @@
             </div>
         </div>
 
+        {% set autoAssign = toggleMode.auto.vars.checked %}
+
+        <div class="mb-12">
+
+            {{ form_start(toggleMode) }}
+
+            {% do toggleMode.auto.setRendered %}
+
+            <div class="flex items-center space-x-3"
+                 x-data="{ enabled: {{ autoAssign ? 'true' : 'false' }} }"
+                 x-init="$watch('enabled', v => $nextTick(() => { $el.closest('form').submit() }) )">
+                <input type="hidden" name="{{ toggleMode.auto.vars.full_name }}" :value="enabled ? '1' : ''">
+
+                <button type="button"
+                        class="bg-gray-200 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        :class="{ 'bg-green-700': enabled, 'bg-gray-200': !enabled }"
+                        @click.prevent='enabled = !enabled'
+                        role="switch" aria-checked="false" aria-labelledby="mode-label">
+                    <span aria-hidden="true"
+                          class="translate-x-0 pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                          :class="{ 'translate-x-5': enabled, 'translate-x-0': !enabled }"
+                    ></span>
+                </button>
+
+                <span class="flex-grow flex flex-col" id="mode-label">
+                    <span>
+                        <span class="text-sm font-medium text-gray-900" x-text="enabled ? 'Automatischer Modus' : 'Manueller Modus'"></span>
+                        <span class="text-gray-500">(gilt nur für Sie)</span>
+                    </span>
+                    <span class="text-sm text-gray-500" x-text="enabled ? 'Kinder rücken automatisch nach und werden bei Änderung benachrichtigt.' : 'Es rücken keine Kinder nach und es werden keine Benachrichtigungen verschickt.'"></span>
+                </span>
+            </div>
+
+            {{ form_end(toggleMode) }}
+
+        </div>
+
         {% if offer.cancelled %}
             <div class="mb-6 shadow rounded-md overflow-hidden mb-6">
                 {% embed '@FerienpassCore/Alert/error.html.twig' %}
@@ -362,7 +399,7 @@
                 </div>
             {% else %}
 
-                {% macro participantList(status, attendances, max = null) %}
+                {% macro participantList(status, attendances, autoAssign = false, max = null) %}
                     {% if status == 'confirmed' %}
                         {% set colorClass = 'bg-green-100 text-green-800' %}
                     {% elseif status == 'waitlisted' %}
@@ -375,7 +412,7 @@
 
                     <div class="bg-white overflow-hidden shadow rounded-lg"
                          x-data=" { count: {{ attendances|length }} } "
-                         x-init="() => { Sortable.create($el.querySelector('ul'), { group: 'assign', ghostClass: 'bg-yellow-50', selectedClass: 'bg-blue-50', multiDrag: true, onAdd: assignAttendanceOnAdd(event), onUpdate: assignAttendanceOnUpdate(event), onSort: event => { count = $el.querySelectorAll('ul > li').length } }); }">
+                         x-init="() => { Sortable.create($el.querySelector('ul'), { group: 'assign', ghostClass: 'bg-yellow-50', selectedClass: 'bg-blue-50', multiDrag: true, onAdd: assignAttendanceOnAdd(event, {{ autoAssign ? 'true' : 'false' }}), onUpdate: assignAttendanceOnUpdate(event, {{ autoAssign ? 'true' : 'false' }}), onSort: event => { count = $el.querySelectorAll('ul > li').length } }); }">
                         <div class="border-b border-gray-200 px-4 py-5 sm:px-6">
                             <div class="flex justify-between">
                                 <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -455,20 +492,20 @@
 
                 <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
 
-                    {{ _self.participantList('confirmed', attendances.confirmed|default, offer.maxParticipants) }}
+                    {{ _self.participantList('confirmed', attendances.confirmed|default, autoAssign, offer.maxParticipants) }}
 
-                    {{ _self.participantList('waitlisted', attendances.waitlisted|default) }}
+                    {{ _self.participantList('waitlisted', attendances.waitlisted|default, autoAssign) }}
 
-                    {{ _self.participantList('waiting', attendances.waiting|default) }}
+                    {{ _self.participantList('waiting', attendances.waiting|default, autoAssign) }}
 
                     {% if attendances.error is defined %}
                     <div>{% endif %}
 
-                        {{ _self.participantList('withdrawn', attendances.withdrawn|default) }}
+                        {{ _self.participantList('withdrawn', attendances.withdrawn|default, autoAssign) }}
 
                         {% if attendances.error|default is not empty %}
                             <div class="mt-6">
-                                {{ _self.participantList('error', attendances.error) }}
+                                {{ _self.participantList('error', attendances.error, autoAssign) }}
                             </div>
                         {% endif %}
 

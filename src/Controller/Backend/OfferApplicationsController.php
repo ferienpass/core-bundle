@@ -20,8 +20,12 @@ use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\ParticipantList\PdfExport;
 use Ferienpass\CoreBundle\Export\ParticipantList\WordExport;
+use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -43,7 +47,7 @@ class OfferApplicationsController extends AbstractController
     /**
      * @Route("", name="backend_offer_applications")
      */
-    public function __invoke(Offer $offer, Request $request): Response
+    public function __invoke(Offer $offer, Request $request, Session $session): Response
     {
         if ($request->isMethod('POST') && 'confirm_all_waiting' === $request->request->get('FORM_SUBMIT')) {
             $attendances = $offer->getAttendancesWaiting();
@@ -60,6 +64,23 @@ class OfferApplicationsController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirect($request->getRequestUri());
+        }
+
+        /** @var AttributeBagInterface $sessionBag */
+        $sessionBag = $session->getBag('contao_backend');
+        $autoAssign = $sessionBag->get('autoAssign', false);
+
+        $toggleMode = $this->createFormBuilder(['auto' => $autoAssign])
+            ->add('auto', CheckboxType::class, ['false_values' => ['']])
+            ->add('REQUEST_TOKEN', ContaoRequestTokenType::class)
+            ->getForm()
+        ;
+
+        $toggleMode->handleRequest($request);
+        if ($toggleMode->isSubmitted() && $toggleMode->isValid()) {
+            $autoAssign = $toggleMode->get('auto')->getData();
+
+            $sessionBag->set('autoAssign', $autoAssign);
         }
 
         $statement = $this->connection->executeQuery(
@@ -96,6 +117,7 @@ SQL
 
         return $this->render('@FerienpassCore/Backend/offer-applications.html.twig', [
             'offer' => $offer,
+            'toggleMode' => $toggleMode->createView(),
             'attendances' => $attendances,
             'emails' => array_unique($emails),
         ]);
