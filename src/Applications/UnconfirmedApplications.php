@@ -107,6 +107,17 @@ class UnconfirmedApplications
             // Attendances NOT have been informed yet
             ->where($qb2->expr()->notIn('a.id', $qb2->getSQL()))
 
+            // Exclude attendance that were created during first come procedure and are waitlisted
+            ->leftJoin('a', 'EditionTask', 't', 'a.task_id = t.id')
+            ->andWhere($qb2->expr()->or(
+                't.id IS NULL',
+                $qb2->expr()->and(
+                    "t.type = 'application_system'",
+                    't.application_system = "firstcome"',
+                    "a.status = 'waitlisted'"
+                )
+            ))
+
             // Inform attendances that have any status but withdrawn and waiting
             ->andWhere('a.status NOT IN (:status)')
             ->setParameter('status', ['withdrawn', 'waiting'], Connection::PARAM_STR_ARRAY)
