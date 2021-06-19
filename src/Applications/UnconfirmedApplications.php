@@ -108,6 +108,7 @@ class UnconfirmedApplications
             ->where($qb2->expr()->notIn('a.id', $qb2->getSQL()))
 
             // Exclude attendance that were created during first come procedure and are waitlisted
+            // (those do not get a notification but have immediate feedback)
             ->leftJoin('a', 'EditionTask', 't', 'a.task_id = t.id')
             ->andWhere($qb2->expr()->or(
                 't.id IS NULL',

@@ -79,7 +79,7 @@ services:
       - [ setContainer, [ '@service_container' ] ]
 
   Ferienpass\CoreBundle\Controller\Frontend\Api\OfferController:
-    arguments: ['@session']
+    arguments: [ '@session' ]
     calls:
       - [ setContainer, [ '@service_container' ] ]
 
@@ -181,7 +181,7 @@ services:
       - { name: 'doctrine.event_listener', event: 'preUpdate' }
 
   Ferienpass\CoreBundle\EventListener\Doctrine\Offer\SetSavedListener:
-    arguments: ['@session']
+    arguments: [ '@session' ]
     tags:
       - { name: 'doctrine.event_listener', event: 'postLoad' }
 
@@ -292,6 +292,9 @@ services:
   Ferienpass\CoreBundle\MessageHandler\WhenAccountCreatedThenNotify:
     arguments: [ '@contao.opt-in', '@router' ]
 
+  Ferienpass\CoreBundle\MessageHandler\WhenRemindAttendanceThenNotify:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport', '@translator', '@contao.framework' ]
+
   Ferienpass\CoreBundle\MessageHandler\WhenAccountActivatedThenNotify: ~
 
   Ferienpass\CoreBundle\MessageHandler\WhenOfferRelaunchedThenNotify:
@@ -327,8 +330,8 @@ services:
   Ferienpass\CoreBundle\Export\ParticipantList\WordExport:
     arguments: [ '@filesystem', '@serializer', '@?' ]
 
-  Ferienpass\CoreBundle\CronJob\TriggerCronRemindersListener:
-    arguments: [ '@database_connection' ]
+  Ferienpass\CoreBundle\Cron\SendRemindersListener:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@messenger.default_bus', '@Ferienpass\CoreBundle\Repository\EventLogRepository' ]
 
   Monolog\Processor\PsrLogMessageProcessor:
     tags: { name: monolog.processor, handler: sentry }

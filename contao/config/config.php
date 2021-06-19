@@ -280,28 +280,21 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] = array_merge((array) $GLOB
                 'member_country',
             ],
         ],
-        'application_list_reminder' => [
+        'attendance_reminder' => [
             'recipients' => [
                 'participant_email',
-                'host_email',
                 'admin_email',
-                'member_email',
             ],
             'sms_recipients' => [
-                'member_mobile',
-                'member_phone',
                 'participant_mobile',
-                'participant_phone',
             ],
             'email_text' => [
                 'offer_*',
                 'participant_*',
-                'member_*',
             ],
             'email_html' => [
                 'offer_*',
                 'participant_*',
-                'member_*',
             ],
             'email_sender_name' => [
                 'admin_email',
@@ -321,11 +314,9 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] = array_merge((array) $GLOB
             'sms_text' => [
                 'offer_*',
                 'participant_*',
-                'member_*',
             ],
             'sms_recipients_region' => [
                 'participant_country',
-                'member_country',
             ],
         ],
         'admission_letter' => [
