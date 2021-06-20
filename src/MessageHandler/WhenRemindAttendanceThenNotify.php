@@ -18,7 +18,6 @@ use Contao\Model;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\Participant;
-use Ferienpass\CoreBundle\EventListener\Notification\GetNotificationTokensTrait;
 use Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport;
 use Ferienpass\CoreBundle\Message\RemindAttendance;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
@@ -30,8 +29,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WhenRemindAttendanceThenNotify implements MessageHandlerInterface
 {
-    use GetNotificationTokensTrait;
-
     private AttendanceRepository $attendanceRepository;
     private ICalExport $iCal;
     private TranslatorInterface $translator;
@@ -76,11 +73,12 @@ class WhenRemindAttendanceThenNotify implements MessageHandlerInterface
         $result = [];
         $language = $GLOBALS['TL_LANGUAGE'];
 
-        $tokens = self::getNotificationTokens($participant, $offer);
-
         $tokens['footer_reason'] = $this->translator->trans('email.reason.applied', [], null, $language);
         $tokens['copyright'] = $this->translator->trans('email.copyright', [], null, $language);
         $tokens['attachment'] = $this->iCal->generate([$offer]);
+
+        $tokens['offer'] = $offer;
+        $tokens['participant'] = $participant;
 
         /** @var Notification|Model $notification */
         foreach ($notification->send($tokens, $language) as $messageId => $success) {

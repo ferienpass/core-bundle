@@ -32,10 +32,10 @@
                     raus an die Eltern und enthält eine Übersicht über alle Teilnahmen der Kinder inkl. Anmeldestatus.
                 </target>
             </trans-unit>
-            <trans-unit id="tl_nc_notification.type.application_list_reminder.0">
+            <trans-unit id="tl_nc_notification.type.attendance_reminder.0">
                 <target>Teilnahme-Erinnerung</target>
             </trans-unit>
-            <trans-unit id="tl_nc_notification.type.application_list_reminder.1">
+            <trans-unit id="tl_nc_notification.type.attendance_reminder.1">
                 <target>Diese Benachrichtigung wird an Teilnehmer:innen verschickt, wenn eine eine Veranstaltung, zu der
                     das Kind angemeldet ist, in weniger als 24 Stunden stattfindet. Diese Nachricht soll an das Angebot
                     erinnern und die Möglichkeit geben, sich notfalls noch rechtzeitig vom Angebot abmelden zu können.

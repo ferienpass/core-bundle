@@ -15,12 +15,17 @@ namespace Ferienpass\CoreBundle\NotificationCenter\MessageDraft;
 
 use Contao\Model;
 use Contao\System;
+use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Participant;
+use Ferienpass\CoreBundle\EventListener\Notification\GetNotificationTokensTrait;
 use Haste\Util\StringUtil;
 use NotificationCenter\Model\Message;
 use NotificationCenter\Model\Notification;
 
 class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDraft
 {
+    use GetNotificationTokensTrait;
+
     /**
      * @psalm-suppress UndefinedConstant
      */
@@ -76,6 +81,8 @@ class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDra
             return '';
         }
 
+        $tokens = $this->arrTokens;
+
         /**
          * @var Message&Model $message
          * @psalm-suppress UndefinedDocblockClass
@@ -84,7 +91,11 @@ class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDra
         /** @var Notification|Model $notification */
         $notification = $message->getRelated('pid');
 
-        $parameters = array_merge($this->arrTokens, ['email_text' => $this->getTextBodyRaw()]);
+        $parameters = array_merge($tokens, ['email_text' => $this->getTextBodyRaw()]);
+
+        if (($participant = $tokens['participant'] ?? null) instanceof Participant && ($offer = $tokens['offer'] ?? null) instanceof Offer) {
+            $parameters += self::getNotificationTokens($participant, $offer);
+        }
 
         return $twig->render(sprintf('@FerienpassCore/Email/%s.html.twig', $notification->type), $parameters);
     }

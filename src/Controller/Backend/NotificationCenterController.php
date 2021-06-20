@@ -79,7 +79,7 @@ final class NotificationCenterController extends AbstractController
             'attendance_changed_confirmed',
             'offer_cancelled',
             'offer_relaunched',
-            'application_list_reminder',
+            'attendance_reminder',
             'host_invite_member',
             'member_activation',
             'member_registration',

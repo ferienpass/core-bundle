@@ -101,6 +101,7 @@ eventLog:
     OfferCancelled: Das Angebot wurde abgesagt
     OfferRelaunched: Das Angebot wurde wiederhergestellt
     AccountDeleted: Der Account wurde gelöscht
+    RemindAttendance: Teilnahme-Erinnerung
   notification:
     clockworksms:
       label: SMS
