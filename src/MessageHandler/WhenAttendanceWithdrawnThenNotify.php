@@ -62,8 +62,8 @@ class WhenAttendanceWithdrawnThenNotify implements MessageHandlerInterface
 
         $tokens = [];
 
-        $tokens['offer'] = $offer;
-        $tokens['participant'] = $participant;
+        $tokens['offer'] = $offer->getId();
+        $tokens['participant'] = $participant->getId();
 
         $tokens['footer_reason'] = $this->translator->trans('email.reason.applied', [], null, $language);
         $tokens['copyright'] = $this->translator->trans('email.copyright', [], null, $language);

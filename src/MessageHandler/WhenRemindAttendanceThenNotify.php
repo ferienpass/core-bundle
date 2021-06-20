@@ -77,8 +77,8 @@ class WhenRemindAttendanceThenNotify implements MessageHandlerInterface
         $tokens['copyright'] = $this->translator->trans('email.copyright', [], null, $language);
         $tokens['attachment'] = $this->iCal->generate([$offer]);
 
-        $tokens['offer'] = $offer;
-        $tokens['participant'] = $participant;
+        $tokens['offer'] = $offer->getId();
+        $tokens['participant'] = $participant->getId();
 
         /** @var Notification|Model $notification */
         foreach ($notification->send($tokens, $language) as $messageId => $success) {

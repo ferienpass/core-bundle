@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Contao\Model;
+use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport;
 use Ferienpass\CoreBundle\Message\AttendanceStatusChanged;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
@@ -45,6 +46,7 @@ class WhenAttendanceConfirmedThenNotify implements MessageHandlerInterface
             return null;
         }
 
+        /** @var Attendance $attendance */
         $attendance = $this->attendanceRepository->find($message->getAttendance());
         if (null === $attendance || !$attendance->isConfirmed()) {
             return null;
@@ -67,8 +69,8 @@ class WhenAttendanceConfirmedThenNotify implements MessageHandlerInterface
 
         $tokens = [];
 
-        $tokens['offer'] = $offer;
-        $tokens['participant'] = $participant;
+        $tokens['offer'] = $offer->getId();
+        $tokens['participant'] = $participant->getId();
 
         $tokens['footer_reason'] = $this->translator->trans('email.reason.applied', [], null, $language);
         $tokens['copyright'] = $this->translator->trans('email.copyright', [], null, $language);

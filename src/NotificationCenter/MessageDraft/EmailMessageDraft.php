@@ -95,13 +95,25 @@ class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDra
         $rootPage = PageModel::findPublishedRootPages()[0];
 
         $parameters = array_merge($tokens, [
-            'baseUrl' => $rootPage->getAbsoluteUrl(),
+            'baseUrl' => \dirname($rootPage->getAbsoluteUrl()),
             'email_text' => $this->getTextBodyRaw(),
         ]);
 
-        if (($participant = $tokens['participant'] ?? null) instanceof Participant && ($offer = $tokens['offer'] ?? null) instanceof Offer) {
-            $parameters += self::getNotificationTokens($participant, $offer);
+        $doctrine = System::getContainer()->get('doctrine');
+
+        if (($tokens['participant'] ?? null)
+            && ($participant = $doctrine->getRepository(Participant::class)->find($tokens['participant']))
+            && ($tokens['offer'] ?? null)
+            && ($offer = $doctrine->getRepository(Offer::class)->find($tokens['offer']))) {
+            $tokens += self::getNotificationTokens($participant, $offer);
+
+            $parameters = array_merge($tokens, $parameters);
+
+            $parameters['offer'] = $offer;
+            $parameters['participant'] = $participant;
         }
+
+        $this->arrTokens = $tokens;
 
         return $twig->render(sprintf('@FerienpassCore/Email/%s.html.twig', $notification->type), $parameters);
     }

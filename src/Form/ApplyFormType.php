@@ -113,7 +113,7 @@ class ApplyFormType extends AbstractType
 
     private function participantIsApplied(Participant $participant, Offer $offer): bool
     {
-        return $participant->getAttendances()->filter(fn (Attendance $a) => $offer === $a->getOffer())->count() > 0;
+        return $participant->getAttendances()->filter(fn (Attendance $a) => $offer === $a->getOffer() && !$a->isWithdrawn())->count() > 0;
     }
 
     private function ineligibility(Offer $offer, Participant $participant, TimedApplicationSystemInterface $applicationSystem): void
