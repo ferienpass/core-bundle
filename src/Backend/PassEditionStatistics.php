@@ -74,38 +74,43 @@ class PassEditionStatistics
 
     private function countParticipants(int $passEdition): int
     {
-        return (int) $this->connection
-            ->executeQuery(sprintf('SELECT COUNT(DISTINCT a.participant_id) FROM Attendance a INNER JOIN Offer f ON a.offer_id=f.id WHERE f.edition=%d', $passEdition))
-            ->fetchOne();
+        $count = $this->attendanceRepository->createQueryBuilder('a')
+            ->select('COUNT(DISTINCT a.participant) AS count')
+            ->innerJoin('a.offer', 'o')
+            ->andWhere('o.edition = :edition')
+            ->setParameter('edition', $passEdition)
+            ->getQuery()
+            ->getSingleResult()
+        ;
+
+        return $count['count'];
     }
 
     private function countAttendancesByCategory(int $passEdition): ?array
     {
-        $count = $this->attendanceRepository->createQueryBuilder('a')
+        $qb = $this->attendanceRepository->createQueryBuilder('a')
             ->select('c.name AS category', 'COUNT(a.id) AS count')
             ->innerJoin('a.offer', 'o')
             ->innerJoin('o.categories', 'c')
             ->andWhere('o.edition = :edition')
             ->setParameter('edition', $passEdition)
+            ->groupBy('c.id')
+        ;
+        $count = (clone $qb)
             ->andWhere('a.status <> :status')
-            ->addGroupBy('c.id')
             ->setParameter('status', Attendance::STATUS_WITHDRAWN)
             ->getQuery()
             ->execute()
         ;
-
-        $countConfirmed = $this->attendanceRepository->createQueryBuilder('a')
-            ->select('c.name AS category', 'COUNT(a.id) AS count')
-            ->innerJoin('a.offer', 'o')
-            ->innerJoin('o.categories', 'c')
-            ->andWhere('o.edition = :edition')
-            ->setParameter('edition', $passEdition)
+        $countConfirmed = (clone $qb)
             ->andWhere('a.status = :status')
-            ->addGroupBy('c.id')
             ->setParameter('status', Attendance::STATUS_CONFIRMED)
             ->getQuery()
             ->execute()
         ;
+
+        // Transform array to key=>value structure
+        $countConfirmed = array_combine(array_column($countConfirmed, 'category'), array_column($countConfirmed, 'count'));
 
         $return = [];
         foreach ($count as $i => $v) {
@@ -184,6 +189,8 @@ class PassEditionStatistics
             ->innerJoin('a.offer', 'o')
             ->where('o.edition = :edition')
             ->setParameter('edition', $passEdition)
+            ->andWhere('a.status <> :status')
+            ->setParameter('status', Attendance::STATUS_WITHDRAWN)
             ->groupBy('day')
             ->orderBy('day')
             ->getQuery()
@@ -302,7 +309,7 @@ class PassEditionStatistics
             ->where('o.edition = :edition')
             ->setParameter('edition', $passEdition)
             ->andWhere("o.cancelled <> '1'")
-            ->groupBy('a.id', 'a.status', 'd.begin')
+            ->groupBy('a.id', 'a.status')
             ->getQuery()
             ->execute()
         ;
@@ -322,13 +329,14 @@ class PassEditionStatistics
 
             foreach ($offerIds as $i => $offerId) {
                 $utilizationOfStatusAndOffer = array_filter($utilizationOfStatus, fn ($c) => (int) $c['offer_id'] === (int) $offerId);
-
                 if ([] !== $utilizationOfStatusAndOffer && null !== $a = array_pop($utilizationOfStatusAndOffer)) {
+                    \assert($a['date_start'] instanceof \DateTimeInterface);
+
                     $$status[$i] = (float) $a['utilization'];
                     $labels[$i] = sprintf(
                         '%s: %s (max. %d)',
                         $a['offer_title'],
-                        date($this->getDateFormat(), (int) $a['date_start']),
+                        $a['date_start']->format($this->getDateFormat()),
                         $a['offer_max']
                     );
                     $overall[$i] += (float) $a['utilization'];
