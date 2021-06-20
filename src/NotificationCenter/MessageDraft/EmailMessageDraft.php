@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\NotificationCenter\MessageDraft;
 
 use Contao\Model;
+use Contao\PageModel;
 use Contao\System;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\Participant;
@@ -91,7 +92,12 @@ class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDra
         /** @var Notification|Model $notification */
         $notification = $message->getRelated('pid');
 
-        $parameters = array_merge($tokens, ['email_text' => $this->getTextBodyRaw()]);
+        $rootPage = PageModel::findPublishedRootPages()[0];
+
+        $parameters = array_merge($tokens, [
+            'baseUrl' => $rootPage->getAbsoluteUrl(),
+            'email_text' => $this->getTextBodyRaw(),
+        ]);
 
         if (($participant = $tokens['participant'] ?? null) instanceof Participant && ($offer = $tokens['offer'] ?? null) instanceof Offer) {
             $parameters += self::getNotificationTokens($participant, $offer);

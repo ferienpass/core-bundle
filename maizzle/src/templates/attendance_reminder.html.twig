@@ -54,8 +54,8 @@ bodyClass: bg-gray-postmark-lighter
                                                                     </p>
                                                                     <p class="mt-0 mb-20 leading-24 text-center text-gray-postmark-dark text-xs">
                                                                         Download unter:
-                                                                        <a href="{{ link }}"
-                                                                           class="text-gray-postmark-dark underline">{{ link }}</a>
+                                                                        <a href="{{ baseUrl ~ '/' ~ offer.id }}"
+                                                                           class="text-gray-postmark-dark underline">{{ baseUrl ~ '/' ~ offer.id }}</a>
                                                                     </p>
                                                                 {% endif %}
                                                             </td>
@@ -64,6 +64,25 @@ bodyClass: bg-gray-postmark-lighter
 
                                                     <p class="mt-20 mb-20 text-base leading-24 text-gray-postmark-dark">
                                                         {{ email_text|nl2br }}</p>
+
+                                                    {% if link|default %}
+                                                        <table align="center" class="w-full text-center my-30 mx-auto">
+                                                            <tr>
+                                                                <td align="center">
+                                                                    <table class="w-full">
+                                                                        <tr>
+                                                                            <td align="center" class="text-base">
+                                                                                <a href="{{ link }}"
+                                                                                   class="button button--blue"
+                                                                                   target="_blank">Anmeldungen
+                                                                                    einsehen</a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    {% endif %}
 
                                                 </div>
                                             </td>

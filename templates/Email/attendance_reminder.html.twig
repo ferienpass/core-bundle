@@ -15,6 +15,13 @@
       </xml>
     <![endif]-->
     <style>
+      @media (max-width: 600px) {
+        .button {
+          width: 100% !important;
+          text-align: center !important;
+        }
+      }
+
       @media (prefers-color-scheme: dark) {
 
         body,
@@ -109,7 +116,7 @@
                                 </p>
                                 <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-top: 0; margin-bottom: 20px; text-align: center; font-size: 13px; line-height: 24px; color: #51545e;">
                                   Download unter:
-                                  <a href="{{ link }}" style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; color: #51545e; text-decoration: underline;">{{ link }}</a>
+                                  <a href="{{ baseUrl ~ '/' ~ offer.id }}" style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; color: #51545e; text-decoration: underline;">{{ baseUrl ~ '/' ~ offer.id }}</a>
                                 </p>
                                 {% endif %}
                               </td>
@@ -118,6 +125,22 @@
                           <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-top: 20px; margin-bottom: 20px; font-size: 16px; line-height: 24px; color: #51545e;">
                             {{ email_text|nl2br }}
                           </p>
+                          {% if link|default %}
+                          <table align="center" style="margin-left: auto; margin-right: auto; margin-top: 30px; margin-bottom: 30px; width: 100%; text-align: center;" cellpadding="0" cellspacing="0" role="presentation">
+                            <tr>
+                              <td align="center" style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly;">
+                                <table style="width: 100%;" cellpadding="0" cellspacing="0" role="presentation">
+                                  <tr>
+                                    <td align="center" style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; font-size: 16px;">
+                                      <a href="{{ link }}" class="button" target="_blank" style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; display: inline-block; color: #ffffff; text-decoration: none; background-color: #3869d4; border-color: #3869d4; border-style: solid; border-width: 10px 18px; border-radius: 3px; box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);">Anmeldungen
+                                        einsehen</a>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
+                          {% endif %}
                         </div>
                       </td>
                     </tr>
