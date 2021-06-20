@@ -82,6 +82,13 @@ class Attendance
      */
     private ?EditionTask $task;
 
+    /**
+     * The participant age, retained for statistics.
+     *
+     * @ORM\Column(length=3, type="integer", nullable=true, options={"unsigned"=true})
+     */
+    private ?int $age = null;
+
     public function __construct(Offer $offer, Participant $participant, string $status = null)
     {
         $this->offer = $offer;

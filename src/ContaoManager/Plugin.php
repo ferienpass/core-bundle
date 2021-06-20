@@ -76,6 +76,7 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, ConfigPlu
             $loader->load(__DIR__.'/../../config/packages/prod/monolog.yml');
         }
 
+        $loader->load(__DIR__.'/../../config/packages/doctrine.yml');
         $loader->load(__DIR__.'/../../config/packages/monolog.yml');
         $loader->load(__DIR__.'/../../config/packages/messenger.yml');
         $loader->load(__DIR__.'/../../config/packages/framework.yml');

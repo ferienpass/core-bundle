@@ -20,7 +20,9 @@ use DateInterval;
 use DatePeriod;
 use DateTime;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
+use Ferienpass\CoreBundle\Entity\Attendance;
+use Ferienpass\CoreBundle\Repository\AttendanceRepository;
+use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment as TwigEnvironment;
 
@@ -30,11 +32,16 @@ class PassEditionStatistics
     private TwigEnvironment $twig;
     private TranslatorInterface $translator;
 
-    public function __construct(Connection $connection, TwigEnvironment $twig, TranslatorInterface $translator)
+    private OfferRepository $offerRepository;
+    private AttendanceRepository $attendanceRepository;
+
+    public function __construct(Connection $connection, TwigEnvironment $twig, TranslatorInterface $translator, OfferRepository $offerRepository, AttendanceRepository $attendanceRepository)
     {
         $this->connection = $connection;
         $this->twig = $twig;
         $this->translator = $translator;
+        $this->offerRepository = $offerRepository;
+        $this->attendanceRepository = $attendanceRepository;
     }
 
     /**
@@ -74,14 +81,31 @@ class PassEditionStatistics
 
     private function countAttendancesByCategory(int $passEdition): ?array
     {
-        return [];
-        $count = $this->connection
-            ->executeQuery(sprintf("SELECT c.name as category,COUNT(a.id) as count FROM Attendance a INNER JOIN Offer f ON a.offer_id=f.id INNER JOIN OfferCategory c ON c.id=f.category WHERE f.edition=%d AND a.status<>'withdrawn' GROUP BY c.id", $passEdition))
-            ->fetchAll(\PDO::FETCH_BOTH);
+        $count = $this->attendanceRepository->createQueryBuilder('a')
+            ->select('c.name AS category', 'COUNT(a.id) AS count')
+            ->innerJoin('a.offer', 'o')
+            ->innerJoin('o.categories', 'c')
+            ->andWhere('o.edition = :edition')
+            ->setParameter('edition', $passEdition)
+            ->andWhere('a.status <> :status')
+            ->addGroupBy('c.id')
+            ->setParameter('status', Attendance::STATUS_WITHDRAWN)
+            ->getQuery()
+            ->execute()
+        ;
 
-        $countConfirmed = $this->connection
-            ->executeQuery(sprintf("SELECT c.name as category,COUNT(a.id) as count FROM Attendance a INNER JOIN Offer f ON a.offer=f.id INNER JOIN OfferCategory c ON c.id=f.category WHERE f.edition=%d AND a.status='confirmed' GROUP BY c.id", $passEdition))
-            ->fetchAll(\PDO::FETCH_KEY_PAIR);
+        $countConfirmed = $this->attendanceRepository->createQueryBuilder('a')
+            ->select('c.name AS category', 'COUNT(a.id) AS count')
+            ->innerJoin('a.offer', 'o')
+            ->innerJoin('o.categories', 'c')
+            ->andWhere('o.edition = :edition')
+            ->setParameter('edition', $passEdition)
+            ->andWhere('a.status = :status')
+            ->addGroupBy('c.id')
+            ->setParameter('status', Attendance::STATUS_CONFIRMED)
+            ->getQuery()
+            ->execute()
+        ;
 
         $return = [];
         foreach ($count as $i => $v) {
@@ -97,52 +121,81 @@ class PassEditionStatistics
 
     private function countOffersWithVariants(int $passEdition): int
     {
-        return (int) $this->connection
-            ->executeQuery(sprintf('SELECT COUNT(f.id) FROM Offer f WHERE f.edition=%d', $passEdition))
-            ->fetchOne();
+        $count = $this->offerRepository->createQueryBuilder('o')
+            ->select('COUNT(o.id) AS count')
+            ->andWhere('o.edition = :edition')
+            ->setParameter('edition', $passEdition)
+            ->getQuery()
+            ->getSingleResult()
+        ;
+
+        return $count['count'];
     }
 
     private function countOffersWithoutVariants(int $passEdition): int
     {
-        return (int) $this->connection
-            ->executeQuery(sprintf('SELECT COUNT(f.id) FROM Offer f WHERE f.varbase=1 AND f.edition=%d', $passEdition))
-            ->fetchOne();
+        $count = $this->offerRepository->createQueryBuilder('o')
+            ->select('COUNT(o.id) AS count')
+            ->andWhere('o.variantBase IS NULL')
+            ->andWhere('o.edition = :edition')
+            ->setParameter('edition', $passEdition)
+            ->getQuery()
+            ->getSingleResult()
+        ;
+
+        return $count['count'];
     }
 
     private function countHostsWithOffer(int $passEdition): int
     {
-        return 0;
+        $count = $this->offerRepository->createQueryBuilder('o')
+            ->select('COUNT(DISTINCT h.id) AS count')
+            ->innerJoin('o.hosts', 'h')
+            ->andWhere('o.edition = :edition')
+            ->setParameter('edition', $passEdition)
+            ->getQuery()
+            ->getSingleResult()
+        ;
 
-        return (int) $this->connection
-            ->executeQuery(
-                sprintf(
-                    'SELECT COUNT(DISTINCT f.host) FROM Offer f WHERE f.edition=%d',
-                    $passEdition
-                )
-            )
-            ->fetchOne();
+        return $count['count'];
     }
 
     private function countAttendances(int $passEdition): int
     {
-        return (int) $this->connection
-            ->executeQuery("SELECT COUNT(*) FROM Attendance a INNER JOIN Offer f ON a.offer_id=f.id WHERE f.edition=:id AND status<>'withdrawn'", ['id' => $passEdition])
-            ->fetchOne();
+        $count = $this->attendanceRepository->createQueryBuilder('a')
+            ->select('COUNT(a.id) AS count')
+            ->innerJoin('a.offer', 'o')
+            ->andWhere('o.edition = :edition')
+            ->setParameter('edition', $passEdition)
+            ->andWhere('a.status <> :status')
+            ->setParameter('status', Attendance::STATUS_WITHDRAWN)
+            ->getQuery()
+            ->getSingleResult()
+        ;
+
+        return $count['count'];
     }
 
     private function countAttendancesByDay(int $passEdition): array
     {
-        return [];
-        $daysAndCount = $this->connection
-            ->executeQuery(
-                "SELECT FROM_UNIXTIME(a.created, '%%Y-%%m-%%d') AS day, COUNT(*) FROM Attendance a INNER JOIN Offer f ON a.offer_id=f.id WHERE f.edition=:id GROUP BY DAY(day) ORDER BY day",
-                ['id' => $passEdition]
-            )
-            ->fetchAll(\PDO::FETCH_KEY_PAIR);
+        $daysAndCount = $this->attendanceRepository->createQueryBuilder('a')
+            ->select("DATE_FORMAT(a.createdAt, '%Y-%m-%d') AS day")
+            ->addSelect('COUNT(a.id) as count')
+            ->innerJoin('a.offer', 'o')
+            ->where('o.edition = :edition')
+            ->setParameter('edition', $passEdition)
+            ->groupBy('day')
+            ->orderBy('day')
+            ->getQuery()
+            ->execute()
+        ;
 
         if ([] === $daysAndCount) {
             return [];
         }
+
+        // Transform array to key=>value structure
+        $daysAndCount = array_combine(array_column($daysAndCount, 'day'), array_column($daysAndCount, 'count'));
 
         try {
             $days = array_keys($daysAndCount);
@@ -153,12 +206,10 @@ class PassEditionStatistics
             return [];
         }
 
-        $return = [
-            [
-                'key' => (clone $begin)->modify('-1 day')->format($this->getDateFormat()),
-                'value' => 0,
-            ],
-        ];
+        $return = [[
+            'key' => (clone $begin)->modify('-1 day')->format($this->getDateFormat()),
+            'value' => 0,
+        ]];
 
         $sum = 0;
         /** @var DateInterval $dt */
@@ -177,22 +228,23 @@ class PassEditionStatistics
 
     private function countAttendancesByStatus(int $passEdition): array
     {
-        try {
-            $statusAndCount = $this->connection
-                ->query(
-                    sprintf(
-                        'SELECT a.status,COUNT(*) as count FROM tl_ferienpass_attendance a INNER JOIN Offer f ON a.offer=f.id WHERE f.edition=%d GROUP BY a.status',
-                        $passEdition
-                    )
-                )
-                ->fetchAll(\PDO::FETCH_KEY_PAIR);
-        } catch (DBALException $e) {
-            return [];
-        }
+        $statusAndCount = $this->attendanceRepository->createQueryBuilder('a')
+            ->select('a.status')
+            ->addSelect('COUNT(a.id) as count')
+            ->innerJoin('a.offer', 'o')
+            ->where('o.edition = :edition')
+            ->setParameter('edition', $passEdition)
+            ->groupBy('a.status')
+            ->getQuery()
+            ->execute()
+        ;
+
+        // Transform array to key=>value structure
+        $statusAndCount = array_combine(array_column($statusAndCount, 'status'), array_column($statusAndCount, 'count'));
 
         $return = [];
 
-        foreach (['confirmed', 'waitlisted', 'error', 'waiting', 'withdrawn'] as $status) {
+        foreach ([Attendance::STATUS_CONFIRMED, Attendance::STATUS_WAITLISTED, Attendance::STATUS_ERROR, Attendance::STATUS_WAITING, Attendance::STATUS_WITHDRAWN] as $status) {
             $return[] = [
                 'title' => $this->translate('MSC.attendance_status.'.$status),
                 'count' => (int) ($statusAndCount[$status] ?? 0),
@@ -204,12 +256,21 @@ class PassEditionStatistics
 
     private function countAttendancesByParticipantAge(int $passEdition): array
     {
-        $ageAndCount = $this->connection->query(
-            sprintf(
-                "SELECT (CASE WHEN (aa.age IS NULL) THEN 'N/A' ELSE aa.age END) as age, COUNT(*) as count FROM tl_ferienpass_attendance a INNER JOIN Offer f ON f.id = a.offer INNER JOIN tl_ferienpass_attendance_age aa ON a.id = aa.attendance WHERE f.edition = %d AND a.status<>'withdrawn' GROUP BY aa.age",
-                $passEdition
-            )
-        )->fetchAll(\PDO::FETCH_BOTH);
+        $ageAndCount = $this->attendanceRepository->createQueryBuilder('a')
+            ->select("(CASE WHEN (a.age IS NULL) THEN 'N/A' ELSE a.age END) as age")
+            ->addSelect('COUNT(a.id) as count')
+            ->innerJoin('a.offer', 'o')
+            ->where('o.edition = :edition')
+            ->setParameter('edition', $passEdition)
+            ->andWhere('a.status <> :status')
+            ->setParameter('status', Attendance::STATUS_WITHDRAWN)
+            ->groupBy('a.age')
+            ->getQuery()
+            ->execute()
+        ;
+
+        // Transform array to key=>value structure
+        $ageAndCount = array_combine(array_column($ageAndCount, 'age'), array_column($ageAndCount, 'count'));
 
         $return = [];
         foreach ($ageAndCount as $k) {
@@ -228,28 +289,23 @@ class PassEditionStatistics
 
     private function getUtilization(int $passEdition): array
     {
-        $result = $this->connection->query(
-            sprintf(
-                <<<'SQL'
-SELECT a.status                          as status,
-       f.id                              as offer_id,
-       f.name                            as offer_title,
-       d.start                           as date_start,
-       f.maxParticipants             as offer_max,
-       COUNT(a.id)                       as count_applications,
-       COUNT(a.id) / f.maxParticipants as utilization
-FROM tl_ferienpass_attendance a
-         INNER JOIN Offer f ON f.id = a.offer
-         LEFT JOIN tl_metamodel_offer_date d ON d.item_id = f.id
-WHERE f.edition = %d
-  AND f.cancelled <> 1
-GROUP BY f.id, a.status, d.start
-
-SQL
-                ,
-                $passEdition
-            )
-        )->fetchAll(\PDO::FETCH_BOTH);
+        $result = $this->attendanceRepository->createQueryBuilder('a')
+            ->addSelect('a.status')
+            ->addSelect('o.id as offer_id')
+            ->addSelect('o.name as offer_title')
+            ->addSelect('d.begin as date_start')
+            ->addSelect('o.maxParticipants as offer_max')
+            ->addSelect('COUNT(a.id) as count_applications')
+            ->addSelect('COUNT(a.id) / o.maxParticipants as utilization')
+            ->innerJoin('a.offer', 'o')
+            ->leftJoin('o.dates', 'd')
+            ->where('o.edition = :edition')
+            ->setParameter('edition', $passEdition)
+            ->andWhere("o.cancelled <> '1'")
+            ->groupBy('a.id', 'a.status', 'd.begin')
+            ->getQuery()
+            ->execute()
+        ;
 
         $labels = [];
         $overall = [];
@@ -261,21 +317,11 @@ SQL
 
         $offerIds = array_unique(array_column($result, 'offer_id'));
 
-        foreach (['confirmed', 'waitlisted', 'error', 'waiting'] as $status) {
-            $utilizationOfStatus = array_filter(
-                $result,
-                static function ($c) use ($status) {
-                    return $status === $c['status'];
-                }
-            );
+        foreach ([Attendance::STATUS_CONFIRMED, Attendance::STATUS_WAITLISTED, Attendance::STATUS_ERROR, Attendance::STATUS_WAITING] as $status) {
+            $utilizationOfStatus = array_filter($result, fn ($c) => $status === $c['status']);
 
             foreach ($offerIds as $i => $offerId) {
-                $utilizationOfStatusAndOffer = array_filter(
-                    $utilizationOfStatus,
-                    static function ($c) use ($offerId) {
-                        return (int) $c['offer_id'] === (int) $offerId;
-                    }
-                );
+                $utilizationOfStatusAndOffer = array_filter($utilizationOfStatus, fn ($c) => (int) $c['offer_id'] === (int) $offerId);
 
                 if ([] !== $utilizationOfStatusAndOffer && null !== $a = array_pop($utilizationOfStatusAndOffer)) {
                     $$status[$i] = (float) $a['utilization'];

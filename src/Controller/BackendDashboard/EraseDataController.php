@@ -158,16 +158,12 @@ SQL
     {
         $this->connection->executeQuery(
             <<<'SQL'
-INSERT INTO tl_ferienpass_attendance_age(attendance, age)
-SELECT a.id,
-       (IF((p.dateOfBirth IS NULL), null, TIMESTAMPDIFF(YEAR, p.dateOfBirth, d.begin)))
-FROM Attendance a
-         INNER JOIN Participant p ON a.participant_id = p.id
-         INNER JOIN Offer f ON a.offer_id = f.id
-         LEFT OUTER JOIN OfferDate d ON d.offer_id = f.id
-         LEFT JOIN tl_ferienpass_attendance_age aa ON a.id = aa.attendance
-WHERE aa.attendance IS NULL
-ON DUPLICATE KEY UPDATE tl_ferienpass_attendance_age.age=tl_ferienpass_attendance_age.age
+UPDATE Attendance a
+INNER JOIN Participant p ON a.participant_id = p.id
+INNER JOIN Offer f ON a.offer_id = f.id
+LEFT OUTER JOIN OfferDate d ON d.offer_id = f.id
+SET age = (IF((p.dateOfBirth IS NULL), null, TIMESTAMPDIFF(YEAR, p.dateOfBirth, d.begin)))
+WHERE a.age IS NULL
 SQL
         )->rowCount();
     }
