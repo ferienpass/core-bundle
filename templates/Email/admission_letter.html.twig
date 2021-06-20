@@ -71,7 +71,6 @@
                   {% endif %}
                 </td>
               </tr>
-              {% set content = email_text|split('##admissions##', 2) %}
               <tr>
                 <td class="email-body" style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; width: 100%;">
                   <table align="center" class="email-body_inner sm-w-full" style="margin-left: auto; margin-right: auto; width: 570px; background-color: #ffffff;" cellpadding="0" cellspacing="0" role="presentation">
@@ -79,10 +78,10 @@
                       <td style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; padding: 45px;">
                         <div style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; font-size: 16px;">
                           <h1 style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-top: 0; text-align: left; font-size: 24px; font-weight: 700; color: #333333;">
-                            Hallo {{ recipient_firstname }},</h1>
+                            Ihre Anmeldungen für den Ferienpass</h1>
                           <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-top: 6px; margin-bottom: 20px; font-size: 16px; line-height: 24px; color: #51545e;">
-                            {{ content|first|trim|nl2br }}
-                          </p>
+                            Heute erhalten Sie die Bestätigung für die Ferienpass-Anmeldung
+                            Ihres Kindes bzw. Ihrer Kinder.</p>
                           {% for participant in participants %}
                           <table style="width: 100%; padding-top: 35px; padding-bottom: 35px;" cellpadding="0" cellspacing="0" role="presentation">
                             <tr>
@@ -143,7 +142,7 @@
                           </table>
                           {% endif %}
                           <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-top: 6px; margin-bottom: 20px; font-size: 16px; line-height: 24px; color: #51545e;">
-                            {{ content|last|trim|nl2br }}
+                            {{ email_text|nl2br }}
                           </p>
                         </div>
                       </td>

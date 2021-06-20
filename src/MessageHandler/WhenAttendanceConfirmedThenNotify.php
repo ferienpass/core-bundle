@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Contao\Model;
-use Ferienpass\CoreBundle\EventListener\Notification\GetNotificationTokensTrait;
 use Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport;
 use Ferienpass\CoreBundle\Message\AttendanceStatusChanged;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
@@ -22,21 +21,22 @@ use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use NotificationCenter\Model\Notification;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WhenAttendanceConfirmedThenNotify implements MessageHandlerInterface
 {
-    use GetNotificationTokensTrait;
-
     private AttendanceRepository $attendanceRepository;
     private TranslatorInterface $translator;
     private ICalExport $iCal;
+    private UrlGeneratorInterface $router;
 
-    public function __construct(AttendanceRepository $attendanceRepository, TranslatorInterface $translator, ICalExport $iCal)
+    public function __construct(AttendanceRepository $attendanceRepository, TranslatorInterface $translator, ICalExport $iCal, UrlGeneratorInterface $router)
     {
         $this->attendanceRepository = $attendanceRepository;
         $this->translator = $translator;
         $this->iCal = $iCal;
+        $this->router = $router;
     }
 
     public function __invoke(AttendanceStatusChanged $message): ?NotificationHandlerResult
@@ -65,11 +65,16 @@ class WhenAttendanceConfirmedThenNotify implements MessageHandlerInterface
         $result = [];
         $language = $GLOBALS['TL_LANGUAGE'];
 
-        $tokens = self::getNotificationTokens($participant, $offer);
+        $tokens = [];
+
+        $tokens['offer'] = $offer;
+        $tokens['participant'] = $participant;
 
         $tokens['footer_reason'] = $this->translator->trans('email.reason.applied', [], null, $language);
         $tokens['copyright'] = $this->translator->trans('email.copyright', [], null, $language);
         $tokens['attachment'] = $this->iCal->generate([$offer]);
+
+        $tokens['link'] = $this->router->generate('applications', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         /** @var Notification|Model $notification */
         foreach ($notification->send($tokens, $language) as $messageId => $success) {

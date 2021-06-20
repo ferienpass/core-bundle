@@ -303,12 +303,12 @@ services:
   Ferienpass\CoreBundle\MessageHandler\WhenConfirmApplicationsThenNotify:
     arguments: [ '@Ferienpass\CoreBundle\Applications\UnconfirmedApplications', '@translator' ]
   Ferienpass\CoreBundle\MessageHandler\WhenAttendanceConfirmedThenNotify:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@translator', '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport' ]
+    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@translator', '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport', '@router' ]
   Ferienpass\CoreBundle\MessageHandler\WhenAttendanceWithdrawnThenNotify:
     arguments: [ '@doctrine', '@translator' ]
 
   Ferienpass\CoreBundle\MessageHandler\WhenAttendanceCreatedThenNotify:
-    arguments: [ '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport', '@translator', '@Ferienpass\CoreBundle\Repository\AttendanceRepository' ]
+    arguments: [ '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport', '@translator', '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@router' ]
 
   Ferienpass\CoreBundle\MessageHandler\WhenParticipantListChangedThenReorder:
     arguments: [ '@Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems', '@messenger.default_bus', '@doctrine' ]

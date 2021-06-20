@@ -11,7 +11,6 @@ bodyClass: bg-gray-postmark-lighter
                     <table class="email-content w-full">
                         <component src="src/components/header.html"></component>
                         <raw>
-                            {% set content = email_text|split('##admissions##', 2) %}
                             <tr>
                                 <td class="email-body w-full">
                                     <table align="center" class="email-body_inner w-570 bg-white mx-auto sm:w-full">
@@ -19,9 +18,10 @@ bodyClass: bg-gray-postmark-lighter
                                             <td class="p-45">
                                                 <div class="text-base">
                                                     <h1 class="mt-0 text-2xl font-bold text-left text-gray-postmark-darker">
-                                                        Hallo {{ recipient_firstname }},</h1>
+                                                        Ihre Anmeldungen für den Ferienpass</h1>
                                                     <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
-                                                        {{ content|first|trim|nl2br }}</p>
+                                                        Heute erhalten Sie die Bestätigung für die Ferienpass-Anmeldung
+                                                        Ihres Kindes bzw. Ihrer Kinder.</p>
                                                     {% for participant in participants %}
                                                     <table class="w-full py-35">
                                                         <tr>
@@ -85,7 +85,7 @@ bodyClass: bg-gray-postmark-lighter
                                                     </table>
                                                     {% endif %}
                                                     <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
-                                                        {{ content|last|trim|nl2br }}</p>
+                                                        {{ email_text|nl2br }}</p>
                                                 </div>
                                             </td>
                                         </tr>

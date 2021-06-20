@@ -16,7 +16,6 @@ namespace Ferienpass\CoreBundle\MessageHandler;
 use Contao\Model;
 use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Attendance;
-use Ferienpass\CoreBundle\EventListener\Notification\GetNotificationTokensTrait;
 use Ferienpass\CoreBundle\Message\AttendanceStatusChanged;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
 use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
@@ -26,8 +25,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WhenAttendanceWithdrawnThenNotify implements MessageHandlerInterface
 {
-    use GetNotificationTokensTrait;
-
     private ManagerRegistry $doctrine;
     private TranslatorInterface $translator;
 
@@ -63,7 +60,11 @@ class WhenAttendanceWithdrawnThenNotify implements MessageHandlerInterface
         $result = [];
         $language = $GLOBALS['TL_LANGUAGE'];
 
-        $tokens = self::getNotificationTokens($participant, $offer);
+        $tokens = [];
+
+        $tokens['offer'] = $offer;
+        $tokens['participant'] = $participant;
+
         $tokens['footer_reason'] = $this->translator->trans('email.reason.applied', [], null, $language);
         $tokens['copyright'] = $this->translator->trans('email.copyright', [], null, $language);
 
