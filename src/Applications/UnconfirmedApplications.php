@@ -66,8 +66,7 @@ class UnconfirmedApplications
             ->from('NotificationLog', 'nl')
             ->innerJoin('nl', 'EventLog', 'el', 'el.id=nl.log_id')
             ->innerJoin('el', 'EventLogRelated', 'elr', 'el.id = elr.log_id')
-            ->innerJoin('elr', 'Attendance', 'a', 'elr.relatedId = a.id')
-            ->where("elr.relatedTable = 'Attendance'")
+            ->innerJoin('elr', 'Attendance', 'a', "elr.relatedId = a.id and elr.relatedTable = 'Attendance'")
             ->andWhere('el.createdAt >= a.modifiedAt')
         ;
 

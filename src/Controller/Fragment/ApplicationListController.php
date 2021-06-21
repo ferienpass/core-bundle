@@ -99,6 +99,11 @@ class ApplicationListController extends AbstractController
                 continue;
             }
 
+            $deadline = $attendance->getOffer()->getApplicationDeadline();
+            if ($deadline && $now >= $deadline) {
+                continue;
+            }
+
             yield $attendance->getId() => $this->get('form.factory')->createNamed((string) $attendance->getId())
                 ->add('submit', SubmitType::class, ['label' => 'Abmelden'])
                 ->add('requestToken', ContaoRequestTokenType::class)
