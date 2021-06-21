@@ -9,7 +9,7 @@ error503.description: Wir arbeiten gerade an der Webseite. Bitte versuchen Sie e
 application.inPast: Dieses Angebot liegt in der Vergangenheit.
 application.pastDeadline: Der Anmeldezeitraum für dieses Angebot ist beendet.
 application.procedure.lot: Es läuft aktuell das Los-Verfahren. Eine Zusage für die Anmeldung bekommen Sie erst nach dem Stichtag.
-application.procedure.firstcome: Sie werden sofort auf die Teilnehmerliste geschrieben und bekommen die Zusage sofort im Anschluss.
+application.procedure.firstcome: Sie erhalten sofort eine Zusage oder einen Wartelistenplatz.
 application.signIn: 'Sie müssen angemeldet sein, wenn Sie sich zum Angebot anmelden wollen. %link_start%Bitte melden Sie sich an.%link_end%'
 application.disabled: Aktuell sind keine Anmeldungen möglich.
 
