@@ -112,9 +112,9 @@ class UnconfirmedApplications
             ->andWhere($qb2->expr()->or(
                 't.id IS NULL',
                 $qb2->expr()->and(
-                    "t.type = 'application_system'",
-                    't.application_system = "firstcome"',
-                    "a.status = 'waitlisted'"
+                    "t.type <> 'application_system'",
+                    "t.application_system <> 'firstcome'",
+                    "a.status <> 'waitlisted'"
                 )
             ))
 
