@@ -37,16 +37,24 @@ bodyClass: bg-gray-postmark-lighter
                                                                     <tr>
                                                                         <td class="border-t border-solid border-b-0 border-l-0 border-r-0 border-gray-200 w-3/5 text-base leading-18 py-10 text-gray-postmark-dark">
                                                                             {{ attendance.offer_name|raw }}<br><span
-                                                                                class="text-gray-500">{{ attendance.offer_date_start|date('d.m.Y H:i') }}</span>
+                                                                                    class="text-gray-500">{{ attendance.offer_date_start|date('d.m.Y H:i') }}</span>
                                                                             {% if attendance.offer_cancelled %}
-                                                                            <div class="mt-2 rounded bg-red-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-red-100">
-                                                                                <p class="text-sm mt-0 mb-0 leading-5 text-red-700">
-                                                                                    Das Angebot wurde abgesagt.</p>
-                                                                            </div>
+                                                                                <p>
+                                                                                    <span class="mt-2 rounded bg-red-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-red-100">
+                                                                                        <span class="text-sm mt-0 mb-0 leading-5 text-red-700">
+                                                                                            Das Angebot wurde
+                                                                                            abgesagt.</span>
+                                                                                    </span>
+                                                                                </p>
                                                                             {% elseif attendance.offer_agreement_letter %}
-                                                                            <div class="mt-2 rounded bg-yellow-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-yellow-100">
-                                                                                <p class="text-sm mt-0 mb-0 leading-5 text-yellow-700">Bitte Einverständniserklärung mitgeben.</p>
-                                                                            </div>
+                                                                                <p>
+                                                                                    <span class="mt-2 rounded bg-yellow-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-yellow-100">
+                                                                                        <span class="text-sm mt-0 mb-0 leading-5 text-yellow-700">
+                                                                                            Bitte
+                                                                                            Einverständniserklärung
+                                                                                            mitgeben.</span>
+                                                                                    </span>
+                                                                                </p>
                                                                             {% endif %}
                                                                         </td>
                                                                         <td align="right"

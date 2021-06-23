@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\Backend;
 
-use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\ResponseException;
 use Doctrine\Common\Collections\Collection;
 use Ferienpass\CoreBundle\Entity\Edition;
@@ -73,6 +72,7 @@ final class ExportController extends AbstractController
             ->add('hosts', EntityType::class, [
                 'class' => Host::class,
                 'choice_label' => 'name',
+                'required' => false,
                 'label' => 'Veranstalter',
                 'multiple' => true,
                 'expanded' => false,
@@ -103,7 +103,7 @@ final class ExportController extends AbstractController
     {
         $token = $this->get('security.token_storage')->getToken();
         if (null === $token || $this->get('security.authentication.trust_resolver')->isAnonymous($token)) {
-            throw new AccessDeniedException();
+            throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException();
         }
 
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
@@ -145,13 +145,13 @@ final class ExportController extends AbstractController
         if (($editions = $form->get('editions')->getData())
             && $editions instanceof Collection
             && $editions->count()) {
-            $qb->andWhere('offer.edition IN (:editions)')->setParameter('editions', $editions, \PDO::PARAM_STR);
+            $qb->andWhere('offer.edition IN (:editions)')->setParameter('editions', $editions);
         }
 
         if (($hosts = $form->get('hosts')->getData())
             && $hosts instanceof Collection
             && $hosts->count()) {
-            $qb->innerJoin('offer.hosts', 'hosts')->andWhere('hosts.id IN (:hosts)')->setParameter('hosts', $hosts, \PDO::PARAM_STR);
+            $qb->innerJoin('offer.hosts', 'hosts')->andWhere('hosts.id IN (:hosts)')->setParameter('hosts', $hosts);
         }
 
         return $qb->getQuery()->getResult();

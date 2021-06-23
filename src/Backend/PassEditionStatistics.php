@@ -309,7 +309,7 @@ class PassEditionStatistics
             ->where('o.edition = :edition')
             ->setParameter('edition', $passEdition)
             ->andWhere("o.cancelled <> '1'")
-            ->groupBy('a.id', 'a.status')
+            ->groupBy('a.id', 'a.status', 'd.begin')
             ->getQuery()
             ->execute()
         ;
@@ -330,7 +330,9 @@ class PassEditionStatistics
             foreach ($offerIds as $i => $offerId) {
                 $utilizationOfStatusAndOffer = array_filter($utilizationOfStatus, fn ($c) => (int) $c['offer_id'] === (int) $offerId);
                 if ([] !== $utilizationOfStatusAndOffer && null !== $a = array_pop($utilizationOfStatusAndOffer)) {
-                    \assert($a['date_start'] instanceof \DateTimeInterface);
+                    if (!$a['date_start'] instanceof \DateTimeInterface) {
+                        continue;
+                    }
 
                     $$status[$i] = (float) $a['utilization'];
                     $labels[$i] = sprintf(

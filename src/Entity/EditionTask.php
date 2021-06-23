@@ -46,7 +46,7 @@ class EditionTask
     private int $sorting;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private string $type;
 

@@ -215,6 +215,8 @@ services:
     arguments: [ '@translator' ]
 
   Ferienpass\CoreBundle\EventListener\DataContainer\Participant\LabelListener: ~
+  Ferienpass\CoreBundle\EventListener\DataContainer\Participant\DeleteListener:
+    arguments: [ '@database_connection' ]
   Ferienpass\CoreBundle\EventListener\DataContainer\Files\PaletteListener: ~
 
   Ferienpass\CoreBundle\Export\Offer\Excel\ExcelExports:
