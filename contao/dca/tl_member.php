@@ -11,6 +11,8 @@ declare(strict_types=1);
  * or the documentation under <https://docs.ferienpass.online>.
  */
 
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
+
 $GLOBALS['TL_DCA']['tl_member']['list']['label']['fields'] =
     array_diff($GLOBALS['TL_DCA']['tl_member']['list']['label']['fields'], ['dateAdded', 'username']);
 $GLOBALS['TL_DCA']['tl_member']['list']['label']['fields'][] = 'email';
@@ -22,9 +24,9 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['country']['eval']['mandatory'] = fals
 $GLOBALS['TL_DCA']['tl_member']['fields']['country']['filter'] = false;
 $GLOBALS['TL_DCA']['tl_member']['fields']['language']['filter'] = false;
 
-(new \Contao\CoreBundle\DataContainer\PaletteManipulator())
-    ->addField('hosts', 'groups', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('public_fields', 'contact_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+(new PaletteManipulator())
+    ->addField('hosts', 'groups', PaletteManipulator::POSITION_AFTER)
+    ->addField('public_fields', 'contact_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('default', 'tl_member')
     ;
 

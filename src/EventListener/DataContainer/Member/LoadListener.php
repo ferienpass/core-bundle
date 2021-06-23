@@ -45,7 +45,7 @@ class LoadListener
         $GLOBALS['TL_DCA']['tl_member']['fields']['company']['search'] = false;
 
         if ('member_hosts' === Input::get('do')) {
-            $GLOBALS['TL_DCA']['tl_member']['list']['sorting']['filter'] = "`groups` LIKE '%\"1\"%'";
+            $GLOBALS['TL_DCA']['tl_member']['list']['sorting']['filter'][] = "`groups` LIKE '%\"1\"%'";
             $GLOBALS['TL_DCA']['tl_member']['fields']['groups']['filter'] = false;
             $GLOBALS['TL_DCA']['tl_member']['list']['label']['fields'][] = 'hosts';
         }
