@@ -3,6 +3,8 @@ doctrine:
     dql:
       datetime_functions:
         DATE_FORMAT: DoctrineExtensions\Query\Mysql\DateFormat
+        TIMESTAMPDIFF: DoctrineExtensions\Query\Mysql\TimestampDiff
+        ANY_VALUE: DoctrineExtensions\Query\Mysql\AnyValue
         DAY: DoctrineExtensions\Query\Mysql\Day
         MONTH: DoctrineExtensions\Query\Mysql\Month
         YEAR: DoctrineExtensions\Query\Mysql\Year

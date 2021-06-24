@@ -141,10 +141,7 @@ services:
     arguments: [ '@doctrine' ]
 
   Ferienpass\CoreBundle\Backend\PassEditionStatistics:
-    arguments: [ '@database_connection', '@twig', '@translator', '@Ferienpass\CoreBundle\Repository\OfferRepository', '@Ferienpass\CoreBundle\Repository\AttendanceRepository' ]
-    public: true
-
-  Ferienpass\CoreBundle\Backend\GenerateCodes:
+    arguments: [ '@twig', '@translator', '@Ferienpass\CoreBundle\Repository\OfferRepository', '@Ferienpass\CoreBundle\Repository\AttendanceRepository' ]
     public: true
 
   Ferienpass\CoreBundle\HttpCache\UserContext\UserContextProvider:
