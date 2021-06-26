@@ -145,12 +145,14 @@ final class ExportController extends AbstractController
         if (($editions = $form->get('editions')->getData())
             && $editions instanceof Collection
             && $editions->count()) {
+            /** @psalm-suppress QueryBuilderSetParameter */
             $qb->andWhere('offer.edition IN (:editions)')->setParameter('editions', $editions);
         }
 
         if (($hosts = $form->get('hosts')->getData())
             && $hosts instanceof Collection
             && $hosts->count()) {
+            /** @psalm-suppress QueryBuilderSetParameter */
             $qb->innerJoin('offer.hosts', 'hosts')->andWhere('hosts.id IN (:hosts)')->setParameter('hosts', $hosts);
         }
 

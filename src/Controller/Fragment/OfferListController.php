@@ -41,13 +41,14 @@ final class OfferListController extends AbstractController
             ->andWhere('o.published = 1')
         ;
 
-        if ($hasEditions = ($this->editionRepository->count([]) > 0)) {
-            $edition = $this->editionRepository->findOneToShow(PageModel::findByPk($request->get('pageModel')));
+        $hasEditions = $this->editionRepository->count([]) > 0;
+        $edition = $this->editionRepository->findOneToShow(PageModel::findByPk($request->get('pageModel')));
 
+        if ($hasEditions && null !== $edition) {
             $qb->andWhere('o.edition = :edition')->setParameter('edition', $edition->getId(), Types::INTEGER);
         }
 
-        if ($hasEditions && null === ($edition ?? null)) {
+        if ($hasEditions && null === $edition) {
             return $this->render('@FerienpassCore/Fragment/offer_list.html.twig');
         }
 
