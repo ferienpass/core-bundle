@@ -13,13 +13,14 @@ module.exports = {
   build: {
     templates: {
       source: 'src/templates',
-      filetypes: 'html.twig',
+      filetypes: 'twig',
       assets: {
         source: 'src/assets/images',
         destination: 'images',
       },
       destination: {
         path: 'build_local',
+        extension: 'html'
       },
     },
     tailwind: {

@@ -37,10 +37,10 @@
   dependencies:
     purgecss "^4.0.3"
 
-"@maizzle/framework@^3.5.0":
-  version "3.5.2"
-  resolved "https://registry.yarnpkg.com/@maizzle/framework/-/framework-3.5.2.tgz#7d5b6ed31d1f615a0d683e3f77fda7e130867d69"
-  integrity sha512-w0urg3GmYKUoHFJRhUo/yk1r+vOmO7bAKvwNmss5HhDXrWnuZyjBh3GL/EdsTvehnEZGMoG1AufzMBxniQ9acQ==
+"@maizzle/framework@^3.5.3":
+  version "3.5.3"
+  resolved "https://registry.yarnpkg.com/@maizzle/framework/-/framework-3.5.3.tgz#c79d2b452abc58fbfcfa248bd3302161491b28c5"
+  integrity sha512-5GlkMFbv7kkvvdJRb/73TRpL6oLee8Ts3Zo/FGcNlZd63v5/hvUYe8kjJV8Icwx1VU5N229poQaBUGNt3lUA1A==
   dependencies:
     browser-sync "^2.26.13"
     color-shorthand-hex-to-six-digit "^3.0.2"

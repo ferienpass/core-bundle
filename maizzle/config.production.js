@@ -14,6 +14,7 @@ module.exports = {
     templates: {
       destination: {
         path: '../templates/Email',
+        extension: 'twig'
       },
     }
   },

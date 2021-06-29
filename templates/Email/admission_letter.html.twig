@@ -99,14 +99,22 @@
                                     <td style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; width: 60%; border-top-width: 1px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-style: solid; border-color: #e5e7eb; padding-top: 10px; padding-bottom: 10px; font-size: 16px; line-height: 18px; color: #51545e;">
                                       {{ attendance.offer_name|raw }}<br><span style="color: #6b7280;">{{ attendance.offer_date_start|date('d.m.Y H:i') }}</span>
                                       {% if attendance.offer_cancelled %}
-                                      <div style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-top: 2px; border-radius: 0.25rem; border-top-width: 4px; border-right-width: 8px; border-bottom-width: 4px; border-left-width: 8px; border-style: solid; border-color: #fde8e8; background-color: #fde8e8;">
-                                        <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-top: 0; margin-bottom: 0; font-size: 14px; line-height: 1.25rem; color: #c81e1e;">
-                                          Das Angebot wurde abgesagt.</p>
-                                      </div>
+                                      <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly;">
+                                        <span style="margin-top: 2px; border-radius: 0.25rem; border-top-width: 4px; border-right-width: 8px; border-bottom-width: 4px; border-left-width: 8px; border-style: solid; border-color: #fde8e8; background-color: #fde8e8;">
+                                                                                        <span style="margin-top: 0; margin-bottom: 0; font-size: 14px; line-height: 1.25rem; color: #c81e1e;">
+                                                                                            Das Angebot wurde
+                                                                                            abgesagt.</span>
+                                        </span>
+                                      </p>
                                       {% elseif attendance.offer_agreement_letter %}
-                                      <div style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-top: 2px; border-radius: 0.25rem; border-top-width: 4px; border-right-width: 8px; border-bottom-width: 4px; border-left-width: 8px; border-style: solid; border-color: #fdf6b2; background-color: #fdf6b2;">
-                                        <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-top: 0; margin-bottom: 0; font-size: 14px; line-height: 1.25rem; color: #8e4b10;">Bitte Einverständniserklärung mitgeben.</p>
-                                      </div>
+                                      <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly;">
+                                        <span style="margin-top: 2px; border-radius: 0.25rem; border-top-width: 4px; border-right-width: 8px; border-bottom-width: 4px; border-left-width: 8px; border-style: solid; border-color: #fdf6b2; background-color: #fdf6b2;">
+                                                                                        <span style="margin-top: 0; margin-bottom: 0; font-size: 14px; line-height: 1.25rem; color: #8e4b10;">
+                                                                                            Bitte
+                                                                                            Einverständniserklärung
+                                                                                            mitgeben.</span>
+                                        </span>
+                                      </p>
                                       {% endif %}
                                     </td>
                                     <td align="right" style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; width: 40%; border-top-width: 1px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-style: solid; border-color: #e5e7eb; text-align: right; font-size: 16px;">
