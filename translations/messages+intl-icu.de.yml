@@ -15,7 +15,7 @@ application.disabled: Aktuell sind keine Anmeldungen möglich.
 
 application.apply: Sie können {name} jetzt für das Angebot anmelden.
 
-ineligible.alreadyApplied: '{name} ist bereits angemeldet für dieses Angebot.'
+ineligible.alreadyApplied: '{name} ist bereits registriert für dieses Angebot.'
 ineligible.invalidAge: Sie können {name} nicht anmelden, da das Alter nicht passt.
 ineligible.overlap: Sie können {name} nicht anmelden, da es eine Überschneidung mit einer anderen Anmeldung gibt.
 application.limitReached: >-

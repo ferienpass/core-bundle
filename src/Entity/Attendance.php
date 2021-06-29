@@ -74,13 +74,13 @@ class Attendance
      * @ORM\ManyToOne(targetEntity="Ferienpass\CoreBundle\Entity\Participant", inversedBy="attendances")
      * @ORM\JoinColumn(name="participant_id", referencedColumnName="id", nullable=true)
      */
-    private ?Participant $participant;
+    private ?Participant $participant = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="EditionTask")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
      */
-    private ?EditionTask $task;
+    private ?EditionTask $task = null;
 
     /**
      * The participant age, retained for statistics.
