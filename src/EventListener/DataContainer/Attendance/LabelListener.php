@@ -27,17 +27,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LabelListener
 {
-    private EditionRepository $editionRepository;
     private OfferRepository $offerRepository;
-    private Connection $connection;
     private UrlGeneratorInterface $router;
     private TranslatorInterface $translator;
 
-    public function __construct(EditionRepository $editionRepository, OfferRepository $offerRepository, Connection $connection, UrlGeneratorInterface $router, TranslatorInterface $translator)
+    public function __construct(OfferRepository $offerRepository, UrlGeneratorInterface $router, TranslatorInterface $translator)
     {
-        $this->editionRepository = $editionRepository;
         $this->offerRepository = $offerRepository;
-        $this->connection = $connection;
         $this->router = $router;
         $this->translator = $translator;
     }
@@ -62,7 +58,13 @@ class LabelListener
         /** @var Offer $offer */
         $offer = $this->offerRepository->find($row['offer_id']);
 
-        $labels[0] = sprintf('%s<br><span class="tl_gray">%s</span>', $offer->getName(), $offer->getDates()->first()->getBegin()->format('d.m.Y H:i'));
+        if ($offer->isCancelled()) {
+            $labels[0] = sprintf('<span title="abgesagt" class="inline-block mr-1 bg-red-100 rounded-sm leading-none text-xs text-red-900 p-1 font-medium">A</span><strike>%s</strike>', $offer->getName());
+        } else {
+            $labels[0] = $offer->getName();
+        }
+
+        $labels[0] .= sprintf('<br><span class="tl_gray">%s</span>', $offer->getDates()->first()->getBegin()->format('d.m.Y H:i'));
 
         switch ($row['status']) {
             case Attendance::STATUS_CONFIRMED:

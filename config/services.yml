@@ -197,7 +197,7 @@ services:
     arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository', '@Ferienpass\CoreBundle\Repository\OfferRepository', '@database_connection', '@router' ]
 
   Ferienpass\CoreBundle\EventListener\DataContainer\Attendance\LabelListener:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository', '@Ferienpass\CoreBundle\Repository\OfferRepository', '@database_connection', '@router', '@translator' ]
+    arguments: [ '@Ferienpass\CoreBundle\Repository\OfferRepository', '@router', '@translator' ]
 
   Ferienpass\CoreBundle\EventListener\DataContainer\Offer\HostOptionsListener:
     arguments: [ '@database_connection' ]
