@@ -14,15 +14,13 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Controller\Fragment;
 
 use Contao\CoreBundle\Controller\AbstractController;
-use Contao\CoreBundle\OptIn\OptIn;
 use Contao\CoreBundle\Security\Exception\LockedException;
 use Contao\FrontendUser;
 use Contao\MemberModel;
-use Contao\OptInModel;
-use Contao\System;
 use Ferienpass\CoreBundle\Form\UserLoginType;
 use Ferienpass\CoreBundle\Form\UserRegistrationType;
 use Ferienpass\CoreBundle\Message\AccountCreated;
+use Ferienpass\CoreBundle\Message\AccountResendActivation;
 use Scheb\TwoFactorBundle\Security\Authentication\Exception\InvalidTwoFactorCodeException;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Event\TwoFactorAuthenticationEvent;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Event\TwoFactorAuthenticationEvents;
@@ -106,23 +104,7 @@ class SignInController extends AbstractController
             return;
         }
 
-        /** @var OptIn $optIn */
-        $optIn = System::getContainer()->get('contao.opt-in');
-        $optInToken = null;
-
-        foreach (OptInModel::findByRelatedTableAndIds('tl_member', [$member->id]) as $model) {
-            // Look for a valid, unconfirmed token
-            if (($token = $optIn->find($model->token)) && $token->isValid() && !$token->isConfirmed()) {
-                $optInToken = $token;
-                break;
-            }
-        }
-
-        if (null === $optInToken) {
-            return;
-        }
-
-        $optInToken->send();
+        $this->dispatchMessage(new AccountResendActivation((int) $member->id));
 
         $this->addFlash('confirmation', $GLOBALS['TL_LANG']['MSC']['resendActivation']);
     }
