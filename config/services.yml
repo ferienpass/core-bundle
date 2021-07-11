@@ -291,6 +291,9 @@ services:
   Ferienpass\CoreBundle\MessageHandler\WhenAccountCreatedThenNotify:
     arguments: [ '@contao.opt-in', '@router' ]
 
+  Ferienpass\CoreBundle\MessageHandler\WhenAccountResendNotificationThenNotify:
+    arguments: [ '@contao.opt-in', '@router' ]
+
   Ferienpass\CoreBundle\MessageHandler\WhenRemindAttendanceThenNotify:
     arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport', '@translator', '@contao.framework' ]
 
