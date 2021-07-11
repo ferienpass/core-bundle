@@ -8,10 +8,10 @@
                     {% endif %}
 
                     {% if message.headline %}
-                        <span class="flex rounded-full bg-blue-500 uppercase px-2 py-1 text-xs font-bold mr-1">{{ message.headline }}</span>
+                        <span class="flex rounded-full bg-blue-500 uppercase px-2 py-1 text-xs font-bold mr-1">{{ message.headline|trans }}</span>
                     {% endif %}
 
-                    <span class="ml-2 font-semibold mr-2 text-left flex-auto">{{ message.text }}</span>
+                    <span class="ml-2 font-semibold mr-2 text-left flex-auto">{{ message.text|trans }}</span>
 
                     {% if message.href|default %}
                         <svg class="inline-block fill-current opacity-75 h-4 w-4" xmlns="http://www.w3.org/2000/svg"

@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Translation\TranslatableMessage;
 
 class SignInController extends AbstractController
 {
@@ -106,7 +107,7 @@ class SignInController extends AbstractController
 
         $this->dispatchMessage(new AccountResendActivation((int) $member->id));
 
-        $this->addFlash('confirmation', $GLOBALS['TL_LANG']['MSC']['resendActivation']);
+        $this->addFlash('confirmation', new TranslatableMessage('MSCresendActivation', [], 'contao_default'));
     }
 
     private function createNewUser(MemberModel $member): void
