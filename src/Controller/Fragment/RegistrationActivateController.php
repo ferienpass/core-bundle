@@ -32,6 +32,7 @@ use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Translation\TranslatableMessage;
 
 class RegistrationActivateController extends AbstractController
 {
@@ -80,21 +81,15 @@ class RegistrationActivateController extends AbstractController
             || 'tl_member' !== key($relatedRecords)
             || 1 !== \count($arrIds = current($relatedRecords))
             || (!$memberModel = MemberModel::findByPk($arrIds[0]))) {
-            $error = $GLOBALS['TL_LANG']['MSC']['invalidToken'];
-
-            return $this->render('@FerienpassCore/Fragment/message.html.twig', ['error' => $error]);
+            return $this->render('@FerienpassCore/Fragment/message.html.twig', ['error' => new TranslatableMessage('MSC.invalidToken', [], 'contao_default')]);
         }
 
         if ($optInToken->isConfirmed()) {
-            $error = $GLOBALS['TL_LANG']['MSC']['tokenConfirmed'];
-
-            return $this->render('@FerienpassCore/Fragment/message.html.twig', ['error' => $error]);
+            return $this->redirectToRoute('registration_welcome');
         }
 
         if ($optInToken->getEmail() !== $memberModel->email) {
-            $error = $GLOBALS['TL_LANG']['MSC']['tokenEmailMismatch'];
-
-            return $this->render('@FerienpassCore/Fragment/message.html.twig', ['error' => $error]);
+            return $this->render('@FerienpassCore/Fragment/message.html.twig', ['error' => new TranslatableMessage('MSC.tokenEmailMismatch', [], 'contao_default')]);
         }
 
         /** @psalm-suppress InvalidPropertyAssignmentValue */
