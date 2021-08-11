@@ -110,6 +110,15 @@ SQL
             ->execute()
         ;
 
+        // Retain participant ids for statistics
+        $this->connection->createQueryBuilder()
+            ->update('Attendance')
+            ->set('participant_id_original', 'participant_id')
+            ->where('participant_id IN (:ids)')
+            ->setParameter('ids', $participantIds, Connection::PARAM_INT_ARRAY)
+            ->execute()
+        ;
+
         $this->connection->createQueryBuilder()
             ->update('Attendance')
             ->set('participant_id', 'NULL')

@@ -23,30 +23,4 @@ class AttendanceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Attendance::class);
     }
-
-    public function countParticipants(int $editionId): int
-    {
-        return (int) $this->createQueryBuilder('a')
-            ->select('COUNT(DISTINCT a.participant) AS count')
-            ->innerJoin('a.offer', 'o')
-            ->andWhere('o.edition = :edition')
-            ->setParameter('edition', $editionId)
-            ->getQuery()
-            ->getSingleScalarResult()
-            ;
-    }
-
-    public function countAttendancesWithoutWithdrawn(int $editionId): int
-    {
-        return (int) $this->createQueryBuilder('a')
-            ->select('COUNT(a.id) AS count')
-            ->innerJoin('a.offer', 'o')
-            ->andWhere('o.edition = :edition')
-            ->setParameter('edition', $editionId)
-            ->andWhere('a.status <> :status')
-            ->setParameter('status', Attendance::STATUS_WITHDRAWN)
-            ->getQuery()
-            ->getSingleScalarResult()
-            ;
-    }
 }

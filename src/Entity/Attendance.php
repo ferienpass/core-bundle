@@ -89,6 +89,13 @@ class Attendance
      */
     private ?int $age = null;
 
+    /**
+     * The original participant id, retained for statistics.
+     *
+     * @ORM\Column(name="participant_id_original", type="integer", nullable=true, options={"unsigned"=true})
+     */
+    private ?int $participantId = null;
+
     public function __construct(Offer $offer, Participant $participant, string $status = null)
     {
         $this->offer = $offer;

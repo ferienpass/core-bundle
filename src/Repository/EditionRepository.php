@@ -147,7 +147,7 @@ class EditionRepository extends ServiceEntityRepository
                 Expr\Join::WITH,
                 $qb0->expr()->andX(
                     "period.type = 'holiday'",
-                    $qb0->expr()->lt('period.periodEnd', $edition->getHoliday()->getPeriodEnd()->modify('-8 months')->format('Ymd'))
+                    $qb0->expr()->lt('period.periodEnd', $edition->getHoliday()->getPeriodEnd()->modify('-10 months')->format('Ymd'))
                 )
             )
             ->orderBy('period.periodEnd', 'DESC')
