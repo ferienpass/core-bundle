@@ -42,7 +42,7 @@ $GLOBALS['TL_DCA']['Edition'] = [
             ],
 
             'stats' => [
-                'href' => 'key=stats',
+                'route' => 'backend_edition_stats',
                 'icon' => 'bundles/ferienpasscore/img/stats.svg',
             ],
         ],

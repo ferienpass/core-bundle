@@ -136,4 +136,27 @@ class EditionRepository extends ServiceEntityRepository
             return null;
         }
     }
+
+    public function findPreceding(Edition $edition): ?Edition
+    {
+        $qb0 = $this->_em->createQueryBuilder();
+        $qb = $this->createQueryBuilder('edition')
+            ->innerJoin(
+                'edition.tasks',
+                'period',
+                Expr\Join::WITH,
+                $qb0->expr()->andX(
+                    "period.type = 'holiday'",
+                    $qb0->expr()->lt('period.periodEnd', $edition->getHoliday()->getPeriodEnd()->modify('-8 months')->format('Ymd'))
+                )
+            )
+            ->orderBy('period.periodEnd', 'DESC')
+            ->getQuery();
+
+        try {
+            return $qb->setMaxResults(1)->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
+    }
 }

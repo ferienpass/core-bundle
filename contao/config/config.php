@@ -11,8 +11,6 @@ declare(strict_types=1);
  * or the documentation under <https://docs.ferienpass.online>.
  */
 
-use Ferienpass\CoreBundle\Backend\PassEditionStatistics;
-
 unset(
     $GLOBALS['BE_MOD']['design']['tpl_editor'],
     $GLOBALS['BE_MOD']['system']['maintenance'],
@@ -30,7 +28,6 @@ $GLOBALS['BE_MOD']['accounts']['participants'] = [
 array_insert($GLOBALS['BE_MOD']['ferienpass'], 0, [
     'editions' => [
         'tables' => ['Edition', 'EditionTask'],
-        'stats' => [PassEditionStatistics::class, 'execute'],
     ],
 ]);
 

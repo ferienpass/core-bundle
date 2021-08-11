@@ -21,6 +21,9 @@ services:
 
   Ferienpass\CoreBundle\Controller\Backend\ProofController: ~
 
+  Ferienpass\CoreBundle\Controller\Backend\EditionStatsController:
+    arguments: [ '@contao.fragment.registry', '@contao.fragment.handler' ]
+
   Ferienpass\CoreBundle\Controller\Backend\DashboardController:
     arguments: [ '@contao.fragment.registry', '@contao.fragment.handler' ]
 
@@ -55,6 +58,30 @@ services:
   Ferienpass\CoreBundle\Controller\BackendDashboard\HeatmapController:
     arguments: [ '@database_connection' ]
     tags: [ 'contao.dashboard_widget' ]
+
+  Ferienpass\CoreBundle\Controller\EditionStats\NumbersController:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@Ferienpass\CoreBundle\Repository\OfferRepository', '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
+    tags: [ 'contao.edition_stats_widget' ]
+
+  Ferienpass\CoreBundle\Controller\EditionStats\ChartUtilizationController:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@translator' ]
+    tags: [ 'contao.edition_stats_widget' ]
+
+  Ferienpass\CoreBundle\Controller\EditionStats\ChartAttendancesController:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository' ]
+    tags: [ 'contao.edition_stats_widget' ]
+
+  Ferienpass\CoreBundle\Controller\EditionStats\ChartStatusController:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@translator' ]
+    tags: [ 'contao.edition_stats_widget' ]
+
+  Ferienpass\CoreBundle\Controller\EditionStats\ChartAgeController:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository' ]
+    tags: [ 'contao.edition_stats_widget' ]
+
+  Ferienpass\CoreBundle\Controller\EditionStats\ChartCategoriesController:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository' ]
+    tags: [ 'contao.edition_stats_widget' ]
 
   Ferienpass\CoreBundle\Controller\Backend\NotificationCenterController:
     arguments: [ '@Ferienpass\CoreBundle\Applications\UnconfirmedApplications' ]
@@ -140,9 +167,6 @@ services:
   Ferienpass\CoreBundle\Repository\NotificationLogRepository:
     arguments: [ '@doctrine' ]
 
-  Ferienpass\CoreBundle\Backend\PassEditionStatistics:
-    arguments: [ '@twig', '@translator', '@Ferienpass\CoreBundle\Repository\OfferRepository', '@Ferienpass\CoreBundle\Repository\AttendanceRepository' ]
-    public: true
 
   Ferienpass\CoreBundle\HttpCache\UserContext\UserContextProvider:
     arguments: [ '@security.token_storage', '@contao.framework', '@contao.security.token_checker' ]

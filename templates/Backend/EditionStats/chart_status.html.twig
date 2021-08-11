@@ -1,0 +1,21 @@
+<div class="rounded-lg bg-white overflow-hidden shadow py-2">
+    <div class="chart--status"></div>
+</div>
+
+<script>
+    new frappe.Chart(document.querySelector('.chart--status'), {
+        title: "Anmeldungen je Status",
+        data: {
+            labels: {{ data|column('title')|json_encode|raw }},
+            datasets: [
+                {
+                    name: "Anmeldungen",
+                    values: {{ data|column('count')|json_encode|raw }}
+                }
+            ]
+        },
+        colors: ['#74B739', '#EDC43B', '#C9473D', '#cccccc', '#dddddd'],
+        height: 180,
+        type: 'percentage',
+    });
+</script>

@@ -1,0 +1,26 @@
+<div class="rounded-lg bg-white overflow-hidden shadow py-2">
+    <div class="chart--attendances"></div>
+</div>
+
+<script>
+    new frappe.Chart(document.querySelector('.chart--attendances'), {
+        title: "Anmeldungen pro Tag",
+        type: 'line',
+        axisOptions: {
+            xIsSeries: true
+        },
+        lineOptions: {
+            hideDots: 1,
+            regionFill: 1,
+        },
+        data: {
+            labels: {{ data|column('key')|json_encode|raw }},
+            datasets: [
+                {
+                    name: "Anmeldungen",
+                    values: {{ data|column('value')|json_encode|raw }}
+                }
+            ],
+        },
+    });
+</script>

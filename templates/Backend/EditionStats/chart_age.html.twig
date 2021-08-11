@@ -1,0 +1,21 @@
+<div class="rounded-lg bg-white overflow-hidden shadow py-2">
+    <div class="chart--age"></div>
+</div>
+
+<script>
+    new frappe.Chart(document.querySelector('.chart--age'), {
+        title: "Anmeldungen nach Alter",
+        data: {
+            labels: {{ data|column('title')|json_encode|raw }},
+            datasets: [
+                {
+                    name: "Some Data",
+                    values: {{ data|column('count')|json_encode|raw }}
+                }
+            ]
+        },
+        colors: ['light-blue', '#5bc0be', 'blue', 'violet', 'red', 'orange', '#e59f71', 'yellow', 'green', 'light-green', 'purple', 'magenta', '#a69888', 'light-grey', 'dark-grey'],
+        height: 180,
+        type: 'percentage',
+    });
+</script>

@@ -1,0 +1,16 @@
+{% extends "@FerienpassCore/Backend/be_page.html.twig" %}
+
+{% block headline %}
+    {{ 'Edition.stats.0'|trans([], 'contao_Edition') }}
+{% endblock %}
+
+{% block main %}
+
+    <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+        {{ 'Edition.stats.0'|trans([], 'contao_Edition') }}
+    </h1>
+
+    <div class="py-4 space-y-10">
+        {{ widgets|raw }}
+    </div>
+{% endblock %}

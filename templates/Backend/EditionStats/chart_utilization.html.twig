@@ -1,0 +1,31 @@
+<div class="rounded-lg bg-white overflow-hidden shadow py-2">
+    <div class="chart--utilization"></div>
+</div>
+
+<script>
+    const chartUtilization = new frappe.Chart(document.querySelector('.chart--utilization'), {
+        title: "Auslastung der Angebote",
+        data: {
+            labels: {{ data.labels|json_encode|raw }},
+            datasets: {{ data.datasets|json_encode|raw }},
+            yRegions: [
+                {
+                    label: "Optimale Auslastung",
+                    start: 0.8,
+                    end: 1.1,
+                    options: {labelPos: 'right'}
+                }
+            ],
+        },
+        barOptions: {
+            stacked: 1
+        },
+        tooltipOptions: {
+            formatTooltipY: d => (d * 100).toLocaleString(undefined, {minimumFractionDigits: 2}) + ' %',
+        },
+        colors: ['#74B739', '#EDC43B', '#C9473D', '#cccccc'],
+        height: 400,
+        isNavigable: false,
+        type: 'bar',
+    });
+</script>

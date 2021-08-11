@@ -1,0 +1,23 @@
+<div class="rounded-lg bg-white overflow-hidden shadow py-2">
+    <div class="chart--categories"></div>
+</div>
+
+<script>
+    new frappe.Chart(document.querySelector('.chart--categories'), {
+        title: "Anmeldungen je Kategorie",
+        data: {
+            labels: {{ data|column('category')|json_encode|raw }},
+            datasets: [
+                {
+                    name: "gesamt",
+                    values: {{ data|column('count')|json_encode|raw }}
+                }, {
+                    name: "zugelassen",
+                    values: {{ data|column('count_confirmed')|json_encode|raw }}
+                }
+            ]
+        },
+        height: 400,
+        type: 'bar',
+    })
+</script>

@@ -23,4 +23,39 @@ class OfferRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Offer::class);
     }
+
+    public function countInEdition(int $editionId): int
+    {
+        return (int) $this->createQueryBuilder('o')
+            ->select('COUNT(o.id) AS count')
+            ->andWhere('o.edition = :edition')
+            ->setParameter('edition', $editionId)
+            ->getQuery()
+            ->getSingleResult()
+            ;
+    }
+
+    public function countWithoutVariantsInEdition(int $editionId): int
+    {
+        return (int) $this->createQueryBuilder('o')
+            ->select('COUNT(o.id) AS count')
+            ->andWhere('o.variantBase IS NULL')
+            ->andWhere('o.edition = :edition')
+            ->setParameter('edition', $editionId)
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
+    public function countHostsWithOfferInEdition(int $editionId): int
+    {
+        return (int) $this->createQueryBuilder('o')
+            ->select('COUNT(DISTINCT h.id) AS count')
+            ->innerJoin('o.hosts', 'h')
+            ->andWhere('o.edition = :edition')
+            ->setParameter('edition', $editionId)
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
 }
