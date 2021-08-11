@@ -78,7 +78,7 @@ class ChartUtilizationController extends AbstractEditionStatsWidgetController
                     $labels[$i] = sprintf(
                         '%s: %s (max. %d)',
                         $a['offer_title'],
-                        (new \DateTime($a['date_start']))->format($GLOBALS['TL_CONFIG']['dateFormat']),
+                        $a['date_start'] ? (new \DateTime($a['date_start']))->format($GLOBALS['TL_CONFIG']['dateFormat']) : '',
                         $a['offer_max']
                     );
                     $overall[$i] += (float) $a['utilization'];
