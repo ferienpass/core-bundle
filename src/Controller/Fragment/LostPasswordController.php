@@ -26,6 +26,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Translation\TranslatableMessage;
 
 class LostPasswordController extends AbstractController
@@ -64,6 +65,15 @@ class LostPasswordController extends AbstractController
         return $this->render('@FerienpassCore/Fragment/lost_password.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    public static function getSubscribedServices()
+    {
+        $services = parent::getSubscribedServices();
+
+        $services['security.encoder_factory'] = EncoderFactoryInterface::class;
+
+        return $services;
     }
 
     protected function sendPasswordLink(MemberModel $memberModel): Response
