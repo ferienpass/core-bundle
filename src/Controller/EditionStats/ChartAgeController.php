@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\EditionStats;
 
+use Doctrine\ORM\Query\Expr\Join;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,26 +41,27 @@ class ChartAgeController extends AbstractEditionStatsWidgetController
 (
     CASE
         WHEN (p.dateOfBirth IS NULL AND a.age IS NOT NULL) THEN a.age
-        WHEN (p.dateOfBirth IS NOT NULL) THEN TIMESTAMPDIFF(YEAR, p.dateOfBirth, ANY_VALUE(d.begin))
+        WHEN (p.dateOfBirth IS NOT NULL AND d.begin IS NOT NULL) THEN TIMESTAMPDIFF(YEAR, p.dateOfBirth, d.begin)
         ELSE 'N/A' END
     ) as age
 SQL
             )->addSelect('COUNT(a.id) as count')
             ->innerJoin('a.offer', 'o')
             ->leftJoin('a.participant', 'p')
-            ->leftJoin('o.dates', 'd')
+            // Because this is a 1:n relation, we must join at max 1 row to not falsely increase the number of attendances
+            ->leftJoin('o.dates', 'd', Join::WITH, 'd.id = (SELECT MIN(d2.id) FROM Ferienpass\CoreBundle\Entity\OfferDate d2 WHERE d2.offer = o.id)')
             ->where('o.edition = :edition')
             ->setParameter('edition', $passEdition)
             ->andWhere('a.status <> :status')
             ->setParameter('status', Attendance::STATUS_WITHDRAWN)
-            ->orderBy('age')
-            ->groupBy('age', 'p.dateOfBirth')
+            ->groupBy('age')
             ->getQuery()
             ->getScalarResult()
         ;
 
         // Transform array to key=>value structure
         $ageAndCount = array_combine(array_column($ageAndCount, 'age'), array_column($ageAndCount, 'count'));
+        ksort($ageAndCount, SORT_NATURAL);
 
         $return = [];
         foreach ($ageAndCount as $age => $count) {
@@ -67,10 +69,6 @@ SQL
                 'title' => is_numeric($age) ? sprintf('%d Jahre', $age) : $age,
                 'count' => (int) $count,
             ];
-        }
-
-        if ('N/A' === $return[0]['title']) {
-            $return[] = array_shift($return);
         }
 
         return $return;

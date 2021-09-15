@@ -33,7 +33,7 @@ class ChartCategoriesController extends AbstractEditionStatsWidgetController
             return new Response();
         }
 
-        return $this->render('@FerienpassCore/Backend/EditionStats/chart_attendances.html.twig', [
+        return $this->render('@FerienpassCore/Backend/EditionStats/chart_categories.html.twig', [
             'data' => $data,
         ]);
     }

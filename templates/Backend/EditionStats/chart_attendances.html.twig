@@ -5,22 +5,10 @@
 <script>
     new frappe.Chart(document.querySelector('.chart--attendances'), {
         title: "Anmeldungen pro Tag",
-        type: 'line',
-        axisOptions: {
-            xIsSeries: true
-        },
-        lineOptions: {
-            hideDots: 1,
-            regionFill: 1,
-        },
+        type: 'heatmap',
+        colors: ["#ebedf0", "#c0ddf9", "#73b3f3", "#3886e1", "#17459e"],
         data: {
-            labels: {{ data|column('key')|json_encode|raw }},
-            datasets: [
-                {
-                    name: "Anmeldungen",
-                    values: {{ data|column('value')|json_encode|raw }}
-                }
-            ],
+            dataPoints: {{ data|json_encode|raw }},
         },
     });
 </script>

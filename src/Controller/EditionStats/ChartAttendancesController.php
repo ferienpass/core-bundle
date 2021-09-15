@@ -65,21 +65,14 @@ class ChartAttendancesController extends AbstractEditionStatsWidgetController
             return [];
         }
 
-        $return = [[
-            'key' => (clone $begin)->modify('-1 day')->format($GLOBALS['TL_CONFIG']['dateFormat']),
-            'value' => 0,
-        ]];
+        $return = [];
+        $return[(clone $begin)->modify('-1 day')->getTimestamp()] = 0;
 
-        $sum = 0;
         /** @var \DateInterval $dt */
         foreach (new \DatePeriod($begin, $interval, $end) as $dt) {
             $count = $daysAndCount[$dt->format('Y-m-d')] ?? 0;
-            $sum = $count + $sum;
 
-            $return[] = [
-                'key' => $dt->format($GLOBALS['TL_CONFIG']['dateFormat']),
-                'value' => $sum,
-            ];
+            $return[$dt->getTimestamp()] = (int)$count;
         }
 
         return $return;
