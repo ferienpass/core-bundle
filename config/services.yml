@@ -340,9 +340,6 @@ services:
     arguments: [ '@Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems', '@messenger.default_bus', '@doctrine' ]
 
   Ferienpass\CoreBundle\EventListener\DataContainer\PurgeDcaListener: ~
-  Ferienpass\CoreBundle\Routing\RouteLoader:
-    arguments: [ '@file_locator', '@routing.loader.annotation' ]
-    tags: [ routing.loader ]
 
   Ferienpass\CoreBundle\EventListener\Backend\BackendMainListener:
     arguments: [ '@twig', '@contao.framework' ]

@@ -15,6 +15,9 @@ contao:
     gdMaxImgWidth: 6000
     gdMaxImgHeight: 6000
 
+  backend:
+    route_prefix: '/admin'
+
   image:
     sizes:
       _defaults:
