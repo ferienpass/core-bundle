@@ -22,15 +22,12 @@
     "ext-json": "*",
     "ext-pdo": "*",
 
-    "contao/core-bundle": "^4.11",
-    "contao/news-bundle": "^4.11",
+    "contao/core-bundle": "4.x-dev@dev as 4.13.0",
+    "contao/news-bundle": "4.x-dev@dev as 4.13.0",
 
     "codefog/contao-haste": "~4.11",
-    "terminal42/contao-conditionalselectmenu": "^3.0",
-    "terminal42/contao-tablelookupwizard": "^3.2",
     "terminal42/notification_center": "^1.3",
     "mvo/contao-group-widget": "^1.3",
-    "mvo/contao-twig": "^1.0",
     "richardhj/contao-knp-menu": "^1.0",
 
     "terminal42/contao-mailusername": "^2.0",
@@ -71,7 +68,6 @@
     "symfony/validator": "^4.4 || ^5.2",
     "twig/twig": "^2.12 || ^3.0",
     "twig/intl-extra": "^2.14 || ^3.0",
-    "twig/extra-bundle": "^2.14 || ^3.0",
     "knplabs/knp-menu-bundle": "^3.0"
   },
   "require-dev": {
