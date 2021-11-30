@@ -35,7 +35,7 @@ class HeatmapController extends AbstractDashboardWidgetController
     private function countOffersByDay(): array
     {
         $days = $this->connection
-            ->query(
+            ->executeQuery(
                 <<<'SQL'
 SELECT DATE_FORMAT(d.begin, '%Y-%m-%d') AS day, COUNT(*)
 FROM OfferDate d
@@ -45,11 +45,12 @@ ORDER BY day
 SQL
                 ,
             )
-            ->fetchAll(\PDO::FETCH_KEY_PAIR);
+            ->fetchAllNumeric();
 
         $return = [];
-        foreach ($days as $Ymd => $count) {
-            $return[strtotime($Ymd)] = (int) $count;
+        foreach ($days as $row) {
+            $ymd = $row[0];
+            $return[$ymd] = (int) $row[1];
         }
 
         return $return;
@@ -58,7 +59,7 @@ SQL
     private function countAttendancesByDay(): array
     {
         $days = $this->connection
-            ->query(
+            ->executeQuery(
                 <<<'SQL'
 SELECT DATE_FORMAT(a.createdAt, '%Y-%m-%d') AS day, COUNT(*)
 FROM Attendance a
@@ -67,11 +68,13 @@ GROUP BY day
 ORDER BY day
 SQL
             )
-            ->fetchAll(\PDO::FETCH_KEY_PAIR);
+            ->fetchAllNumeric();
 
         $return = [];
-        foreach ($days as $Ymd => $count) {
-            $return[strtotime($Ymd)] = (int) $count;
+        foreach ($days as $row) {
+            $ymd = $row[0];
+            $ymd = strtotime($ymd);
+            $return[$ymd] = (int) $row[1];
         }
 
         return $return;

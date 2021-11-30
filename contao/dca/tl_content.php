@@ -33,8 +33,6 @@ $GLOBALS['TL_DCA']['tl_content']['subpalettes']['block_layout_w-full'] = 'headli
 $GLOBALS['TL_DCA']['tl_content']['subpalettes']['block_layout_max-w'] = 'headline,text';
 $GLOBALS['TL_DCA']['tl_content']['subpalettes']['block_layout_max-w+center'] = 'headline,text';
 
-$GLOBALS['TL_DCA']['tl_content']['fields']['text']['eval']['tl_class'] .= ' clr';
-
 $GLOBALS['TL_DCA']['tl_content']['palettes']['hyperlink_button'] =
     '{type_legend},type;{link_legend},url,target,linkTitle,titleText;{template_legend},buttonStyle';
 

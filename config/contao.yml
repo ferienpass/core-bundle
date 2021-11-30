@@ -18,6 +18,8 @@ contao:
   backend:
     route_prefix: '/admin'
 
+  error_level: 8181
+
   image:
     sizes:
       _defaults:

@@ -38,7 +38,7 @@ $GLOBALS['TL_DCA']['Edition'] = [
             'delete' => [
                 'href' => 'act=delete',
                 'icon' => 'delete.gif',
-                'attributes' => sprintf('onclick="if (!confirm(\'%s\')) return false; Backend.getScrollOffset();"', $GLOBALS['TL_LANG']['MSC']['deleteConfirm']),
+                'attributes' => sprintf('onclick="if (!confirm(\'Löschen?\')) return false; Backend.getScrollOffset();"'),
             ],
 
             'stats' => [
