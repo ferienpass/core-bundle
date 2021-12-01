@@ -72,9 +72,8 @@
   },
   "require-dev": {
     "contao/manager-plugin": "^2.7",
-    "friendsofphp/php-cs-fixer": "^2.12",
-    "zenstruck/foundry": "^1.10",
-    "spatie/pdf-to-image": "^2.1"
+    "friendsofphp/php-cs-fixer": "^3.3",
+    "zenstruck/foundry": "^1.10"
   },
   "suggest": {
     "spatie/pdf-to-image": "To generate images from PDF Print Sheets"

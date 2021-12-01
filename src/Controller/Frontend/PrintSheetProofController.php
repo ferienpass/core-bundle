@@ -104,7 +104,7 @@ final class PrintSheetProofController extends AbstractController
         try {
             $pdfToImage = new PdfToImage($pdfPath);
             $pdfToImage->setOutputFormat($format)->saveImage($imgPath);
-        } catch (PdfDoesNotExist | InvalidFormat $e) {
+        } catch (PdfDoesNotExist|InvalidFormat $e) {
         }
     }
 }
