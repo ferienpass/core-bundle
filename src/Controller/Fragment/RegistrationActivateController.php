@@ -67,7 +67,7 @@ class RegistrationActivateController extends AbstractController
 
     public function __invoke(Request $request): Response
     {
-        if ((null === $token = $request->query->get('token')) || 0 !== strncmp($token, 'reg-', 4)) {
+        if ((null === $token = (string) $request->query->get('token')) || 0 !== strncmp($token, 'reg-', 4)) {
             throw new PageNotFoundException('Invalid token');
         }
 
@@ -126,7 +126,7 @@ class RegistrationActivateController extends AbstractController
             return;
         }
 
-        $usernamePasswordToken = new UsernamePasswordToken($user, null, 'frontend', $user->getRoles());
+        $usernamePasswordToken = new UsernamePasswordToken($user, 'frontend', $user->getRoles());
         $this->tokenStorage->setToken($usernamePasswordToken);
 
         $event = new InteractiveLoginEvent($request, $usernamePasswordToken);

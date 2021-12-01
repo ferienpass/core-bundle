@@ -76,10 +76,10 @@ WHERE
    OR
       (et.type = 'show_offers' AND et.periodEnd < DATE_SUB(NOW(), INTERVAL 2 WEEK))
 SQL
-        )->fetchAll(FetchMode::COLUMN);
+        )->fetchAllNumeric();
 
         // Participants with attendances on events having a non-finished task
-        $participantsToKeep = $this->connection->query(
+        $participantsToKeep = $this->connection->executeQuery(
             <<<'SQL'
 SELECT DISTINCT p.id
 FROM Participant p
@@ -90,7 +90,10 @@ FROM Participant p
          LEFT JOIN OfferDate d ON d.offer_id = f.id
 WHERE et.periodEnd > NOW() OR d.end > NOW()
 SQL
-        )->fetchAll(FetchMode::COLUMN);
+        )->fetchAllNumeric();
+
+        $participantsToDelete = array_column($participantsToDelete, 0);
+        $participantsToKeep = array_column($participantsToKeep, 0);
 
         return array_diff($participantsToDelete, $participantsToKeep);
     }

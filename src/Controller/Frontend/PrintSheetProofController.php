@@ -18,9 +18,6 @@ use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
-use Spatie\PdfToImage\Exceptions\InvalidFormat;
-use Spatie\PdfToImage\Exceptions\PdfDoesNotExist;
-use Spatie\PdfToImage\Pdf as PdfToImage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -101,10 +98,8 @@ final class PrintSheetProofController extends AbstractController
             throw new \LogicException('PdfToImage extension is not available');
         }
 
-        try {
-            $pdfToImage = new PdfToImage($pdfPath);
-            $pdfToImage->setOutputFormat($format)->saveImage($imgPath);
-        } catch (PdfDoesNotExist|InvalidFormat $e) {
-        }
+        /** @psalm-suppress UndefinedClass */
+        $pdfToImage = new \Spatie\PdfToImage\Pdf($pdfPath);
+        $pdfToImage->setOutputFormat($format)->saveImage($imgPath);
     }
 }

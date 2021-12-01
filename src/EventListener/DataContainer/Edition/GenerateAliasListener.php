@@ -38,7 +38,7 @@ class GenerateAliasListener
                 'SELECT id FROM Edition WHERE alias=:alias AND id!=:id', [
                     ':alias' => $alias,
                     ':id' => $dc->id,
-                ])->fetchColumn();
+                ])->fetchOne();
 
         // Generate an alias if there is none
         if (!$value && $dc->activeRecord->name) {

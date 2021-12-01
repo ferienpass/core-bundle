@@ -15,7 +15,6 @@ namespace Ferienpass\CoreBundle\Controller\Backend;
 
 use Contao\CoreBundle\Controller\AbstractController;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\FetchMode;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\ParticipantList\PdfExport;
@@ -110,9 +109,9 @@ SQL
 
         $emails = [];
         $attendances = [];
-        foreach ($statement->fetchAll(FetchMode::STANDARD_OBJECT) as $attendance) {
-            $attendances[$attendance->status][] = $attendance;
-            $emails[] = $attendance->email;
+        foreach ($statement->fetchAllAssociative() as $attendance) {
+            $attendances[$attendance['status']][] = $attendance;
+            $emails[] = $attendance['email'];
         }
 
         return $this->render('@FerienpassCore/Backend/offer-applications.html.twig', [

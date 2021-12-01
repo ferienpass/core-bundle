@@ -28,7 +28,7 @@ final class SecurityController extends AbstractController
         $this->get('contao.framework')->initialize();
 
         if ($request->request->has('_target_path')) {
-            return new RedirectResponse(base64_decode($request->request->get('_target_path'), true));
+            return new RedirectResponse(base64_decode((string) $request->request->get('_target_path'), true));
         }
 
         return new RedirectResponse('/');

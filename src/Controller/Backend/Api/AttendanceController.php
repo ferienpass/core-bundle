@@ -64,7 +64,7 @@ final class AttendanceController extends AbstractController
     {
         $oldStatus = $attendance->getStatus();
 
-        $attendance->setStatus($request->request->get('newStatus'));
+        $attendance->setStatus($request->request->getAlnum('newStatus'));
         $attendance->setSorting(($request->request->getInt('newIndex') * 128) + 64);
 
         if ($autoAssign) {

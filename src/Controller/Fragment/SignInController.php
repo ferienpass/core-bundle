@@ -128,7 +128,7 @@ class SignInController extends AbstractController
         // If the form was submitted and the credentials were wrong, take the target
         // path from the submitted data as otherwise it would take the current page
         if ($request->isMethod('POST') && $request->request->has('_target_path')) {
-            $targetPath = base64_decode($request->request->get('_target_path'), true);
+            $targetPath = base64_decode((string) $request->request->get('_target_path'), true);
         } elseif ($request->query->has('redirect')) {
             // We cannot use $request->getUri() here as we want to work with the original URI (no query string reordering)
             if ($this->get('uri_signer')->check($request->getSchemeAndHttpHost().$request->getBaseUrl().$request->getPathInfo().(null !== ($qs = $request->server->get('QUERY_STRING')) ? '?'.$qs : ''))) {

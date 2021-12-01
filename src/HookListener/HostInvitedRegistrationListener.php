@@ -53,7 +53,7 @@ class HostInvitedRegistrationListener
         }
 
         // Assign host.
-        $memberModel->ferienpass_host = $statement->fetchColumn();
+        $memberModel->ferienpass_host = $statement->fetchOne();
         $memberModel->save();
 
         // Invalidate token.
