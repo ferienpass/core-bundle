@@ -27,6 +27,7 @@ use Ferienpass\CoreBundle\FerienpassCoreBundle;
 use Ferienpass\CoreBundle\Security\Authentication\AuthenticationFailureHandler;
 use FOS\HttpCacheBundle\FOSHttpCacheBundle;
 use Knp\Bundle\SnappyBundle\KnpSnappyBundle;
+use Mvo\ContaoGroupWidget\MvoContaoGroupWidgetBundle;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -46,6 +47,7 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, ConfigPlu
                 ->setLoadAfter([
                     ContaoCoreBundle::class,
                     ContaoManagerBundle::class,
+                    MvoContaoGroupWidgetBundle::class,
                     SensioFrameworkExtraBundle::class,
                     FOSHttpCacheBundle::class,
                     FrameworkBundle::class,
