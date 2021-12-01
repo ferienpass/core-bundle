@@ -68,12 +68,12 @@ class EditionTask
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private \DateTimeInterface $periodBegin;
+    private \DateTimeImmutable $periodBegin;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private \DateTimeInterface $periodEnd;
+    private \DateTimeImmutable $periodEnd;
 
     /**
      * @ORM\Column(name="hide_status", type="boolean", nullable=true)
@@ -181,22 +181,22 @@ class EditionTask
         $this->maxApplicationsDay = $maxApplicationsDay;
     }
 
-    public function getPeriodBegin(): ?\DateTimeInterface
+    public function getPeriodBegin(): ?\DateTimeImmutable
     {
         return $this->periodBegin;
     }
 
-    public function setPeriodBegin(\DateTimeInterface $periodBegin): void
+    public function setPeriodBegin(\DateTimeImmutable $periodBegin): void
     {
         $this->periodBegin = $periodBegin;
     }
 
-    public function getPeriodEnd(): \DateTimeInterface
+    public function getPeriodEnd(): \DateTimeImmutable
     {
         return $this->periodEnd;
     }
 
-    public function setPeriodEnd(\DateTimeInterface $periodEnd): void
+    public function setPeriodEnd(\DateTimeImmutable $periodEnd): void
     {
         $this->periodEnd = $periodEnd;
     }

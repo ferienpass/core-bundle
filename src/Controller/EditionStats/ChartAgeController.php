@@ -61,7 +61,7 @@ SQL
 
         // Transform array to key=>value structure
         $ageAndCount = array_combine(array_column($ageAndCount, 'age'), array_column($ageAndCount, 'count'));
-        ksort($ageAndCount, SORT_NATURAL);
+        ksort($ageAndCount, \SORT_NATURAL);
 
         $return = [];
         foreach ($ageAndCount as $age => $count) {

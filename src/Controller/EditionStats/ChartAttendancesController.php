@@ -68,11 +68,11 @@ class ChartAttendancesController extends AbstractEditionStatsWidgetController
         $return = [];
         $return[(clone $begin)->modify('-1 day')->getTimestamp()] = 0;
 
-        /** @var \DateInterval $dt */
+        /** @var \DateTimeInterface $dt */
         foreach (new \DatePeriod($begin, $interval, $end) as $dt) {
             $count = $daysAndCount[$dt->format('Y-m-d')] ?? 0;
 
-            $return[$dt->getTimestamp()] = (int)$count;
+            $return[$dt->getTimestamp()] = (int) $count;
         }
 
         return $return;
