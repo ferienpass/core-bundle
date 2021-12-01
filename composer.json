@@ -65,6 +65,7 @@
     "symfony/serializer": "^4.4 || ^5.2",
     "symfony/templating": "^4.4 || ^5.2",
     "symfony/translation": "^5.2",
+    "symfony/twig-bridge": "^5.2",
     "symfony/validator": "^4.4 || ^5.2",
     "twig/twig": "^2.12 || ^3.0",
     "twig/intl-extra": "^2.14 || ^3.0",

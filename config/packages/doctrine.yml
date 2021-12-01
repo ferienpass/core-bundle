@@ -1,5 +1,9 @@
 doctrine:
   orm:
+    mappings:
+      FerienpassCoreBundle:
+        type: annotation
+        dir: src/Entity
     dql:
       datetime_functions:
         DATE_FORMAT: DoctrineExtensions\Query\Mysql\DateFormat
