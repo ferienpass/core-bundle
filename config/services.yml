@@ -197,6 +197,9 @@ services:
     tags:
       - { name: 'doctrine.event_listener', event: 'preUpdate' }
 
+  Ferienpass\CoreBundle\EventListener\Doctrine\Offer\DateSortingListener:
+    tags: [ { name: 'doctrine.event_listener', event: 'preUpdate' } ]
+
   Ferienpass\CoreBundle\EventListener\Doctrine\Offer\VariantListener:
     tags:
       - { name: 'doctrine.event_listener', event: 'preUpdate' }

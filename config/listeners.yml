@@ -20,6 +20,10 @@ services:
     arguments:
       [ '@database_connection' ]
 
+  Ferienpass\CoreBundle\EventListener\Callback\Table\Offer\DatesSortingListener:
+    tags: [ { name: contao.callback, table: Offer, target: config.onsubmit } ]
+    arguments: [ '@database_connection' ]
+
   Ferienpass\CoreBundle\EventListener\PrettyErrorScreenListener:
     arguments:
       - '%contao.pretty_error_screens%'

@@ -721,6 +721,11 @@ class Offer
         $this->saved = $saved;
     }
 
+    public function setDatesSorting(?int $datesSorting): void
+    {
+        $this->datesSorting = $datesSorting;
+    }
+
     public function getStatus(): string
     {
         if ($this->isCancelled()) {
