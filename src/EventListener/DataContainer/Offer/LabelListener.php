@@ -49,7 +49,7 @@ class LabelListener
             return;
         }
 
-        /** @var Offer $offer */
+        /** @var Offer|null $offer */
         $offer = $this->offerRepository->find($dc->id);
         if (null === $offer) {
             return;
@@ -65,15 +65,18 @@ class LabelListener
     /**
      * @Callback(table="Offer", target="list.label.label")
      */
-    public function labelCallback(array $row, string $label, DataContainer $dc, array $labels)
+    public function labelCallback(array $row, string $label, DataContainer $dc, array $labels): array
     {
         if ($row['edition']) {
             $edition = $this->editionRepository->find($row['edition']);
             $labels[0] = preg_replace('/[^A-Z0-9]/', '', $edition->getName());
         }
 
-        /** @var Offer $offer */
+        /** @var Offer|null $offer */
         $offer = $this->offerRepository->find($row['id']);
+        if (null === $offer) {
+            return $labels;
+        }
 
         $labels[1] = implode(', ', array_map(fn (Host $h) => mb_strimwidth($h->getName(), 0, 25, '…'), $offer->getHosts()->toArray()));
 
@@ -90,7 +93,7 @@ class LabelListener
         /** @var OfferDate $date */
         if ($date = $offer->getDates()->first()) {
             $formatter = new \IntlDateFormatter('de_DE', \IntlDateFormatter::SHORT, \IntlDateFormatter::SHORT);
-            $formatter->setPattern('E, dd.MM.');
+            $formatter->setPattern('E, dd.MM. HH:mm');
 
             $labels[3] = $formatter->format($date->getBegin());
         }
@@ -137,13 +140,13 @@ class LabelListener
     /**
      * @Callback(table="Offer", target="config.onload")
      */
-    public function onload(DataContainer $dc)
+    public function onload(DataContainer $dc): void
     {
-        if (!$dc || !$dc->id) {
+        if (!$dc->id) {
             return;
         }
 
-        /** @var Offer $offer */
+        /** @var Offer|null $offer */
         $offer = $this->offerRepository->find($dc->id);
         if (null === $offer) {
             return;
@@ -174,13 +177,13 @@ class LabelListener
     /**
      * @Callback(table="Offer", target="config.onsubmit")
      */
-    public function onsubmit(DataContainer $dc)
+    public function onsubmit(DataContainer $dc): void
     {
-        if (!$dc || !$dc->id) {
+        if (!$dc->id) {
             return;
         }
 
-        /** @var Offer $offer */
+        /** @var Offer|null $offer */
         $offer = $this->offerRepository->find($dc->id);
         if (null === $offer) {
             return;
