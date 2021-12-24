@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\Entity;
 use Contao\MemberModel;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -164,6 +165,19 @@ class Participant
     public function getAttendancesNotWithdrawn(): Collection
     {
         return $this->attendances->filter(fn (Attendance $attendance) => Attendance::STATUS_WITHDRAWN !== $attendance->getStatus());
+    }
+
+    public function getLastAttendance(): ?Attendance
+    {
+        \assert($this->attendances instanceof ArrayCollection);
+
+        $criteria = Criteria::create()
+            ->orderBy(['modifiedAt' => Criteria::DESC])
+        ;
+
+        $attendances = $this->attendances->matching($criteria);
+
+        return $attendances->first() ?: null;
     }
 
     public function setFirstname(string $firstname): void

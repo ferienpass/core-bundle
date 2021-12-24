@@ -32,7 +32,7 @@ services:
     tags: [ 'contao.dashboard_widget' ]
 
   Ferienpass\CoreBundle\Controller\BackendDashboard\EraseDataController:
-    arguments: [ '@database_connection' ]
+    arguments: [ '@Ferienpass\CoreBundle\Facade\EraseDataFacade' ]
     tags: [ 'contao.dashboard_widget' ]
 
   Ferienpass\CoreBundle\Controller\BackendDashboard\InformSleepController:
@@ -115,6 +115,11 @@ services:
     tags:
       - { name: contao.backend_module, key: 'event_log', priority: 10, category: 'content' }
 
+  Ferienpass\CoreBundle\Controller\Backend\EraseDataController:
+    arguments: ['@Ferienpass\CoreBundle\Facade\EraseDataFacade']
+    tags:
+      - { name: contao.backend_module, key: 'erase_data', priority: 10, category: 'content' }
+
   Ferienpass\CoreBundle\Controller\Backend\PdfProofController:
     arguments: [ '@Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports' ]
 
@@ -150,6 +155,9 @@ services:
 
   Ferienpass\CoreBundle\Facade\AttendanceFacade:
     arguments: [ '@messenger.default_bus', '@doctrine', '@Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems' ]
+
+  Ferienpass\CoreBundle\Facade\EraseDataFacade:
+    arguments: [ '@database_connection', '@Ferienpass\CoreBundle\Repository\ParticipantRepository' ]
 
   Ferienpass\CoreBundle\Repository\HostRepository:
     arguments: [ '@doctrine' ]
