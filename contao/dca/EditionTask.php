@@ -143,8 +143,8 @@ $GLOBALS['TL_DCA']['EditionTask'] = [
                 'mandatory' => true,
                 'tl_class' => 'w50 wizard',
             ],
-            'load_callback' => [fn ($v) => strtotime($v)],
-            'save_callback' => [fn ($v) => $v ? date('Y-m-d H:i:s', $v) : null],
+            'load_callback' => [fn ($v): string => $v ? (string) strtotime($v) : ''],
+            'save_callback' => [fn ($v): ?string => $v ? date('Y-m-d H:i:s', $v) : null],
         ],
         'periodEnd' => [
             'exclude' => true,
@@ -157,8 +157,8 @@ $GLOBALS['TL_DCA']['EditionTask'] = [
                 'mandatory' => true,
                 'tl_class' => 'w50 wizard',
             ],
-            'load_callback' => [fn ($v) => strtotime($v)],
-            'save_callback' => [fn ($v) => $v ? date('Y-m-d H:i:s', $v) : null],
+            'load_callback' => [fn ($v): string => $v ? (string) strtotime($v) : ''],
+            'save_callback' => [fn ($v): ?string => $v ? date('Y-m-d H:i:s', $v) : null],
         ],
         'color' => [
             'exclude' => true,

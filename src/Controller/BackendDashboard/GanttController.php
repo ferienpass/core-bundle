@@ -13,18 +13,25 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\BackendDashboard;
 
-use Ferienpass\CoreBundle\Entity\Edition;
 use Ferienpass\CoreBundle\Entity\EditionTask;
+use Ferienpass\CoreBundle\Repository\EditionRepository;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GanttController extends AbstractDashboardWidgetController
 {
     private TranslatorInterface $translator;
+    private EditionRepository $editionRepository;
+    private CsrfTokenManagerInterface $csrfTokenManager;
+    private string $csrfTokenName;
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, EditionRepository $editionRepository, CsrfTokenManagerInterface $csrfTokenManager, string $csrfTokenName)
     {
         $this->translator = $translator;
+        $this->editionRepository = $editionRepository;
+        $this->csrfTokenManager = $csrfTokenManager;
+        $this->csrfTokenName = $csrfTokenName;
     }
 
     public function __invoke(): Response
@@ -32,8 +39,7 @@ class GanttController extends AbstractDashboardWidgetController
         $tasks = [];
         $now = new \DateTimeImmutable();
 
-        /** @var Edition $edition */
-        foreach ($this->getDoctrine()->getRepository(Edition::class)->findAll() as $edition) {
+        foreach ($this->editionRepository->findAll() as $edition) {
             foreach ($edition->getTasks() as $task) {
                 if ($task->getPeriodEnd() < $now && $task->getPeriodEnd()->diff($now)->days > 30) {
                     continue;
@@ -50,10 +56,14 @@ class GanttController extends AbstractDashboardWidgetController
                     'editLink' => [
                         'link' => $this->translator->trans('EditionTask.edit.0', [], 'contao_EditionTask'),
                         'title' => $this->translator->trans('EditionTask.edit.1', [$task->getId()], 'contao_EditionTask'),
-                        'href' => $this->generateUrl('contao_backend', ['do' => 'editions', 'table' => 'EditionTask', 'pid' => $edition->getId(), 'act' => 'edit', 'id' => $task->getId()]),
+                        'href' => $this->generateUrl('contao_backend', ['do' => 'editions', 'table' => 'EditionTask', 'pid' => $edition->getId(), 'act' => 'edit', 'id' => $task->getId(), 'rt' => $this->csrfTokenManager->getToken($this->csrfTokenName)->getValue()]),
                     ],
                 ];
             }
+        }
+
+        if (empty($tasks)) {
+            return new Response('', Response::HTTP_NO_CONTENT);
         }
 
         return $this->render('@FerienpassCore/Backend/Dashboard/gantt.html.twig', [

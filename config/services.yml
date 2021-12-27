@@ -40,7 +40,7 @@ services:
     tags: [ 'contao.dashboard_widget' ]
 
   Ferienpass\CoreBundle\Controller\BackendDashboard\GanttController:
-    arguments: [ '@translator' ]
+    arguments: [ '@translator', '@Ferienpass\CoreBundle\Repository\EditionRepository', '@contao.csrf.token_manager', '%contao.csrf_token_name%' ]
     tags: [ 'contao.dashboard_widget' ]
 
   Ferienpass\CoreBundle\Controller\BackendDashboard\CreateSeasonController:
@@ -116,7 +116,7 @@ services:
       - { name: contao.backend_module, key: 'event_log', priority: 10, category: 'content' }
 
   Ferienpass\CoreBundle\Controller\Backend\EraseDataController:
-    arguments: ['@Ferienpass\CoreBundle\Facade\EraseDataFacade']
+    arguments: [ '@Ferienpass\CoreBundle\Facade\EraseDataFacade' ]
     tags:
       - { name: contao.backend_module, key: 'erase_data', priority: 10, category: 'content' }
 
