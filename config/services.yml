@@ -190,7 +190,8 @@ services:
   Ferienpass\CoreBundle\Controller\ContentElement\HomeNewsList: ~
   Ferienpass\CoreBundle\Controller\ContentElement\HyperlinkController: ~
   Ferienpass\CoreBundle\Controller\ContentElement\Contact: ~
-  Ferienpass\CoreBundle\Controller\ContentElement\CountdownController: ~
+  Ferienpass\CoreBundle\Controller\ContentElement\CountdownController:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
 
   Ferienpass\CoreBundle\Menu\MenuBuilder:
     arguments: [ "@knp_menu.factory", '@security.logout_url_generator', '@request_stack' ]

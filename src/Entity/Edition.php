@@ -180,14 +180,6 @@ class Edition
     /**
      * @return Collection<int, EditionTask>
      */
-    public function getShowOfferPeriods(): Collection
-    {
-        return $this->getTasks()->filter(static fn (EditionTask $element) => 'show_offers' === $element->getType());
-    }
-
-    /**
-     * @return Collection<int, EditionTask>
-     */
     public function getTasksOfType(string $type): Collection
     {
         return $this->getTasks()->filter(static fn (EditionTask $element) => $type === $element->getType());

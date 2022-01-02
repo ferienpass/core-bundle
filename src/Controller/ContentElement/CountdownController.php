@@ -18,7 +18,6 @@ use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController
 use Contao\CoreBundle\ServiceAnnotation\ContentElement;
 use Contao\StringUtil;
 use Contao\Template;
-use Ferienpass\CoreBundle\Entity\Edition;
 use Ferienpass\CoreBundle\Entity\EditionTask;
 use Ferienpass\CoreBundle\Repository\EditionRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,17 +28,22 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class CountdownController extends AbstractContentElementController
 {
+    private EditionRepository $editionRepository;
+
+    private function __construct(EditionRepository $editionRepository)
+    {
+        $this->editionRepository = $editionRepository;
+    }
+
     protected function getResponse(Template $template, ContentModel $model, Request $request): Response
     {
-        /** @var EditionRepository $editionRepo */
-        $editionRepo = $this->getDoctrine()->getRepository(Edition::class);
-        $passEdition = $editionRepo->findOneClosestByTask('show_offers');
+        $passEdition = $this->editionRepository->findOneClosestByTask('show_offers');
         if (null === $passEdition) {
             return new Response('Fehler. Zeitraum nicht festgelegt.');
         }
 
         /** @var EditionTask $editionTask */
-        $editionTask = $passEdition->getShowOfferPeriods()->current();
+        $editionTask = $passEdition->getTasksOfType('show_offers')->current();
 
         return $this->render('@FerienpassCore/ContentElement/countdown.html.twig', [
             'headline' => StringUtil::deserialize($model->headline, true)['value'] ?? '',
