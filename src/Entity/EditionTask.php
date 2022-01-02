@@ -303,6 +303,11 @@ class EditionTask
         return true;
     }
 
+    public function isUpcoming(): bool
+    {
+        return !$this->isActive() && !$this->isCompleted();
+    }
+
     public function setDescription(string $description): void
     {
         $this->description = $description;

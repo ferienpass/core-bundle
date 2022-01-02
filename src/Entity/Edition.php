@@ -159,11 +159,11 @@ class Edition
         $tasks = $this->getTasks()->filter(static fn (EditionTask $element) => 'holiday' === $element->getType());
 
         if ($tasks->count() > 1) {
-            throw new AmbiguousHolidayTaskException('More than one holiday found for the pass edition ID '.$this->getId());
+            throw new AmbiguousHolidayTaskException('More than one holiday found for the pass edition ID '.($this->getId() ?? 0));
         }
 
         if ($tasks->isEmpty()) {
-            throw new MissingHolidayTaskException('No holiday found for pass edition ID '.$this->getId());
+            throw new MissingHolidayTaskException('No holiday found for pass edition ID '.($this->getId() ?? 0));
         }
 
         /** @var EditionTask $task */
@@ -177,9 +177,20 @@ class Edition
         return $this->getTasks()->filter(fn (EditionTask $element) => 'host_editing_stage' === $element->getType());
     }
 
+    /**
+     * @return Collection<int, EditionTask>
+     */
     public function getShowOfferPeriods(): Collection
     {
         return $this->getTasks()->filter(static fn (EditionTask $element) => 'show_offers' === $element->getType());
+    }
+
+    /**
+     * @return Collection<int, EditionTask>
+     */
+    public function getTasksOfType(string $type): Collection
+    {
+        return $this->getTasks()->filter(static fn (EditionTask $element) => $type === $element->getType());
     }
 
     /**
@@ -195,7 +206,7 @@ class Edition
         );
 
         if ($tasks->count() > 1) {
-            throw new \LogicException('More than one host editing stage valid at the moment for pass edition ID'.$this->getId());
+            throw new \LogicException('More than one host editing stage valid at the moment for pass edition ID'.($this->getId() ?? 0));
         }
 
         if ($tasks->isEmpty()) {

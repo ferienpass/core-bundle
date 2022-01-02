@@ -15,6 +15,7 @@ namespace Ferienpass\CoreBundle\Repository;
 
 use Contao\PageModel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
@@ -59,6 +60,32 @@ class EditionRepository extends ServiceEntityRepository
     public function findOneWithCurrentHoliday(): ?Edition
     {
         return $this->findOneWithActiveTask('holiday');
+    }
+
+    /**
+     * @return array<Edition>
+     */
+    public function findCurrent(): array
+    {
+        $qb0 = $this->_em->createQueryBuilder();
+        $qb = $this->createQueryBuilder('edition')
+            ->innerJoin(
+                'edition.tasks',
+                'period',
+                Expr\Join::WITH,
+                $qb0->expr()->andX(
+                    "period.type = 'holiday'",
+                    $qb0->expr()->orX(
+                        $qb0->expr()->gte('period.periodBegin', 'CURRENT_TIMESTAMP()'),
+                        $qb0->expr()->gte('period.periodEnd', ':end')
+                    )
+                )
+            )
+            ->orderBy('period.periodEnd', 'DESC')
+            ->setParameter('end', new \DateTime('-1 year'), Types::DATETIME_MUTABLE)
+            ->getQuery();
+
+        return $qb->getResult();
     }
 
     /**
