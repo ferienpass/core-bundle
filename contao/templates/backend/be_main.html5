@@ -147,12 +147,13 @@
                         </div>
                     </div>
                     <div class="flex-shrink-0 flex bg-gray-700 p-4">
-                        <div class="flex items-center justify-end flex-shrink-0 w-full">
+                        <div class="flex flex-col items-end justify-end flex-shrink-0 w-full">
                             <a href="https://ferienpass.online" target="_blank">
                                 <img class="h-6 w-auto"
                                      src="<?= $this->asset('img/ferienpass-logo--on-dark.svg', 'ferienpass_core') ?>"
                                      alt="Ferienpass Logo"/>
                             </a>
+                            <a class="text-[0.5rem] mt-0.5 text-white hover:underline hover:text-primary-50" href="https://github.com/ferienpass/ferienpass/releases" target="_blank"><?= $this->version ?></a>
                         </div>
                     </div>
                 </div>
