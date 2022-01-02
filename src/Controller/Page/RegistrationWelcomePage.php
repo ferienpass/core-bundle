@@ -26,7 +26,7 @@ class RegistrationWelcomePage extends AbstractController
 
         $this->checkToken();
 
-        return $this->createPageBuilder($request->get('pageModel'))
+        return $this->createPageBuilder($request->attributes->get('pageModel'))
             ->addFragment('main', new FragmentReference('ferienpass.fragment.registration_welcome'))
             ->addFragment('main', new FragmentReference('ferienpass.fragment.participants'))
             ->getResponse()

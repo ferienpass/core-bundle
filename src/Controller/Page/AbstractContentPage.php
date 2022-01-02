@@ -31,7 +31,7 @@ class AbstractContentPage extends AbstractController
     {
         $this->initializeContaoFramework();
 
-        $pageModel = $request->get('pageModel');
+        $pageModel = $request->attributes->get('pageModel');
 
         $pageBuilder = $this->createPageBuilder($pageModel);
 

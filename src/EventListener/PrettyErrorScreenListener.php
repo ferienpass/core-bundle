@@ -117,17 +117,17 @@ class PrettyErrorScreenListener
         try {
             switch (true) {
                 case 401 === $type:
-                    return $this->pageBuilderFactory->create($request->get('pageModel'))
+                    return $this->pageBuilderFactory->create($request->attributes->get('pageModel'))
                         ->addFragment('main', new FragmentReference('ferienpass.fragment.error401'))
                         ->getResponse();
 
                 case 403 === $type:
-                    return $this->pageBuilderFactory->create($request->get('pageModel'))
+                    return $this->pageBuilderFactory->create($request->attributes->get('pageModel'))
                         ->addFragment('main', new FragmentReference('ferienpass.fragment.error403'))
                         ->getResponse();
 
                 case 404 === $type:
-                    return $this->pageBuilderFactory->create($request->get('pageModel'))
+                    return $this->pageBuilderFactory->create($request->attributes->get('pageModel'))
                         ->addFragment('main', new FragmentReference('ferienpass.fragment.error404'))
                         ->getResponse();
             }

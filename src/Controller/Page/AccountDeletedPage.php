@@ -24,7 +24,7 @@ class AccountDeletedPage extends AbstractController
     {
         $this->initializeContaoFramework();
 
-        return $this->createPageBuilder($request->get('pageModel'))
+        return $this->createPageBuilder($request->attributes->get('pageModel'))
             ->addFragment('main', new FragmentReference('ferienpass.fragment.account_deleted'))
             ->getResponse()
             ;

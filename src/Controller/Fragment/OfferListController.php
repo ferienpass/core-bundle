@@ -42,7 +42,7 @@ final class OfferListController extends AbstractController
         ;
 
         $hasEditions = $this->editionRepository->count([]) > 0;
-        $edition = $this->editionRepository->findOneToShow(PageModel::findByPk($request->get('pageModel')));
+        $edition = $this->editionRepository->findOneToShow(PageModel::findByPk($request->attributes->get('pageModel')));
 
         if ($hasEditions && null !== $edition) {
             $qb->andWhere('o.edition = :edition')->setParameter('edition', $edition->getId(), Types::INTEGER);

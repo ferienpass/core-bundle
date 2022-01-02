@@ -26,7 +26,7 @@ class NotificationsPage extends AbstractController
 
         $this->checkToken();
 
-        return $this->createPageBuilder($request->get('pageModel'))
+        return $this->createPageBuilder($request->attributes->get('pageModel'))
             ->addFragment('main', new FragmentReference('ferienpass.fragment.notifications'))
             ->getResponse()
         ;

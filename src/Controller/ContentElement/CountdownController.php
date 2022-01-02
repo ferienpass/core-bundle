@@ -30,7 +30,7 @@ class CountdownController extends AbstractContentElementController
 {
     private EditionRepository $editionRepository;
 
-    private function __construct(EditionRepository $editionRepository)
+    public function __construct(EditionRepository $editionRepository)
     {
         $this->editionRepository = $editionRepository;
     }

@@ -26,7 +26,7 @@ class UserAccountPage extends AbstractController
 
         $this->checkToken();
 
-        return $this->createPageBuilder($request->get('pageModel'))
+        return $this->createPageBuilder($request->attributes->get('pageModel'))
             ->addFragment('main', new FragmentReference('ferienpass.fragment.change_password'))
             ->addFragment('main', new FragmentReference('ferienpass.fragment.close_account'))
             ->getResponse()

@@ -82,7 +82,7 @@
                                     {% if twoFactorActive|default %}
                                         <h3 class="text-lg font-semibold text-gray-900">{{ 'MSC.twoFactorAuthentication'|trans([], 'contao_default') }}</h3>
                                         <div class="mt-2">
-                                            <label class="block text-sm font-medium leading-5 text-gray-700"
+                                            <label class="block text-sm font-medium leading-5 text-gray-700 dark:text-gray-50"
                                                    for="verify">{{ 'MSC.twoFactorVerification'|trans([], 'contao_default') }}</label>
                                             <input type="text" name="verify" id="verify"
                                                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
