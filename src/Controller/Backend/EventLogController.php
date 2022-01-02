@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/event-log", name="backend_event_log")
+ * @Route("/ereignisse", name="backend_event_log")
  */
 final class EventLogController extends AbstractBackendController
 {

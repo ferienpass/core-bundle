@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/erase-data", name="backend_erase_data")
+ * @Route("/daten-löschen", name="backend_erase_data")
  */
 final class EraseDataController extends AbstractBackendController
 {
