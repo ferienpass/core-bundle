@@ -22,7 +22,6 @@ class PurgeDcaListener
             'fields' => [
                 'keywords',
                 'teaserCssID',
-                'showTeaser',
                 'teaser',
                 'printable',
                 'protected',
