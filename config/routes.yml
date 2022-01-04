@@ -9,7 +9,7 @@ ferienpass.frontend:
 ferienpass.backend:
     resource: '../src/Controller/Backend/'
     type: annotation
-    prefix: /admin
+    prefix: '%contao.backend.route_prefix%'
     defaults:
         _scope: backend
         _token_check: true
@@ -17,7 +17,7 @@ ferienpass.backend:
 ferienpass.backend_api:
     resource: '../src/Controller/Backend/Api'
     type: annotation
-    prefix: /admin/api
+    prefix: '%contao.backend.route_prefix%/api'
     defaults:
         _scope: backend
         _token_check: false
@@ -29,3 +29,12 @@ ferienpass.frontend_api:
     defaults:
         _scope: frontend
         _token_check: false
+
+# Redirect /contao to /admin
+contao_backend_redirect:
+    path: '/contao'
+    defaults:
+        _scope: backend
+        _controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::redirectAction
+        route: contao_backend
+        permanent: true
