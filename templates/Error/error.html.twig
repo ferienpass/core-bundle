@@ -15,9 +15,11 @@
 {% block scripts %}
     {% set sentry_id = ''|sentry_last_event_id %}
     {% if sentry_id %}
-        <script src="https://browser.sentry-cdn.com/5.7.1/bundle.min.js"
-                integrity="sha384-KMv6bBTABABhv0NI+rVWly6PIRvdippFEgjpKyxUcpEmDWZTkDOiueL5xW+cztZZ"
-                crossorigin="anonymous"></script>
+        <script
+                src="https://browser.sentry-cdn.com/6.16.1/bundle.min.js"
+                integrity="sha384-WkFzsrcXKeJ3KlWNXojDiim8rplIj1RPsCbuv7dsLECoXY8C6Cx158CMgl+O+QKW"
+                crossorigin="anonymous"
+        ></script>
         <script>
             Sentry.init({dsn: '{{ ''|sentry_dsn }}'});
             document.getElementById('btn_report').addEventListener('click', function (e) {

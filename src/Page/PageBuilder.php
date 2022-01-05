@@ -55,7 +55,7 @@ class PageBuilder
         ContaoFramework $framework,
         RequestStack $requestStack
     ) {
-        $this->pageModel = $pageModel;
+        $this->pageModel = $pageModel->loadDetails();
         $this->fragmentHandler = $fragmentHandler;
         $this->translator = $translator;
         $this->framework = $framework;

@@ -15,12 +15,12 @@ namespace Ferienpass\CoreBundle\EventListener;
 
 use Contao\CoreBundle\Exception\InvalidRequestTokenException;
 use Contao\CoreBundle\Exception\ResponseException;
+use Contao\CoreBundle\Util\LocaleUtil;
+use Contao\PageModel;
 use Contao\StringUtil;
 use Ferienpass\CoreBundle\Fragment\FragmentReference;
 use Ferienpass\CoreBundle\Page\PageBuilderFactory;
-use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\AcceptHeader;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -35,22 +35,18 @@ class PrettyErrorScreenListener
 {
     private bool $prettyErrorScreens;
     private Environment $twig;
-    private Packages $assetPackages;
-    private string $logo;
     private PageBuilderFactory $pageBuilderFactory;
 
-    public function __construct(bool $prettyErrorScreens, Environment $twig, Packages $assetPackages, string $logo, PageBuilderFactory $pageBuilderFactory)
+    public function __construct(bool $prettyErrorScreens, Environment $twig, PageBuilderFactory $pageBuilderFactory)
     {
         $this->prettyErrorScreens = $prettyErrorScreens;
         $this->twig = $twig;
-        $this->assetPackages = $assetPackages;
-        $this->logo = $logo;
         $this->pageBuilderFactory = $pageBuilderFactory;
     }
 
     public function __invoke(ExceptionEvent $event): void
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMainRequest()) {
             return;
         }
 
@@ -71,12 +67,6 @@ class PrettyErrorScreenListener
     {
         $exception = $event->getThrowable();
 
-        if ($exception instanceof ServiceUnavailableHttpException) {
-            $this->renderTemplate('service_unavailable', 503, $event);
-
-            return;
-        }
-
         switch (true) {
             case $exception instanceof UnauthorizedHttpException:
                 $this->renderErrorScreenByType(401, $event);
@@ -88,6 +78,14 @@ class PrettyErrorScreenListener
 
             case $exception instanceof NotFoundHttpException:
                 $this->renderErrorScreenByType(404, $event);
+                break;
+
+            case $exception instanceof ServiceUnavailableHttpException:
+                $this->renderErrorScreenByType(503, $event);
+
+                if (!$event->hasResponse()) {
+                    $this->renderTemplate('service_unavailable', 503, $event);
+                }
                 break;
 
             default:
@@ -105,77 +103,21 @@ class PrettyErrorScreenListener
 
         $processing = true;
 
-        if (null !== ($response = $this->getResponseFromPageHandler($type, $event->getRequest()))) {
-            $event->setResponse($response);
-        }
-
-        $processing = false;
-    }
-
-    private function getResponseFromPageHandler(int $type, Request $request): ?Response
-    {
         try {
-            switch (true) {
-                case 401 === $type:
-                    return $this->pageBuilderFactory->create($request->attributes->get('pageModel'))
-                        ->addFragment('main', new FragmentReference('ferienpass.fragment.error401'))
-                        ->getResponse();
+            $request = $event->getRequest();
+            $pageModel = $request->attributes->get('pageModel');
 
-                case 403 === $type:
-                    return $this->pageBuilderFactory->create($request->attributes->get('pageModel'))
-                        ->addFragment('main', new FragmentReference('ferienpass.fragment.error403'))
-                        ->getResponse();
-
-                case 404 === $type:
-                    return $this->pageBuilderFactory->create($request->attributes->get('pageModel'))
-                        ->addFragment('main', new FragmentReference('ferienpass.fragment.error404'))
-                        ->getResponse();
+            try {
+                $response = $this->getResponseFromPageHandler($type, $pageModel);
+                $event->setResponse($response);
+            } catch (ResponseException $e) {
+                $event->setResponse($e->getResponse());
+            } catch (\Throwable $e) {
+                $event->setThrowable($e);
             }
-        } catch (ResponseException $e) {
-            return $e->getResponse();
-        } catch (\Exception $e) {
-            return null;
+        } finally {
+            $processing = false;
         }
-
-        return null;
-    }
-
-    private function renderTemplate(string $template, int $statusCode, ExceptionEvent $event): void
-    {
-        if (!$this->prettyErrorScreens) {
-            return;
-        }
-
-        $view = '@FerienpassCore/Error/'.$template.'.html.twig';
-        $parameters = $this->getTemplateParameters($view, $statusCode, $event);
-
-        try {
-            $event->setResponse(new Response($this->twig->render($view, $parameters), $statusCode));
-        } catch (Error $e) {
-            $event->setResponse(new Response($this->twig->render('@FerienpassCore/Error/error.html.twig'), 500));
-        }
-    }
-
-    private function getTemplateParameters(string $view, int $statusCode, ExceptionEvent $event): array
-    {
-        $encoded = StringUtil::encodeEmail('info@ferienpass.online');
-        $request = $event->getRequest();
-
-        $logo = $this->assetPackages->getUrl($this->logo, 'app_main');
-        if ('' === trim($logo, '/')) {
-            $logo = null;
-        }
-
-        return [
-            'statusCode' => $statusCode,
-            'statusName' => Response::$statusTexts[$statusCode],
-            'template' => $view,
-            'base' => $request->getBasePath(),
-            'language' => $request->getLocale(),
-            'adminEmail' => '&#109;&#97;&#105;&#108;&#116;&#111;&#58;'.$encoded,
-            'exception' => $event->getThrowable()->getMessage(),
-            'logoSrc' => $logo,
-        ];
     }
 
     /**
@@ -195,6 +137,59 @@ class PrettyErrorScreenListener
         } while (null === $template && null !== ($exception = $exception->getPrevious()));
 
         $this->renderTemplate($template ?: 'error', $statusCode, $event);
+    }
+
+    private function renderTemplate(string $template, int $statusCode, ExceptionEvent $event): void
+    {
+        if (!$this->prettyErrorScreens) {
+            return;
+        }
+
+        $view = '@FerienpassCore/Error/'.$template.'.html.twig';
+        $parameters = $this->getTemplateParameters($view, $statusCode, $event);
+        try {
+            $event->setResponse(new Response($this->twig->render($view, $parameters), $statusCode));
+        } catch (Error $e) {
+            $event->setResponse(new Response($this->twig->render('@ContaoCore/Error/error.html.twig'), 500));
+        }
+    }
+
+    private function getTemplateParameters(string $view, int $statusCode, ExceptionEvent $event): array
+    {
+        $encoded = StringUtil::encodeEmail('info@ferienpass.online');
+
+        return [
+            'statusCode' => $statusCode,
+            'statusName' => Response::$statusTexts[$statusCode],
+            'template' => $view,
+            'base' => $event->getRequest()->getBasePath(),
+            'language' => LocaleUtil::formatAsLanguageTag($event->getRequest()->getLocale()),
+            'adminEmail' => '&#109;&#97;&#105;&#108;&#116;&#111;&#58;'.$encoded,
+            'exception' => $event->getThrowable()->getMessage(),
+            'throwable' => $event->getThrowable(),
+        ];
+    }
+
+    private function getResponseFromPageHandler(int $type, ?PageModel $pageModel): ?Response
+    {
+        switch (true) {
+            case 401 === $type:
+                return $this->pageBuilderFactory->create($pageModel)
+                    ->addFragment('main', new FragmentReference('ferienpass.fragment.error401'))
+                    ->getResponse();
+
+            case 403 === $type:
+                return $this->pageBuilderFactory->create($pageModel)
+                    ->addFragment('main', new FragmentReference('ferienpass.fragment.error403'))
+                    ->getResponse();
+
+            case 404 === $type:
+                return $this->pageBuilderFactory->create($pageModel)
+                    ->addFragment('main', new FragmentReference('ferienpass.fragment.error404'))
+                    ->getResponse();
+        }
+
+        return null;
     }
 
     private function getStatusCodeForException(\Throwable $exception): int
