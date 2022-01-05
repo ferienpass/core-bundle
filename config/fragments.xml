@@ -35,11 +35,11 @@
         <service id="Ferienpass\CoreBundle\Controller\Fragment\NotificationsController"/>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\PersonalData"/>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\SignInController">
-            <argument type="expression">service('security.hasher_factory').getPasswordHasher('Contao\\FrontendUser')</argument>
+            <argument type="expression">service('security.password_hasher_factory').getPasswordHasher('Contao\\FrontendUser')</argument>
             <argument type="service" id="security.authentication_utils"/>
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\CloseAccount">
-            <argument type="expression">service('security.hasher_factory').getPasswordHasher('Contao\\FrontendUser')</argument>
+            <argument type="expression">service('security.password_hasher_factory').getPasswordHasher('Contao\\FrontendUser')</argument>
             <argument type="service" id="logger"/>
             <tag name="monolog.logger" channel="ferienpass"/>
         </service>
@@ -75,7 +75,7 @@
             <argument type="service" id="logger"/>
             <argument type="service" id="contao.opt-in"/>
             <tag name="monolog.logger" channel="ferienpass"/>
-            <argument type="expression">service('security.hasher_factory').getPasswordHasher('Contao\\FrontendUser')</argument>
+            <argument type="expression">service('security.password_hasher_factory').getPasswordHasher('Contao\\FrontendUser')</argument>
         </service>
 
     </services>
