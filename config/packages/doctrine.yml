@@ -4,7 +4,7 @@ doctrine:
       FerienpassCoreBundle:
         type: annotation
         dir: src/Entity
-        prefix: Ferienpass\CoreBundle\Entity\
+        is_bundle: true
     dql:
       datetime_functions:
         DATE_FORMAT: DoctrineExtensions\Query\Mysql\DateFormat
