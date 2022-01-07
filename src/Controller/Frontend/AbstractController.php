@@ -19,6 +19,7 @@ use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\PageModel;
 use Ferienpass\CoreBundle\Page\PageBuilder;
 use Ferienpass\CoreBundle\Page\PageBuilderFactory;
+use Symfony\Component\Security\Core\Security;
 
 class AbstractController extends ContaoAbstractController
 {
@@ -27,6 +28,7 @@ class AbstractController extends ContaoAbstractController
         $services = parent::getSubscribedServices();
 
         $services[PageBuilderFactory::class] = PageBuilderFactory::class;
+        $services['security.helper'] = Security::class;
 
         return $services;
     }
