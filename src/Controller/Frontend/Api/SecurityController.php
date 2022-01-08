@@ -25,7 +25,7 @@ final class SecurityController extends AbstractController
      */
     public function login(Request $request): Response
     {
-        $this->get('contao.framework')->initialize();
+        $this->container->get('contao.framework')->initialize();
 
         if ($request->request->has('_target_path')) {
             return new RedirectResponse(base64_decode((string) $request->request->get('_target_path'), true));

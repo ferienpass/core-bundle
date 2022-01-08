@@ -50,7 +50,7 @@ final class CodeValidationController
         $attributeId = $request->request->get('att_id');
         $itemId = $request->request->get('item_id');
 
-        $expr = $this->connection->getExpressionBuilder();
+        $expr = $this->connection->createExpressionBuilder();
 
         $statement = $this->connection->createQueryBuilder()
             ->select('id')
@@ -62,9 +62,9 @@ final class CodeValidationController
             ->setParameter('code', $code)
             ->setParameter('item', $itemId)
             ->setParameter('attr', $attributeId)
-            ->execute();
+            ->executeQuery();
 
-        $success = (bool) $statement->fetch();
+        $success = (bool) $statement->fetchOne();
 
         $data['code'] = $code;
         $data['success'] = $success;

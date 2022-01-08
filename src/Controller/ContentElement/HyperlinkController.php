@@ -47,11 +47,10 @@ class HyperlinkController extends AbstractContentElementController
             $model->url = StringUtil::ampersand($model->url);
         }
 
-        if ($this->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
+        if ($this->container->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
             $template = new BackendTemplate('be_wildcard');
 
-            $template->title =
-                $this->get('translator')->trans('CTE.'.$this->getType().'.0', [], 'contao_modules');
+            $template->title = $this->container->get('translator')->trans('CTE.'.$this->getType().'.0', [], 'contao_modules');
             $template->wildcard = $model->linkTitle.' ⇒ '.InsertTags::replaceInsertTags($model->url);
 
             return new Response($template->parse());

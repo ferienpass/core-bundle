@@ -21,6 +21,8 @@ use Ferienpass\CoreBundle\Form\UserLoginType;
 use Ferienpass\CoreBundle\Form\UserRegistrationType;
 use Ferienpass\CoreBundle\Message\AccountCreated;
 use Ferienpass\CoreBundle\Message\AccountResendActivation;
+use Ferienpass\CoreBundle\Ux\Flash;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Scheb\TwoFactorBundle\Security\Authentication\Exception\InvalidTwoFactorCodeException;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Event\TwoFactorAuthenticationEvent;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Event\TwoFactorAuthenticationEvents;
@@ -28,20 +30,25 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Translation\TranslatableMessage;
 
 class SignInController extends AbstractController
 {
-    private EncoderFactoryInterface $encoderFactory;
+    private PasswordHasherInterface $passwordHasher;
     private AuthenticationUtils $authenticationUtils;
+    private MessageBusInterface $messageBus;
+    private EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(EncoderFactoryInterface $encoderFactory, AuthenticationUtils $authenticationUtils)
+    public function __construct(PasswordHasherInterface $passwordHasher, AuthenticationUtils $authenticationUtils, MessageBusInterface $messageBus, EventDispatcherInterface $eventDispatcher)
     {
-        $this->encoderFactory = $encoderFactory;
+        $this->passwordHasher = $passwordHasher;
         $this->authenticationUtils = $authenticationUtils;
+        $this->messageBus = $messageBus;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function __invoke(Request $request): Response
@@ -81,7 +88,7 @@ class SignInController extends AbstractController
             return $this->redirectToRoute('registration_confirm');
         }
 
-        if (null !== $existing = MemberModel::findActiveByEmailAndUsername($member->email)) {
+        if (null !== MemberModel::findActiveByEmailAndUsername($member->email)) {
             $form->addError(
                 new FormError('Ein Konto mit dieser E-Mail-Adresse besteht bereits. Versuchen Sie sich, anzumelden oder Ihr Passwort zurückzusetzen.')
             );
@@ -89,10 +96,7 @@ class SignInController extends AbstractController
             return null;
         }
 
-        $member->password = $this->encoderFactory
-            ->getEncoder(FrontendUser::class)
-            ->encodePassword($member->password, null)
-        ;
+        $member->password = $this->passwordHasher->hash($member->password);
 
         $this->createNewUser($member);
 
@@ -105,7 +109,7 @@ class SignInController extends AbstractController
             return;
         }
 
-        $this->dispatchMessage(new AccountResendActivation((int) $member->id));
+        $this->messageBus->dispatch(new AccountResendActivation((int) $member->id));
 
         $this->addFlash(...Flash::confirmation()->text(new TranslatableMessage('MSC.resendActivation', [], 'contao_default'))->create());
     }
@@ -120,7 +124,7 @@ class SignInController extends AbstractController
 
         $member->save();
 
-        $this->dispatchMessage(new AccountCreated((int) $member->id));
+        $this->messageBus->dispatch(new AccountCreated((int) $member->id));
     }
 
     private function findTargetPath(Request $request): string
@@ -131,13 +135,13 @@ class SignInController extends AbstractController
             $targetPath = base64_decode((string) $request->request->get('_target_path'), true);
         } elseif ($request->query->has('redirect')) {
             // We cannot use $request->getUri() here as we want to work with the original URI (no query string reordering)
-            if ($this->get('uri_signer')->check($request->getSchemeAndHttpHost().$request->getBaseUrl().$request->getPathInfo().(null !== ($qs = $request->server->get('QUERY_STRING')) ? '?'.$qs : ''))) {
+            if ($this->container->get('uri_signer')->check($request->getSchemeAndHttpHost().$request->getBaseUrl().$request->getPathInfo().(null !== ($qs = $request->server->get('QUERY_STRING')) ? '?'.$qs : ''))) {
                 $targetPath = $request->query->get('redirect');
             }
         }
 
         $exception = $this->authenticationUtils->getLastAuthenticationError();
-        $authorizationChecker = $this->get('security.authorization_checker');
+        $authorizationChecker = $this->container->get('security.authorization_checker');
 
         if ($exception instanceof LockedException) {
             $message = sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], $exception->getLockedMinutes());
@@ -149,9 +153,9 @@ class SignInController extends AbstractController
 
         if ($twoFactorEnabled = $authorizationChecker->isGranted('IS_AUTHENTICATED_2FA_IN_PROGRESS')) {
             // Dispatch 2FA form event to prepare 2FA providers
-            $token = $this->get('security.token_storage')->getToken();
+            $token = $this->container->get('security.token_storage')->getToken();
             $event = new TwoFactorAuthenticationEvent($request, $token);
-            $this->get('event_dispatcher')->dispatch($event, TwoFactorAuthenticationEvents::FORM);
+            $this->eventDispatcher->dispatch($event, TwoFactorAuthenticationEvents::FORM);
         }
 
         if (null === ($targetPath ?? null)) {

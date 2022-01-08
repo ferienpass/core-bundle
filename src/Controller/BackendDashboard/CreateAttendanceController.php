@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\BackendDashboard;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\Participant;
 use Ferienpass\CoreBundle\Facade\AttendanceFacade;
@@ -29,7 +30,7 @@ class CreateAttendanceController extends AbstractDashboardWidgetController
         $this->attendanceFacade = $attendanceFacade;
     }
 
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, ManagerRegistry $doctrine): Response
     {
         $form = $this->createForm(BackendApplicationType::class);
         $form->handleRequest($request);
@@ -50,7 +51,7 @@ class CreateAttendanceController extends AbstractDashboardWidgetController
                 $participant->setMobile($form->get('mobile')->getData());
                 $participant->setEmail($form->get('email')->getData());
 
-                $this->getDoctrine()->getManager()->persist($participant);
+                $doctrine->getManager()->persist($participant);
             }
 
             $this->attendanceFacade->create($offer, $participant, $status, $notify);

@@ -24,6 +24,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AccountStatusException;
@@ -44,6 +45,7 @@ class RegistrationActivateController extends AbstractController
     private AuthenticationSuccessHandlerInterface $authenticationSuccessHandler;
     private OptIn $optIn;
     private TokenChecker $tokenChecker;
+    private MessageBusInterface $messageBus;
 
     public function __construct(
         UserProviderInterface $userProvider,
@@ -53,7 +55,7 @@ class RegistrationActivateController extends AbstractController
         UserCheckerInterface $userChecker,
         AuthenticationSuccessHandlerInterface $authenticationSuccessHandler,
         OptIn $optIn,
-        TokenChecker $tokenChecker
+        TokenChecker $tokenChecker, MessageBusInterface $messageBus
     ) {
         $this->userProvider = $userProvider;
         $this->tokenStorage = $tokenStorage;
@@ -63,6 +65,7 @@ class RegistrationActivateController extends AbstractController
         $this->authenticationSuccessHandler = $authenticationSuccessHandler;
         $this->optIn = $optIn;
         $this->tokenChecker = $tokenChecker;
+        $this->messageBus = $messageBus;
     }
 
     public function __invoke(Request $request): Response
@@ -102,7 +105,7 @@ class RegistrationActivateController extends AbstractController
 
         $this->loginUser($memberModel->username, $request);
 
-        $this->dispatchMessage(new AccountActivated((int) $memberModel->id));
+        $this->messageBus->dispatch(new AccountActivated((int) $memberModel->id));
 
         return $this->redirectToRoute('registration_welcome');
     }
@@ -110,7 +113,7 @@ class RegistrationActivateController extends AbstractController
     private function loginUser(string $username, Request $request): void
     {
         try {
-            $user = $this->userProvider->loadUserByUsername($username);
+            $user = $this->userProvider->loadUserByIdentifier($username);
         } catch (UsernameNotFoundException $exception) {
             return;
         }

@@ -15,6 +15,7 @@ namespace Ferienpass\CoreBundle\Controller\Backend;
 
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
+use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,9 +32,9 @@ class PdfProofController extends AbstractController
         $this->pdfExports = $pdfExports;
     }
 
-    public function __invoke(int $id, Request $request)
+    public function __invoke(int $id, Request $request, OfferRepository $offerRepository)
     {
-        $offer = $this->getDoctrine()->getRepository(Offer::class)->find($id);
+        $offer = $offerRepository->find($id);
 
         $hasPdf = $this->pdfExports->has();
 

@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\Backend\Api;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Message\OfferCancelled;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -26,10 +28,9 @@ final class OfferController extends AbstractController
     /**
      * @Route("/cancel", name="backend_api_offer_cancel", methods={"POST"})
      */
-    public function cancelOffer(Offer $offer): Response
+    public function cancelOffer(Offer $offer, ManagerRegistry $doctrine, MessageBusInterface $messageBus): Response
     {
-        $this->get('contao.framework')->initialize();
-
+        $this->container->get('contao.framework')->initialize();
         $this->checkToken();
 
         if ($offer->isCancelled()) {
@@ -38,10 +39,10 @@ final class OfferController extends AbstractController
 
         $offer->setCancelled(true);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $doctrine->getManager();
         $em->flush();
 
-        $this->dispatchMessage(new OfferCancelled($offer->getId()));
+        $messageBus->dispatch(new OfferCancelled($offer->getId()));
 
         return new Response('', Response::HTTP_OK);
     }

@@ -101,12 +101,12 @@ final class ExportController extends AbstractController
 
     protected function checkToken(): void
     {
-        $token = $this->get('security.token_storage')->getToken();
+        $token = $this->container->get('security.token_storage')->getToken();
         if (null === $token || $this->get('security.authentication.trust_resolver')->isAnonymous($token)) {
             throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException();
         }
 
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
+        if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_USER')) {
             throw new ResponseException(new Response('Access Denied', Response::HTTP_UNAUTHORIZED));
         }
     }

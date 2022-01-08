@@ -104,7 +104,7 @@ class ApplicationListController extends AbstractController
                 continue;
             }
 
-            yield $attendance->getId() => $this->get('form.factory')->createNamed((string) $attendance->getId())
+            yield $attendance->getId() => $this->container->get('form.factory')->createNamed((string) $attendance->getId())
                 ->add('submit', SubmitType::class, ['label' => 'Abmelden'])
                 ->add('requestToken', ContaoRequestTokenType::class)
             ;

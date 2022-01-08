@@ -32,13 +32,13 @@ class HomeNewsList extends AbstractContentElementController
 {
     protected function getResponse(Template $template, ContentModel $model, Request $request): Response
     {
-        if ($this->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
+        if ($this->container->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
             $template = new BackendTemplate('be_wildcard');
 
             $template->title = 'Neuigkeiten';
             $template->wildcard = 'Liste mit hervorgehobenen Nachrichten';
 
-            $template->href = $this->get('router')->generate('contao_backend', ['do' => 'news']);
+            $template->href = $this->container->get('router')->generate('contao_backend', ['do' => 'news']);
             $template->link = 'Nachrichten verfassen';
 
             return new Response($template->parse());

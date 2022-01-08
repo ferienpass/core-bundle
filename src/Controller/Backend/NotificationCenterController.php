@@ -20,6 +20,7 @@ use NotificationCenter\Model\Notification;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -55,13 +56,13 @@ final class NotificationCenterController extends AbstractController
     /**
      * @Route("/zusagen-verschicken", name="backend_send_acceptances")
      */
-    public function sendAcceptances(Request $request): Response
+    public function sendAcceptances(Request $request, MessageBusInterface $messageBus): Response
     {
         $form = $this->createFormBuilder()->getForm();
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->dispatchMessage(new ConfirmApplications($this->unconfirmedApplications->getAttendanceIds()));
+            $messageBus->dispatch(new ConfirmApplications($this->unconfirmedApplications->getAttendanceIds()));
 
             return $this->redirectToRoute('backend_send_acceptances');
         }

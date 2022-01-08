@@ -18,10 +18,9 @@ use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Template;
-use Terminal42\ServiceAnnotationBundle\ServiceAnnotationInterface;
 use Twig\Environment as TwigEnvironment;
 
-class BackendMainListener implements ServiceAnnotationInterface
+class BackendMainListener
 {
     private TwigEnvironment $twig;
     private ContaoFramework $framework;

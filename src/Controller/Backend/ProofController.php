@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\Backend;
 
-use Ferienpass\CoreBundle\Entity\Edition;
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Repository\EditionRepository;
+use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,10 +25,10 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class ProofController extends AbstractController
 {
-    public function __invoke(Request $request): Response
+    public function __invoke(EditionRepository $editionRepository, OfferRepository $offerRepository, Request $request): Response
     {
-        $edition = $this->getDoctrine()->getRepository(Edition::class)->find(13);
-        $offers = $this->getDoctrine()->getRepository(Offer::class)->findBy(['edition' => $edition], null, 100);
+        $edition = $editionRepository->find(13);
+        $offers = $offerRepository->findBy(['edition' => $edition], null, 100);
 
         return $this->render('@FerienpassCore/Backend/be_pdf_proof.html.twig', [
             'offers' => $offers,

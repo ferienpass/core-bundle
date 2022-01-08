@@ -47,13 +47,11 @@ class SignInController extends AbstractContentElementController
 
     protected function getResponse(Template $template, ContentModel $model, Request $request): Response
     {
-        if ($this->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
+        if ($this->container->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
             $template = new BackendTemplate('be_wildcard');
 
-            $template->title =
-                $this->get('translator')->trans('CTE.'.$this->getType().'.0', [], 'contao_modules');
-            $template->wildcard =
-                $this->get('translator')->trans('CTE.'.$this->getType().'.1', [], 'contao_modules');
+            $template->title = $this->container->get('translator')->trans('CTE.'.$this->getType().'.0', [], 'contao_modules');
+            $template->wildcard = $this->container->get('translator')->trans('CTE.'.$this->getType().'.1', [], 'contao_modules');
 
             return new Response($template->parse());
         }

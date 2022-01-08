@@ -3,9 +3,3 @@ services:
     Contao\CoreBundle\Migration\MigrationInterface:
       tags:
         - { name: contao.migration }
-
-  Ferienpass\CoreBundle\Migration\PageControllerMigration:
-    arguments:
-      - '@database_connection'
-      - '@contao.slug'
-      - '@contao.framework'

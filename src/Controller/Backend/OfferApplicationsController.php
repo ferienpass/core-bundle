@@ -15,6 +15,7 @@ namespace Ferienpass\CoreBundle\Controller\Backend;
 
 use Contao\CoreBundle\Controller\AbstractController;
 use Doctrine\DBAL\Connection;
+use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\ParticipantList\PdfExport;
@@ -46,7 +47,7 @@ class OfferApplicationsController extends AbstractController
     /**
      * @Route("", name="backend_offer_applications")
      */
-    public function __invoke(Offer $offer, Request $request, Session $session): Response
+    public function __invoke(Offer $offer, Request $request, Session $session, ManagerRegistry $doctrine): Response
     {
         if ($request->isMethod('POST') && 'confirm_all_waiting' === $request->request->get('FORM_SUBMIT')) {
             $attendances = $offer->getAttendancesWaiting();
@@ -60,7 +61,7 @@ class OfferApplicationsController extends AbstractController
                 $a->setSorting($sorting += 128);
             }
 
-            $this->getDoctrine()->getManager()->flush();
+            $doctrine->getManager()->flush();
 
             return $this->redirect($request->getRequestUri());
         }
@@ -125,13 +126,8 @@ SQL
     /**
      * @Route(".pdf", name="backend_offer_applications_pdf")
      */
-    public function pdf(int $id): Response
+    public function pdf(Offer $offer): Response
     {
-        $offer = $this->getDoctrine()->getRepository(Offer::class)->find($id);
-        if (null === $offer) {
-            return new Response('', Response::HTTP_NO_CONTENT);
-        }
-
         $path = $this->pdfExport->generate($offer);
 
         return $this->file($path, 'teilnahmeliste.pdf');
@@ -140,13 +136,8 @@ SQL
     /**
      * @Route(".docx", name="backend_offer_applications_docx")
      */
-    public function docx(int $id): Response
+    public function docx(Offer $offer): Response
     {
-        $offer = $this->getDoctrine()->getRepository(Offer::class)->find($id);
-        if (null === $offer) {
-            return new Response('', Response::HTTP_NO_CONTENT);
-        }
-
         $path = $this->wordExport->generate($offer);
 
         return $this->file($path, 'teilnahmeliste.docx');

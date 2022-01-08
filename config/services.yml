@@ -93,6 +93,7 @@ services:
       - [ setContainer, [ '@service_container' ] ]
 
   Ferienpass\CoreBundle\Controller\Backend\Api\AttendanceController:
+    arguments: [ '@messenger.default_bus' ]
     calls:
       - [ setContainer, [ '@service_container' ] ]
 

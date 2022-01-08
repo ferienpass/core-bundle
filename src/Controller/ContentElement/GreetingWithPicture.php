@@ -32,7 +32,7 @@ class GreetingWithPicture extends AbstractContentElementController
         $headline = StringUtil::deserialize($model->headline);
         $text = StringUtil::toHtml5($model->text);
 
-        if ($this->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
+        if ($this->container->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
             $template = new BackendTemplate('be_wildcard');
 
             $template->title = $headline['value'];

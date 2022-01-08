@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\Backend\Api;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Message\AttendanceStatusChanged;
@@ -21,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -28,12 +30,19 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class AttendanceController extends AbstractController
 {
+    private MessageBusInterface $messageBus;
+
+    public function __construct(MessageBusInterface $messageBus)
+    {
+        $this->messageBus = $messageBus;
+    }
+
     /**
      * @Route("/sort", methods={"POST"})
      */
-    public function sortParticipantList(Attendance $attendance, Request $request, Session $session): Response
+    public function sortParticipantList(Attendance $attendance, Request $request, Session $session, ManagerRegistry $doctrine): Response
     {
-        $this->get('contao.framework')->initialize();
+        $this->container->get('contao.framework')->initialize();
 
         $this->checkToken();
 
@@ -49,13 +58,13 @@ final class AttendanceController extends AbstractController
         }
 
         // Update participant list (move-up participants)
-        // WHEN the current participant was not added to the waitlist explicitly,
-        // otherwise, it might become confirmed immedietly.
+        // WHEN the current participant was not added to the wait-list explicitly,
+        // otherwise, it might become confirmed immediately.
         if ($autoAssign && (!$request->request->has('newStatus') || Attendance::STATUS_WAITLISTED !== $request->request->get('newStatus'))) {
-            $this->dispatchMessage(new ParticipantListChanged($offer->getId()));
+            $this->messageBus->dispatch(new ParticipantListChanged($offer->getId()));
         }
 
-        $this->getDoctrine()->getManager()->flush();
+        $doctrine->getManager()->flush();
 
         return new Response('', Response::HTTP_OK);
     }
@@ -68,7 +77,7 @@ final class AttendanceController extends AbstractController
         $attendance->setSorting(($request->request->getInt('newIndex') * 128) + 64);
 
         if ($autoAssign) {
-            $this->dispatchMessage(new AttendanceStatusChanged($attendance->getId(), $oldStatus, $attendance->getStatus()));
+            $this->messageBus->dispatch(new AttendanceStatusChanged($attendance->getId(), $oldStatus, $attendance->getStatus()));
         }
     }
 

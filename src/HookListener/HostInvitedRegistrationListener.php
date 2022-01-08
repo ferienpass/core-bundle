@@ -41,7 +41,7 @@ class HostInvitedRegistrationListener
             ->andWhere('expires>:time')
             ->setParameter('token', $inviteToken)
             ->setParameter('time', time())
-            ->execute();
+            ->executeQuery();
 
         if (false === $statement) {
             return;

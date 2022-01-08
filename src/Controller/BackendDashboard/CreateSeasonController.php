@@ -33,8 +33,7 @@ class CreateSeasonController extends AbstractDashboardWidgetController
                 ->from('Edition', 'e')
                 ->innerJoin('e', 'EditionTask', 't', 't.pid = e.id')
                 ->where('t.periodEnd > NOW()')
-                ->execute()
-                ->rowCount()
+                ->executeStatement()
         ;
 
         if ($hasEdition) {

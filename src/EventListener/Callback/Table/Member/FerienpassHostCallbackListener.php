@@ -72,6 +72,6 @@ class FerienpassHostCallbackListener
             ->where('id=?')
             ->setParameter(0, serialize($groups))
             ->setParameter(1, $dataContainer->activeRecord->id)
-            ->execute();
+            ->executeStatement();
     }
 }

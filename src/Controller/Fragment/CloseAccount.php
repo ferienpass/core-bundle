@@ -23,20 +23,24 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class CloseAccount extends AbstractController
 {
-    private EncoderFactoryInterface $encoderFactory;
+    private UserPasswordHasherInterface $passwordHasher;
     private LoggerInterface $logger;
+    private MessageBusInterface $messageBus;
 
-    public function __construct(EncoderFactoryInterface $encoderFactory, LoggerInterface $logger)
+    public function __construct(UserPasswordHasherInterface $passwordHasher, LoggerInterface $logger, MessageBusInterface $messageBus)
     {
-        $this->encoderFactory = $encoderFactory;
+        $this->passwordHasher = $passwordHasher;
         $this->logger = $logger;
+        $this->messageBus = $messageBus;
     }
 
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, Session $session): Response
     {
         $user = $this->getUser();
         if (!$user instanceof FrontendUser) {
@@ -56,10 +60,8 @@ final class CloseAccount extends AbstractController
         if ('close_account' === $request->request->get('FORM_SUBMIT')) {
             $passwordWidget->validate();
 
-            $encoder = $this->encoderFactory->getEncoder(FrontendUser::class);
-
             if (!$passwordWidget->hasErrors()
-                && !$encoder->isPasswordValid($user->password, $passwordWidget->value, null)) {
+                && !$this->passwordHasher->isPasswordValid($user, $passwordWidget->value)) {
                 $passwordWidget->value = '';
                 $passwordWidget->addError($GLOBALS['TL_LANG']['ERR']['invalidPass']);
             }
@@ -71,10 +73,10 @@ final class CloseAccount extends AbstractController
                     $this->logger->info(sprintf('User account ID %u has been deleted', $user->id));
                 }
 
-                $this->get('security.token_storage')->setToken();
-                $this->get('session')->invalidate();
+                $this->container->get('security.token_storage')->setToken();
+                $session->invalidate();
 
-                $this->dispatchMessage(new AccountDeleted((int) $user->id));
+                $this->messageBus->dispatch(new AccountDeleted((int) $user->id));
 
                 throw new ResponseException($this->redirectToRoute('account_deleted'));
             }

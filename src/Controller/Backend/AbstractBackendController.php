@@ -31,12 +31,12 @@ class AbstractBackendController extends AbstractController
      */
     protected function denyAccessUnlessGranted2(Request $request): void
     {
-        $token = $this->get('security.token_storage')->getToken();
+        $token = $this->container->get('security.token_storage')->getToken();
         if ($token instanceof AnonymousToken) {
             throw new InsufficientAuthenticationException('Not authenticated');
         }
 
-        $authorizationChecker = $this->get('security.authorization_checker');
+        $authorizationChecker = $this->container->get('security.authorization_checker');
         if (!$authorizationChecker->isGranted('ROLE_USER') || !($user = $token->getUser()) instanceof BackendUser) {
             throw new AccessDeniedException('Access denied');
         }

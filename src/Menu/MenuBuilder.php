@@ -58,7 +58,7 @@ class MenuBuilder
 
     private function isCurrent(string $type): bool
     {
-        $request = $this->requestStack->getMasterRequest();
+        $request = $this->requestStack->getMainRequest();
         if (null === $request) {
             return false;
         }

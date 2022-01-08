@@ -121,7 +121,7 @@ class UnconfirmedApplications
             // Inform attendances that have any status but withdrawn and waiting
             ->andWhere('a.status NOT IN (:status)')
             ->setParameter('status', ['withdrawn', 'waiting'], Connection::PARAM_STR_ARRAY)
-            ->execute()
+            ->executeQuery()
         ;
 
         $result = $statement->fetchAllAssociative();

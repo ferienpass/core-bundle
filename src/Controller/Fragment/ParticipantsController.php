@@ -15,6 +15,7 @@ namespace Ferienpass\CoreBundle\Controller\Fragment;
 
 use Contao\FrontendUser;
 use Contao\MemberModel;
+use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Controller\Frontend\AbstractController;
 use Ferienpass\CoreBundle\Entity\Participant;
 use Ferienpass\CoreBundle\Form\UserParticipantsType;
@@ -26,10 +27,12 @@ use Symfony\Component\HttpFoundation\Response;
 final class ParticipantsController extends AbstractController
 {
     private ParticipantRepository $participantRepository;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(ParticipantRepository $participantRepository)
+    public function __construct(ParticipantRepository $participantRepository, ManagerRegistry $doctrine)
     {
         $this->participantRepository = $participantRepository;
+        $this->doctrine = $doctrine;
     }
 
     public function __invoke(Request $request): Response
@@ -39,7 +42,7 @@ final class ParticipantsController extends AbstractController
             return new Response('', Response::HTTP_NO_CONTENT);
         }
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         // TODO if originalParticipants.length eq 0 then add constraint {MinLength=1}
         $originalParticipants = $this->participantRepository->findBy(['member' => $user->id]);
@@ -64,7 +67,7 @@ final class ParticipantsController extends AbstractController
                 ->create()
             );
 
-            return $this->redirectToRoute($request->get('_route') ?: 'personal_data');
+            return $this->redirectToRoute($request->attributes->get('_route') ?: 'personal_data');
         }
 
         return $this->render('@FerienpassCore/Fragment/participants.html.twig', [

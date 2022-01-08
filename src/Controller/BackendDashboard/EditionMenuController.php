@@ -34,7 +34,7 @@ class EditionMenuController extends AbstractDashboardWidgetController
             ->groupBy('o.edition')
             ->orderBy('e.tstamp', 'DESC')
             ->setMaxResults(4)
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative()
         ;
 

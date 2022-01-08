@@ -19,6 +19,7 @@
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\ParticipantsController">
             <argument type="service" id="Ferienpass\CoreBundle\Repository\ParticipantRepository"/>
+            <argument type="service" id="doctrine"/>
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\HostDetailsController">
             <argument type="service" id="Ferienpass\CoreBundle\Repository\OfferRepository"/>
@@ -37,11 +38,14 @@
         <service id="Ferienpass\CoreBundle\Controller\Fragment\SignInController">
             <argument type="expression">service('security.password_hasher_factory').getPasswordHasher('Contao\\FrontendUser')</argument>
             <argument type="service" id="security.authentication_utils"/>
+            <argument type="service" id="messenger.default_bus"/>
+            <argument type="service" id="event_dispatcher"/>
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\CloseAccount">
-            <argument type="expression">service('security.password_hasher_factory').getPasswordHasher('Contao\\FrontendUser')</argument>
+            <argument type="service" id="security.user_password_hasher"/>
             <argument type="service" id="logger"/>
             <tag name="monolog.logger" channel="ferienpass"/>
+            <argument type="service" id="messenger.default_bus"/>
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\RegistrationActivateController">
             <argument type="service" id="contao.security.frontend_user_provider"/>
@@ -53,6 +57,7 @@
             <argument type="service" id="contao.opt-in"/>
             <argument type="service" id="contao.security.token_checker"/>
             <tag name="monolog.logger" channel="ferienpass"/>
+            <argument type="service" id="messenger.default_bus"/>
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\Error401">
             <argument type="service" id="Ferienpass\CoreBundle\Repository\EditionRepository"/>
