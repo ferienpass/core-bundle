@@ -107,7 +107,7 @@ class SignInController extends AbstractController
 
         $this->dispatchMessage(new AccountResendActivation((int) $member->id));
 
-        $this->addFlash('confirmation', new TranslatableMessage('MSCresendActivation', [], 'contao_default'));
+        $this->addFlash(...Flash::confirmation()->text(new TranslatableMessage('MSC.resendActivation', [], 'contao_default'))->create());
     }
 
     private function createNewUser(MemberModel $member): void

@@ -125,7 +125,7 @@ class ApplicationListController extends AbstractController
 
         $applicationSystem = $this->applicationSystems->findApplicationSystem($attendance->getOffer());
         if (null === $applicationSystem) {
-            $this->addFlash('error', 'Zurzeit sind keine Anmeldungen möglich');
+            $this->addFlash(...Flash::error()->text('Zurzeit sind keine Anmeldungen möglich')->create());
 
             return $this->redirectToRoute($request->get('_route'));
         }

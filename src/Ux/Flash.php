@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Ux;
 
+use Symfony\Contracts\Translation\TranslatableInterface;
+
 class Flash
 {
     private string $type;
@@ -51,7 +53,10 @@ class Flash
         return new self('modal-confirm');
     }
 
-    public function text(string $text): self
+    /**
+     * @param string|TranslatableInterface $text
+     */
+    public function text($text): self
     {
         $this->message['text'] = $text;
 
