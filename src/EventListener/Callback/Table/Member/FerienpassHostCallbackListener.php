@@ -19,10 +19,7 @@ use Doctrine\DBAL\Connection;
 
 class FerienpassHostCallbackListener
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
+    private Connection $connection;
 
     public function __construct(Connection $connection)
     {
@@ -72,6 +69,7 @@ class FerienpassHostCallbackListener
             ->where('id=?')
             ->setParameter(0, serialize($groups))
             ->setParameter(1, $dataContainer->activeRecord->id)
-            ->executeStatement();
+            ->executeQuery()
+        ;
     }
 }

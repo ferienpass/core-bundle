@@ -24,13 +24,15 @@ use Symfony\Component\HttpFoundation\Response;
 class CreateAttendanceController extends AbstractDashboardWidgetController
 {
     private AttendanceFacade $attendanceFacade;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(AttendanceFacade $attendanceFacade)
+    public function __construct(AttendanceFacade $attendanceFacade, ManagerRegistry $doctrine)
     {
         $this->attendanceFacade = $attendanceFacade;
+        $this->doctrine = $doctrine;
     }
 
-    public function __invoke(Request $request, ManagerRegistry $doctrine): Response
+    public function __invoke(Request $request): Response
     {
         $form = $this->createForm(BackendApplicationType::class);
         $form->handleRequest($request);
@@ -51,7 +53,7 @@ class CreateAttendanceController extends AbstractDashboardWidgetController
                 $participant->setMobile($form->get('mobile')->getData());
                 $participant->setEmail($form->get('email')->getData());
 
-                $doctrine->getManager()->persist($participant);
+                $this->doctrine->getManager()->persist($participant);
             }
 
             $this->attendanceFacade->create($offer, $participant, $status, $notify);
