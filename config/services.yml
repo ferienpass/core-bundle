@@ -296,6 +296,10 @@ services:
     tags:
       - { name: security.voter }
 
+  Ferienpass\CoreBundle\Security\Voter\EditionVoter:
+    tags:
+      - { name: security.voter }
+
   Ferienpass\CoreBundle\Security\Voter\OfferVoter:
     arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@Ferienpass\CoreBundle\Repository\HostRepository' ]
     tags:
