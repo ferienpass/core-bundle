@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\EventListener\Doctrine\Offer;
 
 use Contao\CoreBundle\Slug\Slug;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Ferienpass\CoreBundle\Entity\Offer;
 
 class AliasListener
@@ -26,14 +26,18 @@ class AliasListener
         $this->slug = $slug;
     }
 
-    public function preUpdate(LifecycleEventArgs $args): void
+    public function preUpdate(PreUpdateEventArgs $args): void
     {
         $entity = $args->getObject();
         if (!$entity instanceof Offer) {
             return;
         }
 
+        if (!$args->hasChangedField('alias')) {
+            return;
+        }
+
         $alias = ($entity->getId() ?? uniqid()).'-'.$this->slug->generate($entity->getName());
-        $entity->setAlias($alias);
+        $args->setNewValue('alias', $alias);
     }
 }
