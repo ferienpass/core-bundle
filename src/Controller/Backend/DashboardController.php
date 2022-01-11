@@ -22,13 +22,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class DashboardController extends AbstractController
 {
-    private FragmentRegistryInterface $fragmentRegistry;
-    private FragmentHandler $fragmentHandler;
-
-    public function __construct(FragmentRegistryInterface $fragmentRegistry, FragmentHandler $fragmentHandler)
+    public function __construct(private FragmentRegistryInterface $fragmentRegistry, private FragmentHandler $fragmentHandler)
     {
-        $this->fragmentRegistry = $fragmentRegistry;
-        $this->fragmentHandler = $fragmentHandler;
     }
 
     public function __invoke(): Response
@@ -37,7 +32,7 @@ final class DashboardController extends AbstractController
 
         $widgets = array_values(array_filter(
             $this->fragmentRegistry->keys(),
-            fn ($key) => 0 === strpos($key, DashboardWidgetReference::TAG_NAME.'.')
+            fn ($key) => str_starts_with($key, DashboardWidgetReference::TAG_NAME.'.')
         ));
 
         $dashboard = implode('', array_map(

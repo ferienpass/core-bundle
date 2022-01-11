@@ -135,7 +135,7 @@ class EditionRepository extends ServiceEntityRepository
 
         try {
             return $qb->setMaxResults(1)->getOneOrNullResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return null;
         }
     }
@@ -159,7 +159,7 @@ class EditionRepository extends ServiceEntityRepository
 
         try {
             return $qb->setMaxResults(1)->getOneOrNullResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return null;
         }
     }
@@ -182,7 +182,7 @@ class EditionRepository extends ServiceEntityRepository
 
         try {
             return $qb->setMaxResults(1)->getOneOrNullResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return null;
         }
     }

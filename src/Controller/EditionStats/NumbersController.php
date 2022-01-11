@@ -22,15 +22,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class NumbersController extends AbstractEditionStatsWidgetController
 {
-    private AttendanceRepository $attendanceRepository;
-    private OfferRepository $offerRepository;
-    private EditionRepository $editionRepository;
-
-    public function __construct(AttendanceRepository $attendanceRepository, OfferRepository $offerRepository, EditionRepository $editionRepository)
+    public function __construct(private AttendanceRepository $attendanceRepository, private OfferRepository $offerRepository, private EditionRepository $editionRepository)
     {
-        $this->attendanceRepository = $attendanceRepository;
-        $this->offerRepository = $offerRepository;
-        $this->editionRepository = $editionRepository;
     }
 
     public function __invoke(Edition $edition): Response

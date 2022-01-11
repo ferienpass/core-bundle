@@ -15,13 +15,8 @@ namespace Ferienpass\CoreBundle\Message;
 
 class AttendanceCreated implements LoggableMessageInterface
 {
-    private int $attendance;
-    private bool $notify;
-
-    public function __construct(int $attendance, bool $notify = true)
+    public function __construct(private int $attendance, private bool $notify = true)
     {
-        $this->attendance = $attendance;
-        $this->notify = $notify;
     }
 
     public function getAttendance(): int

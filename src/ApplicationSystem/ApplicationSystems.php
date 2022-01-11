@@ -21,11 +21,8 @@ use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
 class ApplicationSystems implements ServiceSubscriberInterface
 {
-    private ContainerInterface $locator;
-
-    public function __construct(ContainerInterface $locator)
+    public function __construct(private ContainerInterface $locator)
     {
-        $this->locator = $locator;
     }
 
     public function findApplicationSystem(Offer $offer): ?ApplicationSystemInterface

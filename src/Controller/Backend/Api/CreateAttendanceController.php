@@ -31,15 +31,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class CreateAttendanceController extends AbstractController
 {
-    private OfferRepository $offerRepository;
-    private ParticipantRepository $participantRepository;
-    private AttendanceFacade $attendanceFacade;
-
-    public function __construct(OfferRepository $offerRepository, ParticipantRepository $participantRepository, AttendanceFacade $attendanceFacade)
+    public function __construct(private OfferRepository $offerRepository, private ParticipantRepository $participantRepository, private AttendanceFacade $attendanceFacade)
     {
-        $this->offerRepository = $offerRepository;
-        $this->participantRepository = $participantRepository;
-        $this->attendanceFacade = $attendanceFacade;
     }
 
     /**

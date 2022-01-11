@@ -19,13 +19,8 @@ use Ferienpass\CoreBundle\Repository\EditionRepository;
 
 class VisibleElementListener
 {
-    private EditionRepository $passEditionRepository;
-    private TokenChecker $tokenChecker;
-
-    public function __construct(EditionRepository $passEditionRepository, TokenChecker $tokenChecker)
+    public function __construct(private EditionRepository $passEditionRepository, private TokenChecker $tokenChecker)
     {
-        $this->tokenChecker = $tokenChecker;
-        $this->passEditionRepository = $passEditionRepository;
     }
 
     /**

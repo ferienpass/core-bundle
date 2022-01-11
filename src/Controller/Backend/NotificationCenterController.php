@@ -28,11 +28,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class NotificationCenterController extends AbstractController
 {
-    private UnconfirmedApplications $unconfirmedApplications;
-
-    public function __construct(UnconfirmedApplications $unconfirmedApplications)
+    public function __construct(private UnconfirmedApplications $unconfirmedApplications)
     {
-        $this->unconfirmedApplications = $unconfirmedApplications;
     }
 
     /**

@@ -26,13 +26,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class ParticipantsController extends AbstractController
 {
-    private ParticipantRepository $participantRepository;
-    private ManagerRegistry $doctrine;
-
-    public function __construct(ParticipantRepository $participantRepository, ManagerRegistry $doctrine)
+    public function __construct(private ParticipantRepository $participantRepository, private ManagerRegistry $doctrine)
     {
-        $this->participantRepository = $participantRepository;
-        $this->doctrine = $doctrine;
     }
 
     public function __invoke(Request $request): Response

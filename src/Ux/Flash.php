@@ -17,13 +17,10 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 
 class Flash
 {
-    private string $type;
     private array $message;
 
-    private function __construct(string $type)
+    private function __construct(private string $type)
     {
-        $this->type = $type;
-
         $this->message = [
             'headline' => null,
             'text' => null,
@@ -53,10 +50,7 @@ class Flash
         return new self('modal-confirm');
     }
 
-    /**
-     * @param string|TranslatableInterface $text
-     */
-    public function text($text): self
+    public function text(string|TranslatableInterface $text): self
     {
         $this->message['text'] = $text;
 

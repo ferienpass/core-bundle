@@ -36,13 +36,8 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class ApplyFormType extends AbstractType
 {
-    private Security $security;
-    private ManagerRegistry $doctrine;
-
-    public function __construct(Security $security, ManagerRegistry $doctrine)
+    public function __construct(private Security $security, private ManagerRegistry $doctrine)
     {
-        $this->security = $security;
-        $this->doctrine = $doctrine;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

@@ -244,14 +244,14 @@ class Offer
      *
      * @ORM\Column(name="dates", type="integer", nullable=true)
      */
-    private ?int $datesSorting;
+    private ?int $datesSorting = null;
 
     /**
      * Used internally for DC_Table to sort on hosts relation.
      *
      * @ORM\Column(name="hosts", type="text", length=255, nullable=true)
      */
-    private ?string $hostsSorting;
+    private ?string $hostsSorting = null;
 
     public function __construct()
     {

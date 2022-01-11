@@ -20,13 +20,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ChartStatusController extends AbstractEditionStatsWidgetController
 {
-    private AttendanceRepository $attendanceRepository;
-    private TranslatorInterface $translator;
-
-    public function __construct(AttendanceRepository $attendanceRepository, TranslatorInterface $translator)
+    public function __construct(private AttendanceRepository $attendanceRepository, private TranslatorInterface $translator)
     {
-        $this->attendanceRepository = $attendanceRepository;
-        $this->translator = $translator;
     }
 
     public function __invoke(int $id): Response

@@ -20,13 +20,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ChartUtilizationController extends AbstractEditionStatsWidgetController
 {
-    private AttendanceRepository $attendanceRepository;
-    private TranslatorInterface $translator;
-
-    public function __construct(AttendanceRepository $attendanceRepository, TranslatorInterface $translator)
+    public function __construct(private AttendanceRepository $attendanceRepository, private TranslatorInterface $translator)
     {
-        $this->attendanceRepository = $attendanceRepository;
-        $this->translator = $translator;
     }
 
     public function __invoke(int $id): Response
@@ -38,6 +33,7 @@ class ChartUtilizationController extends AbstractEditionStatsWidgetController
 
     private function getData(int $passEdition): array
     {
+        $return = [];
         $result = $this->attendanceRepository->createQueryBuilder('a')
             ->select('a.status')
             ->addSelect('o.id as offer_id')
@@ -74,7 +70,7 @@ class ChartUtilizationController extends AbstractEditionStatsWidgetController
                 if ([] !== $utilizationOfStatusAndOffer &&
                     null !== ($a = ($utilizationOfStatusAndOffer[0] ?? null))
                     && !$a['date_start'] instanceof \DateTimeInterface) {
-                    $$status[$i] = (float) $a['utilization'];
+                    ${$status}[$i] = (float) $a['utilization'];
                     $labels[$i] = sprintf(
                         '%s: %s (max. %d)',
                         $a['offer_title'],
@@ -83,7 +79,7 @@ class ChartUtilizationController extends AbstractEditionStatsWidgetController
                     );
                     $overall[$i] += (float) $a['utilization'];
                 } else {
-                    $$status[$i] = 0;
+                    ${$status}[$i] = 0;
                     $overall[$i] += 0;
                     if (!isset($labels[$i])) {
                         $labels[$i] = '';
@@ -110,7 +106,7 @@ class ChartUtilizationController extends AbstractEditionStatsWidgetController
         foreach ([Attendance::STATUS_CONFIRMED, Attendance::STATUS_WAITLISTED, Attendance::STATUS_ERROR, Attendance::STATUS_WAITING] as $status) {
             $return['datasets'][] = [
                 'name' => $this->translator->trans('MSC.attendance_status.'.$status, [], 'contao_default'),
-                'values' => array_values($$status),
+                'values' => array_values(${$status}),
             ];
         }
 

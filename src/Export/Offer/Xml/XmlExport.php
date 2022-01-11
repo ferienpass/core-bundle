@@ -23,18 +23,14 @@ use Twig\Environment;
 
 class XmlExport implements OffersExportInterface
 {
-    private Environment $twig;
     private string $template;
 
-    public function __construct(Environment $twig)
+    public function __construct(private Environment $twig)
     {
-        $this->twig = $twig;
     }
 
     /**
      * @required
-     *
-     * @return static
      */
     public function withTemplate(string $template): self
     {

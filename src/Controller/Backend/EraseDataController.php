@@ -24,11 +24,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class EraseDataController extends AbstractBackendController
 {
-    private EraseDataFacade $eraseDataFacade;
-
-    public function __construct(EraseDataFacade $eraseDataFacade)
+    public function __construct(private EraseDataFacade $eraseDataFacade)
     {
-        $this->eraseDataFacade = $eraseDataFacade;
     }
 
     public function __invoke(Request $request): Response

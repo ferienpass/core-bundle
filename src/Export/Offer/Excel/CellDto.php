@@ -19,15 +19,8 @@ use PhpOffice\PhpSpreadsheet\Style\Style;
 
 final class CellDto
 {
-    private Offer $offer;
-    private Cell $cell;
-    private Style $style;
-
-    public function __construct(Offer $offer, Cell $cell, Style $style)
+    public function __construct(private Offer $offer, private Cell $cell, private Style $style)
     {
-        $this->offer = $offer;
-        $this->cell = $cell;
-        $this->style = $style;
     }
 
     public function offer(): Offer

@@ -18,12 +18,8 @@ namespace Ferienpass\CoreBundle\Message;
  */
 class ConfirmApplications implements LoggableMessageInterface
 {
-    /** @var int[] */
-    private array $attendances;
-
-    public function __construct(array $attendances)
+    public function __construct(private array $attendances)
     {
-        $this->attendances = $attendances;
     }
 
     public function getRelated(): array

@@ -25,15 +25,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LabelListener
 {
-    private OfferRepository $offerRepository;
-    private UrlGeneratorInterface $router;
-    private TranslatorInterface $translator;
-
-    public function __construct(OfferRepository $offerRepository, UrlGeneratorInterface $router, TranslatorInterface $translator)
+    public function __construct(private OfferRepository $offerRepository, private UrlGeneratorInterface $router, private TranslatorInterface $translator)
     {
-        $this->offerRepository = $offerRepository;
-        $this->router = $router;
-        $this->translator = $translator;
     }
 
     /**
@@ -64,38 +57,29 @@ class LabelListener
 
         $labels[0] .= sprintf('<br><span class="tl_gray">%s</span>', $offer->getDates()->first()->getBegin()->format('d.m.Y H:i'));
 
-        switch ($row['status']) {
-            case Attendance::STATUS_CONFIRMED:
-                $labels[1] = sprintf(
-                    '<span class="inline-flex items-center px-2.5 -ml-2.5 py-1 rounded-md text-base font-medium leading-5 bg-green-100 text-green-800">%s</span>',
-                    $this->translator->trans('applications.status.confirmed.title')
-                );
-                break;
-            case Attendance::STATUS_WAITLISTED:
-                $labels[1] = sprintf(
-                    '<span class="inline-flex items-center px-2.5 -ml-2.5 py-1 rounded-md text-base font-medium leading-5 bg-yellow-100 text-yellow-800">%s</span>',
-                    $this->translator->trans('applications.status.waitlisted.title')
-                );
-                break;
-            case Attendance::STATUS_WITHDRAWN:
-                $labels[1] = sprintf(
-                    '<span class="inline-flex items-center px-2.5 -ml-2.5 py-1 rounded-md text-base font-medium leading-5 bg-red-100 text-red-800">%s</span>',
-                    $this->translator->trans('applications.status.withdrawn.title')
-                );
-                break;
-            case Attendance::STATUS_ERROR:
-                $labels[1] = sprintf(
-                    '<span class="inline-flex items-center px-2.5 -ml-2.5 py-1 rounded-md text-base font-medium leading-5 bg-red-100 text-red-800">%s</span>',
-                    $this->translator->trans('applications.status.error.title')
-                );
-                break;
-            case Attendance::STATUS_WAITING:
-                $labels[1] = sprintf(
-                    '<span class="inline-flex items-center px-2.5 -ml-2.5 py-1 rounded-md text-base font-medium leading-5 bg-gray-100 text-gray-800">%s</span>',
-                    $this->translator->trans('applications.status.waiting.title')
-                );
-                break;
-        }
+        $labels[1] = match ($row['status']) {
+            Attendance::STATUS_CONFIRMED => sprintf(
+                '<span class="inline-flex items-center px-2.5 -ml-2.5 py-1 rounded-md text-base font-medium leading-5 bg-green-100 text-green-800">%s</span>',
+                $this->translator->trans('applications.status.confirmed.title')
+            ),
+            Attendance::STATUS_WAITLISTED => sprintf(
+                '<span class="inline-flex items-center px-2.5 -ml-2.5 py-1 rounded-md text-base font-medium leading-5 bg-yellow-100 text-yellow-800">%s</span>',
+                $this->translator->trans('applications.status.waitlisted.title')
+            ),
+            Attendance::STATUS_WITHDRAWN => sprintf(
+                '<span class="inline-flex items-center px-2.5 -ml-2.5 py-1 rounded-md text-base font-medium leading-5 bg-red-100 text-red-800">%s</span>',
+                $this->translator->trans('applications.status.withdrawn.title')
+            ),
+            Attendance::STATUS_ERROR => sprintf(
+                '<span class="inline-flex items-center px-2.5 -ml-2.5 py-1 rounded-md text-base font-medium leading-5 bg-red-100 text-red-800">%s</span>',
+                $this->translator->trans('applications.status.error.title')
+            ),
+            Attendance::STATUS_WAITING => sprintf(
+                '<span class="inline-flex items-center px-2.5 -ml-2.5 py-1 rounded-md text-base font-medium leading-5 bg-gray-100 text-gray-800">%s</span>',
+                $this->translator->trans('applications.status.waiting.title')
+            ),
+            default => $labels,
+        };
 
         return $labels;
     }

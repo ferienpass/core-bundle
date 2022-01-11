@@ -29,13 +29,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class PrintSheetProofController extends AbstractController
 {
-    private TokenChecker $tokenChecker;
-    private PdfExports $pdfExports;
-
-    public function __construct(TokenChecker $tokenChecker, PdfExports $pdfExports)
+    public function __construct(private TokenChecker $tokenChecker, private PdfExports $pdfExports)
     {
-        $this->tokenChecker = $tokenChecker;
-        $this->pdfExports = $pdfExports;
     }
 
     public function __invoke(int $id, string $_format, Request $request, OfferRepository $offerRepository)

@@ -23,13 +23,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ForwardDashboardControllerListener
 {
-    private RequestStack $requestStack;
-    private HttpKernelInterface $httpKernel;
-
-    public function __construct(RequestStack $requestStack, HttpKernelInterface $httpKernel)
+    public function __construct(private RequestStack $requestStack, private HttpKernelInterface $httpKernel)
     {
-        $this->requestStack = $requestStack;
-        $this->httpKernel = $httpKernel;
     }
 
     /**

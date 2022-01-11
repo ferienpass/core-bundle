@@ -33,15 +33,8 @@ use Twig\Error\Error;
 
 class PrettyErrorScreenListener
 {
-    private bool $prettyErrorScreens;
-    private Environment $twig;
-    private PageBuilderFactory $pageBuilderFactory;
-
-    public function __construct(bool $prettyErrorScreens, Environment $twig, PageBuilderFactory $pageBuilderFactory)
+    public function __construct(private bool $prettyErrorScreens, private Environment $twig, private PageBuilderFactory $pageBuilderFactory)
     {
-        $this->prettyErrorScreens = $prettyErrorScreens;
-        $this->twig = $twig;
-        $this->pageBuilderFactory = $pageBuilderFactory;
     }
 
     public function __invoke(ExceptionEvent $event): void
@@ -149,7 +142,7 @@ class PrettyErrorScreenListener
         $parameters = $this->getTemplateParameters($view, $statusCode, $event);
         try {
             $event->setResponse(new Response($this->twig->render($view, $parameters), $statusCode));
-        } catch (Error $e) {
+        } catch (Error) {
             $event->setResponse(new Response($this->twig->render('@ContaoCore/Error/error.html.twig'), 500));
         }
     }
@@ -172,24 +165,18 @@ class PrettyErrorScreenListener
 
     private function getResponseFromPageHandler(int $type, ?PageModel $pageModel): ?Response
     {
-        switch (true) {
-            case 401 === $type:
-                return $this->pageBuilderFactory->create($pageModel)
-                    ->addFragment('main', new FragmentReference('ferienpass.fragment.error401'))
-                    ->getResponse();
-
-            case 403 === $type:
-                return $this->pageBuilderFactory->create($pageModel)
-                    ->addFragment('main', new FragmentReference('ferienpass.fragment.error403'))
-                    ->getResponse();
-
-            case 404 === $type:
-                return $this->pageBuilderFactory->create($pageModel)
-                    ->addFragment('main', new FragmentReference('ferienpass.fragment.error404'))
-                    ->getResponse();
-        }
-
-        return null;
+        return match (true) {
+            401 === $type => $this->pageBuilderFactory->create($pageModel)
+                ->addFragment('main', new FragmentReference('ferienpass.fragment.error401'))
+                ->getResponse(),
+            403 === $type => $this->pageBuilderFactory->create($pageModel)
+                ->addFragment('main', new FragmentReference('ferienpass.fragment.error403'))
+                ->getResponse(),
+            404 === $type => $this->pageBuilderFactory->create($pageModel)
+                ->addFragment('main', new FragmentReference('ferienpass.fragment.error404'))
+                ->getResponse(),
+            default => null,
+        };
     }
 
     private function getStatusCodeForException(\Throwable $exception): int

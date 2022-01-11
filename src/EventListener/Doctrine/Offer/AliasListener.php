@@ -19,11 +19,8 @@ use Ferienpass\CoreBundle\Entity\Offer;
 
 class AliasListener
 {
-    private Slug $slug;
-
-    public function __construct(Slug $slug)
+    public function __construct(private Slug $slug)
     {
-        $this->slug = $slug;
     }
 
     public function preUpdate(PreUpdateEventArgs $args): void

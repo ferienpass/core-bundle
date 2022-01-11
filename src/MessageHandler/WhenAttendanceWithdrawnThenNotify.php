@@ -25,13 +25,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WhenAttendanceWithdrawnThenNotify implements MessageHandlerInterface
 {
-    private ManagerRegistry $doctrine;
-    private TranslatorInterface $translator;
-
-    public function __construct(ManagerRegistry $doctrine, TranslatorInterface $translator)
+    public function __construct(private ManagerRegistry $doctrine, private TranslatorInterface $translator)
     {
-        $this->doctrine = $doctrine;
-        $this->translator = $translator;
     }
 
     public function __invoke(AttendanceStatusChanged $message): ?NotificationHandlerResult

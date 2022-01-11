@@ -27,15 +27,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class AttendanceFacade
 {
-    private MessageBusInterface $messageBus;
-    private ManagerRegistry $doctrine;
-    private ApplicationSystems $applicationSystems;
-
-    public function __construct(MessageBusInterface $messageBus, ManagerRegistry $doctrine, ApplicationSystems $applicationSystems)
+    public function __construct(private MessageBusInterface $messageBus, private ManagerRegistry $doctrine, private ApplicationSystems $applicationSystems)
     {
-        $this->messageBus = $messageBus;
-        $this->doctrine = $doctrine;
-        $this->applicationSystems = $applicationSystems;
     }
 
     /**

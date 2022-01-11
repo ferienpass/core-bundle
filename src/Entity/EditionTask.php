@@ -83,12 +83,12 @@ class EditionTask
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private ?string $description;
+    private ?string $description = null;
 
     /**
      * @ORM\Column(name="application_system", type="string", nullable=true)
      */
-    private ?string $applicationSystem;
+    private ?string $applicationSystem = null;
 
     /**
      * @ORM\Column(name="age_check", type="string", nullable=true)
@@ -246,18 +246,12 @@ class EditionTask
     {
         $allTasks = $this->edition->getTasks();
 
-        switch (true) {
-            case 'allocation' === $this->type:
-                return $allTasks->filter(fn (EditionTask $t) => 'application_system' === $t->getType() && 'lot' === $t->getApplicationSystem());
-
-            case 'application_system' === $this->type && 'firstcome' === $this->applicationSystem:
-                return $allTasks->filter(fn (EditionTask $t) => 'allocation' === $t->getType());
-
-            case 'publish_lists' === $this->type:
-                return $allTasks->filter(fn (EditionTask $t) => 'allocation' === $t->getType());
-        }
-
-        return new ArrayCollection();
+        return match (true) {
+            'allocation' === $this->type => $allTasks->filter(fn (EditionTask $t) => 'application_system' === $t->getType() && 'lot' === $t->getApplicationSystem()),
+            'application_system' === $this->type && 'firstcome' === $this->applicationSystem => $allTasks->filter(fn (EditionTask $t) => 'allocation' === $t->getType()),
+            'publish_lists' === $this->type => $allTasks->filter(fn (EditionTask $t) => 'allocation' === $t->getType()),
+            default => new ArrayCollection(),
+        };
     }
 
     public function isCompleted(): bool

@@ -30,15 +30,8 @@ use Symfony\Component\Security\Core\Exception\BadCredentialsException;
  */
 class ExportAttendancesController extends \Contao\CoreBundle\Controller\AbstractController
 {
-    private string $secret;
-    private ICalExport $iCal;
-    private OfferRepository $offerRepository;
-
-    public function __construct(string $secret, ICalExport $iCal, OfferRepository $offerRepository)
+    public function __construct(private string $secret, private ICalExport $iCal, private OfferRepository $offerRepository)
     {
-        $this->secret = $secret;
-        $this->iCal = $iCal;
-        $this->offerRepository = $offerRepository;
     }
 
     /**

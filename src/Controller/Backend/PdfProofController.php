@@ -25,11 +25,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class PdfProofController extends AbstractController
 {
-    private PdfExports $pdfExports;
-
-    public function __construct(PdfExports $pdfExports)
+    public function __construct(private PdfExports $pdfExports)
     {
-        $this->pdfExports = $pdfExports;
     }
 
     public function __invoke(int $id, Request $request, OfferRepository $offerRepository)

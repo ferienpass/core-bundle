@@ -17,15 +17,12 @@ use Doctrine\DBAL\Connection;
 
 class UnconfirmedApplications
 {
-    private Connection $connection;
-
     private ?array $uninformedMembers = null;
     private ?array $uninformedParticipants = null;
     private ?array $attendanceIds = null;
 
-    public function __construct(Connection $connection)
+    public function __construct(private Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function getUninformedMembers(): array

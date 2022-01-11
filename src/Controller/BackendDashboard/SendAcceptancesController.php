@@ -18,11 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SendAcceptancesController extends AbstractDashboardWidgetController
 {
-    private UnconfirmedApplications $unconfirmedApplications;
-
-    public function __construct(UnconfirmedApplications $unconfirmedApplications)
+    public function __construct(private UnconfirmedApplications $unconfirmedApplications)
     {
-        $this->unconfirmedApplications = $unconfirmedApplications;
     }
 
     public function __invoke(): Response

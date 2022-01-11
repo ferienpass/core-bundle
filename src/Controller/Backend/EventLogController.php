@@ -25,11 +25,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class EventLogController extends AbstractBackendController
 {
-    private EventLogRepository $eventLogRepository;
-
-    public function __construct(EventLogRepository $eventLogRepository)
+    public function __construct(private EventLogRepository $eventLogRepository)
     {
-        $this->eventLogRepository = $eventLogRepository;
     }
 
     public function __invoke(Request $request): Response

@@ -21,11 +21,8 @@ use Ferienpass\CoreBundle\Entity\Offer;
 
 class SaveAccessibilityListener
 {
-    private $doctrine;
-
-    public function __construct(ManagerRegistry $doctrine)
+    public function __construct(private ManagerRegistry $doctrine)
     {
-        $this->doctrine = $doctrine;
     }
 
     /**

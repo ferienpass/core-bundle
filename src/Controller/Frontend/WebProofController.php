@@ -28,13 +28,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class WebProofController extends AbstractController
 {
-    private TokenChecker $tokenChecker;
-    private ImgExport $imgExport;
-
-    public function __construct(TokenChecker $tokenChecker, ImgExport $imgExport)
+    public function __construct(private TokenChecker $tokenChecker, private ImgExport $imgExport)
     {
-        $this->tokenChecker = $tokenChecker;
-        $this->imgExport = $imgExport;
     }
 
     /**

@@ -21,17 +21,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PageBuilderFactory
 {
-    private FragmentHandler $fragmentHandler;
-    private TranslatorInterface $translator;
-    private ContaoFramework $framework;
-    private RequestStack $requestStack;
-
-    public function __construct(FragmentHandler $fragmentHandler, TranslatorInterface $translator, ContaoFramework $framework, RequestStack $requestStack)
+    public function __construct(private FragmentHandler $fragmentHandler, private TranslatorInterface $translator, private ContaoFramework $framework, private RequestStack $requestStack)
     {
-        $this->fragmentHandler = $fragmentHandler;
-        $this->translator = $translator;
-        $this->framework = $framework;
-        $this->requestStack = $requestStack;
     }
 
     public function create(PageModel $pageModel = null): PageBuilder

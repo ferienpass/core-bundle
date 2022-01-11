@@ -20,11 +20,8 @@ use Ferienpass\CoreBundle\Entity\Host;
 
 class LabelListener
 {
-    private Studio $studio;
-
-    public function __construct(Studio $studio)
+    public function __construct(private Studio $studio)
     {
-        $this->studio = $studio;
     }
 
     /**
@@ -37,7 +34,7 @@ class LabelListener
                 $image = $this->studio->createFigureBuilder()->fromUuid($row['logo'])->setSize([32, 32, 'crop'])->build()->getImage();
 
                 $labels[0] = sprintf('<img src="%s" width="16" height="16" alt="">', $image->getImageSrc());
-            } catch (\InvalidArgumentException $e) {
+            } catch (\InvalidArgumentException) {
                 $labels[0] = 'ERR';
             }
         }

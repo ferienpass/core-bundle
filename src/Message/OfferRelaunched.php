@@ -18,11 +18,8 @@ namespace Ferienpass\CoreBundle\Message;
  */
 class OfferRelaunched implements LoggableMessageInterface
 {
-    private int $offerId;
-
-    public function __construct(int $offerId)
+    public function __construct(private int $offerId)
     {
-        $this->offerId = $offerId;
     }
 
     public function getOfferId(): int

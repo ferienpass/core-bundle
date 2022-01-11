@@ -26,13 +26,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class EditionStatsController extends AbstractController
 {
-    private FragmentRegistryInterface $fragmentRegistry;
-    private FragmentHandler $fragmentHandler;
-
-    public function __construct(FragmentRegistryInterface $fragmentRegistry, FragmentHandler $fragmentHandler)
+    public function __construct(private FragmentRegistryInterface $fragmentRegistry, private FragmentHandler $fragmentHandler)
     {
-        $this->fragmentRegistry = $fragmentRegistry;
-        $this->fragmentHandler = $fragmentHandler;
     }
 
     public function __invoke(int $id): Response
@@ -41,7 +36,7 @@ class EditionStatsController extends AbstractController
 
         $widgets = array_values(array_filter(
             $this->fragmentRegistry->keys(),
-            fn ($key) => 0 === strpos($key, EditionStatsWidgetReference::TAG_NAME.'.')
+            fn ($key) => str_starts_with($key, EditionStatsWidgetReference::TAG_NAME.'.')
         ));
 
         $rendered = implode('', array_map(

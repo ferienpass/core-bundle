@@ -19,13 +19,8 @@ use Twig\TwigFunction;
 
 class RequestTokenExtension extends AbstractExtension
 {
-    private CsrfTokenManagerInterface $csrfTokenStorage;
-    private string $csrfTokenName;
-
-    public function __construct(CsrfTokenManagerInterface $csrfTokenStorage, string $csrfTokenName)
+    public function __construct(private CsrfTokenManagerInterface $csrfTokenStorage, private string $csrfTokenName)
     {
-        $this->csrfTokenStorage = $csrfTokenStorage;
-        $this->csrfTokenName = $csrfTokenName;
     }
 
     public function getFunctions(): array

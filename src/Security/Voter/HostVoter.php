@@ -21,11 +21,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class HostVoter extends Voter
 {
-    private HostRepository $hostRepository;
-
-    public function __construct(HostRepository $hostRepository)
+    public function __construct(private HostRepository $hostRepository)
     {
-        $this->hostRepository = $hostRepository;
     }
 
     protected function supports($attribute, $subject): bool
@@ -51,15 +48,11 @@ class HostVoter extends Voter
         /** @var Host $host */
         $host = $subject;
 
-        switch ($attribute) {
-            case 'view':
-                return $this->canView($host, $user);
-
-            case 'edit':
-                return $this->canEdit($host, $user);
-        }
-
-        throw new \LogicException('This code should not be reached!');
+        return match ($attribute) {
+            'view' => $this->canView($host, $user),
+            'edit' => $this->canEdit($host, $user),
+            default => throw new \LogicException('This code should not be reached!'),
+        };
     }
 
     private function canView(Host $host, FrontendUser $user): bool

@@ -16,7 +16,7 @@
     "email": "info@ferienpass.online"
   },
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.0",
     "ext-dom": "*",
     "ext-libxml": "*",
     "ext-json": "*",

@@ -22,13 +22,8 @@ use Twig\Environment as TwigEnvironment;
 
 class BackendMainListener
 {
-    private TwigEnvironment $twig;
-    private ContaoFramework $framework;
-
-    public function __construct(TwigEnvironment $twig, ContaoFramework $framework)
+    public function __construct(private TwigEnvironment $twig, private ContaoFramework $framework)
     {
-        $this->twig = $twig;
-        $this->framework = $framework;
     }
 
     /**

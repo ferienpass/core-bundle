@@ -30,15 +30,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
  */
 class SendRemindersListener
 {
-    private AttendanceRepository $attendanceRepository;
-    private MessageBusInterface $messageBus;
-    private EventLogRepository $eventLogRepository;
-
-    public function __construct(AttendanceRepository $attendanceRepository, MessageBusInterface $messageBus, EventLogRepository $eventLogRepository)
+    public function __construct(private AttendanceRepository $attendanceRepository, private MessageBusInterface $messageBus, private EventLogRepository $eventLogRepository)
     {
-        $this->attendanceRepository = $attendanceRepository;
-        $this->messageBus = $messageBus;
-        $this->eventLogRepository = $eventLogRepository;
     }
 
     public function __invoke(string $scope): void

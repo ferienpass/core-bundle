@@ -46,47 +46,47 @@ class Host
     /**
      * @ORM\Column(type="string", length=64, nullable=true)
      */
-    private ?string $phone;
+    private ?string $phone = null;
 
     /**
      * @ORM\Column(type="string", length=64, nullable=true)
      */
-    private ?string $fax;
+    private ?string $fax = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $mobile;
+    private ?string $mobile = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $email;
+    private ?string $email = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $website;
+    private ?string $website = null;
 
     /**
      * @ORM\Column(type="string", length=32, nullable=true)
      */
-    private ?string $postal;
+    private ?string $postal = null;
 
     /**
      * @ORM\Column(type="string", length=64, nullable=true)
      */
-    private ?string $city;
+    private ?string $city = null;
 
     /**
      * @ORM\Column(type="string", length=64, nullable=true)
      */
-    private ?string $street;
+    private ?string $street = null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private ?string $text;
+    private ?string $text = null;
 
     /**
      * @ORM\Column(type="binary_string", length=16, nullable=true)

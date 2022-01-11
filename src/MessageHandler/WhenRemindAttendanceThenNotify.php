@@ -29,17 +29,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WhenRemindAttendanceThenNotify implements MessageHandlerInterface
 {
-    private AttendanceRepository $attendanceRepository;
-    private ICalExport $iCal;
-    private TranslatorInterface $translator;
-    private ContaoFramework $framework;
-
-    public function __construct(AttendanceRepository $attendanceRepository, ICalExport $iCal, TranslatorInterface $translator, ContaoFramework $framework)
+    public function __construct(private AttendanceRepository $attendanceRepository, private ICalExport $iCal, private TranslatorInterface $translator, private ContaoFramework $framework)
     {
-        $this->attendanceRepository = $attendanceRepository;
-        $this->iCal = $iCal;
-        $this->translator = $translator;
-        $this->framework = $framework;
     }
 
     public function __invoke(RemindAttendance $message): ?NotificationHandlerResult
@@ -68,6 +59,7 @@ class WhenRemindAttendanceThenNotify implements MessageHandlerInterface
 
     private function sendNotification(Notification $notification, Participant $participant, Offer $offer): NotificationHandlerResult
     {
+        $tokens = [];
         $tokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
 
         $result = [];

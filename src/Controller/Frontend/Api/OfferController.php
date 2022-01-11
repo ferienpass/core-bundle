@@ -23,11 +23,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class OfferController extends AbstractController
 {
-    private Session $session;
-
-    public function __construct(Session $session)
+    public function __construct(private Session $session)
     {
-        $this->session = $session;
     }
 
     /**

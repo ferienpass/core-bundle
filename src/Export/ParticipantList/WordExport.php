@@ -24,15 +24,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 final class WordExport implements OfferExportInterface
 {
-    private Filesystem $filesystem;
-    private NormalizerInterface $serializer;
-    private ?string $templatePath;
-
-    public function __construct(Filesystem $filesystem, NormalizerInterface $serializer, ?string $templatePath)
+    public function __construct(private Filesystem $filesystem, private NormalizerInterface $serializer, private ?string $templatePath)
     {
-        $this->filesystem = $filesystem;
-        $this->serializer = $serializer;
-        $this->templatePath = $templatePath;
     }
 
     public function generate(Offer $offer, string $destination = null): string
@@ -73,11 +66,11 @@ final class WordExport implements OfferExportInterface
 
         // Add participants
         try {
-            $countRows = max(\count($attendees), $offer->getMaxParticipants());
+            $countRows = max(null === $attendees ? 0 : \count($attendees), $offer->getMaxParticipants());
             $prototype = array_fill_keys(array_keys($attendees[0]), '');
 
             // When too few attendees, fill up with empty rows
-            $attendees += array_fill(array_key_last($attendees) + 1, 1 + $countRows - \count($attendees), $prototype);
+            $attendees += array_fill(array_key_last($attendees) + 1, 1 + $countRows - (null === $attendees ? 0 : \count($attendees)), $prototype);
 
             $templateProcessor->cloneRow('attendee.name', $countRows);
 
@@ -90,7 +83,7 @@ final class WordExport implements OfferExportInterface
                 }
             }
 
-            $templateProcessor->cloneRow('candidate.name', \count($candidates));
+            $templateProcessor->cloneRow('candidate.name', null === $candidates ? 0 : \count($candidates));
 
             $i = 0;
             foreach ($candidates as $candidate) {
@@ -100,7 +93,7 @@ final class WordExport implements OfferExportInterface
                     $templateProcessor->setValue(sprintf('candidate.%s#%d', $k, $i), $v);
                 }
             }
-        } catch (WordException $e) {
+        } catch (WordException) {
         }
 
         return $templateProcessor;

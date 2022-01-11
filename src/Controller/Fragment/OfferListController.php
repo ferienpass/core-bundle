@@ -26,13 +26,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 final class OfferListController extends AbstractController
 {
-    private EditionRepository $editionRepository;
-    private OfferRepository $offerRepository;
-
-    public function __construct(EditionRepository $passEditionRepository, OfferRepository $offerRepository)
+    public function __construct(private EditionRepository $editionRepository, private OfferRepository $offerRepository)
     {
-        $this->editionRepository = $passEditionRepository;
-        $this->offerRepository = $offerRepository;
     }
 
     public function __invoke(Request $request, Session $session): Response

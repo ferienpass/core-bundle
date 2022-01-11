@@ -38,17 +38,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class ExportController extends AbstractController
 {
-    private OfferRepository $offerRepository;
-    private PdfExports $pdfExports;
-    private ExcelExports $excelExports;
-    private XmlExports $xmlExports;
-
-    public function __construct(OfferRepository $offerRepository, PdfExports $pdfExports, ExcelExports $excelExports, XmlExports $xmlExports)
+    public function __construct(private OfferRepository $offerRepository, private PdfExports $pdfExports, private ExcelExports $excelExports, private XmlExports $xmlExports)
     {
-        $this->offerRepository = $offerRepository;
-        $this->pdfExports = $pdfExports;
-        $this->excelExports = $excelExports;
-        $this->xmlExports = $xmlExports;
     }
 
     public function __invoke(Request $request): Response
@@ -58,9 +49,7 @@ final class ExportController extends AbstractController
             ->add('type', ChoiceType::class, [
                 'label' => 'Export',
                 'choices' => array_combine($types, $types),
-                'choice_label' => function ($choice, $key, $value) {
-                    return strtoupper($key);
-                },
+                'choice_label' => fn ($choice, $key, $value) => strtoupper($key),
             ])
             ->add('editions', EntityType::class, [
                 'class' => Edition::class,

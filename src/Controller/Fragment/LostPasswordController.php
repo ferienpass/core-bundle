@@ -30,21 +30,14 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class LostPasswordController extends AbstractController
 {
-    private LoggerInterface $logger;
-    private OptInInterface  $optIn;
-    private PasswordHasherInterface $passwordHasher;
-
-    public function __construct(LoggerInterface $logger, OptInInterface $optIn, PasswordHasherInterface $passwordHasher)
+    public function __construct(private LoggerInterface $logger, private OptInInterface $optIn, private PasswordHasherInterface $passwordHasher)
     {
-        $this->logger = $logger;
-        $this->optIn = $optIn;
-        $this->passwordHasher = $passwordHasher;
     }
 
     public function __invoke(Request $request): Response
     {
         if ($request->query->has('token') && ($token = (string) $request->query->get('token'))
-            && 0 === strncmp($token, 'pw-', 3)) {
+            && str_starts_with($token, 'pw-')) {
             return $this->setNewPassword($request);
         }
 
@@ -104,7 +97,7 @@ class LostPasswordController extends AbstractController
             || !$optInToken->isValid()
             || 1 !== \count($related = $optInToken->getRelatedRecords())
             || 'tl_member' !== key($related)
-            || 1 !== \count($arrIds = current($related))
+            || 1 !== (is_countable($arrIds = current($related)) ? \count($arrIds = current($related)) : 0)
             || (!$memberModel = MemberModel::findByPk($arrIds[0]))) {
             return $this->render('@FerienpassCore/Fragment/message.html.twig', [
                 'error' => new TranslatableMessage('MSC.invalidToken', [], 'contao_default'),

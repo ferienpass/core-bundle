@@ -19,16 +19,8 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class IneligibleParticipantException extends \Exception
 {
-    private Offer $offer;
-    private Participant $participant;
-    private TranslatableMessage $userMessage;
-
-    public function __construct(Offer $offer, Participant $participant, TranslatableMessage $userMessage)
+    public function __construct(private Offer $offer, private Participant $participant, private TranslatableMessage $userMessage)
     {
-        $this->offer = $offer;
-        $this->participant = $participant;
-        $this->userMessage = $userMessage;
-
         parent::__construct((string) $userMessage);
     }
 

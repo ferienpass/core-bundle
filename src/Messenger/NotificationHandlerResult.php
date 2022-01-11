@@ -13,23 +13,13 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Messenger;
 
-use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
-
 /**
  * A message handler may return this object which holds notifications sent inside the message handler.
  */
 class NotificationHandlerResult
 {
-    /**
-     * Messages sent by this message handler.
-     *
-     * @var NotificationContext[]
-     */
-    private array $result;
-
-    public function __construct($result)
+    public function __construct(private $result)
     {
-        $this->result = $result;
     }
 
     public function getResult(): array

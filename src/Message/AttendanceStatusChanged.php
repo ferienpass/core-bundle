@@ -15,17 +15,8 @@ namespace Ferienpass\CoreBundle\Message;
 
 class AttendanceStatusChanged implements LoggableMessageInterface
 {
-    private int $attendance;
-    private ?string $oldStatus;
-    private string $newStatus;
-    private bool $notify;
-
-    public function __construct(int $attendance, ?string $oldStatus, string $newStatus, $notify = true)
+    public function __construct(private int $attendance, private ?string $oldStatus, private string $newStatus, private $notify = true)
     {
-        $this->attendance = $attendance;
-        $this->oldStatus = $oldStatus;
-        $this->newStatus = $newStatus;
-        $this->notify = $notify;
     }
 
     public function getAttendance(): int

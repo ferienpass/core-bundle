@@ -38,17 +38,8 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class SignInController extends AbstractController
 {
-    private PasswordHasherInterface $passwordHasher;
-    private AuthenticationUtils $authenticationUtils;
-    private MessageBusInterface $messageBus;
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(PasswordHasherInterface $passwordHasher, AuthenticationUtils $authenticationUtils, MessageBusInterface $messageBus, EventDispatcherInterface $eventDispatcher)
+    public function __construct(private PasswordHasherInterface $passwordHasher, private AuthenticationUtils $authenticationUtils, private MessageBusInterface $messageBus, private EventDispatcherInterface $eventDispatcher)
     {
-        $this->passwordHasher = $passwordHasher;
-        $this->authenticationUtils = $authenticationUtils;
-        $this->messageBus = $messageBus;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function __invoke(Request $request): Response

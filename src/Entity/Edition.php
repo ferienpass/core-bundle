@@ -16,7 +16,6 @@ namespace Ferienpass\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface;
 use Ferienpass\CoreBundle\Exception\AmbiguousHolidayTaskException;
 use Ferienpass\CoreBundle\Exception\MissingHolidayTaskException;
 
@@ -40,12 +39,12 @@ class Edition
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private ?string $name;
+    private ?string $name = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private ?string $alias;
+    private ?string $alias = null;
 
     /**
      * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\EditionTask", mappedBy="edition")
@@ -65,12 +64,9 @@ class Edition
     /**
      * @ORM\Column(type="integer", options={"unsigned"=true}, nullable=true)
      */
-    private ?int $listPage;
+    private ?int $listPage = null;
 
-    /**
-     * @var ApplicationSystemInterface
-     */
-    private $applicationSystem;
+    private \Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface $applicationSystem;
 
     public function __construct()
     {

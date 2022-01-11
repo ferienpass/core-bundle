@@ -15,13 +15,8 @@ namespace Ferienpass\CoreBundle\Export\Offer\PrintSheet;
 
 final class PdfExportConfig
 {
-    private array $mpdfConfig;
-    private ?string $template;
-
-    public function __construct(array $mpdfConfig, ?string $template)
+    public function __construct(private array $mpdfConfig, private ?string $template)
     {
-        $this->mpdfConfig = $mpdfConfig;
-        $this->template = $template;
     }
 
     public function getMpdfConfig(): array

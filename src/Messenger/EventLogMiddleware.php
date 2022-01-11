@@ -26,11 +26,8 @@ use Symfony\Component\Messenger\Stamp\HandledStamp;
  */
 class EventLogMiddleware implements MiddlewareInterface
 {
-    private LoggerInterface $logger;
-
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     public function handle(Envelope $envelope, StackInterface $stack): Envelope

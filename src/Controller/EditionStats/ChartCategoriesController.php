@@ -19,11 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ChartCategoriesController extends AbstractEditionStatsWidgetController
 {
-    private AttendanceRepository $attendanceRepository;
-
-    public function __construct(AttendanceRepository $attendanceRepository)
+    public function __construct(private AttendanceRepository $attendanceRepository)
     {
-        $this->attendanceRepository = $attendanceRepository;
     }
 
     public function __invoke(int $id): Response

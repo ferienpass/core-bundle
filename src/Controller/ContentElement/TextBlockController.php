@@ -30,13 +30,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TextBlockController extends AbstractContentElementController
 {
-    private ContaoContext $assetsFilesContext;
-    private string $projectDir;
-
-    public function __construct(ContaoContext $assetsFilesContext, string $projectDir)
+    public function __construct(private ContaoContext $assetsFilesContext, private string $projectDir)
     {
-        $this->assetsFilesContext = $assetsFilesContext;
-        $this->projectDir = $projectDir;
     }
 
     protected function getResponse(Template $template, ContentModel $model, Request $request): Response

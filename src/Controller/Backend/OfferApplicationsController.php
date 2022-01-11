@@ -33,15 +33,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class OfferApplicationsController extends AbstractController
 {
-    private Connection $connection;
-    private PdfExport  $pdfExport;
-    private WordExport $wordExport;
-
-    public function __construct(Connection $connection, PdfExport $pdfExport, WordExport $wordExport)
+    public function __construct(private Connection $connection, private PdfExport $pdfExport, private WordExport $wordExport)
     {
-        $this->connection = $connection;
-        $this->pdfExport = $pdfExport;
-        $this->wordExport = $wordExport;
     }
 
     /**

@@ -24,13 +24,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WhenConfirmApplicationsThenNotify implements MessageHandlerInterface
 {
-    private UnconfirmedApplications $unconfirmedApplications;
-    private TranslatorInterface $translator;
-
-    public function __construct(UnconfirmedApplications $unconfirmedApplications, TranslatorInterface $translator)
+    public function __construct(private UnconfirmedApplications $unconfirmedApplications, private TranslatorInterface $translator)
     {
-        $this->unconfirmedApplications = $unconfirmedApplications;
-        $this->translator = $translator;
     }
 
     public function __invoke(ConfirmApplications $message): ?NotificationHandlerResult

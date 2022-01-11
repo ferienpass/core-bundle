@@ -21,11 +21,8 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 final class ContaoLoginUsernameType extends TextType
 {
-    private AuthenticationUtils $authenticationUtils;
-
-    public function __construct(AuthenticationUtils $authenticationUtils)
+    public function __construct(private AuthenticationUtils $authenticationUtils)
     {
-        $this->authenticationUtils = $authenticationUtils;
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options): void

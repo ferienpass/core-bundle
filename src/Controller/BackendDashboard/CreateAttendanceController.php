@@ -23,13 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CreateAttendanceController extends AbstractDashboardWidgetController
 {
-    private AttendanceFacade $attendanceFacade;
-    private ManagerRegistry $doctrine;
-
-    public function __construct(AttendanceFacade $attendanceFacade, ManagerRegistry $doctrine)
+    public function __construct(private AttendanceFacade $attendanceFacade, private ManagerRegistry $doctrine)
     {
-        $this->attendanceFacade = $attendanceFacade;
-        $this->doctrine = $doctrine;
     }
 
     public function __invoke(Request $request): Response

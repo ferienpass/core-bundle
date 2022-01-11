@@ -37,40 +37,13 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class RegistrationActivateController extends AbstractController
 {
-    private UserProviderInterface $userProvider;
-    private TokenStorageInterface $tokenStorage;
-    private LoggerInterface $logger;
-    private EventDispatcherInterface $eventDispatcher;
-    private UserCheckerInterface $userChecker;
-    private AuthenticationSuccessHandlerInterface $authenticationSuccessHandler;
-    private OptIn $optIn;
-    private TokenChecker $tokenChecker;
-    private MessageBusInterface $messageBus;
-
-    public function __construct(
-        UserProviderInterface $userProvider,
-        TokenStorageInterface $tokenStorage,
-        LoggerInterface $logger,
-        EventDispatcherInterface $eventDispatcher,
-        UserCheckerInterface $userChecker,
-        AuthenticationSuccessHandlerInterface $authenticationSuccessHandler,
-        OptIn $optIn,
-        TokenChecker $tokenChecker, MessageBusInterface $messageBus
-    ) {
-        $this->userProvider = $userProvider;
-        $this->tokenStorage = $tokenStorage;
-        $this->logger = $logger;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->userChecker = $userChecker;
-        $this->authenticationSuccessHandler = $authenticationSuccessHandler;
-        $this->optIn = $optIn;
-        $this->tokenChecker = $tokenChecker;
-        $this->messageBus = $messageBus;
+    public function __construct(private UserProviderInterface $userProvider, private TokenStorageInterface $tokenStorage, private LoggerInterface $logger, private EventDispatcherInterface $eventDispatcher, private UserCheckerInterface $userChecker, private AuthenticationSuccessHandlerInterface $authenticationSuccessHandler, private OptIn $optIn, private TokenChecker $tokenChecker, private MessageBusInterface $messageBus)
+    {
     }
 
     public function __invoke(Request $request): Response
     {
-        if ((null === $token = (string) $request->query->get('token')) || 0 !== strncmp($token, 'reg-', 4)) {
+        if ((null === $token = (string) $request->query->get('token')) || !str_starts_with($token, 'reg-')) {
             throw new PageNotFoundException('Invalid token');
         }
 
@@ -82,7 +55,7 @@ class RegistrationActivateController extends AbstractController
         if ((!$optInToken = $this->optIn->find($token)) || !$optInToken->isValid()
             || 1 !== \count($relatedRecords = $optInToken->getRelatedRecords())
             || 'tl_member' !== key($relatedRecords)
-            || 1 !== \count($arrIds = current($relatedRecords))
+            || 1 !== (is_countable($arrIds = current($relatedRecords)) ? \count($arrIds = current($relatedRecords)) : 0)
             || (!$memberModel = MemberModel::findByPk($arrIds[0]))) {
             return $this->render('@FerienpassCore/Fragment/message.html.twig', ['error' => new TranslatableMessage('MSC.invalidToken', [], 'contao_default')]);
         }
@@ -114,7 +87,7 @@ class RegistrationActivateController extends AbstractController
     {
         try {
             $user = $this->userProvider->loadUserByIdentifier($username);
-        } catch (UsernameNotFoundException $exception) {
+        } catch (UsernameNotFoundException) {
             return;
         }
 
@@ -125,7 +98,7 @@ class RegistrationActivateController extends AbstractController
         try {
             $this->userChecker->checkPreAuth($user);
             $this->userChecker->checkPostAuth($user);
-        } catch (AccountStatusException $e) {
+        } catch (AccountStatusException) {
             return;
         }
 

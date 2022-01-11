@@ -19,11 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EraseDataController extends AbstractDashboardWidgetController
 {
-    private EraseDataFacade $eraseDataFacade;
-
-    public function __construct(EraseDataFacade $eraseDataFacade)
+    public function __construct(private EraseDataFacade $eraseDataFacade)
     {
-        $this->eraseDataFacade = $eraseDataFacade;
     }
 
     public function __invoke(Request $request): Response

@@ -22,11 +22,8 @@ use Ferienpass\CoreBundle\Repository\HostRepository;
 
 class LoadListener
 {
-    private HostRepository $hostRepository;
-
-    public function __construct(HostRepository $hostRepository)
+    public function __construct(private HostRepository $hostRepository)
     {
-        $this->hostRepository = $hostRepository;
     }
 
     /**

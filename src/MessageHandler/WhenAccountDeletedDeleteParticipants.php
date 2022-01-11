@@ -23,17 +23,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class WhenAccountDeletedDeleteParticipants implements MessageHandlerInterface
 {
-    private MessageBusInterface $messageBus;
-    private ParticipantRepository $participantRepository;
-    private AttendanceRepository $attendanceRepository;
-    private OfferRepository $offerRepository;
-
-    public function __construct(MessageBusInterface $messageBus, ParticipantRepository $participantRepository, AttendanceRepository $attendanceRepository, OfferRepository $offerRepository)
+    public function __construct(private MessageBusInterface $messageBus, private ParticipantRepository $participantRepository, private AttendanceRepository $attendanceRepository, private OfferRepository $offerRepository)
     {
-        $this->messageBus = $messageBus;
-        $this->participantRepository = $participantRepository;
-        $this->attendanceRepository = $attendanceRepository;
-        $this->offerRepository = $offerRepository;
     }
 
     public function __invoke(AccountDeleted $message)

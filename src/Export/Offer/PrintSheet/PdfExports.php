@@ -19,11 +19,9 @@ final class PdfExports
      * @var PdfExportConfig[]
      */
     private array $configs = [];
-    private PdfExport $pdfExport;
 
-    public function __construct(PdfExport $pdfExport)
+    public function __construct(private PdfExport $pdfExport)
     {
-        $this->pdfExport = $pdfExport;
     }
 
     public function addConfig(string $key, array $config): void

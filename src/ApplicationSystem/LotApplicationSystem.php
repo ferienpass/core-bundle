@@ -24,8 +24,6 @@ class LotApplicationSystem extends AbstractApplicationSystem implements TimedApp
 
     /**
      * @required
-     *
-     * @return static
      */
     public function withTask(EditionTask $task): self
     {

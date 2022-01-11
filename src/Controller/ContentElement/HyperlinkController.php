@@ -40,7 +40,7 @@ class HyperlinkController extends AbstractContentElementController
 
     protected function getResponse(Template $template, ContentModel $model, Request $request): Response
     {
-        if (0 === strncmp($model->url, 'mailto:', 7)) {
+        if (str_starts_with($model->url, 'mailto:')) {
             $model->url = StringUtil::encodeEmail($model->url);
             $icon = 'mail';
         } else {

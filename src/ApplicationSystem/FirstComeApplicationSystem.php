@@ -26,8 +26,6 @@ class FirstComeApplicationSystem extends AbstractApplicationSystem implements Ti
 
     /**
      * @required
-     *
-     * @return static
      */
     public function withTask(EditionTask $task): self
     {

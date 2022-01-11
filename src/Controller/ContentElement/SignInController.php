@@ -29,11 +29,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class SignInController extends AbstractContentElementController
 {
-    private EditionRepository $editionRepository;
-
-    public function __construct(EditionRepository $editionRepository)
+    public function __construct(private EditionRepository $editionRepository)
     {
-        $this->editionRepository = $editionRepository;
     }
 
     public static function getSubscribedServices()

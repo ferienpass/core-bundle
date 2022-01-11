@@ -26,13 +26,9 @@ use Monolog\Handler\AbstractProcessingHandler;
  */
 class EventLogHandler extends AbstractProcessingHandler
 {
-    protected EntityManagerInterface $em;
-
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(protected EntityManagerInterface $em)
     {
         parent::__construct();
-
-        $this->em = $em;
     }
 
     protected function write(array $record): void
@@ -46,7 +42,7 @@ class EventLogHandler extends AbstractProcessingHandler
 
         $id = $record['context']['id'];
         if (null === $logEntry = $this->em->getRepository(EventLog::class)->findOneBy(['uniqueId' => $id])) {
-            $logEntry = new EventLog($id, \get_class($message));
+            $logEntry = new EventLog($id, $message::class);
 
             // Flush to get id
             $this->em->persist($logEntry);

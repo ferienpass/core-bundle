@@ -23,17 +23,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 final class ImgExport implements OfferExportInterface
 {
-    private HttpKernelInterface $httpKernel;
-    private Filesystem $filesystem;
-    private SnappyImage $snappyImage;
-    private string $rootDir;
-
-    public function __construct(HttpKernelInterface $httpKernel, Filesystem $filesystem, SnappyImage $snappyImage, string $rootDir)
+    public function __construct(private HttpKernelInterface $httpKernel, private Filesystem $filesystem, private SnappyImage $snappyImage, private string $rootDir)
     {
-        $this->httpKernel = $httpKernel;
-        $this->filesystem = $filesystem;
-        $this->rootDir = $rootDir;
-        $this->snappyImage = $snappyImage;
     }
 
     public function generate(Offer $offer, string $destination = null): string

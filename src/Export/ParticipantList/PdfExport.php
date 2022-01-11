@@ -22,13 +22,8 @@ use Twig\Environment as TwigEnvironment;
 
 final class PdfExport implements OfferExportInterface
 {
-    private Filesystem $filesystem;
-    private TwigEnvironment $twig;
-
-    public function __construct(Filesystem $filesystem, TwigEnvironment $twig)
+    public function __construct(private Filesystem $filesystem, private TwigEnvironment $twig)
     {
-        $this->filesystem = $filesystem;
-        $this->twig = $twig;
     }
 
     public function generate(Offer $offer, string $destination = null): string

@@ -19,11 +19,9 @@ final class XmlExports
      * @var array<string, string>
      */
     private array $templates = [];
-    private XmlExport $xmlExport;
 
-    public function __construct(XmlExport $xmlExport)
+    public function __construct(private XmlExport $xmlExport)
     {
-        $this->xmlExport = $xmlExport;
     }
 
     public function addTemplate(string $key, string $template): void

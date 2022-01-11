@@ -27,11 +27,8 @@ class WhenOfferRelaunchedThenNotify implements MessageHandlerInterface
 {
     use GetNotificationTokensTrait;
 
-    private ManagerRegistry $doctrine;
-
-    public function __construct(ManagerRegistry $doctrine)
+    public function __construct(private ManagerRegistry $doctrine)
     {
-        $this->doctrine = $doctrine;
     }
 
     public function __invoke(OfferRelaunched $message): ?NotificationHandlerResult

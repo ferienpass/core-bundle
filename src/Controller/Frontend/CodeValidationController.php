@@ -21,11 +21,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class CodeValidationController
 {
-    private Connection $connection;
-
-    public function __construct(Connection $connection)
+    public function __construct(private Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     /**

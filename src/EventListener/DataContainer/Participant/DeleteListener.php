@@ -19,11 +19,8 @@ use Doctrine\DBAL\Connection;
 
 class DeleteListener
 {
-    private Connection $db;
-
-    public function __construct(Connection $db)
+    public function __construct(private Connection $db)
     {
-        $this->db = $db;
     }
 
     /**

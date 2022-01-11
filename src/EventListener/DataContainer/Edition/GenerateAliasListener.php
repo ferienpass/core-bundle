@@ -20,13 +20,8 @@ use Doctrine\DBAL\Connection;
 
 class GenerateAliasListener
 {
-    private Connection $connection;
-    private Slug $slug;
-
-    public function __construct(Connection $connection, Slug $slug)
+    public function __construct(private Connection $connection, private Slug $slug)
     {
-        $this->connection = $connection;
-        $this->slug = $slug;
     }
 
     /**

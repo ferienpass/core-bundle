@@ -23,13 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class HostDetailsController extends AbstractController
 {
-    private OfferRepository $offerRepository;
-    private EditionRepository $editionRepository;
-
-    public function __construct(OfferRepository $offerRepository, EditionRepository $editionRepository)
+    public function __construct(private OfferRepository $offerRepository, private EditionRepository $editionRepository)
     {
-        $this->offerRepository = $offerRepository;
-        $this->editionRepository = $editionRepository;
     }
 
     public function __invoke(Host $host, Request $request): Response

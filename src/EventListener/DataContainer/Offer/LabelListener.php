@@ -27,17 +27,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LabelListener
 {
-    private EditionRepository $editionRepository;
-    private OfferRepository $offerRepository;
-    private Connection $connection;
-    private UrlGeneratorInterface $router;
-
-    public function __construct(EditionRepository $editionRepository, OfferRepository $offerRepository, Connection $connection, UrlGeneratorInterface $router)
+    public function __construct(private EditionRepository $editionRepository, private OfferRepository $offerRepository, private Connection $connection, private UrlGeneratorInterface $router)
     {
-        $this->editionRepository = $editionRepository;
-        $this->offerRepository = $offerRepository;
-        $this->connection = $connection;
-        $this->router = $router;
     }
 
     /**
@@ -230,7 +221,7 @@ class LabelListener
                 ->setParameter(15, $offer->getApplyText())
                 ->setParameter(16, $offer->getContact())
             ;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
         }
     }
 }

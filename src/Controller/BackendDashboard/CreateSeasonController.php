@@ -18,11 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CreateSeasonController extends AbstractDashboardWidgetController
 {
-    private Connection $connection;
-
-    public function __construct(Connection $connection)
+    public function __construct(private Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function __invoke(): Response

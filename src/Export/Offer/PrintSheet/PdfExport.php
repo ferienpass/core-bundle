@@ -25,22 +25,14 @@ use Twig\Environment;
 
 class PdfExport implements OffersExportInterface
 {
-    private Filesystem $filesystem;
-    private Environment $twig;
     private PdfExportConfig $config;
-    private string $projectDir;
 
-    public function __construct(Filesystem $filesystem, string $projectDir, Environment $twig)
+    public function __construct(private Filesystem $filesystem, private string $projectDir, private Environment $twig)
     {
-        $this->filesystem = $filesystem;
-        $this->twig = $twig;
-        $this->projectDir = $projectDir;
     }
 
     /**
      * @required
-     *
-     * @return static
      */
     public function withConfig(PdfExportConfig $config): self
     {

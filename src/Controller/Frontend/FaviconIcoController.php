@@ -22,11 +22,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class FaviconIcoController
 {
-    private string $webDir;
-
-    public function __construct(string $webDir)
+    public function __construct(private string $webDir)
     {
-        $this->webDir = $webDir;
     }
 
     public function __invoke(): Response

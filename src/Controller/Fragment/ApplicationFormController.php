@@ -26,15 +26,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApplicationFormController extends AbstractController
 {
-    private ApplicationSystems $applicationSystems;
-    private AttendanceFacade $attendanceFacade;
-    private AttendanceRepository $attendanceRepository;
-
-    public function __construct(ApplicationSystems $applicationSystems, AttendanceFacade $attendanceFacade, AttendanceRepository $attendanceRepository)
+    public function __construct(private ApplicationSystems $applicationSystems, private AttendanceFacade $attendanceFacade, private AttendanceRepository $attendanceRepository)
     {
-        $this->applicationSystems = $applicationSystems;
-        $this->attendanceFacade = $attendanceFacade;
-        $this->attendanceRepository = $attendanceRepository;
     }
 
     public function __invoke(Offer $offer, Request $request): Response

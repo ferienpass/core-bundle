@@ -18,11 +18,8 @@ use Doctrine\DBAL\Connection;
 
 class DatesSortingListener
 {
-    private Connection $connection;
-
-    public function __construct(Connection $connection)
+    public function __construct(private Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function __invoke($dataContainer): void

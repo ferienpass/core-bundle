@@ -20,11 +20,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Error401 extends AbstractController
 {
-    private EditionRepository $ferienpassRepository;
-
-    public function __construct(EditionRepository $ferienpassRepository)
+    public function __construct(private EditionRepository $ferienpassRepository)
     {
-        $this->ferienpassRepository = $ferienpassRepository;
     }
 
     public function __invoke(Request $request): Response

@@ -21,15 +21,8 @@ use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 
 class MenuBuilder
 {
-    private FactoryInterface $factory;
-    private LogoutUrlGenerator $logoutUrlGenerator;
-    private RequestStack $requestStack;
-
-    public function __construct(FactoryInterface $factory, LogoutUrlGenerator $logoutUrlGenerator, RequestStack $requestStack)
+    public function __construct(private FactoryInterface $factory, private LogoutUrlGenerator $logoutUrlGenerator, private RequestStack $requestStack)
     {
-        $this->factory = $factory;
-        $this->logoutUrlGenerator = $logoutUrlGenerator;
-        $this->requestStack = $requestStack;
     }
 
     public function userNavigation(): ItemInterface

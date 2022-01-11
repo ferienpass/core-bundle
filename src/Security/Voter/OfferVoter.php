@@ -24,13 +24,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class OfferVoter extends Voter
 {
-    private AttendanceRepository $attendanceRepository;
-    private HostRepository $hostRepository;
-
-    public function __construct(AttendanceRepository $attendanceRepository, HostRepository $hostRepository)
+    public function __construct(private AttendanceRepository $attendanceRepository, private HostRepository $hostRepository)
     {
-        $this->attendanceRepository = $attendanceRepository;
-        $this->hostRepository = $hostRepository;
     }
 
     protected function supports($attribute, $subject): bool
@@ -63,45 +58,21 @@ class OfferVoter extends Voter
         /** @var Offer $offer */
         $offer = $subject;
 
-        switch ($attribute) {
-            case 'view':
-                return $this->canView($offer, $user);
-
-            case 'edit':
-                return $this->canEdit($offer, $user);
-
-            case 'create':
-                return $this->canCreate($offer);
-
-            case 'copy':
-                return $this->canCopy($offer, $user);
-
-            case 'delete':
-                return $this->canDelete($offer, $user);
-
-            case 'cancel':
-                return $this->canCancel($offer, $user);
-
-            case 'freeze':
-                return $this->canFreeze($offer, $user);
-
-            case 'relaunch':
-                return $this->canRelaunch($offer, $user);
-
-            case 'participants.view':
-                return $this->canViewParticipants($offer, $user);
-
-            case 'participants.add':
-                return $this->canAddParticipants($offer, $user);
-
-            case 'participants.reject':
-                return $this->canRejectParticipants($offer, $user);
-
-            case 'participants.confirm':
-                return $this->canConfirmParticipants($offer, $user);
-        }
-
-        throw new \LogicException('This code should not be reached!');
+        return match ($attribute) {
+            'view' => $this->canView($offer, $user),
+            'edit' => $this->canEdit($offer, $user),
+            'create' => $this->canCreate($offer),
+            'copy' => $this->canCopy($offer, $user),
+            'delete' => $this->canDelete($offer, $user),
+            'cancel' => $this->canCancel($offer, $user),
+            'freeze' => $this->canFreeze($offer, $user),
+            'relaunch' => $this->canRelaunch($offer, $user),
+            'participants.view' => $this->canViewParticipants($offer, $user),
+            'participants.add' => $this->canAddParticipants($offer, $user),
+            'participants.reject' => $this->canRejectParticipants($offer, $user),
+            'participants.confirm' => $this->canConfirmParticipants($offer, $user),
+            default => throw new \LogicException('This code should not be reached!'),
+        };
     }
 
     private function canView(Offer $offer, FrontendUser $user): bool

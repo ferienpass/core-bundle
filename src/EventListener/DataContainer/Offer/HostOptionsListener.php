@@ -20,11 +20,8 @@ use Ferienpass\CoreBundle\Entity\Offer;
 
 class HostOptionsListener
 {
-    private Connection $connection;
-
-    public function __construct(Connection $connection)
+    public function __construct(private Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     /**

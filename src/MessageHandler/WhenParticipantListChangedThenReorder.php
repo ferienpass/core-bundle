@@ -24,15 +24,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class WhenParticipantListChangedThenReorder implements MessageHandlerInterface
 {
-    private ApplicationSystems $applicationSystems;
-    private MessageBusInterface $messageBus;
-    private ManagerRegistry $doctrine;
-
-    public function __construct(ApplicationSystems $applicationSystems, MessageBusInterface $messageBus, ManagerRegistry $doctrine)
+    public function __construct(private ApplicationSystems $applicationSystems, private MessageBusInterface $messageBus, private ManagerRegistry $doctrine)
     {
-        $this->applicationSystems = $applicationSystems;
-        $this->messageBus = $messageBus;
-        $this->doctrine = $doctrine;
     }
 
     public function __invoke(ParticipantListChanged $message)

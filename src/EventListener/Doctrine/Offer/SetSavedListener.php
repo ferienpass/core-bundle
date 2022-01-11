@@ -19,11 +19,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 class SetSavedListener
 {
-    private Session $session;
-
-    public function __construct(Session $session)
+    public function __construct(private Session $session)
     {
-        $this->session = $session;
     }
 
     public function postLoad(LifecycleEventArgs $args): void

@@ -19,11 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InformSleepController extends AbstractDashboardWidgetController
 {
-    private EditionRepository $editionRepository;
-
-    public function __construct(EditionRepository $editionRepository)
+    public function __construct(private EditionRepository $editionRepository)
     {
-        $this->editionRepository = $editionRepository;
     }
 
     public function __invoke(Request $request): Response

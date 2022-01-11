@@ -19,11 +19,8 @@ use Doctrine\DBAL\Connection;
 
 class HostInvitedRegistrationListener
 {
-    private $connection;
-
-    public function __construct(Connection $connection)
+    public function __construct(private Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function onCreateNewUser($newUserId): void

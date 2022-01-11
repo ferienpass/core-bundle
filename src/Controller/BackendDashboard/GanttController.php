@@ -21,17 +21,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GanttController extends AbstractDashboardWidgetController
 {
-    private TranslatorInterface $translator;
-    private EditionRepository $editionRepository;
-    private CsrfTokenManagerInterface $csrfTokenManager;
-    private string $csrfTokenName;
-
-    public function __construct(TranslatorInterface $translator, EditionRepository $editionRepository, CsrfTokenManagerInterface $csrfTokenManager, string $csrfTokenName)
+    public function __construct(private TranslatorInterface $translator, private EditionRepository $editionRepository, private CsrfTokenManagerInterface $csrfTokenManager, private string $csrfTokenName)
     {
-        $this->translator = $translator;
-        $this->editionRepository = $editionRepository;
-        $this->csrfTokenManager = $csrfTokenManager;
-        $this->csrfTokenName = $csrfTokenName;
     }
 
     public function __invoke(): Response

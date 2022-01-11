@@ -30,11 +30,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class AttendanceController extends AbstractController
 {
-    private MessageBusInterface $messageBus;
-
-    public function __construct(MessageBusInterface $messageBus)
+    public function __construct(private MessageBusInterface $messageBus)
     {
-        $this->messageBus = $messageBus;
     }
 
     /**

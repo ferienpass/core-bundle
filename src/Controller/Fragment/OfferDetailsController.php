@@ -25,11 +25,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class OfferDetailsController extends AbstractController
 {
-    private string $projectDir;
-
-    public function __construct(string $projectDir)
+    public function __construct(private string $projectDir)
     {
-        $this->projectDir = $projectDir;
     }
 
     public function __invoke(Offer $offer, Request $request): Response
