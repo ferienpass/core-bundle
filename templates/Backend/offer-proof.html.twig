@@ -41,34 +41,25 @@
             </div>
         {% endif %}
         <div x-show="tab === 'web'">
-            {% if offer.alias is null %}
-                {% embed '@FerienpassCore/Alert/error.html.twig' %}
-                    {% block headline %}{{ 'ERR.general'|trans([], 'contao_default') }}{% endblock %}
-                    {% block content %}Das Angebot hat keinen Alias.{% endblock %}
-                {% endembed %}
-            {% else %}
-                <div style="height: 500px" class="overflow-y-scroll">
-                    <div x-data="{}"
-                         class="bg-gray-300 pointer-events-none"
-                         x-init="$refs.shadow.attachShadow({mode: 'open'}); $refs.shadow.shadowRoot.appendChild( $refs.template.content.cloneNode(true) )">
-                        <div class="transform scale-90">
-                            <article x-ref="shadow"></article>
-                        </div>
-
-                        <template x-ref="template">
-                            {{ theme_link_tags('app', null, 'main') }}
-                            {{ render(controller('Ferienpass\\CoreBundle\\Controller\\Fragment\\OfferDetailsController', { offer: offer })) }}
-                        </template>
+            <div style="height: 500px" class="overflow-y-scroll">
+                <div x-data="{}"
+                     class="bg-gray-300 pointer-events-none"
+                     x-init="$refs.shadow.attachShadow({mode: 'open'}); $refs.shadow.shadowRoot.appendChild( $refs.template.content.cloneNode(true) )">
+                    <div class="transform scale-90">
+                        <article x-ref="shadow"></article>
                     </div>
+
+                    <template x-ref="template">
+                        {{ theme_link_tags('app', null, 'main') }}
+                        {{ render(controller('Ferienpass\\CoreBundle\\Controller\\Fragment\\OfferDetailsController', { offer: offer })) }}
+                    </template>
                 </div>
-            {% endif %}
+            </div>
             <div class="px-4 py-5 sm:p-6">
-                {% if offer.alias %}
-                    {% include '@FerienpassHostPortal/components/button-default.html.twig' with {
-                        uri: path('contao_backend_preview', { url: path('offer_details', { alias: offer.alias }) }),
-                        link: 'Webseite aufrufen'
-                    } %}
-                {% endif %}
+                {% include '@FerienpassHostPortal/components/button-default.html.twig' with {
+                    uri: path('contao_backend_preview', { url: path('offer_details', { alias: offer.alias }) }),
+                    link: 'Webseite aufrufen'
+                } %}
             </div>
         </div>
     </div>

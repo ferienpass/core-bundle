@@ -13,11 +13,12 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\Backend;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
-use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -29,15 +30,19 @@ class PdfProofController extends AbstractController
     {
     }
 
-    public function __invoke(int $id, Request $request, OfferRepository $offerRepository)
+    public function __invoke(Offer $offer, Request $request, ManagerRegistry $doctrine): Response
     {
-        $offer = $offerRepository->find($id);
+        if (!$offer->getAlias()) {
+            // Later, the AliasListener kicks in
+            $offer->setAlias(uniqid());
+            $doctrine->getManager()->flush();
 
-        $hasPdf = $this->pdfExports->has();
+            return $this->redirectToRoute($request->attributes->get('_route'), ['id' => $offer->getId()]);
+        }
 
         return $this->render('@FerienpassCore/Backend/offer-proof.html.twig', [
             'offer' => $offer,
-            'hasPdf' => $hasPdf,
+            'hasPdf' => $this->pdfExports->has(),
         ]);
     }
 }
