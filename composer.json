@@ -22,8 +22,8 @@
     "ext-json": "*",
     "ext-pdo": "*",
 
-    "contao/core-bundle": "4.x-dev@dev as 4.13.0",
-    "contao/news-bundle": "4.x-dev@dev as 4.13.0",
+    "contao/core-bundle": "^4.13",
+    "contao/news-bundle": "^4.13",
 
     "codefog/contao-haste": "~4.11",
     "terminal42/notification_center": "^1.3",
