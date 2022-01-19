@@ -105,18 +105,12 @@ class EditionTask
         $this->id = $id;
     }
 
-    /**
-     * @return Edition
-     */
-    public function getEdition()
+    public function getEdition(): Edition
     {
         return $this->edition;
     }
 
-    /**
-     * @param mixed $edition
-     */
-    public function setEdition($edition): void
+    public function setEdition(Edition $edition): void
     {
         $this->edition = $edition;
     }
@@ -201,9 +195,6 @@ class EditionTask
         $this->periodEnd = $periodEnd;
     }
 
-    /**
-     * @return string
-     */
     public function getDescription(): ?string
     {
         return $this->description;

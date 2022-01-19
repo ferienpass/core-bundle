@@ -68,7 +68,7 @@ class GanttController extends AbstractDashboardWidgetController
         if ('custom' === $task->getType()) {
             $title = (string) $task->getTitle();
         }
-        if ('application_system' === $task->getType()) {
+        if ('application_system' === $task->getType() && $task->getApplicationSystem()) {
             $title = $this->translator->trans('MSC.application_system.'.$task->getApplicationSystem(), [], 'contao_default');
         }
 
@@ -81,7 +81,7 @@ class GanttController extends AbstractDashboardWidgetController
             return (string) $task->getDescription();
         }
 
-        if ('application_system' === $task->getType()) {
+        if ('application_system' === $task->getType() && $task->getApplicationSystem()) {
             return $this->translator->trans('MSC.welcome_gantt.task_description.application_system.'.$task->getApplicationSystem(), [], 'contao_default');
         }
 
