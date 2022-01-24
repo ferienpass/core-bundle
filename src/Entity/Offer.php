@@ -82,6 +82,11 @@ class Offer
     private ?string $description = null;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private ?string $teaser = null;
+
+    /**
      * @ORM\Column(type="binary_string", length=16, nullable=true)
      */
     private ?string $image = null;
@@ -369,6 +374,11 @@ class Offer
         return $this->description;
     }
 
+    public function getTeaser(): ?string
+    {
+        return $this->teaser;
+    }
+
     public function getImage(): ?string
     {
         return $this->image;
@@ -427,6 +437,11 @@ class Offer
     public function setDescription(?string $description): void
     {
         $this->description = $description;
+    }
+
+    public function setTeaser(?string $teaser): void
+    {
+        $this->teaser = $teaser;
     }
 
     public function setImage(?string $image): void

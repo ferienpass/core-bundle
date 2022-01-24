@@ -83,6 +83,12 @@
             <trans-unit id="Offer.description.1">
                 <target>Geben Sie die Beschreibung des Angebotes ein.</target>
             </trans-unit>
+            <trans-unit id="Offer.teaser.0">
+                <target>Kurzbeschreibung</target>
+            </trans-unit>
+            <trans-unit id="Offer.teaser.1">
+                <target>Eine kurze Version des Beschreibungstextes. Max. 300 Zeichen. Nur auszufüllen, wenn Beschreibung länger als 300 Zeichen.</target>
+            </trans-unit>
             <trans-unit id="Offer.dates.0">
                 <target>Datum</target>
             </trans-unit>

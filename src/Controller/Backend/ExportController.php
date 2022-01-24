@@ -15,6 +15,7 @@ namespace Ferienpass\CoreBundle\Controller\Backend;
 
 use Contao\CoreBundle\Exception\ResponseException;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\ParameterType;
 use Ferienpass\CoreBundle\Entity\Edition;
 use Ferienpass\CoreBundle\Entity\Host;
 use Ferienpass\CoreBundle\Export\Offer\Excel\ExcelExports;
@@ -88,18 +89,6 @@ final class ExportController extends AbstractController
         ]);
     }
 
-    protected function checkToken(): void
-    {
-        $token = $this->container->get('security.token_storage')->getToken();
-        if (null === $token || $this->get('security.authentication.trust_resolver')->isAnonymous($token)) {
-            throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException();
-        }
-
-        if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_USER')) {
-            throw new ResponseException(new Response('Access Denied', Response::HTTP_UNAUTHORIZED));
-        }
-    }
-
     private function exportOffers(string $type, iterable $offers): BinaryFileResponse
     {
         if ($this->pdfExports->has($type)) {
@@ -134,15 +123,20 @@ final class ExportController extends AbstractController
         if (($editions = $form->get('editions')->getData())
             && $editions instanceof Collection
             && $editions->count()) {
-            /** @psalm-suppress QueryBuilderSetParameter */
-            $qb->andWhere('offer.edition IN (:editions)')->setParameter('editions', $editions);
+            $qb
+                ->andWhere('offer.edition IN (:editions)')
+                ->setParameter('editions', array_map(fn (Edition $e) => $e->getId(), $editions->toArray()), ParameterType::INTEGER)
+            ;
         }
 
         if (($hosts = $form->get('hosts')->getData())
             && $hosts instanceof Collection
             && $hosts->count()) {
-            /** @psalm-suppress QueryBuilderSetParameter */
-            $qb->innerJoin('offer.hosts', 'hosts')->andWhere('hosts.id IN (:hosts)')->setParameter('hosts', $hosts);
+            $qb
+                ->innerJoin('offer.hosts', 'hosts')
+                ->andWhere('hosts.id IN (:hosts)')
+                ->setParameter('hosts', array_map(fn (Host $h) => $h->getId(), $hosts->toArray()), ParameterType::INTEGER)
+            ;
         }
 
         return $qb->getQuery()->getResult();

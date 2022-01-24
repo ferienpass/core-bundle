@@ -88,7 +88,7 @@ $GLOBALS['TL_DCA']['Offer'] = [
     ],
     'palettes' => [
         '__selector__' => ['varbase'],
-        'default' => '{admin_legend},varbase,edition,hosts,members,category;{name_legend},name,alias;{text_legend},description,meetingPoint,bring;{date_legend},dates,datesExport,applicationDeadline;{info_legend},minAge,maxAge,minParticipants,maxParticipants,fee,accessibility;{media_legend},image,downloads;{applications_legend},requiresApplication,onlineApplication,applyText,contact,comment;{status_legend},published,cancelled',
+        'default' => '{admin_legend},varbase,edition,hosts,members,category;{name_legend},name,alias;{text_legend},description,teaser,meetingPoint,bring;{date_legend},dates,datesExport,applicationDeadline;{info_legend},minAge,maxAge,minParticipants,maxParticipants,fee,accessibility;{media_legend},image,downloads;{applications_legend},requiresApplication,onlineApplication,applyText,contact,comment;{status_legend},published,cancelled',
     ],
     'fields' => [
         'edition' => [
@@ -186,6 +186,11 @@ $GLOBALS['TL_DCA']['Offer'] = [
             'filter' => true,
         ],
         'description' => [
+            'exclude' => true,
+            'inputType' => 'textarea',
+            'eval' => ['tl_class' => 'clr', 'decodeEntities' => true],
+        ],
+        'teaser' => [
             'exclude' => true,
             'inputType' => 'textarea',
             'eval' => ['tl_class' => 'clr', 'decodeEntities' => true],
