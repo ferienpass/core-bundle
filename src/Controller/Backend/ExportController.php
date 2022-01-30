@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\Backend;
 
-use Contao\CoreBundle\Exception\ResponseException;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\ParameterType;
 use Ferienpass\CoreBundle\Entity\Edition;
