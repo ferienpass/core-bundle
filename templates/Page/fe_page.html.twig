@@ -28,7 +28,9 @@
         {% endblock %}
 
         {{ theme_link_tags('app') }}
-        {{ theme_script_tags('app') }}
+        {{ theme_script_tags('app', attributes={
+            defer: true
+        }) }}
 
         {{ head|default }}
     {% endblock %}
