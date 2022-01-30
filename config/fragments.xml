@@ -62,9 +62,13 @@
         <service id="Ferienpass\CoreBundle\Controller\Fragment\Error401">
             <argument type="service" id="Ferienpass\CoreBundle\Repository\EditionRepository"/>
         </service>
+        <service id="Ferienpass\CoreBundle\Controller\Fragment\OfferListFilterController">
+            <argument type="service" id="Ferienpass\CoreBundle\Repository\EditionRepository"/>
+        </service>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\OfferListController">
             <argument type="service" id="Ferienpass\CoreBundle\Repository\EditionRepository"/>
             <argument type="service" id="Ferienpass\CoreBundle\Repository\OfferRepository"/>
+            <argument type="service" id="Ferienpass\CoreBundle\Filter\OfferListFilterFactory"/>
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\ApplicationFormController">
             <argument type="service" id="Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems"/>

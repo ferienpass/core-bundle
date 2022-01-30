@@ -323,6 +323,9 @@ services:
     arguments: [ '@fragment.handler', '@translator', '@contao.framework', '@request_stack' ]
     public: true
 
+  Ferienpass\CoreBundle\Filter\OfferListFilterFactory:
+    arguments: [ '@form.factory', '@session' ]
+
   Ferienpass\CoreBundle\MessageHandler\WhenOfferCancelledThenNotify:
     arguments: [ '@doctrine' ]
 

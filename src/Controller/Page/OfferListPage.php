@@ -20,6 +20,7 @@ class OfferListPage extends AbstractContentPage
 {
     protected function modifyPage(PageBuilder $pageBuilder): void
     {
+        $pageBuilder->addFragment('main', new FragmentReference('ferienpass.fragment.offer_list_filter'));
         $pageBuilder->addFragment('main', new FragmentReference('ferienpass.fragment.offer_list'));
     }
 }

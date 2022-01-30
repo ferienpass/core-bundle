@@ -117,3 +117,11 @@ days: Tage
 hours: Stunden
 minutes: Minuten
 seconds: Sekunden
+
+offerList.filter:
+  name: Titel enthält „<strong>{value}</strong>“
+  age: für <strong>{value}</strong>-jährige
+  fee: max. <strong>{value}</strong> €
+  earliest_date: nach dem <strong>{value}</strong>
+  latest_date: vor dem <strong>{value}</strong>
+  favorites: nur gespeicherte Angebote

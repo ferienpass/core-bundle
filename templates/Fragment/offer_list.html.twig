@@ -1,100 +1,50 @@
 <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
+
     {% if edition is not defined %}
+
         <div class="flex items-center justify-center">
             <span class="h-16 w-16 text-gray-400 mr-4">{{ source('@FerienpassCore/Icons/emoji-sad.svg') }}</span>
             <p class="text-gray-600 text-2xl">Leider sind aktuell keine Ferienpass-Angebote veröffentlicht.</p>
         </div>
+
     {% else %}
-        <div>
 
-            {% block filters %}
-
-                {{ form_start(filters, {method: 'GET'}) }}
-
-                {% block filters_form %}
-                    <div class="flex justify-between">
-
-                        <div>
-                            {{ form_label(filters.name, null, { label_attr: { class: '!text-xs !font-semibold'} }) }}
-                            {{ form_widget(filters.name) }}
-                        </div>
-
-                        <div class="w-24">
-                            {{ form_label(filters.age, null, { label_attr: { class: '!text-xs !font-semibold'} }) }}
-                            {{ form_widget(filters.age) }}
-                        </div>
-                        <div class="w-24">
-                            {{ form_label(filters.fee, null, { label_attr: { class: '!text-xs !font-semibold'} }) }}
-                            {{ form_widget(filters.fee) }}
-                        </div>
-
-                        <div>
-                            {{ form_label(filters.earliest_date, null, { label_attr: { class: '!text-xs !font-semibold'} }) }}
-                            {{ form_widget(filters.earliest_date) }}
-                        </div>
-                        <div>
-                            {{ form_label(filters.latest_date, null, { label_attr: { class: '!text-xs !font-semibold'} }) }}
-                            {{ form_widget(filters.latest_date) }}
-                        </div>
-
-                        <div class="mt-6">
-                            <div x-data="{ checked: {{ filters.favorites.vars.checked ? 'true' : 'false' }} }"
-                                 class="flex items-center space-x-1">
-                                <div>
-                                    <input type="hidden"
-                                           name="{{ filters.favorites.vars.full_name }}"
-                                           :value="checked ? '1' : ''"
-                                           id="{{ filters.favorites.vars.id }}">
-                                    <span role="checkbox"
-                                          tabindex="0"
-                                          @click="checked = !checked"
-                                          @keydown.space.prevent="checked = !checked"
-                                          :aria-checked="checked.toString()"
-                                          aria-checked="false"
-                                          :class="{ 'bg-gray-200': !checked, 'bg-red-600': checked }"
-                                          class="relative inline-block flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline bg-gray-200">
-                                <span aria-hidden="true"
-                                      :class="{ 'translate-x-5': checked, 'translate-x-0': !checked }"
-                                      class="relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200 translate-x-0">
-                                  <span :class="{ 'opacity-0 ease-out duration-100': checked, 'opacity-100 ease-in duration-200': !checked }"
-                                        class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity opacity-100 ease-in duration-200">
-                                    <span class="block h-3 w-3 text-gray-400">{{ source('@FerienpassCore/Icons/heart.svg') }}</span>
-                                  </span>
-                                  <span :class="{ 'opacity-100 ease-in duration-200': checked, 'opacity-0 ease-out duration-100': !checked }"
-                                        class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity opacity-0 ease-out duration-100">
-                                    <span class="block h-3 w-3 text-red-600">{{ source('@FerienpassCore/Icons/heart-solid.svg') }}</span>
-                                  </span>
-                                </span>
-                          </span>
-                                </div>
-                                <label class="font-medium text-sm leading-4 cursor-pointer"
-                                       @click="checked = !checked"
-                                       :class="{ 'text-red-600': checked, 'text-gray-600': !checked }"
-                                       for="{{ filters.favorites.vars.id }}">gemerkte<br>Angebote</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <button type="submit"
-                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                            Filter anwenden
-                        </button>
-                    </div>
-                {% endblock %}
-
-                {{ form_end(filters, {'render_rest': false}) }}
-
-            {% endblock %}
-
-            <div class="mt-10">
-                {% include '@FerienpassCore/Partial/offer_list.html.twig' with { offers: pagination.results } %}
-            </div>
-
-            <div class="py-10">
-                {% include '@FerienpassCore/Partial/pagination.html.twig' %}
-            </div>
-
+        <div class="px-4 sm:px-0">
+            {% include '@FerienpassCore/Component/divider_title_left.html.twig' with { title: "Alle Angebote" } %}
         </div>
+
+        <div class="px-4 sm:px-0">
+
+            <div class="mt-2 mb-6">
+
+                {% for attr, value in filter.values %}
+
+                    <span class="inline-flex rounded-full items-center py-0.5 pl-2.5 pr-1 text-sm font-normal bg-primary-100 text-primary-700">
+                        {% set transKey = 'offerList.filter.'~attr %}
+                        {% if attr == 'fee' %}
+                            {% set value = value|number_format(2, ',', '.') %}
+                        {% endif %}
+                        {% if attr == 'earliest_date' or attr == 'latest_date' %}
+                            {% set value = value|date('d.m.Y') %}
+                        {% endif %}
+                        <span>{{ transKey|trans({'%value%': value})|raw }}</span>
+                        <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({(attr): null, page: null})) }}"
+                           class="flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-primary-400 hover:bg-primary-200 hover:text-primary-500 focus:outline-none focus:bg-primary-500 focus:text-white">
+                            <span class="sr-only">Lösche Filter</span>
+                            <span class="block h-3 w-3">{{ source('@FerienpassCore/Icons/x-solid.svg') }}</span>
+                        </a>
+                    </span>
+
+                {% endfor %}
+
+            </div>
+        </div>
+
+        {% include '@FerienpassCore/Partial/offer_list.html.twig' with { offers: pagination.results } %}
+
+        <div class="py-10">
+            {% include '@FerienpassCore/Partial/pagination.html.twig' %}
+        </div>
+
     {% endif %}
 </div>
