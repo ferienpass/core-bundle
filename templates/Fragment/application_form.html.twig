@@ -23,7 +23,7 @@
                         {% else %}
 
                             {# progress bar #}
-                            {% if applicationSystem.task.applicationSystem == 'firstcome' %}
+                            {% if applicationSystem.type == 'firstcome' %}
                                 {% if vacant < 2 %}
                                     {% set color1 ='bg-red-200' %}
                                     {% set color2 ='bg-red-500' %}
@@ -76,7 +76,7 @@
                                         <span class="h-5 w-5 mr-2 text-gray-400 block">{% include '@FerienpassCore/Icons/chevron-right.svg.twig' %}</span>
                                     </div>
 
-                                    {% set info = 'application.procedure.'~applicationSystem.task.applicationSystem %}
+                                    {% set info = 'application.procedure.'~applicationSystem.type %}
                                     <p class="text-gray-500 text-sm">{{ info|trans }}</p>
                                 </div>
                             {% endif %}

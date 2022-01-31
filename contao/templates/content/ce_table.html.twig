@@ -1,0 +1,47 @@
+<div class="flex flex-col py-12 sm:py-16">
+    <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+
+            <table class="min-w-full">
+                {% if summary %}
+                    <caption>{{ summary }}</caption>
+                {% endif %}
+
+                {% if useHeader %}
+                    <thead>
+                    <tr>
+                        {% for col in header %}
+                            <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">{{ col.content }}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                {% endif %}
+
+                {% if useFooter %}
+                    <tfoot>
+                    <tr>
+                        {% for col in footer %}
+                            <td class="{{ col.class }}">{{ col.content }}</td>
+                        {% endfor %}
+                    </tr>
+                    </tfoot>
+                {% endif %}
+
+                <tbody class="bg-white">
+                {% for class, row in body %}
+                    <tr class="{{ class }}">
+                        {% for i, col in row %}
+                            {% if 0 == i and useLeftTh %}
+                                <th scope="row"
+                                    class="text-left font-semibold px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 font-medium text-gray-900">{{ col.content }}</th>
+                            {% else %}
+                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500">{{ col.content }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

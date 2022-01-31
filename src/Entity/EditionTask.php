@@ -200,6 +200,11 @@ class EditionTask
         return $this->description;
     }
 
+    public function isAnApplicationSystem(): bool
+    {
+        return 'application_system' === $this->type;
+    }
+
     public function getProgress(): int
     {
         if ($this->isCompleted()) {
@@ -238,7 +243,7 @@ class EditionTask
         $allTasks = $this->edition->getTasks();
 
         return match (true) {
-            'allocation' === $this->type => $allTasks->filter(fn (EditionTask $t) => 'application_system' === $t->getType() && 'lot' === $t->getApplicationSystem()),
+            'allocation' === $this->type => $allTasks->filter(fn (EditionTask $t) => $t->isAnApplicationSystem() && 'lot' === $t->getApplicationSystem()),
             'application_system' === $this->type && 'firstcome' === $this->applicationSystem => $allTasks->filter(fn (EditionTask $t) => 'allocation' === $t->getType()),
             'publish_lists' === $this->type => $allTasks->filter(fn (EditionTask $t) => 'allocation' === $t->getType()),
             default => new ArrayCollection(),
@@ -298,8 +303,16 @@ class EditionTask
         $this->description = $description;
     }
 
-    public function getApplicationSystem(): ?string
+    public function getApplicationSystem(): string
     {
+        if (!$this->isAnApplicationSystem()) {
+            throw new \BadMethodCallException('This task is not a application system');
+        }
+
+        if (!$this->applicationSystem) {
+            throw new \RuntimeException('Uh oh! Misconfigured task of type "application system"');
+        }
+
         return $this->applicationSystem;
     }
 

@@ -14,9 +14,17 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\ApplicationSystem;
 
 use Ferienpass\CoreBundle\Entity\Attendance;
+use Ferienpass\CoreBundle\Entity\EditionTask;
 
-class AbstractApplicationSystem implements ApplicationSystemInterface
+abstract class AbstractApplicationSystem implements ApplicationSystemInterface
 {
+    protected ?EditionTask $task = null;
+
+    public function getTask(): ?EditionTask
+    {
+        return $this->task;
+    }
+
     public function assignStatus(Attendance $attendance): void
     {
         $this->setStatus($attendance);
@@ -41,14 +49,14 @@ class AbstractApplicationSystem implements ApplicationSystemInterface
         $offer = $attendance->getOffer();
         $status = $attendance->getStatus();
 
-        $lastAttendance = $offer->getAttendancesWithStatus($status)->last();
+        $lastAttendance = $status ? $offer->getAttendancesWithStatus($status)->last() : null;
 
         $sorting = $lastAttendance ? $lastAttendance->getSorting() : 0;
         $sorting += 128;
 
         $attendance->setSorting($sorting);
 
-        if ($this instanceof TimedApplicationSystemInterface) {
+        if (null !== $this->getTask()) {
             $attendance->setTask($this->getTask());
         }
     }

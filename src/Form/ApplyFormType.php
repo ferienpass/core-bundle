@@ -18,8 +18,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
+use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface;
 use Ferienpass\CoreBundle\ApplicationSystem\FirstComeApplicationSystem;
-use Ferienpass\CoreBundle\ApplicationSystem\TimedApplicationSystemInterface;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\OfferDate;
@@ -50,7 +50,6 @@ class ApplyFormType extends AbstractType
         $offer = $options['offer'];
         $applicationSystem = $options['application_system'];
         \assert($offer instanceof Offer);
-        \assert($applicationSystem instanceof TimedApplicationSystemInterface);
 
         $builder
             ->add('participants', EntityType::class, $this->getChoiceOptions($offer, $applicationSystem))
@@ -68,10 +67,10 @@ class ApplyFormType extends AbstractType
         $resolver->setDefined('offer');
         $resolver->setDefined('application_system');
         $resolver->setAllowedTypes('offer', Offer::class);
-        $resolver->setAllowedTypes('application_system', TimedApplicationSystemInterface::class);
+        $resolver->setAllowedTypes('application_system', ApplicationSystemInterface::class);
     }
 
-    private function getChoiceOptions(Offer $offer, TimedApplicationSystemInterface $applicationSystem): array
+    private function getChoiceOptions(Offer $offer, ApplicationSystemInterface $applicationSystem): array
     {
         $user = $this->security->getUser();
         if (!$user instanceof FrontendUser) {
@@ -87,7 +86,7 @@ class ApplyFormType extends AbstractType
             'multiple' => true,
             'expanded' => true,
             'choice_label' => fn (Participant $choice) => sprintf('%s %s', $choice->getFirstname(), $choice->getLastname()),
-            'choice_attr' => function (Participant $key, $val, $index) use ($offer, $applicationSystem): array {
+            'choice_attr' => function (Participant $key) use ($offer, $applicationSystem): array {
                 if ($this->participantIsApplied($key, $offer)) {
                     return ['disabled' => 'disabled', 'selected' => 'true'];
                 }
@@ -111,7 +110,7 @@ class ApplyFormType extends AbstractType
         return $participant->getAttendances()->filter(fn (Attendance $a) => $offer === $a->getOffer() && !$a->isWithdrawn())->count() > 0;
     }
 
-    private function ineligibility(Offer $offer, Participant $participant, TimedApplicationSystemInterface $applicationSystem): void
+    private function ineligibility(Offer $offer, Participant $participant, ApplicationSystemInterface $applicationSystem): void
     {
         $this->ageValid($offer, $participant, $applicationSystem);
         $this->overlappingOffer($participant, $offer);
@@ -119,13 +118,13 @@ class ApplyFormType extends AbstractType
         $this->dayLimitReached($offer, $participant, $applicationSystem);
     }
 
-    private function ageValid(Offer $offer, Participant $participant, TimedApplicationSystemInterface $applicationSystem): void
+    private function ageValid(Offer $offer, Participant $participant, ApplicationSystemInterface $applicationSystem): void
     {
         if (!$offer->getMinAge() && !$offer->getMaxAge()) {
             return;
         }
 
-        /** @var OfferDate $date */
+        /** @var OfferDate|null $date */
         $date = $offer->getDates()->first();
         if (null === $date || null === $dateBegin = $date->getBegin()) {
             return;
@@ -136,7 +135,7 @@ class ApplyFormType extends AbstractType
             return;
         }
 
-        $ageCheck = $applicationSystem->getTask()->getAgeCheck();
+        $ageCheck = $applicationSystem->getTask()?->getAgeCheck();
         if ('vague_on_year' === $ageCheck) {
             $ages = [
                 $dateOfBirth->diff((new \DateTimeImmutable($dateBegin->format('Y').'-01-01')))->y,
@@ -184,16 +183,16 @@ class ApplyFormType extends AbstractType
         }
     }
 
-    private function limitReached(Offer $offer, Participant $participant, TimedApplicationSystemInterface $applicationSystem): void
+    private function limitReached(Offer $offer, Participant $participant, ApplicationSystemInterface $applicationSystem): void
     {
         $task = $applicationSystem->getTask();
-        if (!$task->getMaxApplications()) {
+        if (!$task?->getMaxApplications()) {
             return;
         }
 
         $attendances = $participant
             ->getAttendancesNotWithdrawn()
-            ->filter(fn (Attendance $a) => $a->getTask() && $a->getTask()->getId() === $task->getId())
+            ->filter(fn (Attendance $a) => $a->getTask()?->getId() === $task->getId())
         ;
 
         if (\count($attendances) >= $task->getMaxApplications()) {
@@ -201,15 +200,14 @@ class ApplyFormType extends AbstractType
         }
     }
 
-    private function dayLimitReached(Offer $offer, Participant $participant, TimedApplicationSystemInterface $applicationSystem): void
+    private function dayLimitReached(Offer $offer, Participant $participant, ApplicationSystemInterface $applicationSystem): void
     {
         if (!$applicationSystem instanceof FirstComeApplicationSystem) {
             return;
         }
 
         $task = $applicationSystem->getTask();
-        $limit = $task->getMaxApplicationsDay();
-        if (!$limit) {
+        if (!$task || !$limit = $task->getMaxApplicationsDay()) {
             return;
         }
 
@@ -219,7 +217,7 @@ class ApplyFormType extends AbstractType
 
         $attendances = $participant
             ->getAttendances()
-            ->filter(fn (Attendance $a) => $a->getTask() && $a->getTask()->getId() === $task->getId() && $a->getCreatedAt() >= $dayBegin && $a->getCreatedAt() <= $dayEnd)
+            ->filter(fn (Attendance $a) => $a->getTask()?->getId() === $task->getId() && $a->getCreatedAt() >= $dayBegin && $a->getCreatedAt() <= $dayEnd)
         ;
 
         if (\count($attendances) >= $limit) {

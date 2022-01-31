@@ -1,5 +1,0 @@
-<div class="prose">
-
-    <?= $this->content ?>
-
-</div>

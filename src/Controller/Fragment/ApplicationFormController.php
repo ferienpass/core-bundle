@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Controller\Fragment;
 
 use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems;
-use Ferienpass\CoreBundle\ApplicationSystem\TimedApplicationSystemInterface;
 use Ferienpass\CoreBundle\Controller\Frontend\AbstractController;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Facade\AttendanceFacade;
@@ -37,14 +36,9 @@ class ApplicationFormController extends AbstractController
         }
 
         $applicationSystem = $this->applicationSystems->findApplicationSystem($offer);
-        if (!$applicationSystem instanceof TimedApplicationSystemInterface) {
-            return $this->render('@FerienpassCore/Fragment/application_form.html.twig', [
-                'applicationSystem' => null,
-            ]);
-        }
 
         $countParticipants = $this->attendanceRepository->count(['status' => 'confirmed', 'offer' => $offer]) + $this->attendanceRepository->count(['status' => 'waitlisted', 'offer' => $offer]);
-        $vacant = $offer->getMaxParticipants() - $countParticipants;
+        $vacant = $offer->getMaxParticipants() ?? 0 - $countParticipants;
 
         $applicationForm = $this->createForm(ApplyFormType::class, null, [
             'offer' => $offer,

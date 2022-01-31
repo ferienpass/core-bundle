@@ -18,16 +18,16 @@ use Ferienpass\CoreBundle\Entity\EditionTask;
 /**
  * An application system that runs in the front end when the lot application procedure is active.
  */
-class LotApplicationSystem extends AbstractApplicationSystem implements TimedApplicationSystemInterface
+class LotApplicationSystem extends AbstractApplicationSystem
 {
-    private EditionTask $task;
+    public function getType(): string
+    {
+        return 'lot';
+    }
 
-    /**
-     * @required
-     */
     public function withTask(EditionTask $task): self
     {
-        if ('application_system' !== $task->getType() || 'lot' !== $task->getApplicationSystem()) {
+        if (!$task->isAnApplicationSystem() || $this->getType() !== $task->getApplicationSystem()) {
             throw new \InvalidArgumentException('Edition task must be type Lot application procedure');
         }
 
@@ -35,10 +35,5 @@ class LotApplicationSystem extends AbstractApplicationSystem implements TimedApp
         $clone->task = $task;
 
         return $clone;
-    }
-
-    public function getTask(): EditionTask
-    {
-        return $this->task;
     }
 }

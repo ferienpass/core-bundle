@@ -40,22 +40,17 @@ class ApplicationSystems implements ServiceSubscriberInterface
             throw new AmbiguousApplicationSystemException('More than one application system is applicable at the moment for pass edition ID '.$edition->getId());
         }
 
-        if ($tasks->isEmpty()) {
+        /** @var EditionTask $task */
+        if ($tasks->isEmpty() || false === $task = $tasks->current()) {
             return null;
         }
-
-        $task = $tasks->current();
 
         $applicationSystem = $this->locator->get('ferienpass.application_system.'.$task->getApplicationSystem());
         if (!$applicationSystem instanceof ApplicationSystemInterface) {
             throw new \RuntimeException(sprintf('Application system "%s" is unknown', $task->getApplicationSystem()));
         }
 
-        if ($applicationSystem instanceof TimedApplicationSystemInterface) {
-            $applicationSystem = $applicationSystem->withTask($task);
-        }
-
-        return $applicationSystem;
+        return $applicationSystem->withTask($task);
     }
 
     public static function getSubscribedServices(): array
