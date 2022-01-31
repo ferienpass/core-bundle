@@ -20,6 +20,18 @@ abstract class AbstractApplicationSystem implements ApplicationSystemInterface
 {
     protected ?EditionTask $task = null;
 
+    public function withTask(EditionTask $task): self
+    {
+        if (!$task->isAnApplicationSystem() || $this->getType() !== $task->getApplicationSystem()) {
+            throw new \InvalidArgumentException(sprintf('Edition task must be an application system of type "%s"', $this->getType()));
+        }
+
+        $clone = clone $this;
+        $clone->task = $task;
+
+        return $clone;
+    }
+
     public function getTask(): ?EditionTask
     {
         return $this->task;
