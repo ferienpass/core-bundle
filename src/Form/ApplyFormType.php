@@ -49,7 +49,6 @@ class ApplyFormType extends AbstractType
 
         $offer = $options['offer'];
         $applicationSystem = $options['application_system'];
-        \assert($offer instanceof Offer);
 
         $builder
             ->add('participants', EntityType::class, $this->getChoiceOptions($offer, $applicationSystem))

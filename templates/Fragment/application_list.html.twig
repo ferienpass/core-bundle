@@ -70,7 +70,7 @@
                                         {{ form.submit.vars['label'] }}
                                     </button>
                                     {{ form_end(form) }}
-                                {% elseif attendance.isWithdrawn or (offer.dates|first and offer.dates|first.begin <= date()) %}
+                                {% elseif attendance.isWithdrawn or (attendance.offer.dates|first and attendance.offer.dates|first.begin <= date()) %}
                                 {% elseif attendance.offer.applicationDeadline and date() >= attendance.offer.applicationDeadline %}
                                     <p class="text-xs">Abmeldezeitraum beendet. Bitte beim Veranstalter melden.</p>
                                 {% endif %}

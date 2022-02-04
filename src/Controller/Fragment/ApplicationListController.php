@@ -40,7 +40,7 @@ class ApplicationListController extends AbstractController
             return new Response('', Response::HTTP_NO_CONTENT);
         }
 
-        /** @var Collection|Attendance[] $attendances */
+        /** @var Collection<int, Attendance> $attendances */
         $attendances = $this->attendanceRepository->createQueryBuilder('a')
             ->innerJoin('a.participant', 'p')
             ->where('p.member = :member')
@@ -58,15 +58,8 @@ class ApplicationListController extends AbstractController
 
         $applicationSystems = [];
         foreach ($attendances as $attendance) {
-            $applicationSystems[$attendance->getId()] = $this->applicationSystems->findApplicationSystem($attendance->getOffer());
+            $applicationSystems[$attendance->getId() ?? 0] = $this->applicationSystems->findApplicationSystem($attendance->getOffer());
         }
-
-        // ICS link
-//        $member = FrontendUser::getInstance();
-//        $token = hash('ripemd128', implode('', [$member->id, 'ics', $this->secret]));
-//        $token = substr($token, 0, 8);
-//
-//        return $base.'/share/anmeldungen-ferienpass-'.$member->id.'-'.$token.'.ics';
 
         return $this->render('@FerienpassCore/Fragment/application_list.html.twig', [
             'attendances' => $attendances,
@@ -113,14 +106,14 @@ class ApplicationListController extends AbstractController
 
         $attendance = $this->attendanceRepository->find($form->getConfig()->getName());
         if (!$attendance instanceof Attendance) {
-            return $this->redirectToRoute($request->get('_route'));
+            return $this->redirectToRoute($request->attributes->get('_route'));
         }
 
         $applicationSystem = $this->applicationSystems->findApplicationSystem($attendance->getOffer());
         if (null === $applicationSystem) {
             $this->addFlash(...Flash::error()->text('Zurzeit sind keine Anmeldungen möglich')->create());
 
-            return $this->redirectToRoute($request->get('_route'));
+            return $this->redirectToRoute($request->attributes->get('_route'));
         }
 
         $this->denyAccessUnlessGranted('withdraw', $attendance);
@@ -129,6 +122,6 @@ class ApplicationListController extends AbstractController
 
         $this->addFlash(...Flash::confirmation()->text('Die Anmeldung wurde erfolgreich zurückgezogen')->create());
 
-        return $this->redirectToRoute($request->get('_route'));
+        return $this->redirectToRoute($request->attributes->get('_route'));
     }
 }

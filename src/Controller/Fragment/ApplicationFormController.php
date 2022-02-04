@@ -36,6 +36,9 @@ class ApplicationFormController extends AbstractController
         }
 
         $applicationSystem = $this->applicationSystems->findApplicationSystem($offer);
+        if (null === $applicationSystem) {
+            return $this->render('@FerienpassCore/Fragment/application_form.html.twig', ['offer' => $offer]);
+        }
 
         $countParticipants = $this->attendanceRepository->count(['status' => 'confirmed', 'offer' => $offer]) + $this->attendanceRepository->count(['status' => 'waitlisted', 'offer' => $offer]);
         $vacant = $offer->getMaxParticipants() ?? 0 - $countParticipants;
@@ -56,9 +59,9 @@ class ApplicationFormController extends AbstractController
             return $this->redirect($request->getUri());
         }
 
-        return $this->render('@FerienpassCore/Fragment/application_form.html.twig', [
+        return $this->renderForm('@FerienpassCore/Fragment/application_form.html.twig', [
             'offer' => $offer,
-            'form' => $applicationForm->createView(),
+            'form' => $applicationForm,
             'applicationSystem' => $applicationSystem,
             'vacant' => max(0, $vacant),
         ]);

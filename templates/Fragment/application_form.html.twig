@@ -14,7 +14,7 @@
 
                     <div class="py-4 sm:py-6" x-data="{ choices: [] }">
 
-                        {% if not applicationSystem %}
+                        {% if not applicationSystem|default %}
                             {% include "@FerienpassCore/Alert/error.html.twig" with { message: 'application.disabled'|trans } %}
                         {% elseif offer.dates|first and offer.dates|first.begin < date() %}
                             {% include "@FerienpassCore/Alert/information.html.twig" with { message: 'application.inPast'|trans } %}
