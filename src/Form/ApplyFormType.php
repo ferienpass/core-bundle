@@ -166,8 +166,8 @@ class ApplyFormType extends AbstractType
             ->innerJoin(Attendance::class, 'a', Join::WITH, 'a.offer = o.id')
             ->where('a.participant = :participant')
             ->andWhere('a.offer <> :offer')
-            ->setParameter('participant', $participant, Types::INTEGER)
-            ->setParameter('offer', $offer, Types::INTEGER)
+            ->setParameter('participant', $participant->getId(), Types::INTEGER)
+            ->setParameter('offer', $offer->getId(), Types::INTEGER)
             ->getQuery()
             ->getResult()
         ;

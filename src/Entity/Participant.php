@@ -169,8 +169,7 @@ class Participant
 
     public function getLastAttendance(): ?Attendance
     {
-        \assert($this->attendances instanceof ArrayCollection);
-
+        /** @var ArrayCollection $this->attendances */
         $criteria = Criteria::create()
             ->orderBy(['modifiedAt' => Criteria::DESC])
         ;

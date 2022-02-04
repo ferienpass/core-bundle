@@ -20,25 +20,26 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AuthenticationFailureHandler implements AuthenticationFailureHandlerInterface
 {
+    public function __construct(private TranslatorInterface $translator)
+    {
+    }
+
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
         if ($exception instanceof LockedException) {
             return new JsonResponse([
-                'message' => sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], $exception->getLockedMinutes()),
-            ],
-                Response::HTTP_UNAUTHORIZED
-            );
+                'message' => sprintf($this->translator->trans('ERR.accountLocked', [], 'contao_default'), $exception->getLockedMinutes()),
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         if ($exception instanceof InvalidTwoFactorCodeException) {
             return new JsonResponse([
-                'message' => $GLOBALS['TL_LANG']['ERR']['invalidTwoFactor'],
-            ],
-                Response::HTTP_UNAUTHORIZED
-            );
+                'message' => $this->translator->trans('ERR.invalidTwoFactor', [], 'contao_default'),
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         return new JsonResponse([], Response::HTTP_UNAUTHORIZED);

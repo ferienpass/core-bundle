@@ -37,7 +37,7 @@
                                              id="{{ 'answer-'~faq.alias }}"
                                              role="region"
                                              aria-labelledby="{{ 'btn-'~faq.alias }}">
-                                            {{ faq.answer }}
+                                            {{ faq.answer|raw }}
                                         </div>
 
                                         {% if faq.enclosure %}

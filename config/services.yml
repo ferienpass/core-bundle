@@ -273,7 +273,8 @@ services:
   Ferienpass\CoreBundle\Export\Offer\Web\ImgExport:
     arguments: [ '@kernel', '@filesystem', '@knp_snappy.image', '%kernel.project_dir%' ]
 
-  Ferienpass\CoreBundle\Security\Authentication\AuthenticationFailureHandler: ~
+  Ferienpass\CoreBundle\Security\Authentication\AuthenticationFailureHandler:
+    arguments: [ '@translator' ]
 
   Ferienpass\CoreBundle\Form\ApplyFormType:
     arguments: [ '@security.helper', '@doctrine' ]
