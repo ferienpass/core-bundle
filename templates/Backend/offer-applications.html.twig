@@ -358,10 +358,12 @@
 
                 <span class="flex-grow flex flex-col" id="mode-label">
                     <span>
-                        <span class="text-sm font-medium text-gray-900" x-text="enabled ? 'Automatischer Modus' : 'Manueller Modus'"></span>
+                        <span class="text-sm font-medium text-gray-900"
+                              x-text="enabled ? 'Automatischer Modus' : 'Manueller Modus'"></span>
                         <span class="text-gray-500">(gilt nur für Sie)</span>
                     </span>
-                    <span class="text-sm text-gray-500" x-text="enabled ? 'Kinder rücken automatisch nach und werden bei Änderung benachrichtigt.' : 'Es rücken keine Kinder nach und es werden keine Benachrichtigungen verschickt.'"></span>
+                    <span class="text-sm text-gray-500"
+                          x-text="enabled ? 'Kinder rücken automatisch nach und werden bei Änderung benachrichtigt.' : 'Es rücken keine Kinder nach und es werden keine Benachrichtigungen verschickt.'"></span>
                 </span>
             </div>
 
@@ -439,7 +441,7 @@
                             </div>
                         {% endif %}
                         <div class="px-4 py-5 sm:py-6">
-                            {% if status == 'waiting' and attendances|default|length > 0 %}
+                            {% if status == 'waiting' and attendances|length > 0 %}
                                 <form method="post" class="mb-6 text-center">
                                     <input type="hidden" name="REQUEST_TOKEN" value="{{ contao_request_token() }}">
                                     <span class="inline-flex rounded-md shadow-sm">
@@ -451,9 +453,9 @@
                                 </form>
                             {% endif %}
                             <ul data-attendance-status="{{ status }}">
-                                {% for participant in attendances|default %}
+                                {% for attendance in attendances %}
                                     <li class="group cursor-move bg-gray-50 px-2 py-2 border border-transparent rounded mb-4 hover:bg-gray-100 hover:border-gray-100 hover:shadow-sm"
-                                        data-attendance-id="{{ participant.attendanceId }}">
+                                        data-attendance-id="{{ attendance.id }}">
                                         <div class="flex">
                                             <div class="mr-1">
                                                 <span class="h-5 w-5 block -ml-1 text-gray-400 group-hover:text-gray-500">{% include '@FerienpassCore/Icons/dots-vertical.svg.twig' %}</span>
@@ -461,26 +463,42 @@
 
                                             <div class="w-full">
                                                 <div class="flex justify-between">
-                                                    <a href="{{ path('contao_backend', { do: 'participants', act: 'edit', id: participant.id, popup: '1', rt: contao_request_token()}) }}"
-                                                       @click.prevent="Backend.openModalIframe({'title':'Kind bearbeiten','url':'{{ path('contao_backend', { do: 'participants', act: 'edit', id: participant.id, popup: '1', rt: contao_request_token()}) }}'})"
-                                                       class="font-medium mb-1 block text-gray-700 truncate">{{ participant.firstname ~ ' ' ~participant.lastname }}</a>
+                                                    <a href="{{ path('contao_backend', { do: 'participants', act: 'edit', id: attendance.participant.id, popup: '1', rt: contao_request_token()}) }}"
+                                                       @click.prevent="Backend.openModalIframe({'title':'Kind bearbeiten','url':'{{ path('contao_backend', { do: 'participants', act: 'edit', id: attendance.participant.id, popup: '1', rt: contao_request_token()}) }}'})"
+                                                       class="font-medium mb-1 block text-gray-700 truncate">{{ attendance.participant.firstname ~ ' ' ~ attendance.participant.lastname }}</a>
                                                     <div>
-                                                        {% if participant.parentId %}
+                                                        {% if attendance.participant.memberId %}
                                                             <a class="text-gray-400 hover:text-gray-500"
-                                                               href="{{ path('contao_backend', { do: 'member_parents', act: 'edit', id: participant.parentId, popup: '1', rt: contao_request_token()}) }}"
-                                                               @click.prevent="Backend.openModalIframe({'title':'Eltern bearbeiten','url':'{{ path('contao_backend', { do: 'member_parents', act: 'edit', id: participant.parentId, popup: '1', rt: contao_request_token()}) }}'})">
+                                                               href="{{ path('contao_backend', { do: 'member_parents', act: 'edit', id: attendance.participant.memberId, popup: '1', rt: contao_request_token()}) }}"
+                                                               @click.prevent="Backend.openModalIframe({'title':'Eltern bearbeiten','url':'{{ path('contao_backend', { do: 'member_parents', act: 'edit', id: attendance.participant.memberId, popup: '1', rt: contao_request_token()}) }}'})">
                                                                 <span class="w-5 h-5 block">{{ source('@FerienpassCore/Icons/user-circle-solid.svg.twig') }}</span>
                                                             </a>
                                                         {% endif %}
                                                     </div>
                                                 </div>
-                                                <p class="text-gray-500 mb-1">{{ participant.age }} Jahre</p>
+                                                <p class="text-gray-500 mb-1">{{ attendance.participant.age }} Jahre</p>
                                                 <p class="text-gray-500 text-xs flex items-center">
-                                                    <span>{{ 'enrolledBefore'|trans({days: date(participant.enrolled_at).diff(date()).days}) }}</span>
+                                                    <span>{{ 'enrolledBefore'|trans({days: date(attendance.createdAt).diff(date()).days}) }}</span>
                                                 </p>
                                                 <a class="text-gray-500 text-xs"
-                                                   href="{{ path('contao_backend', { do: 'participants', table: 'Attendance', id: participant.id, popup: '1'}) }}"
-                                                   @click.prevent="Backend.openModalIframe({'title':'Anmeldungen von {{ participant.firstname ~ ' '~participant.lastname }}','url':$event.target.href})">{{ 'countOverallApplications'|trans({count: participant.count}) }}</a>
+                                                   href="{{ path('contao_backend', { do: 'participants', table: 'Attendance', id: attendance.participant.id, popup: '1'}) }}"
+                                                   @click.prevent="Backend.openModalIframe({'title':'Anmeldungen von {{ attendance.participant.firstname ~ ' ' ~ attendance.participant.lastname }}','url':$event.target.href})">{{ 'countOverallApplications'|trans({count: attendance.participant.attendancesNotWithdrawn|length}) }}</a>
+
+                                                {% if attendance.task and attendance.task.maxApplications %}
+                                                    <p class="mt-0.5">
+                                                        <span class="sr-only">Priorität {{ attendance.userPriority }}</span>
+                                                        <span aria-hidden="true" class="flex items-center -ml-1">
+                                                            {% for i in attendance.task.maxApplications..1 %}
+                                                                {% if attendance.userPriority > i %}
+                                                                    <span class="block h-4 w-4 text-gray-300">{{ source('@FerienpassCore/Icons/star-solid.svg') }}</span>
+                                                                {% else %}
+                                                                    <span class="block h-4 w-4 text-yellow-500">{{ source('@FerienpassCore/Icons/star-solid.svg') }}</span>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </span>
+                                                    </p>
+                                                {% endif %}
+
                                             </div>
                                         </div>
                                     </li>
@@ -492,24 +510,24 @@
 
                 <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
 
-                    {{ _self.participantList('confirmed', attendances.confirmed|default, autoAssign, offer.maxParticipants) }}
+                    {{ _self.participantList('confirmed', attendances|filter(a => a.confirmed), autoAssign, offer.maxParticipants) }}
 
-                    {{ _self.participantList('waitlisted', attendances.waitlisted|default, autoAssign) }}
+                    {{ _self.participantList('waitlisted', attendances|filter(a => a.waitlisted), autoAssign) }}
 
-                    {{ _self.participantList('waiting', attendances.waiting|default, autoAssign) }}
+                    {{ _self.participantList('waiting', attendances|filter(a => a.waiting), autoAssign) }}
 
-                    {% if attendances.error is defined %}
+                    {% if attendances|filter(a => a.errored)|length %}
                     <div>{% endif %}
 
-                        {{ _self.participantList('withdrawn', attendances.withdrawn|default, autoAssign) }}
+                        {{ _self.participantList('withdrawn', attendances|filter(a => a.withdrawn), autoAssign) }}
 
-                        {% if attendances.error|default is not empty %}
+                        {% if attendances|filter(a => a.errored)|length %}
                             <div class="mt-6">
-                                {{ _self.participantList('error', attendances.error, autoAssign) }}
+                                {{ _self.participantList('error', attendances|filter(a => a.errored), autoAssign) }}
                             </div>
                         {% endif %}
 
-                        {% if attendances.error is defined %}</div>{% endif %}
+                        {% if attendances|filter(a => a.errored)|length %}</div>{% endif %}
                 </div>
             {% endif %}
         {% endif %}

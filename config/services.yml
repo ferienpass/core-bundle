@@ -133,7 +133,7 @@ services:
     arguments: [ '@doctrine.orm.entity_manager' ]
 
   Ferienpass\CoreBundle\Controller\Backend\OfferApplicationsController:
-    arguments: [ '@database_connection', '@Ferienpass\CoreBundle\Export\ParticipantList\PdfExport', '@Ferienpass\CoreBundle\Export\ParticipantList\WordExport' ]
+    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@Ferienpass\CoreBundle\Export\ParticipantList\PdfExport', '@Ferienpass\CoreBundle\Export\ParticipantList\WordExport' ]
 
   Ferienpass\CoreBundle\Controller\Frontend\FaviconIcoController:
     tags: [ 'controller.service_arguments' ]

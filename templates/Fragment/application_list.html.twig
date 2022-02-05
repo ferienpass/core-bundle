@@ -8,7 +8,7 @@
 
                     <thead>
                     <tr>
-                        {% for head in ['Veranstaltung', 'Teilnehmer', 'Anmeldestatus', ''] %}
+                        {% for head in ['Veranstaltung', 'Teilnehmer', 'Anmeldestatus', 'Priorität', ''] %}
                             <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">{{ head }}</th>
                         {% endfor %}
                     </tr>
@@ -58,12 +58,46 @@
                                 {% endif %}
                             </td>
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500">
+
+                                {% if attendance.task and attendance.task.maxApplications %}
+                                    <div class="flex items-center space-x-1">
+                                        <p class="mt-0.5">
+                                            <span class="sr-only">Priorität {{ attendance.userPriority }}</span>
+                                            <span aria-hidden="true" class="flex items-center -ml-1">
+                                            {% for i in attendance.task.maxApplications..1 %}
+                                                {% if attendance.userPriority > i %}
+                                                    <span class="block h-4 w-4 text-gray-300">{{ source('@FerienpassCore/Icons/star-solid.svg') }}</span>
+                                                {% else %}
+                                                    <span class="block h-4 w-4 text-yellow-500">{{ source('@FerienpassCore/Icons/star-solid.svg') }}</span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        </p>
+
+                                        {% set form = attribute(prioritize, attendance.id)|default %}
+                                        {% if form %}
+                                            {% do form.submit.setRendered %}
+                                            {{ form_start(form) }}
+                                            <button type="submit"
+                                                    class="inline-flex items-center text-xs leading-4 font-semibold hover:underline text-primary-700"
+                                                    name="{{ form.submit.vars['full_name'] }}"
+                                                    id="{{ form.submit.vars['id'] }}">
+                                                <span class="block w-6 h-6">{{ source('@FerienpassCore/Icons/chevron-up-solid.svg') }}</span>
+                                                {{ form.submit.vars['label'] }}
+                                            </button>
+                                            {{ form_end(form) }}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+
+                            </td>
+                            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500">
                                 {% set form = attribute(withdraw, attendance.id)|default %}
                                 {% if form %}
                                     {% do form.submit.setRendered %}
                                     {{ form_start(form) }}
                                     <button type="submit"
-                                            class="inline-flex items-center text-sm leading-4 font-semibold text-red-700"
+                                            class="inline-flex items-center text-sm leading-4 font-semibold hover:underline text-red-700"
                                             name="{{ form.submit.vars['full_name'] }}"
                                             id="{{ form.submit.vars['id'] }}">
                                         <span class="mr-1 block w-5 h-5">{{ source('@FerienpassCore/Icons/trash.svg') }}</span>

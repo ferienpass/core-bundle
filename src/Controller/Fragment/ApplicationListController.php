@@ -56,6 +56,13 @@ class ApplicationListController extends AbstractController
             }
         }
 
+        $prioritizeForms = iterator_to_array($this->prioritizeForms($attendances), true);
+        foreach ($prioritizeForms as $form) {
+            if ($response = $this->handlePrioritize($form, $request)) {
+                return $response;
+            }
+        }
+
         $applicationSystems = [];
         foreach ($attendances as $attendance) {
             $applicationSystems[$attendance->getId() ?? 0] = $this->applicationSystems->findApplicationSystem($attendance->getOffer());
@@ -64,6 +71,7 @@ class ApplicationListController extends AbstractController
         return $this->render('@FerienpassCore/Fragment/application_list.html.twig', [
             'attendances' => $attendances,
             'withdraw' => array_map(fn (FormInterface $form) => $form->createView(), $forms),
+            'prioritize' => array_map(fn (FormInterface $form) => $form->createView(), $prioritizeForms),
             'applicationSystems' => $applicationSystems,
         ]);
     }
@@ -97,6 +105,27 @@ class ApplicationListController extends AbstractController
         }
     }
 
+    /**
+     * @param iterable<int, Attendance> $attendances
+     */
+    private function prioritizeForms(iterable $attendances): \Generator
+    {
+        foreach ($attendances as $attendance) {
+            if (!$attendance->isWaiting()) {
+                continue;
+            }
+
+            if (1 === $attendance->getUserPriority()) {
+                continue;
+            }
+
+            yield $attendance->getId() => $this->container->get('form.factory')->createNamed((string) $attendance->getId())
+                ->add('submit', SubmitType::class, ['label' => 'Priorität erhöhen'])
+                ->add('requestToken', ContaoRequestTokenType::class)
+            ;
+        }
+    }
+
     private function handleWithdraw(FormInterface $form, Request $request): ?Response
     {
         $form->handleRequest($request);
@@ -121,6 +150,23 @@ class ApplicationListController extends AbstractController
         $this->attendanceFacade->delete($attendance);
 
         $this->addFlash(...Flash::confirmation()->text('Die Anmeldung wurde erfolgreich zurückgezogen')->create());
+
+        return $this->redirectToRoute($request->attributes->get('_route'));
+    }
+
+    private function handlePrioritize(FormInterface $form, Request $request): ?Response
+    {
+        $form->handleRequest($request);
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return null;
+        }
+
+        $attendance = $this->attendanceRepository->find($form->getConfig()->getName());
+        if (!$attendance instanceof Attendance || !$attendance->isWaiting()) {
+            return $this->redirectToRoute($request->attributes->get('_route'));
+        }
+
+        $this->attendanceFacade->increasePriority($attendance);
 
         return $this->redirectToRoute($request->attributes->get('_route'));
     }

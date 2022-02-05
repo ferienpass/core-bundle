@@ -14,13 +14,14 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Controller\Backend;
 
 use Contao\CoreBundle\Controller\AbstractController;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\ParticipantList\PdfExport;
 use Ferienpass\CoreBundle\Export\ParticipantList\WordExport;
 use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
+use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +34,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class OfferApplicationsController extends AbstractController
 {
-    public function __construct(private Connection $connection, private PdfExport $pdfExport, private WordExport $wordExport)
+    public function __construct(private AttendanceRepository $attendanceRepository, private PdfExport $pdfExport, private WordExport $wordExport)
     {
     }
 
@@ -45,7 +46,6 @@ class OfferApplicationsController extends AbstractController
         if ($request->isMethod('POST') && 'confirm_all_waiting' === $request->request->get('FORM_SUBMIT')) {
             $attendances = $offer->getAttendancesWaiting();
 
-            /** @var Attendance|false $lastAttendance */
             $lastAttendance = $offer->getAttendancesConfirmed()->last();
             $sorting = $lastAttendance ? $lastAttendance->getSorting() : 0;
 
@@ -76,37 +76,16 @@ class OfferApplicationsController extends AbstractController
             $sessionBag->set('autoAssign', $autoAssign);
         }
 
-        $statement = $this->connection->executeQuery(
-            <<<'SQL'
-SELECT DISTINCT a.id as attendanceId,
-       p.id,
-       p.firstname,
-       p.lastname,
-       p.member_id as parentId,
-       IFNULL(p.email, m.email) as email,
-       a.createdAt as enrolled_at,
-       a.status,
-       a.sorting,
-       TIMESTAMPDIFF(YEAR, p.dateOfBirth, d.begin) AS age,
-       (select count(*) from Attendance where participant_id = a.participant_id) AS count
-FROM Attendance a
-         INNER JOIN Participant p on p.id = a.participant_id
-         INNER JOIN Offer f on f.id = a.offer_id
-         LEFT JOIN tl_member m on m.id = p.member_id
-         INNER JOIN OfferDate d on d.offer_id = f.id
-WHERE a.offer_id = :offer
-ORDER BY a.status, a.sorting
-SQL
-            ,
-            ['offer' => $offer->getId()]
-        );
+        $attendances = $this->attendanceRepository->createQueryBuilder('a')
+            ->where('a.offer = :offer')
+            ->orderBy('a.status')
+            ->addOrderBy('a.sorting')
+            ->setParameter('offer', $offer->getId(), Types::INTEGER)
+            ->getQuery()
+            ->getResult()
+        ;
 
-        $emails = [];
-        $attendances = [];
-        foreach ($statement->iterateAssociative() as $attendance) {
-            $attendances[$attendance['status']][] = $attendance;
-            $emails[] = $attendance['email'];
-        }
+        $emails = array_map(fn (Attendance $a) => $a->getParticipant()->getEmail() ?? $a->getParticipant()->getMember()?->email, $attendances);
 
         return $this->render('@FerienpassCore/Backend/offer-applications.html.twig', [
             'offer' => $offer,

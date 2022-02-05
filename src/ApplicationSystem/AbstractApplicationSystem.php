@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\ApplicationSystem;
 
+use Doctrine\Common\Collections\Criteria;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\EditionTask;
 
@@ -61,15 +62,27 @@ abstract class AbstractApplicationSystem implements ApplicationSystemInterface
         $offer = $attendance->getOffer();
         $status = $attendance->getStatus();
 
+        if (null !== $this->getTask()) {
+            $attendance->setTask($this->getTask());
+        }
+
         $lastAttendance = $status ? $offer->getAttendancesWithStatus($status)->last() : null;
+        /** @var Attendance|false $lastAttendanceParticipant */
+        $lastAttendanceParticipant = $attendance->getParticipant()
+            ?->getAttendancesWaiting()
+            ?->matching(Criteria::create()->orderBy(['user_priority' => Criteria::DESC]))
+            ?->last()
+        ;
 
         $sorting = $lastAttendance ? $lastAttendance->getSorting() : 0;
         $sorting += 128;
 
-        $attendance->setSorting($sorting);
-
-        if (null !== $this->getTask()) {
-            $attendance->setTask($this->getTask());
+        $priority = $lastAttendanceParticipant ? $lastAttendanceParticipant->getUserPriority() + 1 : 1;
+        if ($maxApplications = $attendance->getTask()?->getMaxApplications()) {
+            $priority = min($maxApplications + 1, $priority);
         }
+
+        $attendance->setSorting($sorting);
+        $attendance->setUserPriority($priority);
     }
 }

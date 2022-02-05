@@ -83,6 +83,11 @@ class Attendance
     private ?EditionTask $task = null;
 
     /**
+     * @ORM\Column(type="integer", options={"unsigned"=true})
+     */
+    private int $userPriority = 0;
+
+    /**
      * The participant age, retained for statistics.
      *
      * @ORM\Column(length=3, type="integer", nullable=true, options={"unsigned"=true})
@@ -210,5 +215,15 @@ class Attendance
     public function getModifiedAt(): \DateTimeInterface
     {
         return $this->modifiedAt;
+    }
+
+    public function getUserPriority(): int
+    {
+        return $this->userPriority;
+    }
+
+    public function setUserPriority(int $userPriority): void
+    {
+        $this->userPriority = $userPriority;
     }
 }

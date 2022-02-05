@@ -167,6 +167,15 @@ class Participant
         return $this->attendances->filter(fn (Attendance $attendance) => Attendance::STATUS_WITHDRAWN !== $attendance->getStatus());
     }
 
+    /**
+     * @return ArrayCollection|Attendance[]
+     * @psalm-return ArrayCollection<int, Attendance>
+     */
+    public function getAttendancesWaiting(): Collection
+    {
+        return $this->attendances->filter(fn (Attendance $attendance) => Attendance::STATUS_WAITING === $attendance->getStatus());
+    }
+
     public function getLastAttendance(): ?Attendance
     {
         /** @var ArrayCollection $this->attendances */
