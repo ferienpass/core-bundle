@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Export\ParticipantList;
 
-use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\Offer\OfferExportInterface;
 use PhpOffice\PhpWord\Exception\Exception as WordException;
@@ -50,14 +49,17 @@ final class WordExport implements OfferExportInterface
 
     private function generateDocument(Offer $offer): TemplateProcessor
     {
-        $attendances = $offer->getAttendancesNotWithdrawn();
-        $attendees = $attendances->filter(fn (Attendance $attendance) => 'confirmed' === $attendance->getStatus());
-        $candidates = $attendances->filter(fn (Attendance $attendance) => 'waitlisted' === $attendance->getStatus());
+        if (null === $this->templatePath) {
+            throw new \RuntimeException('No Word template defined');
+        }
+
+        $attendees = $offer->getAttendancesConfirmed();
+        $candidates = $offer->getAttendancesWaitlisted();
 
         // Variables for template
-        $normalizedOffer = $this->serializer->normalize($offer);
-        $attendees = $this->serializer->normalize($attendees);
-        $candidates = $this->serializer->normalize($candidates);
+        $normalizedOffer = (array) $this->serializer->normalize($offer, null, ['groups' => ['docx_export']]);
+        $attendees = (array) $this->serializer->normalize($attendees, null, ['groups' => ['docx_export']]);
+        $candidates = (array) $this->serializer->normalize($candidates, null, ['groups' => ['docx_export']]);
         $variables = array_combine(array_map(fn ($k) => 'offer.'.$k, array_keys($normalizedOffer)), $normalizedOffer);
 
         // Create DOCX template
@@ -71,11 +73,11 @@ final class WordExport implements OfferExportInterface
 
         // Add participants
         try {
-            $countRows = max(null === $attendees ? 0 : \count($attendees), $offer->getMaxParticipants());
-            $prototype = array_fill_keys(array_keys($attendees[0]), '');
+            $countRows = (int) max(\count($attendees), $offer->getMaxParticipants());
+            $prototype = array_fill_keys(array_keys($attendees[0] ?? []), '');
 
             // When too few attendees, fill up with empty rows
-            $attendees += array_fill(array_key_last($attendees) + 1, 1 + $countRows - (null === $attendees ? 0 : \count($attendees)), $prototype);
+            $attendees += array_fill((int) array_key_last($attendees) + 1, 1 + $countRows - \count($attendees), $prototype);
 
             $templateProcessor->cloneRow('attendee.name', $countRows);
 
@@ -88,7 +90,7 @@ final class WordExport implements OfferExportInterface
                 }
             }
 
-            $templateProcessor->cloneRow('candidate.name', null === $candidates ? 0 : \count($candidates));
+            $templateProcessor->cloneRow('candidate.name', \count($candidates));
 
             $i = 0;
             foreach ($candidates as $candidate) {

@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -24,6 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Offer
 {
     /**
+     * @Groups("docx_export")
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer", options={"unsigned"=true})
@@ -61,27 +63,32 @@ class Offer
     private Collection $memberAssociations;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="string", length=255, nullable=false, options={"default"=""})
      * @Assert\NotBlank()
      */
     private string $name = '';
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="string", length=255, nullable=true, unique=true)
      */
     private ?string $alias = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $comment = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="text", nullable=true)
      */
     private ?string $description = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="text", nullable=true)
      */
     private ?string $teaser = null;
@@ -102,6 +109,7 @@ class Offer
     private ?string $downloads = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="boolean", options={"default"=0})
      */
     private bool $published = false;
@@ -122,21 +130,25 @@ class Offer
     private ?bool $requiresAgreementLetter = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="boolean", options={"default"=0})
      */
     private bool $requiresApplication;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="boolean", options={"default"=0})
      */
     private bool $onlineApplication = false;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="date", nullable=true)
      */
     private ?\DateTimeInterface $applicationDeadline = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="boolean", options={"default"=0})
      */
     private bool $cancelled = false;
@@ -144,36 +156,43 @@ class Offer
     private bool $saved = false;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="smallint", nullable=true, options={"unsigned"=true})
      */
     private ?int $minParticipants = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="smallint", nullable=true, options={"unsigned"=true})
      */
     private ?int $maxParticipants = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="smallint", length=2, nullable=true, options={"unsigned"=true})
      */
     private ?int $minAge = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="smallint", length=2, nullable=true, options={"unsigned"=true})
      */
     private ?int $maxAge = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="integer", nullable=true, options={"unsigned"=true})
      */
     private ?int $fee = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $meetingPoint = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $applyText = null;
@@ -189,11 +208,13 @@ class Offer
     private ?string $datesExport = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $contact = null;
 
     /**
+     * @Groups("docx_export")
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $bring = null;
@@ -694,6 +715,18 @@ class Offer
     public function getDatesExport(): ?string
     {
         return $this->datesExport;
+    }
+
+    /**
+     * @Groups("docx_export")
+     */
+    public function getDate(): string
+    {
+        if (false === $date = $this->dates->first()) {
+            return '';
+        }
+
+        return $date->getBegin()->format('d.m.Y H:i');
     }
 
     public function getAccessibility(): ?array

@@ -15,6 +15,7 @@ namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity
@@ -225,5 +226,42 @@ class Attendance
     public function setUserPriority(int $userPriority): void
     {
         $this->userPriority = $userPriority;
+    }
+
+    /**
+     * @Groups("docx_export")
+     */
+    public function getName(): string
+    {
+        return sprintf('%s %s', $this->participant?->getFirstname() ?? '', $this->participant?->getLastname() ?? '');
+    }
+
+    /**
+     * @Groups("docx_export")
+     */
+    public function getPhone(): string
+    {
+        return $this->participant?->getPhone() ?? $this->participant?->getMember()?->phone ?? '';
+    }
+
+    /**
+     * @Groups("docx_export")
+     */
+    public function getEmail(): string
+    {
+        return $this->participant?->getEmail() ?? $this->participant?->getMember()?->email ?? '';
+    }
+
+    /**
+     * @Groups("docx_export")
+     */
+    public function getFee(): string
+    {
+        $fee = $this->offer->getFee();
+        if (!$fee) {
+            return '';
+        }
+
+        return sprintf('%s €', number_format($fee / 100, 2, ',', '.'));
     }
 }
