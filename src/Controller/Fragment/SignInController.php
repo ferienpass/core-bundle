@@ -30,6 +30,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -42,7 +43,7 @@ class SignInController extends AbstractController
     {
     }
 
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, Session $session): Response
     {
         $user = $this->getUser();
         if ($user instanceof FrontendUser) {
@@ -54,17 +55,17 @@ class SignInController extends AbstractController
 
         $registrationForm = $this->createForm(UserRegistrationType::class, new MemberModel());
         $registrationForm->handleRequest($request);
-        if ($response = $this->handleRegistrationForm($registrationForm)) {
+        if ($response = $this->handleRegistrationForm($registrationForm, $session)) {
             return $response;
         }
 
-        return $this->render('@FerienpassCore/Fragment/login.html.twig', [
-            'login' => $loginForm->createView(),
-            'registration' => $registrationForm->createView(),
+        return $this->renderForm('@FerienpassCore/Fragment/login.html.twig', [
+            'login' => $loginForm,
+            'registration' => $registrationForm,
         ]);
     }
 
-    private function handleRegistrationForm(FormInterface $form): ?Response
+    private function handleRegistrationForm(FormInterface $form, Session $session): ?Response
     {
         if (!$form->isSubmitted() || !$form->isValid()) {
             return null;
@@ -89,7 +90,7 @@ class SignInController extends AbstractController
 
         $member->password = $this->passwordHasher->hash($member->password);
 
-        $this->createNewUser($member);
+        $this->createNewUser($member, $session);
 
         return $this->redirectToRoute('registration_confirm');
     }
@@ -105,7 +106,7 @@ class SignInController extends AbstractController
         $this->addFlash(...Flash::confirmation()->text(new TranslatableMessage('MSC.resendActivation', [], 'contao_default'))->create());
     }
 
-    private function createNewUser(MemberModel $member): void
+    private function createNewUser(MemberModel $member, Session $session): void
     {
         $member->username = $member->email;
         $member->tstamp = $member->dateAdded = time();
@@ -114,6 +115,8 @@ class SignInController extends AbstractController
         $member->disable = true;
 
         $member->save();
+
+        $session->set('registration.email', $member->email);
 
         $this->messageBus->dispatch(new AccountCreated((int) $member->id));
     }

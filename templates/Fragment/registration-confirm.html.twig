@@ -11,9 +11,9 @@
             <div class="text-xl text-gray-500">
                 <h1 class="mb-8">Prüfen Sie Ihre E-Mails</h1>
 
-                <p>Bitte überprüfen Sie nun Ihre E-Mails, um die Registrierung abzuschließen.</p>
+                <p>Eine E-Mail zur Bestätigung wurde an <strong class="font-medium">{{ app.session.get('registration.email') }}</strong> gesendet.</p>
 
-                <p>Klicken Sie den Link in der E-Mail, um Ihren Account zu aktivieren und sich anmelden zu können.</p>
+                <p class="mt-2">Klicken Sie den Link in der E-Mail, um Ihren Account zu aktivieren und sich anmelden zu können.</p>
             </div>
 
         </div>
