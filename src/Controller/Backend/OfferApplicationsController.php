@@ -92,6 +92,7 @@ class OfferApplicationsController extends AbstractController
             'toggleMode' => $toggleMode->createView(),
             'attendances' => $attendances,
             'emails' => array_unique($emails),
+            'hasWordExport' => $this->wordExport->hasTemplate(),
         ]);
     }
 

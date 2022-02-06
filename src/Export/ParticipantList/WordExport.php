@@ -28,6 +28,11 @@ final class WordExport implements OfferExportInterface
     {
     }
 
+    public function hasTemplate(): bool
+    {
+        return null !== $this->templatePath;
+    }
+
     public function generate(Offer $offer, string $destination = null): string
     {
         if (null === $this->templatePath) {

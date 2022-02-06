@@ -103,8 +103,8 @@
                             <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400">
                                 {% include '@FerienpassCore/Icons/user-group-solid.svg.twig' %}
                             </svg>
-                            {{ 'min. ' ~ offer.minParticipants }} /
-                            {{ 'max. ' ~ offer.maxParticipants ~ ' TN' }}
+                            <span>{{ 'min. ' ~ offer.minParticipants }} / {{ 'max. ' ~ offer.maxParticipants ~ ' TN' }}
+                                und {{ 'min. ' ~ offer.minAge|default(0) }} / {{ 'max. ' ~ offer.maxAge|default(99) ~ ' Jahre' }}</span>
                         </div>
                     </div>
                 </div>
@@ -165,13 +165,15 @@
                                                 <span class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500">{% include '@FerienpassCore/Icons/document-download-solid.svg.twig' %}</span>
                                                 PDF-Export
                                             </a>
-                                            <a href="{{ path('backend_offer_applications_docx', {id: offer.id}) }}"
-                                               target="_blank"
-                                               class="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                               role="menuitem">
-                                                <span class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500">{% include '@FerienpassCore/Icons/document-download-solid.svg.twig' %}</span>
-                                                DOCX-Export
-                                            </a>
+                                            {% if hasWordExport %}
+                                                <a href="{{ path('backend_offer_applications_docx', {id: offer.id}) }}"
+                                                   target="_blank"
+                                                   class="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                                   role="menuitem">
+                                                    <span class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500">{% include '@FerienpassCore/Icons/document-download-solid.svg.twig' %}</span>
+                                                    DOCX-Export
+                                                </a>
+                                            {% endif %}
                                             <button type="button" @click="modalEmailAddresses = true"
                                                     class="w-full group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
                                                     role="menuitem">

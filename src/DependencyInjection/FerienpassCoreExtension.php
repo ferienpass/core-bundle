@@ -55,7 +55,7 @@ final class FerienpassCoreExtension extends Extension
         }
 
         $docxParticipantList = $container->getDefinition(WordExport::class);
-        $docxParticipantList->setArgument(3, $config['participant_list']['docx_template'] ?? null);
+        $docxParticipantList->setArgument(2, $config['participant_list']['docx_template'] ?? null);
     }
 
     public function getAlias()
