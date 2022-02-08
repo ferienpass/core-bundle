@@ -13,7 +13,7 @@
 ferienpass.online is an event software for holiday programs. It features a portal for administrating events,
 automatic print sheet generation and an online application system.
 
-This repository is a read-only split from [ferienpass/ferienpass](github.com/ferienpass/ferienpass).
+This repository is a read-only split from [ferienpass/ferienpass](https://github.com/ferienpass/ferienpass).
 
 This project is proprietary software and not free of use. [Visit the project website.][website]
 
