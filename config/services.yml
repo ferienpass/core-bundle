@@ -51,10 +51,6 @@ services:
     arguments: [ '@Ferienpass\CoreBundle\Facade\AttendanceFacade', '@doctrine' ]
     tags: [ 'contao.dashboard_widget' ]
 
-  Ferienpass\CoreBundle\Controller\BackendDashboard\EditionMenuController:
-    arguments: [ '@database_connection' ]
-    tags: [ 'contao.dashboard_widget' ]
-
   Ferienpass\CoreBundle\Controller\BackendDashboard\HeatmapController:
     arguments: [ '@database_connection' ]
     tags: [ 'contao.dashboard_widget' ]

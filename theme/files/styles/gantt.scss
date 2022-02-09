@@ -12,6 +12,10 @@ $handle-color: #ddd !default;
 
 @import "../../node_modules/frappe-gantt/src/gantt";
 
+.gantt-container {
+  margin-bottom: -90px;
+}
+
 .gantt .handle-group {
   display: none;
 }

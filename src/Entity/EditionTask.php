@@ -175,7 +175,7 @@ class EditionTask
         $this->maxApplicationsDay = $maxApplicationsDay;
     }
 
-    public function getPeriodBegin(): ?\DateTimeImmutable
+    public function getPeriodBegin(): \DateTimeImmutable
     {
         return $this->periodBegin;
     }

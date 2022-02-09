@@ -27,11 +27,13 @@ class GanttController extends AbstractDashboardWidgetController
 
     public function __invoke(): Response
     {
-        $tasks = [];
         $now = new \DateTimeImmutable();
+        $editions = [];
 
         foreach ($this->editionRepository->findAll() as $edition) {
+            $tasks = [];
             foreach ($edition->getTasks() as $task) {
+                // Do not show tasks that are past 30 days
                 if ($task->getPeriodEnd() < $now && $task->getPeriodEnd()->diff($now)->days > 30) {
                     continue;
                 }
@@ -51,14 +53,21 @@ class GanttController extends AbstractDashboardWidgetController
                     ],
                 ];
             }
+
+            if (!empty($tasks)) {
+                $editions[] = [
+                    'edition' => $edition,
+                    'tasks' => $tasks,
+                ];
+            }
         }
 
-        if (empty($tasks)) {
+        if (empty($editions)) {
             return new Response('', Response::HTTP_NO_CONTENT);
         }
 
         return $this->render('@FerienpassCore/Backend/Dashboard/gantt.html.twig', [
-            'tasks' => $tasks,
+            'editions' => $editions,
         ]);
     }
 
