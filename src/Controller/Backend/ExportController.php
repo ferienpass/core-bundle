@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Controller\Backend;
 
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\Types\Types;
 use Ferienpass\CoreBundle\Entity\Edition;
 use Ferienpass\CoreBundle\Entity\Host;
 use Ferienpass\CoreBundle\Export\Offer\Excel\ExcelExports;
@@ -124,7 +124,7 @@ final class ExportController extends AbstractController
             && $editions->count()) {
             $qb
                 ->andWhere('offer.edition IN (:editions)')
-                ->setParameter('editions', array_map(fn (Edition $e) => $e->getId(), $editions->toArray()), ParameterType::INTEGER)
+                ->setParameter('editions', array_map(fn (Edition $e) => $e->getId(), $editions->toArray()), Types::SIMPLE_ARRAY)
             ;
         }
 
@@ -134,7 +134,7 @@ final class ExportController extends AbstractController
             $qb
                 ->innerJoin('offer.hosts', 'hosts')
                 ->andWhere('hosts.id IN (:hosts)')
-                ->setParameter('hosts', array_map(fn (Host $h) => $h->getId(), $hosts->toArray()), ParameterType::INTEGER)
+                ->setParameter('hosts', array_map(fn (Host $h) => $h->getId(), $hosts->toArray()), Types::SIMPLE_ARRAY)
             ;
         }
 
