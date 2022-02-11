@@ -180,7 +180,7 @@ $GLOBALS['TL_DCA']['Offer'] = [
         'alias' => [
             'exclude' => true,
             'inputType' => 'text',
-            'eval' => ['readonly' => true, 'tl_class' => 'w50', 'doNotCopy' => true],
+            'eval' => ['readonly' => true, 'unique' => true, 'tl_class' => 'w50', 'doNotCopy' => true],
         ],
         'label' => [
             'filter' => true,
