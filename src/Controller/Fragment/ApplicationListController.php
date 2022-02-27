@@ -99,7 +99,7 @@ class ApplicationListController extends AbstractController
                 continue;
             }
 
-            yield $attendance->getId() => $this->createFormBuilder()
+            yield $attendance->getId() => $this->container->get('form.factory')->createNamed('withdraw'.($attendance->getId() ?? ''))
                 ->add('submit', SubmitType::class, ['label' => 'Abmelden'])
                 ->add('id', HiddenType::class, ['data' => $attendance->getId()])
                 ->add('requestToken', ContaoRequestTokenType::class)
@@ -121,7 +121,7 @@ class ApplicationListController extends AbstractController
                 continue;
             }
 
-            yield $attendance->getId() => $this->createFormBuilder()
+            yield $attendance->getId() => $this->container->get('form.factory')->createNamed('prioritize'.($attendance->getId() ?? ''))
                 ->add('submit', SubmitType::class, ['label' => 'Priorität erhöhen'])
                 ->add('id', HiddenType::class, ['data' => $attendance->getId()])
                 ->add('requestToken', ContaoRequestTokenType::class)
