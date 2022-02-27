@@ -116,7 +116,7 @@ class AttendanceFacade
 
         foreach ($attendances as $currentAttendance) {
             if ($attendance === $currentAttendance) {
-                $attendance->setUserPriority($attendance->getUserPriority() - 1);
+                $attendance->setUserPriority(min(1, $attendance->getUserPriority() - 1));
                 break;
             }
 

@@ -22,6 +22,7 @@ use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Ferienpass\CoreBundle\Ux\Flash;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -98,8 +99,9 @@ class ApplicationListController extends AbstractController
                 continue;
             }
 
-            yield $attendance->getId() => $this->container->get('form.factory')->createNamed((string) $attendance->getId())
+            yield $attendance->getId() => $this->createFormBuilder()
                 ->add('submit', SubmitType::class, ['label' => 'Abmelden'])
+                ->add('id', HiddenType::class, ['data' => $attendance->getId()])
                 ->add('requestToken', ContaoRequestTokenType::class)
             ;
         }
@@ -119,8 +121,9 @@ class ApplicationListController extends AbstractController
                 continue;
             }
 
-            yield $attendance->getId() => $this->container->get('form.factory')->createNamed((string) $attendance->getId())
+            yield $attendance->getId() => $this->createFormBuilder()
                 ->add('submit', SubmitType::class, ['label' => 'Priorität erhöhen'])
+                ->add('id', HiddenType::class, ['data' => $attendance->getId()])
                 ->add('requestToken', ContaoRequestTokenType::class)
             ;
         }
@@ -133,7 +136,7 @@ class ApplicationListController extends AbstractController
             return null;
         }
 
-        $attendance = $this->attendanceRepository->find($form->getConfig()->getName());
+        $attendance = $this->attendanceRepository->find($form->get('id')->getData());
         if (!$attendance instanceof Attendance) {
             return $this->redirectToRoute($request->attributes->get('_route'));
         }
@@ -161,7 +164,7 @@ class ApplicationListController extends AbstractController
             return null;
         }
 
-        $attendance = $this->attendanceRepository->find($form->getConfig()->getName());
+        $attendance = $this->attendanceRepository->find($form->get('id')->getData());
         if (!$attendance instanceof Attendance || !$attendance->isWaiting()) {
             return $this->redirectToRoute($request->attributes->get('_route'));
         }
