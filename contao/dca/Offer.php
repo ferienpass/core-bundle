@@ -229,7 +229,7 @@ $GLOBALS['TL_DCA']['Offer'] = [
         'applicationDeadline' => [
             'exclude' => true,
             'inputType' => 'text',
-            'eval' => ['tl_class' => 'w50', 'rgxp' => 'date', 'datepicker' => true, 'doNotCopy' => true],
+            'eval' => ['tl_class' => 'w50', 'rgxp' => 'date', 'datepicker' => true],
             'load_callback' => [fn ($v) => $v ? strtotime($v) : null],
             'save_callback' => [fn ($v) => $v ? date('Y-m-d', $v) : null],
         ],
