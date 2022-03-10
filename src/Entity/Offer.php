@@ -774,6 +774,11 @@ class Offer
         $this->datesSorting = $datesSorting;
     }
 
+    public function setHostsSorting(?string $hostsSorting): void
+    {
+        $this->hostsSorting = $hostsSorting;
+    }
+
     public function getStatus(): string
     {
         if ($this->isCancelled()) {
@@ -792,9 +797,9 @@ class Offer
             return 'accepted';
         }
 
-        //if ($item->get('on_hold')) {
+        // if ($item->get('on_hold')) {
         //    return 'on_hold';
-        //}
+        // }
 
         return 'created';
     }

@@ -20,7 +20,7 @@ services:
     arguments:
       [ '@database_connection' ]
 
-  Ferienpass\CoreBundle\EventListener\Callback\Table\Offer\DatesSortingListener:
+  Ferienpass\CoreBundle\EventListener\Callback\Table\Offer\SortingFieldsListener:
     tags: [ { name: contao.callback, table: Offer, target: config.onsubmit } ]
     arguments: [ '@database_connection' ]
 

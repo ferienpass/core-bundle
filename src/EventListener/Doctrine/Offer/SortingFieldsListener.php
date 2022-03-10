@@ -13,27 +13,32 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\EventListener\Doctrine\Offer;
 
-use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Ferienpass\CoreBundle\Entity\Host;
 use Ferienpass\CoreBundle\Entity\Offer;
 
 /**
  * The field Offer.datesSorting is necessary for DC_Table to perform sorting on this field.
  */
-class DateSortingListener
+class SortingFieldsListener
 {
-    public function preUpdate(LifecycleEventArgs $args): void
+    public function preUpdate(PreUpdateEventArgs $args): void
     {
         $entity = $args->getObject();
         if (!$entity instanceof Offer) {
             return;
         }
 
-        $dates = $entity->getDates();
-        $date = $dates[0] ?? null;
-        if (null === $date || null === $date->getBegin()) {
-            return;
+        if ($args->hasChangedField('datesSorting')) {
+            $dates = $entity->getDates();
+            $date = $dates[0] ?? null;
+
+            $args->setNewValue('datesSorting', $date?->getBegin()?->getTimestamp());
         }
 
-        $entity->setDatesSorting($date->getBegin()->getTimestamp());
+        if ($args->hasChangedField('hostsSorting') && false !== $host = $entity->getHosts()->first()) {
+            /** @var Host $host */
+            $args->setNewValue('hostsSorting', $host->getName());
+        }
     }
 }

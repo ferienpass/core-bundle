@@ -203,7 +203,7 @@ services:
     tags:
       - { name: 'doctrine.event_listener', event: 'preUpdate' }
 
-  Ferienpass\CoreBundle\EventListener\Doctrine\Offer\DateSortingListener:
+  Ferienpass\CoreBundle\EventListener\Doctrine\Offer\SortingFieldsListener:
     tags: [ { name: 'doctrine.event_listener', event: 'preUpdate' } ]
 
   Ferienpass\CoreBundle\EventListener\Doctrine\Offer\VariantListener:
