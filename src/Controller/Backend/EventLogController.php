@@ -31,7 +31,7 @@ final class EventLogController extends AbstractBackendController
 
     public function __invoke(Request $request): Response
     {
-        //$this->denyAccessUnlessGranted2($request);
+        // $this->denyAccessUnlessGranted2($request);
 
         $criteria = (new Criteria())
             ->where(Criteria::expr()->neq('message', ParticipantListChanged::class))

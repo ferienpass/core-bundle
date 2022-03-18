@@ -94,7 +94,7 @@ class PageBuilder
         $themeModel = $layoutModel->getRelated('pid');
 
         // Set the default image densities
-        //$container->get('contao.image.picture_factory')->setDefaultDensities($layoutModel->defaultImageDensities);
+        // $container->get('contao.image.picture_factory')->setDefaultDensities($layoutModel->defaultImageDensities);
 
         $this->pageModel->layoutId = $layoutModel->id;
         $this->pageModel->template = $this->templateName = $layoutModel->template ?: 'fe_page';

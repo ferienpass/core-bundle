@@ -39,9 +39,17 @@ class HostMemberAssociation
     private Host $host;
 
     /**
-     * @ORM\Column(type="datetime_immutable", options={"default": "CURRENT_TIMESTAMP"})
+     * @ORM\Column(type="datetime_immutable")
      */
     private \DateTimeInterface $createdAt;
+
+    public function __construct(int $member, Host $host)
+    {
+        $this->createdAt = new \DateTimeImmutable();
+
+        $this->member = $member;
+        $this->host = $host;
+    }
 
     public function getMember(): int
     {

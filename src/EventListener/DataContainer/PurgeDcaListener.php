@@ -69,7 +69,7 @@ class PurgeDcaListener
                 'playerCaption',
                 'playerStop',
                 'playerStart',
-                //'playerOptions',
+                // 'playerOptions',
                 'inline',
                 'splashImage',
             ],

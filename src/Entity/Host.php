@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Entity;
 
+use Contao\MemberModel;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -99,7 +101,7 @@ class Host
     private ?string $active = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\HostMemberAssociation", mappedBy="host")
+     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\HostMemberAssociation", mappedBy="host", cascade={"persist"})
      */
     private Collection $memberAssociations;
 
@@ -107,6 +109,17 @@ class Host
      * @ORM\ManyToMany(targetEntity="Ferienpass\CoreBundle\Entity\Offer", mappedBy="hosts")
      */
     private Collection $offers;
+
+    public function __construct()
+    {
+        $this->memberAssociations = new ArrayCollection();
+        $this->offers = new ArrayCollection();
+    }
+
+    public function addMember(MemberModel $memberModel): self
+    {
+        return $this->addMemberAssociation(new HostMemberAssociation((int) $memberModel->id, $this));
+    }
 
     public function addMemberAssociation(HostMemberAssociation $memberAssociation): self
     {

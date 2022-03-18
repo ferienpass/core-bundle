@@ -82,9 +82,9 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, ConfigPlu
         $loader->load(__DIR__.'/../../config/packages/monolog.yml');
         $loader->load(__DIR__.'/../../config/packages/messenger.yml');
         $loader->load(__DIR__.'/../../config/packages/framework.yml');
-        //$loader->load(__DIR__.'/../../config/packages/privacydump.yml');
+        // $loader->load(__DIR__.'/../../config/packages/privacydump.yml');
         $loader->load(__DIR__.'/../../config/twig.yml');
-        //$loader->load(__DIR__.'/../../config/uploader.yml');
+        // $loader->load(__DIR__.'/../../config/uploader.yml');
     }
 
     public function getPackageDependencies(): array

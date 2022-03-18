@@ -55,7 +55,7 @@ class AbstractBackendController extends AbstractController
         if ('feRedirect' === $request->query->get('do')) {
             trigger_deprecation('contao/core-bundle', '4.0', 'Using the "feRedirect" parameter has been deprecated and will no longer work in Contao 5.0. Use the "contao_backend_preview" route directly instead.');
 
-            //Backend::redirectToFrontendPage(Input::get('page'), Input::get('article'));
+            // Backend::redirectToFrontendPage(Input::get('page'), Input::get('article'));
         }
 
         // Backend user profile redirect
