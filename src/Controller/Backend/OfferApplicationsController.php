@@ -85,13 +85,13 @@ class OfferApplicationsController extends AbstractController
             ->getResult()
         ;
 
-        $emails = array_map(fn (Attendance $a) => $a->getParticipant()->getEmail() ?? $a->getParticipant()->getMember()?->email, $attendances);
+        $emails = array_map(fn (Attendance $a) => $a->getParticipant()?->getEmail() ?? $a->getParticipant()?->getMember()?->email, $attendances);
 
         return $this->render('@FerienpassCore/Backend/offer-applications.html.twig', [
             'offer' => $offer,
             'toggleMode' => $toggleMode->createView(),
             'attendances' => $attendances,
-            'emails' => array_unique($emails),
+            'emails' => array_unique(array_filter($emails)),
             'hasWordExport' => $this->wordExport->hasTemplate(),
         ]);
     }
