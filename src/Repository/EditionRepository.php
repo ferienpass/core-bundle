@@ -44,6 +44,7 @@ class EditionRepository extends ServiceEntityRepository
     public function findOneToShow(PageModel $currentPage = null): ?Edition
     {
         $fallback = null;
+        // TODO: allow editions that have no "show_offers" task but a list page defined
         foreach ($this->findWithActiveTask('show_offers') as $passEdition) {
             if ((null === $currentPage && null === $fallback) || !$passEdition->getListPage()) {
                 $fallback = $passEdition;
