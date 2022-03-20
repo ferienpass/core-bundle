@@ -33,7 +33,7 @@ class SortingFieldsListener
             $dates = $entity->getDates();
             $date = $dates[0] ?? null;
 
-            $args->setNewValue('datesSorting', $date?->getBegin()?->getTimestamp());
+            $args->setNewValue('datesSorting', $date?->getBegin()?->getTimestamp() ?? 0);
         }
 
         if ($args->hasChangedField('hostsSorting') && false !== $host = $entity->getHosts()->first()) {
