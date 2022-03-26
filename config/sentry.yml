@@ -5,3 +5,7 @@ sentry:
     environment: '%kernel.environment%'
     #release: '%env(VERSION)%' #your app version
     error_types: E_ALL & ~E_NOTICE & ~E_DEPRECATED
+  tracing:
+    dbal:
+      # See <https://github.com/getsentry/sentry-symfony/issues/483>
+      enabled: false
