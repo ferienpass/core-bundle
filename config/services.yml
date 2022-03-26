@@ -229,6 +229,9 @@ services:
   Ferienpass\CoreBundle\EventListener\DataContainer\Offer\LabelListener:
     arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository', '@Ferienpass\CoreBundle\Repository\OfferRepository', '@database_connection', '@router' ]
 
+  Ferienpass\CoreBundle\EventListener\DataContainer\Offer\LockEditingListener:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\OfferRepository' ]
+
   Ferienpass\CoreBundle\EventListener\DataContainer\Attendance\LabelListener:
     arguments: [ '@Ferienpass\CoreBundle\Repository\OfferRepository', '@router', '@translator' ]
 
