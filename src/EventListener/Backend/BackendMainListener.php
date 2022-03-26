@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\EventListener\Backend;
 
-use Composer\InstalledVersions;
 use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
@@ -22,7 +21,7 @@ use Twig\Environment as TwigEnvironment;
 
 class BackendMainListener
 {
-    public function __construct(private TwigEnvironment $twig, private ContaoFramework $framework)
+    public function __construct(private TwigEnvironment $twig, private ContaoFramework $framework, private string $version)
     {
     }
 
@@ -44,7 +43,7 @@ class BackendMainListener
         $template->headerProfile = $this->twig->render('@FerienpassCore/Backend/header-profile.html.twig', [
             'userInitials' => $this->getUserInitials($user),
         ]);
-        $template->version = $this->getVersion();
+        $template->version = $this->version;
     }
 
     private function getUserInitials(BackendUser $user): string
@@ -53,18 +52,5 @@ class BackendMainListener
         $parts = array_map(static fn (string $part) => $part[0], $parts);
 
         return implode('', $parts);
-    }
-
-    private function getVersion(): ?string
-    {
-        foreach (['ferienpass/base', 'ferienpass/ferienpass'] as $package) {
-            if (!InstalledVersions::isInstalled($package)) {
-                continue;
-            }
-
-            return InstalledVersions::getPrettyVersion($package);
-        }
-
-        return null;
     }
 }

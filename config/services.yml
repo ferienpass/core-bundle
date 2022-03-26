@@ -362,7 +362,7 @@ services:
   Ferienpass\CoreBundle\EventListener\DataContainer\PurgeDcaListener: ~
 
   Ferienpass\CoreBundle\EventListener\Backend\BackendMainListener:
-    arguments: [ '@twig', '@contao.framework' ]
+    arguments: [ '@twig', '@contao.framework', '%ferienpass.version%' ]
 
   Ferienpass\CoreBundle\EventListener\Notification\AddNotificationTokens:
     arguments: [ '@translator' ]

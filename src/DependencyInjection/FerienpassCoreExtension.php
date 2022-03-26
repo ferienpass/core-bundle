@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\DependencyInjection;
 
+use Composer\InstalledVersions;
 use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
 use Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports;
 use Ferienpass\CoreBundle\Export\ParticipantList\WordExport;
@@ -40,6 +41,7 @@ final class FerienpassCoreExtension extends Extension
         // Parameters
         $container->setParameter('ferienpass.logos_dir', $config['logos_dir']);
         $container->setParameter('ferienpass.images_dir', $config['images_dir']);
+        $container->setParameter('ferienpass.version', $this->getVersion());
 
         // Injection
         if (isset($config['export'])) {
@@ -61,5 +63,18 @@ final class FerienpassCoreExtension extends Extension
     public function getAlias()
     {
         return 'ferienpass';
+    }
+
+    private function getVersion(): ?string
+    {
+        foreach (['ferienpass/base', 'ferienpass/ferienpass'] as $package) {
+            if (!InstalledVersions::isInstalled($package)) {
+                continue;
+            }
+
+            return InstalledVersions::getPrettyVersion($package);
+        }
+
+        return null;
     }
 }
