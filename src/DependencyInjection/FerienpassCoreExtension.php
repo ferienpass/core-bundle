@@ -20,10 +20,11 @@ use Ferienpass\CoreBundle\Export\ParticipantList\WordExport;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-final class FerienpassCoreExtension extends Extension
+final class FerienpassCoreExtension extends Extension implements PrependExtensionInterface
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -41,7 +42,6 @@ final class FerienpassCoreExtension extends Extension
         // Parameters
         $container->setParameter('ferienpass.logos_dir', $config['logos_dir']);
         $container->setParameter('ferienpass.images_dir', $config['images_dir']);
-        $container->setParameter('ferienpass.version', $this->getVersion());
 
         // Injection
         if (isset($config['export'])) {
@@ -76,5 +76,11 @@ final class FerienpassCoreExtension extends Extension
         }
 
         return null;
+    }
+
+    public function prepend(ContainerBuilder $container)
+    {
+        // Prepend the ferienpass version to make it available for third-party bundle configuration
+        $container->setParameter('ferienpass.version', $this->getVersion());
     }
 }
