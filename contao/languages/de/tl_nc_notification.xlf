@@ -49,6 +49,13 @@
                     einladen. Die E-Mail muss den Link zum Annehmen der Einladung enthalten.
                 </target>
             </trans-unit>
+            <trans-unit id="tl_nc_notification.type.host_registration.0">
+                <target>Veranstalter-Registrierung</target>
+            </trans-unit>
+            <trans-unit id="tl_nc_notification.type.host_registration.1">
+                <target>Diese Benachrichtigung wird verschickt, wenn Veranstalter:innen sich auf der Seite registrieren.
+                </target>
+            </trans-unit>
             <trans-unit id="tl_nc_notification.type.unacknowledged_attendances.0">
                 <target>Erinnerung Zahltage</target>
             </trans-unit>

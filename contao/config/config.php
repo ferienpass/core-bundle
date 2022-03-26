@@ -376,6 +376,44 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] = array_merge((array) $GLOB
                 'member_email',
             ],
         ],
+        'host_registration' => [
+            'recipients' => [
+                'admin_email',
+            ],
+            'email_text' => [
+                'host_*',
+                'member_*',
+            ],
+            'email_html' => [
+                'host_*',
+                'member_*',
+            ],
+            'email_sender_name' => [
+                'admin_email',
+                'host_*',
+                'member_*',
+            ],
+            'email_sender_address' => [
+                'admin_email',
+                'host_*',
+                'member_*',
+            ],
+            'email_recipient_cc' => [
+                'admin_email',
+                'host_*',
+                'member_*',
+            ],
+            'email_recipient_bcc' => [
+                'admin_email',
+                'host_*',
+                'member_*',
+            ],
+            'email_replyTo' => [
+                'admin_email',
+                'host_*',
+                'member_*',
+            ],
+        ],
         'unacknowledged_attendances' => [
             'recipients' => [
                 'participant_email',
