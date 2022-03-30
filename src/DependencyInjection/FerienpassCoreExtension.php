@@ -65,6 +65,12 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
         return 'ferienpass';
     }
 
+    public function prepend(ContainerBuilder $container)
+    {
+        // Prepend the ferienpass version to make it available for third-party bundle configuration
+        $container->setParameter('ferienpass.version', $this->getVersion());
+    }
+
     private function getVersion(): ?string
     {
         foreach (['ferienpass/base', 'ferienpass/ferienpass'] as $package) {
@@ -76,11 +82,5 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
         }
 
         return null;
-    }
-
-    public function prepend(ContainerBuilder $container)
-    {
-        // Prepend the ferienpass version to make it available for third-party bundle configuration
-        $container->setParameter('ferienpass.version', $this->getVersion());
     }
 }

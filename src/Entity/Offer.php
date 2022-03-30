@@ -228,7 +228,7 @@ class Offer
     private Collection $dates;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Ferienpass\CoreBundle\Entity\OfferCategory", inversedBy="offers", orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity="Ferienpass\CoreBundle\Entity\OfferCategory", inversedBy="offers")
      * @ORM\JoinTable(
      *     name="OfferCategoryAssociation",
      *     joinColumns={@ORM\JoinColumn(name="offer_id", referencedColumnName="id")},
