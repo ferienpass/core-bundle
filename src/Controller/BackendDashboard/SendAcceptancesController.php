@@ -24,6 +24,8 @@ class SendAcceptancesController extends AbstractDashboardWidgetController
 
     public function __invoke(): Response
     {
+        // TODO: Only show widget when there is a current Edition with active/finished "allocation" task
+        // TODO 2: Make the "allocation" task mandatory for Editions with lot application system
         $count = \count($this->unconfirmedApplications->getUninformedMembers()) + \count($this->unconfirmedApplications->getUninformedParticipants());
         if (!$count) {
             return new Response('', Response::HTTP_NO_CONTENT);

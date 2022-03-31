@@ -32,7 +32,7 @@ services:
     tags: [ 'contao.dashboard_widget' ]
 
   Ferienpass\CoreBundle\Controller\BackendDashboard\EraseDataController:
-    arguments: [ '@Ferienpass\CoreBundle\Facade\EraseDataFacade' ]
+    arguments: [ '@Ferienpass\CoreBundle\Facade\EraseDataFacade', '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
     tags: [ 'contao.dashboard_widget' ]
 
   Ferienpass\CoreBundle\Controller\BackendDashboard\InformSleepController:
