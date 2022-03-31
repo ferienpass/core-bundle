@@ -70,7 +70,7 @@ class UnconfirmedApplications
         $statement = $this->connection->createQueryBuilder()
             ->select(
                 'DISTINCT a.id as attendance_id',
-                'IF(o.cancelled, "error", a.status) as attendance_status',
+                'IF(o.cancelled, \'error\', a.status) as attendance_status',
                 'p.id as participant_id',
                 'p.firstname as participant_firstname',
                 'p.lastname as participant_lastname',
@@ -94,11 +94,11 @@ class UnconfirmedApplications
             // We want participants with attendances
             ->innerJoin('p', 'Attendance', 'a', 'a.participant_id=p.id')
 
-            // Additionally fetch the offer
+            // Additionally, fetch the offer
             ->innerJoin('a', 'Offer', 'o', 'a.offer_id=o.id')
 
-            // Additionally fetch the offer dates
-            ->innerJoin('o', 'OfferDate', 'd', 'd.offer_id=o.id')
+            // Additionally, fetch the offer dates
+            ->leftJoin('o', 'OfferDate', 'd', 'd.offer_id=o.id')
 
             // Attendances NOT have been informed yet
             ->where($qb2->expr()->notIn('a.id', $qb2->getSQL()))
@@ -108,6 +108,10 @@ class UnconfirmedApplications
             ->leftJoin('a', 'EditionTask', 't', 'a.task_id = t.id')
             ->andWhere($qb2->expr()->or(
                 't.id IS NULL',
+                $qb2->expr()->and(
+                    "t.type = 'application_system'",
+                    "t.application_system = 'lot'",
+                ),
                 $qb2->expr()->and(
                     "t.type <> 'application_system'",
                     "t.application_system <> 'firstcome'",
