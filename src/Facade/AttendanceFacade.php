@@ -133,6 +133,7 @@ class AttendanceFacade
         if (null === $attendance) {
             $attendance = new Attendance($offer, $participant);
 
+            $offer->addAttendance($attendance);
             $this->doctrine->getManager()->persist($attendance);
 
             return $attendance;

@@ -638,6 +638,11 @@ class Offer
         return $this->getAttendances()->filter(fn (Attendance $attendance) => \in_array($attendance->getStatus(), $status, true));
     }
 
+    public function addAttendance(Attendance $attendance): void
+    {
+        $this->attendances->add($attendance);
+    }
+
     public function getVariantBase(): ?self
     {
         return $this->variantBase;
