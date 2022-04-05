@@ -228,7 +228,7 @@ class EditionTask
 
         $now = new \DateTimeImmutable();
 
-        $duration = $this->getPeriodEnd()->diff($this->getPeriodBegin())->days;
+        $duration = $this->getPeriodEnd()->diff($this->getPeriodBegin())->days ?: 1;
         $elapsed = $now->diff($this->getPeriodBegin())->days;
 
         return (int) round(($elapsed / $duration) * 100);
