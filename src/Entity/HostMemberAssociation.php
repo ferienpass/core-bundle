@@ -39,7 +39,7 @@ class HostMemberAssociation
     private Host $host;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
+     * @ORM\Column(type="datetime_immutable", options={"default": "CURRENT_TIMESTAMP"})
      */
     private \DateTimeInterface $createdAt;
 
