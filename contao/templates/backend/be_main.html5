@@ -51,7 +51,7 @@
     echo $objCombiner->getCombinedFile();
     ?>"></script>
     <script><?= $this->getDateString() ?></script>
-    <script src="<?= $this->asset('theme/js/main.js', 'ferienpass_core') ?>"></script>
+    <script src="<?= $this->asset('theme/js/main.js', 'ferienpass_core') ?>" defer></script>
     <?= $this->javascripts ?>
     <?php $this->endblock(); ?>
 

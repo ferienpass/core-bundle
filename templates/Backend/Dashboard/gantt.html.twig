@@ -32,21 +32,7 @@
             </div>
         </div>
 
-        <div class="mt-2" x-data='{ tasks: {{ element.tasks|json_encode|raw }}, gantt: null, viewMode: "Month" }'
-             x-init="{{ '
-
-gantt = new Gantt($refs.gantt, tasks, { view_mode: viewMode, custom_popup_html: function(task) {
-  return `
-<div class="px-4 py-2">
-<h5 class="text-white text-sm font-medium whitespace-nowrap">${task.name}
-<a class="text-white font-normal text-xs underline" href="${task.editLink.href}" title="${task.editLink.title}">${task.editLink.link}</a>
-</h5>
-<p class="mt-1 text-gray-100 leading-4 text-sm">${task.description}</p>
-</div>
-`;
-} }); $watch(\'viewMode\', value => gantt.change_view_mode(value))
-
-'|e('html_attr') }}">
+        <div class="mt-2" x-data='DashboardGantt({{ element.tasks|json_encode|raw }})'>
 
             <div class="flex items-center justify-between mb-2">
                 <div>

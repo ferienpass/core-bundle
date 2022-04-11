@@ -415,8 +415,7 @@
                     {% endif %}
 
                     <div class="bg-white overflow-hidden shadow rounded-lg"
-                         x-data=" { count: {{ attendances|length }} } "
-                         x-init="() => { Sortable.create($el.querySelector('ul'), { group: 'assign', ghostClass: 'bg-yellow-50', selectedClass: 'bg-blue-50', multiDrag: true, onAdd: assignAttendanceOnAdd(event, {{ autoAssign ? 'true' : 'false' }}), onUpdate: assignAttendanceOnUpdate(event, {{ autoAssign ? 'true' : 'false' }}), onSort: event => { count = $el.querySelectorAll('ul > li').length } }); }">
+                         x-data="DragParticipants({{ attendances|length }}, {{ autoAssign ? 'true' : 'false' }})">
                         <div class="border-b border-gray-200 px-4 py-5 sm:px-6">
                             <div class="flex justify-between">
                                 <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -454,7 +453,7 @@
                                 </span>
                                 </form>
                             {% endif %}
-                            <ul data-attendance-status="{{ status }}">
+                            <ul data-attendance-status="{{ status }}" x-ref="list">
                                 {% for attendance in attendances %}
                                     <li class="group cursor-move bg-gray-50 px-2 py-2 border border-transparent rounded mb-4 hover:bg-gray-100 hover:border-gray-100 hover:shadow-sm"
                                         data-attendance-id="{{ attendance.id }}">
