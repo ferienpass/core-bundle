@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Export\Offer\Xml;
 
-final class XmlExports
+use Ferienpass\CoreBundle\Export\Offer\OfferExportTypeInterface;
+
+final class XmlExports implements OfferExportTypeInterface
 {
     /**
      * @var array<string, string>

@@ -44,6 +44,8 @@ class PdfExport implements OffersExportInterface
 
     public function generate(iterable $offers, string $destination = null): string
     {
+        ini_set('pcre.backtrack_limit', '100000000');
+
         $html = $this->render($offers);
         $hash = md5($html);
         $tmpPath = $this->projectDir.'/system/tmp/pdf';

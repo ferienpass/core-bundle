@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Export\Offer\Excel;
 
-final class ExcelExports
+use Ferienpass\CoreBundle\Export\Offer\OfferExportTypeInterface;
+
+final class ExcelExports implements OfferExportTypeInterface
 {
     /**
      * @var array<string, ExcelExportInterface>

@@ -17,7 +17,7 @@ services:
     arguments: [ '@database_connection' ]
 
   Ferienpass\CoreBundle\Controller\Backend\ExportController:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\OfferRepository', '@Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports', '@Ferienpass\CoreBundle\Export\Offer\Excel\ExcelExports', '@Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports' ]
+    arguments: [ '@Ferienpass\CoreBundle\Repository\OfferRepository', '@Ferienpass\CoreBundle\Export\Offer\OfferExporter' ]
 
   Ferienpass\CoreBundle\Controller\Backend\ProofController: ~
 
@@ -254,9 +254,11 @@ services:
 
   Ferienpass\CoreBundle\Export\Offer\Excel\ExcelExports:
     arguments: [ !tagged_iterator { tag: 'ferienpass.export.offer.xlsx', index_by: 'key' } ]
+    tags: [ { name: 'ferienpass.offer_export_type', key: 'xlsx' } ]
 
   Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports:
     arguments: [ '@Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExport' ]
+    tags: [ { name: 'ferienpass.offer_export_type', key: 'pdf' } ]
 
   Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExport:
     arguments: [ '@filesystem', '%kernel.project_dir%', '@twig' ]
@@ -266,14 +268,21 @@ services:
 
   Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports:
     arguments: [ '@Ferienpass\CoreBundle\Export\Offer\Xml\XmlExport' ]
+    tags: [ { name: 'ferienpass.offer_export_type', key: 'xml' } ]
 
   Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport: ~
 
   Ferienpass\CoreBundle\Export\Offer\Web\ImgExport:
     arguments: [ '@kernel', '@filesystem', '@knp_snappy.image', '%kernel.project_dir%' ]
 
+  Ferienpass\CoreBundle\Export\Offer\OfferExporter:
+    arguments: [ !tagged_iterator { tag: 'ferienpass.offer_export_type', index_by: 'key' } ]
+
   Ferienpass\CoreBundle\Security\Authentication\AuthenticationFailureHandler:
     arguments: [ '@translator' ]
+
+  Ferienpass\CoreBundle\Form\Extension\UiThemeExtension:
+    tags: [ 'form.type_extension' ]
 
   Ferienpass\CoreBundle\Form\ApplyFormType:
     arguments: [ '@security.helper', '@doctrine' ]

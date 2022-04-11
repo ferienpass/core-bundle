@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Export\Offer\PrintSheet;
 
-final class PdfExports
+use Ferienpass\CoreBundle\Export\Offer\OfferExportTypeInterface;
+
+final class PdfExports implements OfferExportTypeInterface
 {
     /**
      * @var PdfExportConfig[]

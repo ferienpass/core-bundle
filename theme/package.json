@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.4.0",
-    "alpinejs": "^2.3.3",
+    "alpinejs": "^3.0.0",
     "frappe-charts": "^1.6.0",
     "frappe-gantt": "^0.6.0",
     "sortablejs": "^1.10.2",

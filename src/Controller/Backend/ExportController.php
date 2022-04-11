@@ -17,9 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Ferienpass\CoreBundle\Entity\Edition;
 use Ferienpass\CoreBundle\Entity\Host;
-use Ferienpass\CoreBundle\Export\Offer\Excel\ExcelExports;
-use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
-use Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports;
+use Ferienpass\CoreBundle\Export\Offer\OfferExporter;
 use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
 use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -38,18 +36,22 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class ExportController extends AbstractController
 {
-    public function __construct(private OfferRepository $offerRepository, private PdfExports $pdfExports, private ExcelExports $excelExports, private XmlExports $xmlExports)
+    public function __construct(private OfferRepository $offerRepository, private OfferExporter $exporter)
     {
     }
 
     public function __invoke(Request $request): Response
     {
-        $types = array_values(array_merge($this->pdfExports->getNames(), $this->excelExports->getNames(), $this->xmlExports->getNames()));
+        $types = $this->exporter->getAllNames();
+
         $form = $this->createFormBuilder()
             ->add('type', ChoiceType::class, [
-                'label' => 'Export',
+                'label' => 'Welches Format soll exportiert werden?',
                 'choices' => array_combine($types, $types),
-                'choice_label' => fn ($choice, $key, $value) => strtoupper($key),
+                'layout' => 'cards',
+                'data' => $types[0],
+                'choice_label' => fn ($choice, $key, $value): string => sprintf('export.%s.0', $key),
+                'choice_attr' => fn ($choice, $key, $value): array => ['help' => sprintf('export.%s.1', $key)],
             ])
             ->add('editions', EntityType::class, [
                 'class' => Edition::class,
@@ -88,23 +90,9 @@ final class ExportController extends AbstractController
         ]);
     }
 
-    private function exportOffers(string $type, iterable $offers): BinaryFileResponse
+    private function exportOffers(string $key, iterable $offers): BinaryFileResponse
     {
-        if ($this->pdfExports->has($type)) {
-            ini_set('pcre.backtrack_limit', '100000000');
-
-            return $this->file($this->pdfExports->get($type)->generate($offers));
-        }
-
-        if ($this->excelExports->has($type)) {
-            return $this->file($this->excelExports->get($type)->generate($offers));
-        }
-
-        if ($this->xmlExports->has($type)) {
-            return $this->file($this->xmlExports->get($type)->generate($offers));
-        }
-
-        throw new \InvalidArgumentException(sprintf('Type "%s" is not supported', $type));
+        return $this->file($this->exporter->getExporter($key)->generate($offers));
     }
 
     private function queryOffers(FormInterface $form): iterable
