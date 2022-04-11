@@ -373,6 +373,10 @@ services:
   Ferienpass\CoreBundle\EventListener\Backend\BackendMainListener:
     arguments: [ '@twig', '@contao.framework', '%ferienpass.version%' ]
 
+  Ferienpass\CoreBundle\EventListener\Backend\BackendMenuListener:
+    arguments: [ '@router', '@request_stack' ]
+    tags: [ { name: 'kernel.event_listener', event: 'contao.backend_menu_build', priority: -255 } ]
+
   Ferienpass\CoreBundle\EventListener\Notification\AddNotificationTokens:
     arguments: [ '@translator' ]
 
