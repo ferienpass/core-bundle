@@ -34,6 +34,9 @@ class BackendMenuListener
         }
 
         $parentNode = $tree->getChild('ferienpass');
+        if (null === $parentNode) {
+            return;
+        }
 
         $node = $factory
             ->createItem('export')
