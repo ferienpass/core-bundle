@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Export\Offer\Excel;
 
+use Contao\StringUtil;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
 use Symfony\Component\Filesystem\Filesystem;
@@ -72,7 +73,7 @@ abstract class AbstractExcelExport implements ExcelExportInterface
 
                 // If the callback has a return value (e.g. for arrow functions), set the value
                 if ($val = $col($dto)) {
-                    $cell->setValue($val);
+                    $cell->setValue(StringUtil::decodeEntities($val));
                 }
 
                 ++$iCol;
