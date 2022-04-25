@@ -329,12 +329,13 @@ class Offer
     public function getVariants(bool $include = false): Collection
     {
         if ($this->isVariantBase()) {
+            $variants = $this->variants->filter(fn (Offer $v) => true);
+
             if ($include) {
-                $variants = clone $this->variants;
                 $variants->add($this);
             }
 
-            return $this->variants;
+            return $variants;
         }
 
         $variants = $this->variantBase->getVariants(true);
