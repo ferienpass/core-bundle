@@ -5,8 +5,11 @@
             <trans-unit id="tl_nc_notification.type.ferienpass">
                 <target>Ferienpass</target>
             </trans-unit>
+            <trans-unit id="tl_nc_notification.type.attendance_changed_withdrawn.0">
+                <target>Windhund-Verfahren: Kind hat sich von Veranstaltung abgemeldet (vorher angemeldet)</target>
+            </trans-unit>
             <trans-unit id="tl_nc_notification.type.attendance_changed_confirmed.0">
-                <target>Teilnahmestatus nun bestätigt</target>
+                <target>Windhund-Verfahren: Kind hat einen Platz bekommen (vorher Warteliste)</target>
             </trans-unit>
             <trans-unit id="tl_nc_notification.type.attendance_changed_confirmed.1">
                 <target>Diese Benachrichtigung wird an Teilnehmer:innen geschickt, sobald sich der Teilnahmestatus auf
@@ -16,7 +19,7 @@
                 </target>
             </trans-unit>
             <trans-unit id="tl_nc_notification.type.attendance_created_confirmed.0">
-                <target>Bestätigung der Anmeldung zum Angebot</target>
+                <target>Windhundverfahren: Kind hat erfolgreich einen Platz gebucht</target>
             </trans-unit>
             <trans-unit id="tl_nc_notification.type.attendance_created_confirmed.1">
                 <target>Diese Benachrichtigung wird an Teilnehmer:innen geschickt, die sich soeben für ein Angebot
@@ -25,7 +28,7 @@
                 </target>
             </trans-unit>
             <trans-unit id="tl_nc_notification.type.admission_letter.0">
-                <target>Zulassungsbescheid</target>
+                <target>Los-Verfahren: Zulassungsbescheid (Übersicht über alle Veranstaltungen)</target>
             </trans-unit>
             <trans-unit id="tl_nc_notification.type.admission_letter.1">
                 <target>Diese Benachrichtigung wird manuell nach dem Zuteilen der Plätze verschickt. Die Nachricht geht
@@ -33,7 +36,7 @@
                 </target>
             </trans-unit>
             <trans-unit id="tl_nc_notification.type.attendance_reminder.0">
-                <target>Teilnahme-Erinnerung</target>
+                <target>Teilnahme-Erinnerung mit Termin (36h vor Veranstaltungsbeginn)</target>
             </trans-unit>
             <trans-unit id="tl_nc_notification.type.attendance_reminder.1">
                 <target>Diese Benachrichtigung wird an Teilnehmer:innen verschickt, wenn eine eine Veranstaltung, zu der
@@ -73,7 +76,7 @@
                 </target>
             </trans-unit>
             <trans-unit id="tl_nc_notification.type.offer_cancelled.0">
-                <target>Angebot abgesagt</target>
+                <target>Angebot wurde abgesagt</target>
             </trans-unit>
             <trans-unit id="tl_nc_notification.type.offer_cancelled.1">
                 <target>Diese Benachrichtigung wird an alle Kinder verschickt, die auf der Teilnahmeliste eines
@@ -81,7 +84,7 @@
                 </target>
             </trans-unit>
             <trans-unit id="tl_nc_notification.type.offer_relaunched.0">
-                <target>Angebot wiederhergestellt</target>
+                <target>Angebot wurde wiederhergestellt</target>
             </trans-unit>
             <trans-unit id="tl_nc_notification.type.offer_relaunched.1">
                 <target>Diese Benachrichtigung wird an alle Kinder verschickt, die auf der Teilnahmeliste eines
