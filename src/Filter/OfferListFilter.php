@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Filter;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
+use Ferienpass\CoreBundle\Entity\OfferCategory;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -43,7 +45,13 @@ class OfferListFilter
                 continue;
             }
 
-            $this->values[$k] = ($v instanceof \DateTimeInterface) ? $v : $this->form->get($k)->getViewData();
+            if ($v instanceof ArrayCollection) {
+                if ($v->current() instanceof OfferCategory) {
+                    $this->values[$k] = implode(', ', array_map(fn (OfferCategory $c) => $c->getName(), $v->toArray()));
+                }
+            } else {
+                $this->values[$k] = ($v instanceof \DateTimeInterface) ? $v : $this->form->get($k)->getViewData();
+            }
 
             switch ($k) {
                 case 'name':
