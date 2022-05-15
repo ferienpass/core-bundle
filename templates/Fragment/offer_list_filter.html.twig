@@ -6,8 +6,13 @@
         <div>
             {{ form_start(shortForm) }}
 
-            <div class="">
-                {{ form_row(shortForm.favorites) }}
+            <div class="flex items-center space-x-4 sm:space-x-6">
+                {% if shortForm.category is defined %}
+                    {{ form_widget(shortForm.category, {'auto_submit': true}) }}
+                {% endif %}
+                {% if shortForm.favorites is defined %}
+                    {{ form_widget(shortForm.favorites, {'auto_submit': true}) }}
+                {% endif %}
             </div>
 
             {{ form_end(shortForm) }}

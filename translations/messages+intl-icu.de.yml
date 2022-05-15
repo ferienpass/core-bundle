@@ -125,6 +125,7 @@ offerList.filter:
   earliest_date: nach dem <strong>{value}</strong>
   latest_date: vor dem <strong>{value}</strong>
   favorites: nur gespeicherte Angebote
+  category: Kategorie
 
 export.pdf.print.0: 'Druckbögen (PDF)'
 export.pdf.print.1: 'Exportiert alle Angebote im druckfertigen PDF-Format.'

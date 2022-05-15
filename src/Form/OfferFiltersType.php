@@ -13,11 +13,9 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Form;
 
-use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
 use Ferienpass\CoreBundle\Form\SimpleType\FilterCategoryType;
 use Ferienpass\CoreBundle\Form\SimpleType\FilterFavoritesType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -53,14 +51,12 @@ class OfferFiltersType extends AbstractType
             ]);
         }
 
-        if (empty($options['attributes']) || \in_array('favorites', $options['attributes'], true)) {
-            $builder->add('favorites', FilterFavoritesType::class, [
-                'auto_submit' => !empty($options['attributes']),
-            ]);
-        }
-
         if (empty($options['attributes']) || \in_array('category', $options['attributes'], true)) {
             $builder->add('category', FilterCategoryType::class);
+        }
+
+        if (empty($options['attributes']) || \in_array('favorites', $options['attributes'], true)) {
+            $builder->add('favorites', FilterFavoritesType::class);
         }
 
 //        if (empty($options['attributes']) || \in_array('base', $options['attributes'], true)) {
