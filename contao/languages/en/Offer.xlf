@@ -59,6 +59,9 @@
             <trans-unit id="Offer.category.1">
                 <target>Bitte wählen Sie eine Kategorie für dieses Angebot aus.</target>
             </trans-unit>
+            <trans-unit id="Offer.categories.0">
+                <target>Kategorie</target>
+            </trans-unit>
             <trans-unit id="Offer.members.0">
                 <target>Ansprechpartner</target>
             </trans-unit>

@@ -133,7 +133,7 @@ class Offer
      * @Groups("docx_export")
      * @ORM\Column(type="boolean", options={"default"=0})
      */
-    private bool $requiresApplication;
+    private bool $requiresApplication = false;
 
     /**
      * @Groups("docx_export")
@@ -305,6 +305,15 @@ class Offer
     public function getDates(): Collection
     {
         return $this->dates;
+    }
+
+    /**
+     * @param  Collection|OfferDate[]
+     * @psalm-param  Collection<int, OfferDate>
+     */
+    public function setDates(Collection $dates): void
+    {
+        $this->dates = $dates;
     }
 
     public function isVariantBase(): bool
@@ -553,6 +562,15 @@ class Offer
     public function getCategories(): Collection
     {
         return $this->categories;
+    }
+
+    /**
+     * @param  Collection|OfferCategory[]
+     * @psalm-param  Collection<int, OfferCategory>
+     */
+    public function setCategories(Collection $categories): void
+    {
+        $this->categories = $categories;
     }
 
     public function addCategory(OfferCategory $category): void

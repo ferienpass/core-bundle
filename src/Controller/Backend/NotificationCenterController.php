@@ -64,10 +64,10 @@ final class NotificationCenterController extends AbstractController
             return $this->redirectToRoute('backend_send_acceptances');
         }
 
-        return $this->render('@FerienpassCore/Backend/be_send_attendances_overview.html.twig', [
+        return $this->renderForm('@FerienpassCore/Backend/be_send_attendances_overview.html.twig', [
             'members' => $this->unconfirmedApplications->getUninformedMembers(),
             'participants' => $this->unconfirmedApplications->getUninformedParticipants(),
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 

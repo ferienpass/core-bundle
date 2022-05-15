@@ -65,9 +65,9 @@ final class ParticipantsController extends AbstractController
             return $this->redirectToRoute($request->attributes->get('_route') ?: 'personal_data');
         }
 
-        return $this->render('@FerienpassCore/Fragment/participants.html.twig', [
+        return $this->renderForm('@FerienpassCore/Fragment/participants.html.twig', [
             'participants' => $originalParticipants,
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 }

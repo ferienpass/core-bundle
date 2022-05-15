@@ -56,8 +56,8 @@ class LostPasswordController extends AbstractController
             }
         }
 
-        return $this->render('@FerienpassCore/Fragment/lost_password.html.twig', [
-            'form' => $form->createView(),
+        return $this->renderForm('@FerienpassCore/Fragment/lost_password.html.twig', [
+            'form' => $form,
         ]);
     }
 
@@ -129,13 +129,13 @@ class LostPasswordController extends AbstractController
 
             $this->addFlash(...Flash::confirmationModal()->headline(' Passwort-Reset erfolgreich')->text('Sie können sich nun mit Ihrem neuen Passwort anmelden.')->linkText('Zur Startseite')->create());
 
-            return $this->render('@FerienpassCore/Fragment/lost_password.html.twig', [
-                'form' => $form->createView(),
+            return $this->renderForm('@FerienpassCore/Fragment/lost_password.html.twig', [
+                'form' => $form,
             ]);
         }
 
-        return $this->render('@FerienpassCore/Fragment/lost_password.html.twig', [
-            'form' => $form->createView(),
+        return $this->renderForm('@FerienpassCore/Fragment/lost_password.html.twig', [
+            'form' => $form,
         ]);
     }
 }

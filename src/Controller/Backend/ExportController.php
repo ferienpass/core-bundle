@@ -85,8 +85,8 @@ final class ExportController extends AbstractController
             return $this->exportOffers($type, $offers);
         }
 
-        return $this->render('@FerienpassCore/Backend/be_export.html.twig', [
-            'form' => $form->createView(),
+        return $this->renderForm('@FerienpassCore/Backend/be_export.html.twig', [
+            'form' => $form,
         ]);
     }
 

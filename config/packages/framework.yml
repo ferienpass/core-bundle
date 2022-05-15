@@ -10,4 +10,7 @@ framework:
       # async is whatever name you gave your transport above
       #'App\Message\SmsNotification':  async
 
+  form:
+    legacy_error_messages: false
+
 # See https://symfony.com/doc/4.4/messenger.html#deploying-to-production
