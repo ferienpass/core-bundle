@@ -48,7 +48,7 @@ final class OfferListFilterController extends AbstractController
 
         // Build the short form
         $shortForm = $this->createForm(OfferFiltersType::class, $data ?? null, [
-            'attributes' => ['favorites'],
+            'attributes' => ['category', 'favorites'],
         ]);
 
         // If filters form submitted, redirect to a pretty URL

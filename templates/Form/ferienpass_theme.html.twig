@@ -85,7 +85,7 @@
 {%- block choice_widget -%}
     {%- set attr = attr|merge({class: (attr.class|default('w-full'))|trim}) -%}
 
-    {% if 'cards' == layout %}
+    {% if 'cards' == ui %}
         {{- block('choice_widget_cards') -}}
     {% elseif expanded %}
         {{- block('choice_widget_expanded') -}}

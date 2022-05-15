@@ -48,7 +48,7 @@ final class ExportController extends AbstractController
             ->add('type', ChoiceType::class, [
                 'label' => 'Welches Format soll exportiert werden?',
                 'choices' => array_combine($types, $types),
-                'layout' => 'cards',
+                'ui' => 'cards',
                 'data' => $types[0],
                 'choice_label' => fn ($choice, $key, $value): string => sprintf('export.%s.0', $key),
                 'choice_attr' => fn ($choice, $key, $value): array => ['help' => sprintf('export.%s.1', $key)],

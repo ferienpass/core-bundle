@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Form;
 
 use Ferienpass\CoreBundle\Entity\Offer;
-use Ferienpass\CoreBundle\Entity\OfferCategory;
 use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
+use Ferienpass\CoreBundle\Form\SimpleType\FilterCategoryType;
 use Ferienpass\CoreBundle\Form\SimpleType\FilterFavoritesType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -59,17 +59,10 @@ class OfferFiltersType extends AbstractType
             ]);
         }
 
-//        if (empty($options['attributes']) || \in_array('category', $options['attributes'], true)) {
-//            $builder->add('category', EntityType::class, [
-//                'label' => 'Kategorie',
-//                'required' => false,
-//                'multiple' => true,
-//                'class' => OfferCategory::class,
-//                'choice_value' => fn (?OfferCategory $entity) => $entity ? $entity->getAlias() : '',
-//                'choice_label' => 'name',
-//            ]);
-//        }
-//
+        if (empty($options['attributes']) || \in_array('category', $options['attributes'], true)) {
+            $builder->add('category', FilterCategoryType::class);
+        }
+
 //        if (empty($options['attributes']) || \in_array('base', $options['attributes'], true)) {
 //            $builder->add('base', EntityType::class, [
 //                'required' => false,

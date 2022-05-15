@@ -28,11 +28,11 @@ class UiThemeExtension extends AbstractTypeExtension
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefined(['layout']);
+        $resolver->setDefined(['ui']);
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        $view->vars['layout'] = $options['layout'] ?? null;
+        $view->vars['ui'] = $options['ui'] ?? null;
     }
 }

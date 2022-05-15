@@ -1,2 +1,2 @@
 twig:
-  form_themes: ['@FerienpassCore/Form/tailwind_theme.html.twig']
+  form_themes: ['@FerienpassCore/Form/ferienpass_theme.html.twig']
