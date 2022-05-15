@@ -78,6 +78,7 @@ final class OfferListFilterController extends AbstractController
 
         foreach (array_keys((array) $form->getViewData()) as $attr) {
             if (!$form->has($attr) || $form->get($attr)->isEmpty()) {
+                unset($params[$attr]);
                 continue;
             }
 
@@ -86,8 +87,10 @@ final class OfferListFilterController extends AbstractController
         }
 
         // New filter settings are not compatible with pagination
-        $params['page'] = null;
+        unset($params['page']);
 
-        return $request->getSchemeAndHttpHost().$request->getBaseUrl().$request->getPathInfo().'?'.http_build_query($params);
+        $qs = \count($params) ? '?'.http_build_query($params) : '';
+
+        return $request->getSchemeAndHttpHost().$request->getBaseUrl().$request->getPathInfo().$qs;
     }
 }
