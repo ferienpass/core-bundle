@@ -7,43 +7,7 @@
             {{ form_start(shortForm) }}
 
             <div class="">
-                {# todo move to form type template and do not duplicate below #}
-                {% do shortForm.favorites.setRendered %}
-                <div x-data="{ checked: {{ shortForm.favorites.vars.checked ? 'true' : 'false' }} }"
-                     x-init="$watch('checked', v => $root.closest('form').submit())"
-                     class="flex items-center space-x-1">
-                    <div>
-                        <input type="hidden"
-                               name="{{ shortForm.favorites.vars.full_name }}"
-                               :value="checked ? '1' : ''"
-                               id="{{ shortForm.favorites.vars.id }}">
-                        <span role="checkbox"
-                              tabindex="0"
-                              @click="checked = !checked"
-                              @keydown.space.prevent="checked = !checked"
-                              :aria-checked="checked.toString()"
-                              aria-checked="false"
-                              :class="{ 'bg-gray-200': !checked, 'bg-red-600': checked }"
-                              class="relative inline-block flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline bg-gray-200">
-                                <span aria-hidden="true"
-                                      :class="{ 'translate-x-5': checked, 'translate-x-0': !checked }"
-                                      class="relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200 translate-x-0">
-                                  <span :class="{ 'opacity-0 ease-out duration-100': checked, 'opacity-100 ease-in duration-200': !checked }"
-                                        class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity opacity-100 ease-in duration-200">
-                                    <span class="block h-3 w-3 text-gray-400">{{ source('@FerienpassCore/Icons/heart.svg') }}</span>
-                                  </span>
-                                  <span :class="{ 'opacity-100 ease-in duration-200': checked, 'opacity-0 ease-out duration-100': !checked }"
-                                        class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity opacity-0 ease-out duration-100">
-                                    <span class="block h-3 w-3 text-red-600">{{ source('@FerienpassCore/Icons/heart-solid.svg') }}</span>
-                                  </span>
-                                </span>
-                          </span>
-                    </div>
-                    <label class="font-medium text-sm leading-4 cursor-pointer"
-                           @click="checked = !checked"
-                           :class="{ 'text-red-600': checked, 'text-gray-600': !checked }"
-                           for="{{ shortForm.favorites.vars.id }}">gemerkte<br>Angebote</label>
-                </div>
+                {{ form_row(shortForm.favorites) }}
             </div>
 
             {{ form_end(shortForm) }}
@@ -92,49 +56,8 @@
                         </div>
 
                         <div class="mt-6">
-                            {% do fullForm.favorites.setRendered %}
-                            <div x-data="{ checked: {{ fullForm.favorites.vars.checked ? 'true' : 'false' }} }"
-                                 class="flex items-center space-x-1">
-                                <div>
-                                    <input type="hidden"
-                                           name="{{ fullForm.favorites.vars.full_name }}"
-                                           :value="checked ? '1' : ''"
-                                           id="{{ fullForm.favorites.vars.id }}">
-                                    <span role="checkbox"
-                                          tabindex="0"
-                                          @click="checked = !checked"
-                                          @keydown.space.prevent="checked = !checked"
-                                          :aria-checked="checked.toString()"
-                                          aria-checked="false"
-                                          :class="{ 'bg-gray-200': !checked, 'bg-red-600': checked }"
-                                          class="relative inline-block flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline bg-gray-200">
-                                <span aria-hidden="true"
-                                      :class="{ 'translate-x-5': checked, 'translate-x-0': !checked }"
-                                      class="relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200 translate-x-0">
-                                  <span :class="{ 'opacity-0 ease-out duration-100': checked, 'opacity-100 ease-in duration-200': !checked }"
-                                        class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity opacity-100 ease-in duration-200">
-                                    <span class="block h-3 w-3 text-gray-400">{{ source('@FerienpassCore/Icons/heart.svg') }}</span>
-                                  </span>
-                                  <span :class="{ 'opacity-100 ease-in duration-200': checked, 'opacity-0 ease-out duration-100': !checked }"
-                                        class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity opacity-0 ease-out duration-100">
-                                    <span class="block h-3 w-3 text-red-600">{{ source('@FerienpassCore/Icons/heart-solid.svg') }}</span>
-                                  </span>
-                                </span>
-                          </span>
-                                </div>
-                                <label class="font-medium text-sm leading-4 cursor-pointer"
-                                       @click="checked = !checked"
-                                       :class="{ 'text-red-600': checked, 'text-gray-600': !checked }"
-                                       for="{{ fullForm.favorites.vars.id }}">gemerkte<br>Angebote</label>
-                            </div>
+                            {{ form_row(fullForm.favorites) }}
                         </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <button type="submit"
-                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                            Filter anwenden
-                        </button>
                     </div>
 
                     {{ form_end(fullForm) }}

@@ -281,6 +281,9 @@ services:
   Ferienpass\CoreBundle\Security\Authentication\AuthenticationFailureHandler:
     arguments: [ '@translator' ]
 
+  Ferienpass\CoreBundle\Form\Extension\AutoSubmitExtension:
+    tags: [ 'form.type_extension' ]
+
   Ferienpass\CoreBundle\Form\Extension\UiThemeExtension:
     tags: [ 'form.type_extension' ]
 

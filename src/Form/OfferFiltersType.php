@@ -16,13 +16,14 @@ namespace Ferienpass\CoreBundle\Form;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\OfferCategory;
 use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
+use Ferienpass\CoreBundle\Form\SimpleType\FilterFavoritesType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -53,10 +54,8 @@ class OfferFiltersType extends AbstractType
         }
 
         if (empty($options['attributes']) || \in_array('favorites', $options['attributes'], true)) {
-            $builder->add('favorites', CheckboxType::class, [
-                'label' => 'nur gespeicherte',
-                'false_values' => ['', null],
-                'required' => false,
+            $builder->add('favorites', FilterFavoritesType::class, [
+                'auto_submit' => !empty($options['attributes']),
             ]);
         }
 
@@ -92,6 +91,12 @@ class OfferFiltersType extends AbstractType
                 'label' => 'spätestes Datum',
                 'required' => false,
                 'widget' => 'single_text',
+            ]);
+        }
+
+        if (empty($options['attributes'])) {
+            $builder->add('submit', SubmitType::class, [
+                'label' => 'Filter anwenden',
             ]);
         }
 
