@@ -59,9 +59,9 @@ class SignInController extends AbstractController
             return $response;
         }
 
-        return $this->renderForm('@FerienpassCore/Fragment/login.html.twig', [
-            'login' => $loginForm,
-            'registration' => $registrationForm,
+        return $this->render('@FerienpassCore/Fragment/login.html.twig', [
+            'login' => $loginForm->createView(),
+            'registration' => $registrationForm->createView(),
         ]);
     }
 

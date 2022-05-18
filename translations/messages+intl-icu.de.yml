@@ -18,12 +18,12 @@ application.apply: Sie können {name} jetzt für das Angebot anmelden.
 ineligible.alreadyApplied: '{name} ist bereits registriert für dieses Angebot.'
 ineligible.invalidAge: Sie können {name} nicht anmelden, da das Alter nicht passt.
 ineligible.overlap: Sie können {name} nicht anmelden, da es eine Überschneidung mit einer anderen Anmeldung gibt.
-application.limitReached: >-
+ineligible.limitReached: >-
   {max, plural,
       one   {Sie können {name} nicht anmelden, da maximal eine Anmeldung in dieser Anmeldephase möglich ist.}
       other {Sie können {name} nicht anmelden, da maximal # Anmeldungen in diese Anmeldephase möglich ist.}
   }
-application.dayLimitReached: >-
+ineligible.dayLimitReached: >-
   {max, plural,
       one   {Sie können {name} nicht anmelden, da maximal eine Anmeldung pro Tag möglich ist.}
       other {Sie können {name} nicht anmelden, da maximal # Anmeldungen pro Tag möglich sind.}
