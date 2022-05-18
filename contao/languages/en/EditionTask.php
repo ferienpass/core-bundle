@@ -32,6 +32,8 @@ $GLOBALS['TL_LANG']['EditionTask']['application_system'][0] = 'Application syste
 $GLOBALS['TL_LANG']['EditionTask']['application_system'][1] = 'Choose the application system that should be active.';
 $GLOBALS['TL_LANG']['EditionTask']['hide_status'][0] = 'Hide status from parents';
 $GLOBALS['TL_LANG']['EditionTask']['hide_status'][1] = 'Do not show the actual status in the frontend.';
+$GLOBALS['TL_LANG']['EditionTask']['skip_max_applications'][0] = 'Mehr Anmeldungen erlauben';
+$GLOBALS['TL_LANG']['EditionTask']['skip_max_applications'][1] = 'Es können unbegrenzt viele Anmeldungen vorgenommen werden, jedoch können nur die angegebene Anzahl an Anmeldungen priorisiert werden.';
 
 $GLOBALS['TL_LANG']['EditionTask']['new'][0] = 'New task';
 $GLOBALS['TL_LANG']['EditionTask']['new'][1] = 'Create a new task';

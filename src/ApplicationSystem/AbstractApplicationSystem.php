@@ -70,7 +70,7 @@ abstract class AbstractApplicationSystem implements ApplicationSystemInterface
         /** @var Attendance|false $lastAttendanceParticipant */
         $lastAttendanceParticipant = $attendance->getParticipant()
             ?->getAttendancesWaiting()
-            ?->matching(Criteria::create()->orderBy(['user_priority' => Criteria::DESC]))
+            ?->matching(Criteria::create()->orderBy(['user_priority' => Criteria::ASC]))
             ?->last()
         ;
 

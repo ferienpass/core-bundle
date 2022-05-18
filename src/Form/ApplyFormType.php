@@ -185,7 +185,7 @@ class ApplyFormType extends AbstractType
     private function limitReached(Offer $offer, Participant $participant, ApplicationSystemInterface $applicationSystem): void
     {
         $task = $applicationSystem->getTask();
-        if (!$task?->getMaxApplications()) {
+        if (!$task?->getMaxApplications() || $task->isSkipMaxApplications()) {
             return;
         }
 
@@ -220,7 +220,7 @@ class ApplyFormType extends AbstractType
         ;
 
         if (\count($attendances) >= $limit) {
-            throw new IneligibleParticipantException($offer, $participant, new TranslatableMessage('ineligible.dayLimitReached', ['name' => $participant->getFirstname(), 'max' => $task->getMaxApplications()]));
+            throw new IneligibleParticipantException($offer, $participant, new TranslatableMessage('ineligible.dayLimitReached', ['name' => $participant->getFirstname(), 'max' => $task->getMaxApplicationsDay()]));
         }
     }
 }

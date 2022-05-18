@@ -81,6 +81,11 @@ class EditionTask
     private ?bool $hideStatus = null;
 
     /**
+     * @ORM\Column(name="skip_max_applications", type="boolean", nullable=true)
+     */
+    private ?bool $skipMaxApplications = null;
+
+    /**
      * @ORM\Column(type="string", nullable=true)
      */
     private ?string $description = null;
@@ -329,6 +334,17 @@ class EditionTask
     public function setHideStatus(bool $hideStatus): void
     {
         $this->hideStatus = $hideStatus;
+    }
+
+
+    public function isSkipMaxApplications(): bool
+    {
+        return (bool) $this->skipMaxApplications;
+    }
+
+    public function setSkipMaxApplications(bool $skipMaxApplications): void
+    {
+        $this->skipMaxApplications = $skipMaxApplications;
     }
 
     public function getAgeCheck(): ?string

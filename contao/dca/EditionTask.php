@@ -68,7 +68,7 @@ $GLOBALS['TL_DCA']['EditionTask'] = [
     'subpalettes' => [
         'type_custom' => 'title,description',
         'type_application_system' => 'application_system',
-        'application_system_lot' => 'max_applications,hide_status',
+        'application_system_lot' => 'max_applications,skip_max_applications,hide_status',
         'application_system_firstcome' => 'max_applications_day',
     ],
     'fields' => [
@@ -114,11 +114,19 @@ $GLOBALS['TL_DCA']['EditionTask'] = [
                 'includeBlankOption' => true,
             ],
         ],
-        'hide_status' => [
+        'skip_max_applications' => [
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => [
                 'tl_class' => 'w50 m12',
+            ],
+            'save_callback' => [fn ($val) => (int) $val],
+        ],
+        'hide_status' => [
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => [
+                'tl_class' => 'w50 clr',
             ],
             'save_callback' => [fn ($val) => (int) $val],
         ],
