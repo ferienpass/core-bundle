@@ -117,7 +117,7 @@ class AttendanceFacade
         foreach ($attendances as $currentAttendance) {
             if ($attendance === $currentAttendance) {
                 $attendance->setUserPriority(min(1, $attendance->getUserPriority() - 1));
-                break;
+                continue;
             }
 
             $currentAttendance->setUserPriority($currentAttendance->getUserPriority() + 1);
@@ -171,6 +171,23 @@ class AttendanceFacade
 
     private function deleteAttendance(Attendance $attendance): void
     {
+        // Update user priorities
+        $attendances = $attendance->getParticipant()
+            ?->getAttendancesWaiting()
+            ?->matching(Criteria::create()->orderBy(['user_priority' => Criteria::ASC]))
+        ;
+
+        foreach ($attendances as $loopAttendance) {
+            if ($attendance === $loopAttendance) {
+                continue;
+            }
+
+            if ($attendance->getUserPriority() < $loopAttendance->getUserPriority()) {
+                $loopAttendance->setUserPriority($loopAttendance->getUserPriority() - 1);
+            }
+        }
+
+        // Delete
         $em = $this->doctrine->getManager();
         $em->remove($attendance);
         $em->flush();
