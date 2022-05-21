@@ -17,17 +17,10 @@
 
             <div class="mt-2 mb-6">
 
-                {% for attr, value in filter.values %}
+                {% for attr, filterValue in filter.humanReadable %}
 
                     <span class="inline-flex rounded-full items-center py-0.5 pl-2.5 pr-1 text-sm font-normal bg-primary-100 text-primary-700">
-                        {% set transKey = 'offerList.filter.'~attr %}
-                        {% if attr == 'fee' %}
-                            {% set value = value|number_format(2, ',', '.') %}
-                        {% endif %}
-                        {% if attr == 'earliest_date' or attr == 'latest_date' %}
-                            {% set value = value|date('d.m.Y') %}
-                        {% endif %}
-                        <span>{{ transKey|trans({'%value%': value})|raw }}</span>
+                        <span>{{ filterValue|trans|raw }}</span>
                         <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({(attr): null, page: null})) }}"
                            class="flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-primary-400 hover:bg-primary-200 hover:text-primary-500 focus:outline-none focus:bg-primary-500 focus:text-white">
                             <span class="sr-only">Lösche Filter</span>

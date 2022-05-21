@@ -49,7 +49,7 @@ final class OfferListController extends AbstractController
 
         $qb->leftJoin('o.dates', 'dates');
 
-        $filter = $this->filterFactory->create($qb)->filter($request->query->all());
+        $filter = $this->filterFactory->create($qb)->applyFilter($request->query->all());
 
         $qb->orderBy('dates.begin');
 

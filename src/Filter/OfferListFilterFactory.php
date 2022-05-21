@@ -14,18 +14,21 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
+use Ferienpass\CoreBundle\Dto\OfferFiltersDto;
 use Ferienpass\CoreBundle\Form\OfferFiltersType;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class OfferListFilterFactory
 {
-    public function __construct(private FormFactoryInterface $formFactory, private Session $session)
+    private array $filterTypes = [];
+
+    public function __construct(private FormFactoryInterface $formFactory, iterable $filterTypes, private OfferFiltersDto $filtersDto)
     {
+        $this->filterTypes = $filterTypes instanceof \Traversable ? iterator_to_array($filterTypes, true) : $this->filterTypes;
     }
 
     public function create(DoctrineQueryBuilder $queryBuilder): OfferListFilter
     {
-        return new OfferListFilter($this->formFactory->create(OfferFiltersType::class), $this->session, $queryBuilder);
+        return new OfferListFilter($this->formFactory->create(OfferFiltersType::class, null, ['data_class' => $this->filtersDto::class]), $queryBuilder, $this->filterTypes);
     }
 }

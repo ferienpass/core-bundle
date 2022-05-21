@@ -7,6 +7,9 @@ services:
       calls:
         - [ setContainer, [ '@Psr\Container\ContainerInterface' ] ]
 
+    Ferienpass\CoreBundle\Filter\Type\OfferListFilterType:
+      tags: ['ferienpass.filter.offer_list_type']
+
   Ferienpass\CoreBundle\Controller\Frontend\RedirectShortUrlController: ~
 
   Ferienpass\CoreBundle\Controller\Frontend\ExportAttendancesController:
@@ -299,6 +302,10 @@ services:
   Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType:
     arguments: [ '@contao.csrf.token_manager', '%contao.csrf_token_name%' ]
 
+  Ferienpass\CoreBundle\Form\TypeGuesser\OfferFiltersTypeGuesser:
+    arguments: [ !tagged_iterator { tag: 'ferienpass.filter.offer_list_type', default_index_method: 'getName' } ]
+    tags: [ 'form.type_guesser' ]
+
   Ferienpass\CoreBundle\Security\Voter\HostVoter:
     arguments: [ '@Ferienpass\CoreBundle\Repository\HostRepository' ]
     tags:
@@ -335,8 +342,19 @@ services:
     arguments: [ '@fragment.handler', '@translator', '@contao.framework', '@request_stack' ]
     public: true
 
+  Ferienpass\CoreBundle\Filter\Type\OfferList\AgeType: ~
+  Ferienpass\CoreBundle\Filter\Type\OfferList\BaseType: ~
+  Ferienpass\CoreBundle\Filter\Type\OfferList\CategoryType: ~
+  Ferienpass\CoreBundle\Filter\Type\OfferList\EarliestDateType: ~
+  Ferienpass\CoreBundle\Filter\Type\OfferList\FavoritesType:
+    arguments: [ '@session' ]
+  Ferienpass\CoreBundle\Filter\Type\OfferList\FeeType: ~
+  Ferienpass\CoreBundle\Filter\Type\OfferList\LatestDateType: ~
+  Ferienpass\CoreBundle\Filter\Type\OfferList\NameType: ~
+
+
   Ferienpass\CoreBundle\Filter\OfferListFilterFactory:
-    arguments: [ '@form.factory', '@session' ]
+    arguments: [ '@form.factory', !tagged_iterator { tag: 'ferienpass.filter.offer_list_type', default_index_method: 'getName' }, '@ferienpass.dto.offer_filters' ]
 
   Ferienpass\CoreBundle\MessageHandler\WhenOfferCancelledThenNotify:
     arguments: [ '@doctrine' ]
@@ -394,3 +412,6 @@ services:
 
   Monolog\Processor\PsrLogMessageProcessor:
     tags: { name: monolog.processor, handler: sentry }
+
+  ferienpass.dto.offer_filters:
+    class: Ferienpass\CoreBundle\Dto\OfferFiltersDto
