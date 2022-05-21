@@ -27,7 +27,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 final class OfferListFilterController extends AbstractController
 {
-    public function __construct(private EditionRepository $editionRepository, private OfferFiltersDto $filtersDto)
+    public function __construct(private EditionRepository $editionRepository, private OfferFiltersDto $dto)
     {
     }
 
@@ -42,15 +42,13 @@ final class OfferListFilterController extends AbstractController
 
         // Get the normalized form data from query
         if ($request->query->count()) {
-            $form = $this->createForm(OfferFiltersType::class);
+            $form = $this->createForm(OfferFiltersType::class, null, ['data_class' => $this->dto::class]);
             $form->submit($request->query->all());
             $data = $form->getData();
         }
 
-        $dto = $this->filtersDto->fromData($data ?? null);
-
         // Build the short form
-        $shortForm = $this->createForm(OfferFiltersType::class, $dto, ['short' => true, 'data_class' => $this->filtersDto::class]);
+        $shortForm = $this->createForm(OfferFiltersType::class, $data ?? null, ['short' => true, 'data_class' => $this->dto::class]);
 
         // If filters form submitted, redirect to a pretty URL
         $shortForm->handleRequest($request);
@@ -59,7 +57,7 @@ final class OfferListFilterController extends AbstractController
         }
 
         // Build the full form
-        $form = $this->createForm(OfferFiltersType::class, $dto, ['data_class' => $this->filtersDto::class]);
+        $form = $this->createForm(OfferFiltersType::class, $data ?? null, ['data_class' => $this->dto::class]);
         $form->handleRequest($request);
 
         // If filters form submitted, redirect to a pretty URL
