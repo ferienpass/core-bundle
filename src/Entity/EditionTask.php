@@ -336,7 +336,6 @@ class EditionTask
         $this->hideStatus = $hideStatus;
     }
 
-
     public function isSkipMaxApplications(): bool
     {
         return (bool) $this->skipMaxApplications;
