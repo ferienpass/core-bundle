@@ -15,7 +15,7 @@ namespace Ferienpass\CoreBundle\Dto;
 
 use Ferienpass\CoreBundle\Dto\Annotation\OfferFilterType;
 
-class OfferFiltersDto
+class OfferFilterDto implements FilterDto
 {
     #[OfferFilterType]
     public ?string $name = null;

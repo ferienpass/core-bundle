@@ -16,7 +16,6 @@ namespace Ferienpass\CoreBundle\Controller\Fragment;
 use Contao\CoreBundle\Controller\AbstractController;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\PageModel;
-use Ferienpass\CoreBundle\Dto\OfferFiltersDto;
 use Ferienpass\CoreBundle\Form\OfferFiltersType;
 use Ferienpass\CoreBundle\Repository\EditionRepository;
 use Symfony\Component\Form\FormInterface;
@@ -27,7 +26,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 final class OfferListFilterController extends AbstractController
 {
-    public function __construct(private EditionRepository $editionRepository, private OfferFiltersDto $dto)
+    public function __construct(private EditionRepository $editionRepository)
     {
     }
 

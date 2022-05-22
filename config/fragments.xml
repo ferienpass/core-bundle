@@ -64,7 +64,6 @@
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\OfferListFilterController">
             <argument type="service" id="Ferienpass\CoreBundle\Repository\EditionRepository"/>
-            <argument type="service" id="ferienpass.dto.offer_filters"/>
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\OfferListController">
             <argument type="service" id="Ferienpass\CoreBundle\Repository\EditionRepository"/>

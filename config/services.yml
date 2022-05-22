@@ -349,7 +349,7 @@ services:
   Ferienpass\CoreBundle\Filter\Type\Offer\NameType: ~
 
   Ferienpass\CoreBundle\Form\OfferFiltersType:
-    arguments: [ '@ferienpass.dto.offer_filters', !tagged_iterator { tag: 'ferienpass.filter.offer_list_type', default_index_method: 'getName' } ]
+    arguments: [ '@ferienpass.dto.offer_filter', !tagged_iterator { tag: 'ferienpass.filter.offer_list_type', default_index_method: 'getName' } ]
 
   Ferienpass\CoreBundle\Filter\OfferListFilterFactory:
     arguments: [ '@form.factory', !tagged_iterator { tag: 'ferienpass.filter.offer_list_type', default_index_method: 'getName' } ]
@@ -411,5 +411,5 @@ services:
   Monolog\Processor\PsrLogMessageProcessor:
     tags: { name: monolog.processor, handler: sentry }
 
-  ferienpass.dto.offer_filters:
-    class: Ferienpass\CoreBundle\Dto\OfferFiltersDto
+  ferienpass.dto.offer_filter:
+    class: Ferienpass\CoreBundle\Dto\OfferFilterDto
