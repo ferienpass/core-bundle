@@ -57,7 +57,7 @@ class FeeType extends AbstractType implements OfferFilterType
 
     public function getViewData(FormInterface $form): ?TranslatableInterface
     {
-        return new TranslatableMessage('offerList.filter.fee', ['value' => number_format($form->getViewData(), 2, ',', '.')]);
+        return new TranslatableMessage('offerList.filter.fee', ['value' => number_format((float) $form->getViewData(), 2, ',', '.')]);
     }
 
     public function getBlockPrefix(): string

@@ -37,12 +37,12 @@ class OfferFiltersType extends AbstractType
         foreach ($properties as $property) {
             $annotations = array_merge(...array_map(fn (\ReflectionAttribute $attribute) => $attribute->getArguments(), $property->getAttributes(OfferFilterTypeAnnotation::class)));
 
-            if ((!$options['short'] || $annotations['shortForm']) && $type = $this->filterTypes[$property->getName()] ?? null) {
+            if ((!($options['short'] ?? false) || ($annotations['shortForm'] ?? false)) && $type = $this->filterTypes[$property->getName()] ?? null) {
                 $builder->add($property->getName(), \get_class($type));
             }
         }
 
-        if (!$options['short']) {
+        if (!($options['short'] ?? false)) {
             $builder->add('submit', SubmitType::class, ['label' => 'Filter anwenden']);
         }
 
