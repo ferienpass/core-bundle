@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Form;
 
 use Ferienpass\CoreBundle\Dto\Annotation\OfferFilterType as OfferFilterTypeAnnotation;
-use Ferienpass\CoreBundle\Dto\OfferFilterDto;
+use Ferienpass\CoreBundle\Dto\FilterDto;
 use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -25,7 +25,7 @@ class OfferFiltersType extends AbstractType
 {
     private array $filterTypes = [];
 
-    public function __construct(private OfferFilterDto $dto, iterable $filterTypes)
+    public function __construct(private FilterDto $dto, iterable $filterTypes)
     {
         $this->filterTypes = $filterTypes instanceof \Traversable ? iterator_to_array($filterTypes, true) : $this->filterTypes;
     }
