@@ -42,13 +42,13 @@ final class OfferListFilterController extends AbstractController
 
         // Get the normalized form data from query
         if ($request->query->count()) {
-            $form = $this->createForm(OfferFiltersType::class, null, ['data_class' => $this->dto::class]);
+            $form = $this->createForm(OfferFiltersType::class);
             $form->submit($request->query->all());
             $data = $form->getData();
         }
 
         // Build the short form
-        $shortForm = $this->createForm(OfferFiltersType::class, $data ?? null, ['short' => true, 'data_class' => $this->dto::class]);
+        $shortForm = $this->createForm(OfferFiltersType::class, $data ?? null, ['short' => true]);
 
         // If filters form submitted, redirect to a pretty URL
         $shortForm->handleRequest($request);
@@ -57,7 +57,7 @@ final class OfferListFilterController extends AbstractController
         }
 
         // Build the full form
-        $form = $this->createForm(OfferFiltersType::class, $data ?? null, ['data_class' => $this->dto::class]);
+        $form = $this->createForm(OfferFiltersType::class, $data ?? null);
         $form->handleRequest($request);
 
         // If filters form submitted, redirect to a pretty URL

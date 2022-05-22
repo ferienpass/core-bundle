@@ -11,23 +11,36 @@ declare(strict_types=1);
  * or the documentation under <https://docs.ferienpass.online>.
  */
 
-namespace Ferienpass\CoreBundle\Filter\Type\OfferList;
+namespace Ferienpass\CoreBundle\Filter\Type\Offer;
 
 use Doctrine\DBAL\ParameterType;
 use Doctrine\ORM\QueryBuilder;
-use Ferienpass\CoreBundle\Filter\Type\OfferListFilterType;
+use Ferienpass\CoreBundle\Filter\Type\OfferFilterType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\Guess\Guess;
-use Symfony\Component\Form\Guess\TypeGuess;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-class NameType implements OfferListFilterType
+class NameType extends AbstractType implements OfferFilterType
 {
     public static function getName(): string
     {
         return 'name';
+    }
+
+    public function getParent(): string
+    {
+        return SearchType::class;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'label' => 'Nach Titel suchen',
+            'required' => false,
+        ]);
     }
 
     public function applyFilter(QueryBuilder $qb, FormInterface $form)
@@ -41,13 +54,13 @@ class NameType implements OfferListFilterType
         ;
     }
 
-    public function typeGuess(): TypeGuess
-    {
-        return new TypeGuess(SearchType::class, ['label' => 'Nach Titel suchen'], Guess::HIGH_CONFIDENCE);
-    }
-
     public function getViewData(FormInterface $form): ?TranslatableInterface
     {
         return new TranslatableMessage('offerList.filter.name', ['value' => $form->getViewData()]);
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return 'filter_name';
     }
 }

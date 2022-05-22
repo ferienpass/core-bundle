@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Form;
 
 use Ferienpass\CoreBundle\Dto\Annotation\OfferFilterType as OfferFilterTypeAnnotation;
+use Ferienpass\CoreBundle\Dto\OfferFiltersDto;
 use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -22,15 +23,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class OfferFiltersType extends AbstractType
 {
+    private array $filterTypes = [];
+
+    public function __construct(private OfferFiltersDto $dto, iterable $filterTypes)
+    {
+        $this->filterTypes = $filterTypes instanceof \Traversable ? iterator_to_array($filterTypes, true) : $this->filterTypes;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $properties = (new \ReflectionClass($options['data_class']))->getProperties(\ReflectionProperty::IS_PUBLIC);
+        $properties = (new \ReflectionClass($this->dto))->getProperties(\ReflectionProperty::IS_PUBLIC);
 
         foreach ($properties as $property) {
             $annotations = array_merge(...array_map(fn (\ReflectionAttribute $attribute) => $attribute->getArguments(), $property->getAttributes(OfferFilterTypeAnnotation::class)));
 
-            if (!$options['short'] || $annotations['shortForm']) {
-                $builder->add($property->getName());
+            if ((!$options['short'] || $annotations['shortForm']) && $type = $this->filterTypes[$property->getName()] ?? null) {
+                $builder->add($property->getName(), \get_class($type));
             }
         }
 
@@ -44,7 +52,6 @@ class OfferFiltersType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefault('csrf_protection', false);
-        $resolver->setRequired('data_class');
 
         $resolver->setDefined('short');
         $resolver->setAllowedTypes('short', 'bool');

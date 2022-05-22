@@ -11,23 +11,37 @@ declare(strict_types=1);
  * or the documentation under <https://docs.ferienpass.online>.
  */
 
-namespace Ferienpass\CoreBundle\Filter\Type\OfferList;
+namespace Ferienpass\CoreBundle\Filter\Type\Offer;
 
 use Doctrine\DBAL\ParameterType;
 use Doctrine\ORM\QueryBuilder;
-use Ferienpass\CoreBundle\Filter\Type\OfferListFilterType;
+use Ferienpass\CoreBundle\Filter\Type\OfferFilterType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\Guess\Guess;
-use Symfony\Component\Form\Guess\TypeGuess;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-class FeeType implements OfferListFilterType
+class FeeType extends AbstractType implements OfferFilterType
 {
     public static function getName(): string
     {
         return 'fee';
+    }
+
+    public function getParent(): string
+    {
+        return MoneyType::class;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'label' => 'max. Kosten',
+            'divisor' => 100,
+            'required' => false,
+        ]);
     }
 
     public function applyFilter(QueryBuilder $qb, FormInterface $form)
@@ -41,13 +55,13 @@ class FeeType implements OfferListFilterType
         ;
     }
 
-    public function typeGuess(): TypeGuess
-    {
-        return new TypeGuess(MoneyType::class, ['label' => 'max. Kosten', 'divisor' => 100], Guess::HIGH_CONFIDENCE);
-    }
-
     public function getViewData(FormInterface $form): ?TranslatableInterface
     {
         return new TranslatableMessage('offerList.filter.fee', ['value' => number_format($form->getViewData(), 2, ',', '.')]);
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return 'filter_fee';
     }
 }

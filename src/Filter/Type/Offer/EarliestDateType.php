@@ -11,23 +11,37 @@ declare(strict_types=1);
  * or the documentation under <https://docs.ferienpass.online>.
  */
 
-namespace Ferienpass\CoreBundle\Filter\Type\OfferList;
+namespace Ferienpass\CoreBundle\Filter\Type\Offer;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\QueryBuilder;
-use Ferienpass\CoreBundle\Filter\Type\OfferListFilterType;
+use Ferienpass\CoreBundle\Filter\Type\OfferFilterType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\Guess\Guess;
-use Symfony\Component\Form\Guess\TypeGuess;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-class LatestDateType implements OfferListFilterType
+class EarliestDateType extends AbstractType implements OfferFilterType
 {
     public static function getName(): string
     {
-        return 'latest_date';
+        return 'earliest_date';
+    }
+
+    public function getParent(): string
+    {
+        return DateType::class;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'label' => 'frühstes Datum',
+            'widget' => 'single_text',
+            'required' => false,
+        ]);
     }
 
     public function applyFilter(QueryBuilder $qb, FormInterface $form)
@@ -35,19 +49,10 @@ class LatestDateType implements OfferListFilterType
         $k = $form->getName();
         $v = $form->getData();
 
-        \assert($v instanceof \DateTime);
-
-        // < DATE() +1 day has the same effect as <= DATE() 23:59:59
-        $v->modify('+1 day');
         $qb
-            ->andWhere($qb->expr()->orX()->add('dates IS NULL')->add('dates.end <= :q_'.$k))
+            ->andWhere($qb->expr()->orX()->add('dates IS NULL')->add('dates.begin >= :q_'.$k))
             ->setParameter('q_'.$k, $v, Types::DATE_MUTABLE)
         ;
-    }
-
-    public function typeGuess(): TypeGuess
-    {
-        return new TypeGuess(DateType::class, ['label' => 'spätestes Datum', 'widget' => 'single_text'], Guess::HIGH_CONFIDENCE);
     }
 
     public function getViewData(FormInterface $form): ?TranslatableInterface
@@ -57,6 +62,11 @@ class LatestDateType implements OfferListFilterType
             return null;
         }
 
-        return new TranslatableMessage('offerList.filter.latest_date', ['value' => $date->format('d.m.Y')]);
+        return new TranslatableMessage('offerList.filter.earliest_date', ['value' => $date->format('d.m.Y')]);
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return 'filter_earliest_date';
     }
 }

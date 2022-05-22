@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
-use Ferienpass\CoreBundle\Filter\Type\OfferListFilterType;
+use Ferienpass\CoreBundle\Filter\Type\OfferFilterType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -24,7 +24,7 @@ class OfferListFilter
     private array $filtersViewData = [];
 
     /**
-     * @param array<string,OfferListFilterType> $filterTypes
+     * @param array<string,OfferFilterType> $filterTypes
      */
     public function __construct(private FormInterface $form, private DoctrineQueryBuilder $queryBuilder, private array $filterTypes)
     {
@@ -59,7 +59,7 @@ class OfferListFilter
         return $this->filtersViewData;
     }
 
-    private function getFilterType(string $name): ?OfferListFilterType
+    private function getFilterType(string $name): ?OfferFilterType
     {
         return $this->filterTypes[$name] ?? null;
     }

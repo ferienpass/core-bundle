@@ -11,19 +11,19 @@ declare(strict_types=1);
  * or the documentation under <https://docs.ferienpass.online>.
  */
 
-namespace Ferienpass\CoreBundle\Filter\Type\OfferList;
+namespace Ferienpass\CoreBundle\Filter\Type\Offer;
 
 use Doctrine\ORM\QueryBuilder;
-use Ferienpass\CoreBundle\Filter\Type\OfferListFilterType;
-use Ferienpass\CoreBundle\Form\SimpleType\FilterFavoritesType;
+use Ferienpass\CoreBundle\Filter\Type\OfferFilterType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\Guess\Guess;
-use Symfony\Component\Form\Guess\TypeGuess;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-class FavoritesType implements OfferListFilterType
+class FavoritesType extends AbstractType implements OfferFilterType
 {
     public function __construct(private Session $session)
     {
@@ -32,6 +32,20 @@ class FavoritesType implements OfferListFilterType
     public static function getName(): string
     {
         return 'favorites';
+    }
+
+    public function getParent(): string
+    {
+        return CheckboxType::class;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'label' => 'nur gespeicherte',
+            'false_values' => ['', null],
+            'required' => false,
+        ]);
     }
 
     public function applyFilter(QueryBuilder $qb, FormInterface $form)
@@ -45,13 +59,13 @@ class FavoritesType implements OfferListFilterType
         ;
     }
 
-    public function typeGuess(): TypeGuess
-    {
-        return new TypeGuess(FilterFavoritesType::class, [], Guess::HIGH_CONFIDENCE);
-    }
-
     public function getViewData(FormInterface $form): ?TranslatableInterface
     {
         return new TranslatableMessage('offerList.filter.favorites');
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return 'filter_favorites';
     }
 }

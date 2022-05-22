@@ -15,16 +15,13 @@ namespace Ferienpass\CoreBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\Guess\TypeGuess;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-interface OfferListFilterType
+interface OfferFilterType
 {
     public static function getName(): string;
 
     public function applyFilter(QueryBuilder $qb, FormInterface $form);
-
-    public function typeGuess(): ?TypeGuess;
 
     public function getViewData(FormInterface $form): ?TranslatableInterface;
 }

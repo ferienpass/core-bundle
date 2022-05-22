@@ -11,23 +11,40 @@ declare(strict_types=1);
  * or the documentation under <https://docs.ferienpass.online>.
  */
 
-namespace Ferienpass\CoreBundle\Filter\Type\OfferList;
+namespace Ferienpass\CoreBundle\Filter\Type\Offer;
 
 use Doctrine\ORM\QueryBuilder;
 use Ferienpass\CoreBundle\Entity\OfferCategory;
-use Ferienpass\CoreBundle\Filter\Type\OfferListFilterType;
-use Ferienpass\CoreBundle\Form\SimpleType\FilterCategoryType;
+use Ferienpass\CoreBundle\Filter\Type\OfferFilterType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\Guess\Guess;
-use Symfony\Component\Form\Guess\TypeGuess;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-class CategoryType implements OfferListFilterType
+class CategoryType extends AbstractType implements OfferFilterType
 {
     public static function getName(): string
     {
         return 'category';
+    }
+
+    public function getParent(): string
+    {
+        return EntityType::class;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'label' => 'Kategorie',
+            'required' => false,
+            'multiple' => true,
+            'class' => OfferCategory::class,
+            'choice_value' => fn (?OfferCategory $entity) => $entity ? $entity->getAlias() : '',
+            'choice_label' => 'name',
+        ]);
     }
 
     public function applyFilter(QueryBuilder $qb, FormInterface $form)
@@ -40,15 +57,15 @@ class CategoryType implements OfferListFilterType
         }
     }
 
-    public function typeGuess(): TypeGuess
-    {
-        return new TypeGuess(FilterCategoryType::class, [], Guess::HIGH_CONFIDENCE);
-    }
-
     public function getViewData(FormInterface $form): ?TranslatableInterface
     {
         $value = implode(', ', array_map(fn (OfferCategory $c) => $c->getName(), $form->getData()->toArray()));
 
         return new TranslatableMessage('offerList.filter.category', ['value' => $value]);
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return 'filter_category';
     }
 }

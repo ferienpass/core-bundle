@@ -7,7 +7,7 @@ services:
       calls:
         - [ setContainer, [ '@Psr\Container\ContainerInterface' ] ]
 
-    Ferienpass\CoreBundle\Filter\Type\OfferListFilterType:
+    Ferienpass\CoreBundle\Filter\Type\OfferFilterType:
       tags: ['ferienpass.filter.offer_list_type']
 
   Ferienpass\CoreBundle\Controller\Frontend\RedirectShortUrlController: ~
@@ -302,10 +302,6 @@ services:
   Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType:
     arguments: [ '@contao.csrf.token_manager', '%contao.csrf_token_name%' ]
 
-  Ferienpass\CoreBundle\Form\TypeGuesser\OfferFiltersTypeGuesser:
-    arguments: [ !tagged_iterator { tag: 'ferienpass.filter.offer_list_type', default_index_method: 'getName' } ]
-    tags: [ 'form.type_guesser' ]
-
   Ferienpass\CoreBundle\Security\Voter\HostVoter:
     arguments: [ '@Ferienpass\CoreBundle\Repository\HostRepository' ]
     tags:
@@ -342,19 +338,21 @@ services:
     arguments: [ '@fragment.handler', '@translator', '@contao.framework', '@request_stack' ]
     public: true
 
-  Ferienpass\CoreBundle\Filter\Type\OfferList\AgeType: ~
-  Ferienpass\CoreBundle\Filter\Type\OfferList\BaseType: ~
-  Ferienpass\CoreBundle\Filter\Type\OfferList\CategoryType: ~
-  Ferienpass\CoreBundle\Filter\Type\OfferList\EarliestDateType: ~
-  Ferienpass\CoreBundle\Filter\Type\OfferList\FavoritesType:
+  Ferienpass\CoreBundle\Filter\Type\Offer\AgeType: ~
+  Ferienpass\CoreBundle\Filter\Type\Offer\BaseType: ~
+  Ferienpass\CoreBundle\Filter\Type\Offer\CategoryType: ~
+  Ferienpass\CoreBundle\Filter\Type\Offer\EarliestDateType: ~
+  Ferienpass\CoreBundle\Filter\Type\Offer\FavoritesType:
     arguments: [ '@session' ]
-  Ferienpass\CoreBundle\Filter\Type\OfferList\FeeType: ~
-  Ferienpass\CoreBundle\Filter\Type\OfferList\LatestDateType: ~
-  Ferienpass\CoreBundle\Filter\Type\OfferList\NameType: ~
+  Ferienpass\CoreBundle\Filter\Type\Offer\FeeType: ~
+  Ferienpass\CoreBundle\Filter\Type\Offer\LatestDateType: ~
+  Ferienpass\CoreBundle\Filter\Type\Offer\NameType: ~
 
+  Ferienpass\CoreBundle\Form\OfferFiltersType:
+    arguments: [ '@ferienpass.dto.offer_filters', !tagged_iterator { tag: 'ferienpass.filter.offer_list_type', default_index_method: 'getName' } ]
 
   Ferienpass\CoreBundle\Filter\OfferListFilterFactory:
-    arguments: [ '@form.factory', !tagged_iterator { tag: 'ferienpass.filter.offer_list_type', default_index_method: 'getName' }, '@ferienpass.dto.offer_filters' ]
+    arguments: [ '@form.factory', !tagged_iterator { tag: 'ferienpass.filter.offer_list_type', default_index_method: 'getName' } ]
 
   Ferienpass\CoreBundle\MessageHandler\WhenOfferCancelledThenNotify:
     arguments: [ '@doctrine' ]
