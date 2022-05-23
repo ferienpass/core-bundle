@@ -123,9 +123,9 @@ class ApplyFormType extends AbstractType
             return;
         }
 
-        /** @var OfferDate|null $date */
+        /** @var OfferDate|false $date */
         $date = $offer->getDates()->first();
-        if (null === $date || null === $dateBegin = $date->getBegin()) {
+        if (false === $date || null === $dateBegin = $date->getBegin()) {
             return;
         }
 
