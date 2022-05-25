@@ -32,6 +32,11 @@ class OfferDetailsPage extends AbstractController
             throw new PageNotFoundException();
         }
 
+        $edition = $offer->getEdition();
+        if (null !== $edition && $edition->getActiveTasks('show_offers')->isEmpty()) {
+            throw new PageNotFoundException();
+        }
+
         $this->initializeContaoFramework();
 
         $pageModel = $request->attributes->get('pageModel');
@@ -58,6 +63,6 @@ class OfferDetailsPage extends AbstractController
             ->addFragment('main', new FragmentReference('ferienpass.fragment.offer_details', ['id' => $offer->getId()]))
             ->addFragment('main', new FragmentReference('ferienpass.fragment.application_form', ['id' => $offer->getId()]))
             ->getResponse()
-            ;
+        ;
     }
 }
