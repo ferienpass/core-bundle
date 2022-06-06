@@ -62,7 +62,7 @@
                             {% set choices = form.participants.vars.choices %}
 
                             {# Not logged in #}
-                            {% if not app.user and not (applicationSystem.task and applicationSystem.task.allowAnonymous) %}
+                            {% if not app.user and not (applicationSystem.task and ((not offer.fee and applicationSystem.task.allowAnonymous) or applicationSystem.task.allowAnonymousFee)) %}
                                 <p class="text-sm text-gray-500">Bitte erstellen Sie sich zunächst ein <strong
                                             class="font-medium">Benutzerkonto</strong> bzw. melden sich an. Sie
                                     profitieren von einem vereinfachten Anmeldeprozess.</p>
@@ -148,7 +148,7 @@
                             {% endif %}
 
                             {# Application form #}
-                            {% if choices is not empty and (not applicationSystem.task or not offer.fee or applicationSystem.task.allowAnonymousFee) %}
+                            {% if choices is not empty and (app.user or (not applicationSystem.task or not offer.fee or applicationSystem.task.allowAnonymousFee)) %}
                                 <div>
                                     <p class="text-sm leading-5 text-gray-500">
                                         Bitte wählen Sie die Personen aus, die Sie zum Angebot anmelden möchten und
@@ -218,7 +218,7 @@
                             </div>
 
                             {# Application form #}
-                            {% if choices is not empty and (not applicationSystem.task or not offer.fee or applicationSystem.task.allowAnonymousFee) %}
+                            {% if choices is not empty and (app.user or (not applicationSystem.task or not offer.fee or applicationSystem.task.allowAnonymousFee)) %}
                                 <div>
                                     {{ form_start(form) }}
 

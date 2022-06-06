@@ -71,7 +71,7 @@ class ApplicationFormController extends AbstractController
         }
 
         $applicationForm->handleRequest($request);
-        if ($applicationForm->isSubmitted() && $applicationForm->isValid() && ($user || $allowAnonymous) && (!$offer->getFee() || $allowAnonymousFee)) {
+        if ($applicationForm->isSubmitted() && $applicationForm->isValid() && ($user || (!$offer->getFee() && $allowAnonymous) || ($offer->getFee() && $allowAnonymousFee))) {
             return $this->handleSubmitApplications($applicationForm->get('participants')->getData(), $offer, $request);
         }
 
