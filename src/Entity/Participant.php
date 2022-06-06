@@ -218,6 +218,11 @@ class Participant
         $this->email = $email;
     }
 
+    public function setMemberId(?int $memberId): void
+    {
+        $this->member = $memberId;
+    }
+
     public function isDiscounted(): bool
     {
         return $this->discounted;

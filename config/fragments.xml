@@ -40,6 +40,8 @@
             <argument type="service" id="security.authentication_utils"/>
             <argument type="service" id="messenger.default_bus"/>
             <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="Ferienpass\CoreBundle\Repository\ParticipantRepository"/>
+            <argument type="service" id="doctrine"/>
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\CloseAccount">
             <argument type="service" id="security.user_password_hasher"/>
@@ -74,6 +76,9 @@
             <argument type="service" id="Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems"/>
             <argument type="service" id="Ferienpass\CoreBundle\Facade\AttendanceFacade"/>
             <argument type="service" id="Ferienpass\CoreBundle\Repository\AttendanceRepository"/>
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="session"/>
+            <argument type="service" id="contao.opt-in"/>
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Fragment\ApplicationListController">
             <argument type="service" id="Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems"/>

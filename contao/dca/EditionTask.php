@@ -62,14 +62,15 @@ $GLOBALS['TL_DCA']['EditionTask'] = [
         ],
     ],
     'palettes' => [
-        '__selector__' => ['type', 'application_system'],
+        '__selector__' => ['type', 'application_system', 'allow_anonymous'],
         'default' => '{title_legend},type;{period_legend},periodBegin,periodEnd',
     ],
     'subpalettes' => [
         'type_custom' => 'title,description',
         'type_application_system' => 'application_system',
-        'application_system_lot' => 'max_applications,skip_max_applications,hide_status',
-        'application_system_firstcome' => 'max_applications_day',
+        'application_system_lot' => 'max_applications,skip_max_applications,hide_status,allow_anonymous',
+        'application_system_firstcome' => 'max_applications_day,allow_anonymous',
+        'allow_anonymous' => 'allow_anonymous_fee',
     ],
     'fields' => [
         'sorting' => [
@@ -127,6 +128,23 @@ $GLOBALS['TL_DCA']['EditionTask'] = [
             'inputType' => 'checkbox',
             'eval' => [
                 'tl_class' => 'w50 clr',
+            ],
+            'save_callback' => [fn ($val) => (int) $val],
+        ],
+        'allow_anonymous' => [
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => [
+                'tl_class' => 'w50 clr',
+                'submitOnChange' => true,
+            ],
+            'save_callback' => [fn ($val) => (int) $val],
+        ],
+        'allow_anonymous_fee' => [
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => [
+                'tl_class' => 'w50',
             ],
             'save_callback' => [fn ($val) => (int) $val],
         ],

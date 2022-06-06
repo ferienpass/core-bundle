@@ -12,7 +12,7 @@
                 <div class="max-w-lg mx-auto lg:max-w-none">
                     <h2 class="font-semibold text-xl leading-6">Zum Angebot anmelden</h2>
 
-                    <div class="py-4 sm:py-6" x-data="{ choices: [] }">
+                    <div class="py-4 sm:py-6" x-data="{ choices: [], newParticipant: false }">
 
                         {% if not applicationSystem|default %}
                             {% include "@FerienpassCore/Alert/error.html.twig" with { message: 'application.disabled'|trans } %}
@@ -59,18 +59,66 @@
                                 </div>
                             {% endif %}
 
+                            {% set choices = form.participants.vars.choices %}
 
                             {# Not logged in #}
-                            {% if not app.user %}
-                                {% include "@FerienpassCore/Alert/information.html.twig" with {
-                                    headline: 'Anmeldung erforderlich',
-                                    message: 'application.signIn'|trans|replace({'%link_start%': '<a class="font-medium underline text-blue-700 hover:text-blue-600 transition ease-in-out duration-150" href="'~ path('offer_details', { 'alias': offer.alias, 'login': '1' }) ~'">', '%link_end%': '</a>'})|raw
-                                } %}
+                            {% if not app.user and not (applicationSystem.task and applicationSystem.task.allowAnonymous) %}
+                                <p class="text-sm text-gray-500">Bitte erstellen Sie sich zunächst ein <strong
+                                            class="font-medium">Benutzerkonto</strong> bzw. melden sich an. Sie
+                                    profitieren von einem vereinfachten Anmeldeprozess.</p>
+                                <div class="mt-5">
+                                    <a href="{{ path('offer_details', { 'alias': offer.alias, 'login': '1' }) }}"
+                                       class="text-center block px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                        Zur Registrierung &amp; Anmeldung
+                                    </a>
+                                </div>
+
+                                {# Not logged in (allow anonymous) #}
+                            {% elseif not app.user and choices is empty %}
+                                <div class="grid sm:grid-cols-2 gap-6">
+                                    <div>
+                                        <a href="{{ path('offer_details', { 'alias': offer.alias, 'login': '1' }) }}"
+                                           class="text-center block px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                            Zur Registrierung &amp; Anmeldung
+                                        </a>
+
+                                        <p class="mt-2 text-sm text-gray-500">Ein Benutzerkonto ist sehr ratsam, wenn
+                                            Sie mehrere Anmeldungen vornehmen möchten oder auch von anderen Geräten Ihre
+                                            Anmeldungen verwalten möchten.</p>
+                                    </div>
+
+                                    <div>
+                                        <button type="button"
+                                                @click="newParticipant = true"
+                                                :class="{ 'ring-2 ring-offset-2 ring-primary-500' : newParticipant }"
+                                                class="block w-full px-4 py-2 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                            Ohne Benutzerkonto fortfahren
+                                        </button>
+
+                                        <p class="mt-2 text-sm text-gray-500">Sie können sich ohne Registrierung zum
+                                            Angebot anmelden bei Angabe einer gültigen E-Mail-Adresse oder
+                                            Handynummer.</p>
+                                    </div>
+                                </div>
+
                             {% endif %}
 
+                            {# Info user account is required (anonymous users) #}
+                            {% if choices is not empty and not app.user and offer.fee > 0 and (applicationSystem.task and applicationSystem.task.allowAnonymous and not applicationSystem.task.allowAnonymousFee) %}
+
+                                {% include '@FerienpassCore/Alert/warning.html.twig' with {
+                                    'headline': 'Registrierung erforderlich',
+                                    'message': 'Dieses Angebot erfordert ein Benutzerkonto, weil es kostenpflichtig ist.',
+                                } %}
+
+                                <a href="{{ path('offer_details', { 'alias': offer.alias, 'login': '1' }) }}#registrieren"
+                                   class="mt-4 text-center block px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                    Nachträglich Benutzerkonto erstellen
+                                </a>
+                            {% endif %}
 
                             {# Info text #}
-                            {% if app.user and form.participants.vars.choices is not empty %}
+                            {% if app.user and choices is not empty %}
                                 <div class="flex mb-8 pb-4 border-b-2 border-gray-100">
                                     <div>
                                         <span class="h-5 w-5 mr-2 text-gray-400 block">{% include '@FerienpassCore/Icons/chevron-right.svg.twig' %}</span>
@@ -81,34 +129,103 @@
                                 </div>
                             {% endif %}
 
-
                             {# No participants #}
-                            {% if app.user and form.participants.vars.choices is empty %}
-                                {% include '@FerienpassCore/Alert/warning.html.twig' with {
-                                    'headline': 'Keine Kinder gefunden',
-                                    'message': 'Wenn Sie ein Kind zu dem Angebot anmelden wollen, müssen Sie für das Kind ein Profil erstellen.',
-                                } %}
+                            {% if app.user and choices is empty %}
+                                <div class="text-center">
+                                    <span class="block mx-auto h-10 w-10 text-gray-400">{{ source('@FerienpassCore/Icons/user-add-outline.svg') }}</span>
+                                    <h3 class="mt-2 text-sm font-medium text-gray-900">Keine Kinder gefunden</h3>
+                                    <p class="mt-1 text-sm text-gray-500">Wenn Sie ein Kind zu dem Angebot anmelden
+                                        wollen, müssen Sie für das Kind ein Profil erstellen.</p>
+                                    <div class="mt-6" x-show="!newParticipant">
+                                        <button type="button"
+                                                @click="newParticipant = true"
+                                                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                            <span class="-ml-1 mr-2 h-5 w-5">{{ source('@FerienpassCore/Icons/plus-solid.svg') }}</span>
+                                            Neue Teilnehmer:in
+                                        </button>
+                                    </div>
+                                </div>
                             {% endif %}
 
-
-                            {# Form #}
-                            {% if app.user and form.participants.vars.choices is not empty %}
+                            {# Application form #}
+                            {% if choices is not empty and (not applicationSystem.task or not offer.fee or applicationSystem.task.allowAnonymousFee) %}
                                 <div>
                                     <p class="text-sm leading-5 text-gray-500">
-                                        Bitte wählen Sie die Kinder aus, die Sie zum Angebot anmelden möchten und senden
-                                        das Anmeldeformular ab.
+                                        Bitte wählen Sie die Personen aus, die Sie zum Angebot anmelden möchten und
+                                        senden das Anmeldeformular ab.
                                     </p>
                                 </div>
 
-                                {% set choices = form.participants.vars.choices %}
 
-                                <div class="mt-5">
+                                <div class="mt-4 -mb-3 flex justify-between">
+
+                                    <a href="#"
+                                       @click.prevent="newParticipant = !newParticipant"
+                                       class="text-sm font-medium text-primary-600 hover:text-primary-500 flex items-center">
+                                        <span class="block w-4 h-4">{{ source('@FerienpassCore/Icons/plus-solid.svg') }}</span>
+                                        Andere Person ergänzen
+                                    </a>
+
+                                    {% if not app.user %}
+                                        <a href="{{ path('offer_details', { 'alias': offer.alias, 'login': '1' }) }}#registrieren"
+                                           class="text-sm font-medium text-primary-600 hover:text-primary-500 flex items-center">
+                                            <span class="block w-5 h-5">{{ source('@FerienpassCore/Icons/chevron-right-solid.svg') }}</span>
+                                            Nachträglich Benutzerkonto erstellen
+                                        </a>
+                                    {% endif %}
+
+                                </div>
+                            {% endif %}
+
+                            {# New participant #}
+                            <div class="mt-8 mb-4 bg-gray-50 sm:rounded-lg" x-show="newParticipant">
+                                <div class="px-4 py-5 sm:p-6">
+                                    <h3 class="text-lg leading-6 font-medium text-gray-900">Neue
+                                        Teilnehmer:in</h3>
+
+                                    <div class="mt-2 mb-4 max-w-xl text-sm text-gray-500">
+                                        {% if not app.user %}
+                                            <p>Nach Absenden des Formulars müssen Sie die angegebene E-Mail-Adresse
+                                                bestätigen.</p>
+                                        {% else %}
+                                            <p>Ergänzen Sie eine Person, die Sie zu Angeboten anmelden möchten. Das
+                                                Geburtsdatum ist ein Pflichtfeld aufgrund von altersbeschränkten
+                                                Angeboten.</p>
+                                        {% endif %}
+                                    </div>
+
+                                    {{ form_start(newParticipant) }}
+
+                                    <div class="grid grid-cols-3 gap-4">
+                                        {{ form_row(newParticipant.participant.firstname) }}
+                                        {{ form_row(newParticipant.participant.lastname) }}
+                                        {{ form_row(newParticipant.participant.dateOfBirth) }}
+                                        {% if newParticipant.participant.email is defined %}
+                                            {{ form_row(newParticipant.participant.email) }}
+                                        {% endif %}
+                                        {% if newParticipant.participant.mobile is defined %}
+                                            {{ form_row(newParticipant.participant.mobile) }}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mt-4">
+                                        {{ form_row(newParticipant.submit) }}
+                                    </div>
+
+                                    {{ form_end(newParticipant) }}
+
+                                </div>
+                            </div>
+
+                            {# Application form #}
+                            {% if choices is not empty and (not applicationSystem.task or not offer.fee or applicationSystem.task.allowAnonymousFee) %}
+                                <div>
                                     {{ form_start(form) }}
 
                                     <div>
                                         {% for choice in choices %}
                                             {% set participant = choice.data %}
-                                            <div class="flex mt-5 sm:border-t sm:border-gray-200 pt-5{% if choice.attr.disabled|default %} pointer-events-none opacity-50{% endif %}">
+                                            <div class="flex mt-5 sm:border-t sm:border-gray-200 pt-5{% if choice.attr.disabled|default %} pointer-events-none opacity-60{% endif %}">
                                                 <div class="pr-4">
 
                                                     {% if choice.attr.selected|default %}
@@ -117,13 +234,14 @@
                                                               class="relative inline-block flex-shrink-0 h-6 w-11 bg-green-600 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline bg-gray-200">
                                                             <span aria-hidden="true"
                                                                   class="relative inline-block h-5 w-5 translate-x-5 rounded-full bg-white shadow transform transition ease-in-out duration-200 translate-x-0">
-                                                              <span class="absolute inset-0 h-full w-full flex items-center justify-center">
-                                                                <svg class="h-3 w-3 text-green-600" fill="currentColor" viewBox="0 0 12 12">
-                                                                  <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z"></path>
-                                                                </svg>
-                                                              </span>
+                                                                <span class="absolute inset-0 h-full w-full flex items-center justify-center">
+                                                                    <svg class="h-3 w-3 text-green-600"
+                                                                         fill="currentColor" viewBox="0 0 12 12">
+                                                                        <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z"></path>
+                                                                    </svg>
+                                                                </span>
                                                             </span>
-                                                          </span>
+                                                        </span>
                                                     {% elseif choice.attr.disabled|default %}
                                                         <span role="checkbox"
                                                               tabindex="0"
@@ -131,15 +249,17 @@
                                                               class="relative inline-block bg-gray-200 flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline bg-gray-200">
                                                             <span aria-hidden="true"
                                                                   class="relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200 translate-x-0">
-                                                              <span class="absolute inset-0 h-full w-full flex items-center justify-center">
-                                                                <svg class="h-3 w-3 text-gray-400" fill="none" viewBox="0 0 12 12">
-                                                                  <path d="M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2" stroke="currentColor"
-                                                                        stroke-width="2" stroke-linecap="round"
-                                                                        stroke-linejoin="round"></path>
-                                                                </svg>
-                                                              </span>
+                                                                <span class="absolute inset-0 h-full w-full flex items-center justify-center">
+                                                                    <svg class="h-3 w-3 text-gray-400" fill="none"
+                                                                         viewBox="0 0 12 12">
+                                                                        <path d="M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2"
+                                                                              stroke="currentColor"
+                                                                              stroke-width="2" stroke-linecap="round"
+                                                                              stroke-linejoin="round"></path>
+                                                                    </svg>
+                                                                </span>
                                                             </span>
-                                                          </span>
+                                                        </span>
                                                     {% else %}
                                                         {% set widget = attribute(form.participants.children, choice.value) %}
                                                         <input type="hidden" name="{{ widget.vars.full_name }}"
@@ -153,25 +273,28 @@
                                                               aria-checked="false"
                                                               :class="{ 'bg-gray-200': !choices.includes({{ choice.value }}), 'bg-green-600': choices.includes({{ choice.value }}) }"
                                                               class="relative inline-block flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline bg-gray-200">
-                                                        <span aria-hidden="true"
-                                                              :class="{ 'translate-x-5': choices.includes({{ choice.value }}), 'translate-x-0': !choices.includes({{ choice.value }}) }"
-                                                              class="relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200 translate-x-0">
-                                                          <span :class="{ 'opacity-0 ease-out duration-100': choices.includes({{ choice.value }}), 'opacity-100 ease-in duration-200': !choices.includes({{ choice.value }}) }"
-                                                                class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity opacity-100 ease-in duration-200">
-                                                            <svg class="h-3 w-3 text-gray-400" fill="none" viewBox="0 0 12 12">
-                                                              <path d="M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2" stroke="currentColor"
-                                                                    stroke-width="2" stroke-linecap="round"
-                                                                    stroke-linejoin="round"></path>
-                                                            </svg>
-                                                          </span>
-                                                          <span :class="{ 'opacity-100 ease-in duration-200': choices.includes({{ choice.value }}), 'opacity-0 ease-out duration-100': !choices.includes({{ choice.value }}) }"
-                                                                class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity opacity-0 ease-out duration-100">
-                                                            <svg class="h-3 w-3 text-green-600" fill="currentColor" viewBox="0 0 12 12">
-                                                              <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z"></path>
-                                                            </svg>
-                                                          </span>
+                                                            <span aria-hidden="true"
+                                                                  :class="{ 'translate-x-5': choices.includes({{ choice.value }}), 'translate-x-0': !choices.includes({{ choice.value }}) }"
+                                                                  class="relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200 translate-x-0">
+                                                                <span :class="{ 'opacity-0 ease-out duration-100': choices.includes({{ choice.value }}), 'opacity-100 ease-in duration-200': !choices.includes({{ choice.value }}) }"
+                                                                      class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity opacity-100 ease-in duration-200">
+                                                                    <svg class="h-3 w-3 text-gray-400" fill="none"
+                                                                         viewBox="0 0 12 12">
+                                                                        <path d="M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2"
+                                                                              stroke="currentColor"
+                                                                              stroke-width="2" stroke-linecap="round"
+                                                                              stroke-linejoin="round"></path>
+                                                                    </svg>
+                                                                </span>
+                                                                <span :class="{ 'opacity-100 ease-in duration-200': choices.includes({{ choice.value }}), 'opacity-0 ease-out duration-100': !choices.includes({{ choice.value }}) }"
+                                                                      class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity opacity-0 ease-out duration-100">
+                                                                    <svg class="h-3 w-3 text-green-600"
+                                                                         fill="currentColor" viewBox="0 0 12 12">
+                                                                        <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z"></path>
+                                                                    </svg>
+                                                                </span>
+                                                            </span>
                                                         </span>
-                                                      </span>
                                                     {% endif %}
 
                                                 </div>
@@ -207,12 +330,12 @@
                                     <div class="mt-4">
                                         <span class="inline-flex rounded-md shadow-sm"
                                               :class="{ 'cursor-not-allowed': !choices.length }">
-                                              <button type="submit"
-                                                      :disabled="!choices.length"
-                                                      :class="{ 'opacity-50 pointer-events-none': !choices.length }"
-                                                      class="text-white bg-primary-600 hover:bg-primary-500 inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md focus:outline-none focus:border-primary-700 focus:shadow-outline-primary active:bg-primary-700 transition ease-in-out duration-150">
+                                            <button type="submit"
+                                                    :disabled="!choices.length"
+                                                    :class="{ 'opacity-50 pointer-events-none': !choices.length }"
+                                                    class="text-white bg-primary-600 hover:bg-primary-500 inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md focus:outline-none focus:border-primary-700 focus:shadow-outline-primary active:bg-primary-700 transition ease-in-out duration-150">
                                                 Zum Angebot anmelden
-                                              </button>
+                                            </button>
                                         </span>
                                     </div>
 

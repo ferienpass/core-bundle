@@ -291,7 +291,10 @@ services:
     tags: [ 'form.type_extension' ]
 
   Ferienpass\CoreBundle\Form\ApplyFormType:
-    arguments: [ '@security.helper', '@doctrine' ]
+    arguments: [ '@security.helper', '@doctrine', '@session', '@contao.opt-in', '@database_connection' ]
+
+  Ferienpass\CoreBundle\Form\ApplyFormParticipantType:
+    arguments: [ '@security.helper' ]
 
   Ferienpass\CoreBundle\Form\UserLostPasswordType:
     arguments: [ '@translator' ]

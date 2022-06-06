@@ -5,7 +5,7 @@
         <div class="md:flex-1 bg-white shadow sm:rounded-lg">
 
             {% block container %}
-                <div x-data="{ activeTab: 'login' }" role="tablist" aria-label="Auf der Webseite anmelden">
+                <div x-data="{ activeTab: window.location.hash == '#registrieren' ? 'registration' : 'login' }" role="tablist" aria-label="Auf der Webseite anmelden">
                     {% block tabNavigation %}
                         <div class="border-b border-gray-200">
                             <nav class="-mb-px flex">

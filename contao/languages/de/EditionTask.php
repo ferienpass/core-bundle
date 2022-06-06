@@ -36,6 +36,10 @@ $GLOBALS['TL_LANG']['EditionTask']['max_applications_day'][0] = 'maximale Anmeld
 $GLOBALS['TL_LANG']['EditionTask']['max_applications_day'][1] = 'Wie viele Anmeldungen darf ein Kind pro Tag machen?';
 $GLOBALS['TL_LANG']['EditionTask']['hide_status'][0] = 'Aktuellen Status verbergen';
 $GLOBALS['TL_LANG']['EditionTask']['hide_status'][1] = 'Den Eltern den aktuellen Status nicht anzeigen. Dies sollte aktiviert werden für das Losverfahren, damit die Eltern den Status erst nach dem Losen einsehen können.';
+$GLOBALS['TL_LANG']['EditionTask']['allow_anonymous'][0] = 'Anmeldungen ohne Benutzerkonto';
+$GLOBALS['TL_LANG']['EditionTask']['allow_anonymous'][1] = 'Erlauben Sie Anmeldungen ohne Benutzerkonto.';
+$GLOBALS['TL_LANG']['EditionTask']['allow_anonymous_fee'][0] = 'Anmeldungen ohne Benutzerkonto auch für kostenpflichtige Angebote';
+$GLOBALS['TL_LANG']['EditionTask']['allow_anonymous_fee'][1] = 'Erlauben Sie Anmeldungen ohne Benutzerkonto auch für kostenpflichtige Angebote.';
 
 $GLOBALS['TL_LANG']['EditionTask']['new'][0] = 'Neue Aufgabe';
 $GLOBALS['TL_LANG']['EditionTask']['new'][1] = 'Eine neue Aufgabe erstellen';

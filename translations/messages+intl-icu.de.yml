@@ -10,7 +10,6 @@ application.inPast: Dieses Angebot liegt in der Vergangenheit.
 application.pastDeadline: Der Anmeldezeitraum für dieses Angebot ist beendet.
 application.procedure.lot: Es läuft aktuell das Los-Verfahren. Eine Zusage für die Anmeldung bekommen Sie erst nach dem Stichtag.
 application.procedure.firstcome: Sie erhalten sofort eine Zusage oder einen Wartelistenplatz.
-application.signIn: 'Sie müssen angemeldet sein, wenn Sie sich zum Angebot anmelden wollen. %link_start%Bitte melden Sie sich an.%link_end%'
 application.disabled: Aktuell sind keine Anmeldungen möglich.
 
 application.apply: Sie können {name} jetzt für das Angebot anmelden.
@@ -18,6 +17,7 @@ application.apply: Sie können {name} jetzt für das Angebot anmelden.
 ineligible.alreadyApplied: '{name} ist bereits registriert für dieses Angebot.'
 ineligible.invalidAge: Sie können {name} nicht anmelden, da das Alter nicht passt.
 ineligible.overlap: Sie können {name} nicht anmelden, da es eine Überschneidung mit einer anderen Anmeldung gibt.
+ineligible.unconfirmedEmail: Bitte bestätigen zuerst die E-Mail, die an {email} gesendet wurde.
 ineligible.limitReached: >-
   {max, plural,
       one   {Sie können {name} nicht anmelden, da maximal eine Anmeldung in dieser Anmeldephase möglich ist.}

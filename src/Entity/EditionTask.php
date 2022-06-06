@@ -81,6 +81,16 @@ class EditionTask
     private ?bool $hideStatus = null;
 
     /**
+     * @ORM\Column(name="allow_anonymous", type="boolean", nullable=true)
+     */
+    private ?bool $allowAnonymous = null;
+
+    /**
+     * @ORM\Column(name="allow_anonymous_fee", type="boolean", nullable=true)
+     */
+    private ?bool $allowAnonymousFee = null;
+
+    /**
      * @ORM\Column(name="skip_max_applications", type="boolean", nullable=true)
      */
     private ?bool $skipMaxApplications = null;
@@ -354,5 +364,25 @@ class EditionTask
     public function setAgeCheck(string $ageCheck): void
     {
         $this->ageCheck = $ageCheck;
+    }
+
+    public function isAllowAnonymous(): bool
+    {
+        return (bool) $this->allowAnonymous;
+    }
+
+    public function setAllowAnonymous(bool $allowAnonymous): void
+    {
+        $this->allowAnonymous = $allowAnonymous;
+    }
+
+    public function isAllowAnonymousFee(): bool
+    {
+        return (bool) $this->allowAnonymousFee;
+    }
+
+    public function setAllowAnonymousFee(bool $allowAnonymousFee): void
+    {
+        $this->allowAnonymousFee = $allowAnonymousFee;
     }
 }

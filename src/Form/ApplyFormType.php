@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Form;
 
+use Contao\CoreBundle\OptIn\OptIn;
 use Contao\FrontendUser;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -30,31 +32,26 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatableMessage;
 
 class ApplyFormType extends AbstractType
 {
-    public function __construct(private Security $security, private ManagerRegistry $doctrine)
+    public function __construct(private Security $security, private ManagerRegistry $doctrine, private Session $session, private OptIn $optIn, private Connection $connection)
     {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $user = $this->security->getUser();
-        if (!$user instanceof FrontendUser) {
-            return;
-        }
-
         $offer = $options['offer'];
         $applicationSystem = $options['application_system'];
 
         $builder
-            ->add('participants', EntityType::class, $this->getChoiceOptions($offer, $applicationSystem))
+            ->add('participants', EntityType::class, iterator_to_array($this->getChoiceOptions($offer, $applicationSystem)))
             ->add('request_token', ContaoRequestTokenType::class)
-            ->add('submit', SubmitType::class, ['label' => 'Zum Angebot anmelden'])
-        ;
+            ->add('submit', SubmitType::class, ['label' => 'Zum Angebot anmelden']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -69,39 +66,45 @@ class ApplyFormType extends AbstractType
         $resolver->setAllowedTypes('application_system', ApplicationSystemInterface::class);
     }
 
-    private function getChoiceOptions(Offer $offer, ApplicationSystemInterface $applicationSystem): array
+    private function getChoiceOptions(Offer $offer, ApplicationSystemInterface $applicationSystem): \Generator
     {
-        $user = $this->security->getUser();
-        if (!$user instanceof FrontendUser) {
-            return [];
-        }
+        yield 'class' => Participant::class;
+        yield 'multiple' => true;
+        yield 'expanded' => true;
+        yield 'choice_label' => fn (Participant $choice) => sprintf('%s %s', $choice->getFirstname(), $choice->getLastname());
+        yield 'choice_attr' => function (Participant $key) use ($offer, $applicationSystem): array {
+            if ($this->participantIsApplied($key, $offer)) {
+                return ['disabled' => 'disabled', 'selected' => 'true'];
+            }
 
-        return [
-            'class' => Participant::class,
-            'query_builder' => fn (EntityRepository $er) => $er
+            try {
+                $this->ineligibility($offer, $key, $applicationSystem);
+            } catch (IneligibleParticipantException $e) {
+                return [
+                    'message' => $e->getUserMessage(),
+                    'disabled' => 'disabled',
+                ];
+            }
+
+            return [];
+        };
+
+        $user = $this->security->getUser();
+        if ($user instanceof FrontendUser) {
+            yield 'query_builder' => fn (EntityRepository $er) => $er
                 ->createQueryBuilder('p')
                 ->andWhere('p.member = :member')
-                ->setParameter('member', $user->id),
-            'multiple' => true,
-            'expanded' => true,
-            'choice_label' => fn (Participant $choice) => sprintf('%s %s', $choice->getFirstname(), $choice->getLastname()),
-            'choice_attr' => function (Participant $key) use ($offer, $applicationSystem): array {
-                if ($this->participantIsApplied($key, $offer)) {
-                    return ['disabled' => 'disabled', 'selected' => 'true'];
-                }
+                ->setParameter('member', $user->id)
+            ;
 
-                try {
-                    $this->ineligibility($offer, $key, $applicationSystem);
-                } catch (IneligibleParticipantException $e) {
-                    return [
-                        'message' => $e->getUserMessage(),
-                        'disabled' => 'disabled',
-                    ];
-                }
+            return;
+        }
 
-                return [];
-            },
-        ];
+        yield 'query_builder' => fn (EntityRepository $er) => $er
+            ->createQueryBuilder('p')
+            ->andWhere('p.id IN (:ids)')
+            ->setParameter('ids', $this->session->isStarted() ? $this->session->get('participant_ids') : [])
+        ;
     }
 
     private function participantIsApplied(Participant $participant, Offer $offer): bool
@@ -111,6 +114,7 @@ class ApplyFormType extends AbstractType
 
     private function ineligibility(Offer $offer, Participant $participant, ApplicationSystemInterface $applicationSystem): void
     {
+        $this->unconfirmed($offer, $participant, $applicationSystem);
         $this->ageValid($offer, $participant, $applicationSystem);
         $this->overlappingOffer($participant, $offer);
         $this->limitReached($offer, $participant, $applicationSystem);
@@ -221,6 +225,19 @@ class ApplyFormType extends AbstractType
 
         if (\count($attendances) >= $limit) {
             throw new IneligibleParticipantException($offer, $participant, new TranslatableMessage('ineligible.dayLimitReached', ['name' => $participant->getFirstname(), 'max' => $task->getMaxApplicationsDay()]));
+        }
+    }
+
+    private function unconfirmed(Offer $offer, Participant $participant, ApplicationSystemInterface $applicationSystem): void
+    {
+        if (null !== $participant->getMember()) {
+            return;
+        }
+
+        $identifier = $this->connection->executeQuery("SELECT o.token FROM tl_opt_in_related r INNER JOIN tl_opt_in o ON o.id = r.pid WHERE r.relTable = 'Participant' AND r.relId = :participant_id AND o.email = :email", ['participant_id' => $participant->getId(), 'email' => $participant->getEmail()])->fetchOne();
+
+        if (false === $identifier || null === ($optInToken = $this->optIn->find($identifier)) || !$optInToken->isConfirmed()) {
+            throw new IneligibleParticipantException($offer, $participant, new TranslatableMessage('ineligible.unconfirmedEmail', ['email' => $participant->getEmail()]));
         }
     }
 }

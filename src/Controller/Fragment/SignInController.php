@@ -17,10 +17,13 @@ use Contao\CoreBundle\Controller\AbstractController;
 use Contao\CoreBundle\Security\Exception\LockedException;
 use Contao\FrontendUser;
 use Contao\MemberModel;
+use Doctrine\Persistence\ManagerRegistry;
+use Ferienpass\CoreBundle\Entity\Participant;
 use Ferienpass\CoreBundle\Form\UserLoginType;
 use Ferienpass\CoreBundle\Form\UserRegistrationType;
 use Ferienpass\CoreBundle\Message\AccountCreated;
 use Ferienpass\CoreBundle\Message\AccountResendActivation;
+use Ferienpass\CoreBundle\Repository\ParticipantRepository;
 use Ferienpass\CoreBundle\Ux\Flash;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Scheb\TwoFactorBundle\Security\Authentication\Exception\InvalidTwoFactorCodeException;
@@ -39,7 +42,7 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class SignInController extends AbstractController
 {
-    public function __construct(private PasswordHasherInterface $passwordHasher, private AuthenticationUtils $authenticationUtils, private MessageBusInterface $messageBus, private EventDispatcherInterface $eventDispatcher)
+    public function __construct(private PasswordHasherInterface $passwordHasher, private AuthenticationUtils $authenticationUtils, private MessageBusInterface $messageBus, private EventDispatcherInterface $eventDispatcher, private ParticipantRepository $participantRepository, private ManagerRegistry $doctrine)
     {
     }
 
@@ -118,7 +121,29 @@ class SignInController extends AbstractController
 
         $session->set('registration.email', $member->email);
 
+        $this->migrateSessionParticipants($session, $member);
+
         $this->messageBus->dispatch(new AccountCreated((int) $member->id));
+    }
+
+    private function migrateSessionParticipants(Session $session, MemberModel $member)
+    {
+        $ids = $session->get('participant_ids', []);
+        if (0 === \count($ids)) {
+            return;
+        }
+
+        foreach ($ids as $id) {
+            /** @var Participant|null $participant */
+            $participant = $this->participantRepository->find($id);
+            if (null === $participant) {
+                continue;
+            }
+
+            $participant->setMemberId((int) $member->id);
+        }
+
+        $this->doctrine->getManager()->flush();
     }
 
     private function findTargetPath(Request $request): string
