@@ -13,8 +13,8 @@ export default (count, autoAssign) => {
                 selectedClass: 'bg-blue-50',
                 multiDrag: true,
 
-                onAdd: () => this.assignAttendanceOnAdd(event, autoAssign),
-                onUpdate: () => this.assignAttendanceOnUpdate(event, autoAssign),
+                onAdd: this.assignAttendanceOnAdd(event, autoAssign),
+                onUpdate: this.assignAttendanceOnUpdate(event, autoAssign),
                 onSort: () => this.count = this.$root.querySelectorAll('ul > li').length
             })
         },

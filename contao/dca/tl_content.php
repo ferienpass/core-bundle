@@ -39,7 +39,7 @@ $GLOBALS['TL_DCA']['tl_content']['palettes']['hyperlink_button'] =
 $GLOBALS['TL_DCA']['tl_content']['palettes']['contact'] =
     '{type_legend},type,headline;{text_legend},text,address,email,phone,form';
 
-$GLOBALS['TL_DCA']['tl_content']['fields']['text']['eval']['tl_class'] .= ' clr';
+$GLOBALS['TL_DCA']['tl_content']['fields']['text']['eval']['tl_class'] = ltrim(($GLOBALS['TL_DCA']['tl_content']['fields']['text']['eval']['tl_class'] ?? '').' clr');
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['address'] = [
     'exclude' => true,
