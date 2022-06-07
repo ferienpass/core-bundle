@@ -62,7 +62,7 @@
                             {% set choices = form.participants.vars.choices %}
 
                             {# Not logged in #}
-                            {% if not app.user and not (applicationSystem.task and ((not offer.fee and applicationSystem.task.allowAnonymous) or applicationSystem.task.allowAnonymousFee)) %}
+                            {% if not app.user and choices is empty and not (applicationSystem.task and ((not offer.fee and applicationSystem.task.allowAnonymous) or applicationSystem.task.allowAnonymousFee)) %}
                                 <p class="text-sm text-gray-500">Bitte erstellen Sie sich zunächst ein <strong
                                             class="font-medium">Benutzerkonto</strong> bzw. melden sich an. Sie
                                     profitieren von einem vereinfachten Anmeldeprozess.</p>
