@@ -162,9 +162,9 @@ class Participant
      * @return Collection|Attendance[]
      * @psalm-return Collection<int, Attendance>
      */
-    public function getAttendancesNotWithdrawn(): Collection
+    public function getAttendancesNotWithdrawn(Edition $edition = null): Collection
     {
-        return $this->attendances->filter(fn (Attendance $attendance) => Attendance::STATUS_WITHDRAWN !== $attendance->getStatus());
+        return $this->attendances->filter(fn (Attendance $attendance) => Attendance::STATUS_WITHDRAWN !== $attendance->getStatus() && (null === $edition || $edition === $attendance->getOffer()->getEdition()));
     }
 
     /**

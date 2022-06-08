@@ -37,8 +37,8 @@ application.spareSpots: >-
 
 countOverallApplications: >-
   {count, plural,
-      one   {Eine Anmeldung gesamt}
-      other {# Anmeldungen gesamt}
+      one   {Eine Anmeldung aktuell}
+      other {# Anmeldungen aktuell}
   }
 
 enrolledBefore: >-

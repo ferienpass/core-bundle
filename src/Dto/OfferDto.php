@@ -20,4 +20,6 @@ interface OfferDto
     public static function fromEntity(Offer $offer = null): self;
 
     public function toEntity(Offer $offer = null): Offer;
+
+    public function offerEntity(): ?Offer;
 }
