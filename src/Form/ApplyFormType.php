@@ -169,8 +169,12 @@ class ApplyFormType extends AbstractType
             ->innerJoin(Attendance::class, 'a', Join::WITH, 'a.offer = o.id')
             ->where('a.participant = :participant')
             ->andWhere('a.offer <> :offer')
+            ->andWhere('a.status <> :status_withdrawn')
+            ->andWhere('a.status <> :status_error')
             ->setParameter('participant', $participant->getId(), Types::INTEGER)
             ->setParameter('offer', $offer->getId(), Types::INTEGER)
+            ->setParameter('status_withdrawn', Attendance::STATUS_WITHDRAWN, Types::STRING)
+            ->setParameter('status_error', Attendance::STATUS_ERROR, Types::STRING)
             ->getQuery()
             ->getResult()
         ;
