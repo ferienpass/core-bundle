@@ -54,18 +54,12 @@ final class ParticipantsController extends AbstractController
 
             $em->flush();
 
-            $this->addFlash(...Flash::confirmationModal()
-                ->headline('Los geht\'s!')
-                ->text('Nun können Sie loslegen und Ihre Kinder zu Ferienpass-Angeboten anmelden.')
-                ->href($this->generateUrl('offer_list'))
-                ->linkText('Zu den Angeboten')
-                ->create()
-            );
+            $this->addFlash(...Flash::confirmation()->text('Die Daten wurden erfolgreich gespeichert.')->create());
 
-            return $this->redirectToRoute($request->attributes->get('_route') ?: 'personal_data');
+            return $this->redirectToRoute($request->attributes->get('_route'));
         }
 
-        return $this->renderForm('@FerienpassCore/Fragment/participants.html.twig', [
+        return $this->renderForm('@FerienpassCore/Fragment/user_account/participants.html.twig', [
             'participants' => $originalParticipants,
             'form' => $form,
         ]);

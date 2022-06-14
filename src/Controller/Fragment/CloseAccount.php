@@ -77,6 +77,6 @@ final class CloseAccount extends AbstractController
             throw new ResponseException(new JsonResponse(['error' => $passwordWidget->getErrorAsString()], Response::HTTP_BAD_REQUEST));
         }
 
-        return $this->render('@FerienpassCore/Fragment/close_account.html.twig', []);
+        return $this->render('@FerienpassCore/Fragment/user_account/close_account.html.twig', []);
     }
 }

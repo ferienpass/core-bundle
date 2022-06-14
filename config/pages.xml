@@ -19,7 +19,8 @@
             <tag name="contao.page" type="registration_activate" contentComposition="false"/>
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Page\UserAccountPage">
-            <tag name="contao.page" type="user_account" contentComposition="true"/>
+            <argument type="service" id="Ferienpass\CoreBundle\UserAccount\UserAccountFragments"/>
+            <tag name="contao.page" type="user_account" contentComposition="false" path="{alias?}"/>
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Page\ApplicationsPage">
             <tag name="contao.page" type="applications" contentComposition="true"/>
@@ -35,9 +36,6 @@
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Page\OfferListPage">
             <tag name="contao.page" type="offer_list" contentComposition="true"/>
-        </service>
-        <service id="Ferienpass\CoreBundle\Controller\Page\PersonalDataPage">
-            <tag name="contao.page" type="personal_data" contentComposition="true"/>
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Page\RegistrationConfirmPage">
             <tag name="contao.page" type="registration_confirm" contentComposition="false"/>

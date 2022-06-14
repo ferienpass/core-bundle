@@ -129,3 +129,9 @@ offerList.filter:
 
 export.pdf.print.0: 'Druckbögen (PDF)'
 export.pdf.print.1: 'Exportiert alle Angebote im druckfertigen PDF-Format.'
+
+userAccount:
+  participants: Teilnehmer:innen
+  personal_data: Persönliche Daten
+  change_password: Passwort ändern
+  close_account: Account löschen

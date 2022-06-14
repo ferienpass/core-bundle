@@ -28,8 +28,7 @@ class RegistrationWelcomePage extends AbstractController
 
         return $this->createPageBuilder($request->attributes->get('pageModel'))
             ->addFragment('main', new FragmentReference('ferienpass.fragment.registration_welcome'))
-            ->addFragment('main', new FragmentReference('ferienpass.fragment.participants'))
             ->getResponse()
-            ;
+        ;
     }
 }

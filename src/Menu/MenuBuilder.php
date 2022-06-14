@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Menu;
 
 use Contao\PageModel;
+use Ferienpass\CoreBundle\UserAccount\UserAccountFragments;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -21,7 +22,7 @@ use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 
 class MenuBuilder
 {
-    public function __construct(private FactoryInterface $factory, private LogoutUrlGenerator $logoutUrlGenerator, private RequestStack $requestStack)
+    public function __construct(private FactoryInterface $factory, private LogoutUrlGenerator $logoutUrlGenerator, private RequestStack $requestStack, private UserAccountFragments $userAccountFragments)
     {
     }
 
@@ -29,15 +30,17 @@ class MenuBuilder
     {
         $menu = $this->factory->createItem('root');
 
-//        $menu->addChild('Benachrichtigungen', [
-//            'route' => 'notifications',
-//            'current' => $this->isCurrent('notifications'),
-//            'extras' => ['icon' => 'bell-solid'],
-//        ]);
+        $menu->addChild('Teilnehmer:innen', [
+            'route' => 'user_account',
+            'routeParameters' => ['fragment' => 'participants'],
+            'current' => $this->isCurrent('user_account', 'participants'),
+            'extras' => ['icon' => 'user-group-solid'],
+        ]);
 
         $menu->addChild('Nutzer-Account', [
             'route' => 'user_account',
-            'current' => $this->isCurrent('user_account'),
+            'routeParameters' => ['fragment' => 'personal_data'],
+            'current' => $this->isCurrent('user_account', 'personal_data'),
             'extras' => ['icon' => 'lock-closed-solid'],
         ]);
 
@@ -49,7 +52,23 @@ class MenuBuilder
         return $menu;
     }
 
-    private function isCurrent(string $type): bool
+    public function userAccountNavigation(): ItemInterface
+    {
+        $menu = $this->factory->createItem('root');
+
+        foreach ($this->userAccountFragments->all() as $valueHolder) {
+            $menu->addChild($valueHolder->getKey(), [
+                'route' => 'user_account',
+                'routeParameters' => ['alias' => $valueHolder->getAlias()],
+                'current' => $this->isCurrent('user_account', $valueHolder->getAlias()),
+                'extras' => ['icon' => $valueHolder->getIcon()],
+            ]);
+        }
+
+        return $menu;
+    }
+
+    private function isCurrent(string $type, string $fragment = null): bool
     {
         $request = $this->requestStack->getMainRequest();
         if (null === $request) {
@@ -61,6 +80,10 @@ class MenuBuilder
             return false;
         }
 
-        return $type === $pageModel->type;
+        if (null === $fragment) {
+            return $type === $pageModel->type;
+        }
+
+        return $type === $pageModel->type && $fragment === $request->attributes->get('alias');
     }
 }

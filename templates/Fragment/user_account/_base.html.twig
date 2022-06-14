@@ -1,0 +1,42 @@
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="divide-y divide-gray-200 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x">
+        <aside class="py-6 lg:col-span-3">
+            <nav class="space-y-1">
+
+                {% set menu = knp_menu_get('user_account_navigation') %}
+
+                {% for item in menu.children %}
+
+                    {% if item.current %}
+
+                        <strong aria-current="page"
+                                class="bg-primary-50 border-primary-500 text-primary-700 hover:bg-primary-50 hover:text-primary-700 group border-l-4 px-3 py-2 flex items-center text-sm font-medium rounded-l">
+                            <span class="text-primary-500 group-hover:text-primary-500 flex-shrink-0 -ml-1 mr-3 h-6 w-6">{{ source('@FerienpassCore/Icons/'~item.extra('icon')~'.svg') }}</span>
+                            <span class="truncate">{{ ('userAccount.'~item.name)|trans }}</span>
+                        </strong>
+
+                    {% else %}
+
+                        <a href="{{ item.uri }}"
+                           class="border-transparent text-gray-900 hover:bg-gray-50 hover:text-gray-900 group border-l-4 px-3 py-2 flex items-center text-sm font-medium">
+                            <span class="text-gray-400 group-hover:text-gray-500 flex-shrink-0 -ml-1 mr-3 h-6 w-6">{{ source('@FerienpassCore/Icons/'~item.extra('icon')~'.svg') }}</span>
+                            <span class="truncate">{{ ('userAccount.'~item.name)|trans }}</span>
+                        </a>
+
+                    {% endif %}
+                {% endfor %}
+
+            </nav>
+        </aside>
+
+        <div class="divide-y divide-gray-200 lg:col-span-9">
+            <div class="py-6 px-4 sm:p-6 lg:pb-8">
+
+                {% block main %}
+                {% endblock %}
+
+            </div>
+        </div>
+    </div>
+
+</div>

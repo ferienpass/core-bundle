@@ -1,0 +1,79 @@
+{% extends '@FerienpassCore/Fragment/user_account/_base.html.twig' %}
+
+{% block main %}
+    <div>
+
+        {{ form_start(form) }}
+
+        <div class="divide-y space-y-6">
+
+            <div>
+                <div>
+                    <h2 class="text-lg leading-6 font-medium text-gray-900">Persönliche Daten</h2>
+                    <p class="mt-1 text-sm text-gray-500">Hinterlegen Sie eine aktuelle Telefon- und Handynummer, damit
+                        die Veranstalter:innen Sie kontaktieren können.</p>
+                </div>
+
+                <div class="mt-6">
+
+                    <div class="grid gap-6 sm:grid-cols-8">
+                        <div class="sm:col-span-4">
+                            {{ form_row(form.firstname) }}
+                        </div>
+                        <div class="sm:col-span-4">
+                            {{ form_row(form.lastname) }}
+                        </div>
+                        <div class="sm:col-span-5">
+                            {{ form_row(form.email) }}
+                        </div>
+                        <div class="sm:col-span-3 sm:col-start-1">
+                            {{ form_row(form.phone) }}
+                        </div>
+                        <div class="sm:col-span-3">
+                            {{ form_row(form.mobile) }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div>
+                <div class="mt-6">
+                    <h2 class="text-lg leading-6 font-medium text-gray-900">Rechnungsanschrift</h2>
+                    <p class="mt-1 text-sm text-gray-500">Wir brauchen Ihre Anschrift zur Erstellung von Belegen für die
+                        Teilnahmegebühren.</p>
+                </div>
+
+                <div class="mt-6">
+
+                    <div class="grid gap-6 sm:grid-cols-7">
+                        <div class="sm:col-span-4">
+                            {{ form_row(form.street) }}
+                        </div>
+                        <div class="sm:col-span-2 sm:col-start-1">
+                            {{ form_row(form.postal) }}
+                        </div>
+                        <div class="sm:col-span-3">
+                            {{ form_row(form.city) }}
+                        </div>
+                        <div class="sm:col-span-2">
+                            {{ form_row(form.country) }}
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+            <div>
+                <div class="mt-6 flex justify-end">
+                    {{ form_row(form.submit) }}
+                </div>
+            </div>
+        </div>
+
+        {{ form_end(form) }}
+
+    </div>
+{% endblock %}

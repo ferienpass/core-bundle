@@ -8,7 +8,7 @@ services:
         - [ setContainer, [ '@Psr\Container\ContainerInterface' ] ]
 
     Ferienpass\CoreBundle\Filter\Type\OfferFilterType:
-      tags: ['ferienpass.filter.offer_list_type']
+      tags: [ 'ferienpass.filter.offer_list_type' ]
 
   Ferienpass\CoreBundle\Controller\Frontend\RedirectShortUrlController: ~
 
@@ -194,9 +194,10 @@ services:
     arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
 
   Ferienpass\CoreBundle\Menu\MenuBuilder:
-    arguments: [ "@knp_menu.factory", '@security.logout_url_generator', '@request_stack' ]
+    arguments: [ "@knp_menu.factory", '@security.logout_url_generator', '@request_stack', '@Ferienpass\CoreBundle\UserAccount\UserAccountFragments' ]
     tags:
       - { name: knp_menu.menu_builder, method: userNavigation, alias: user_navigation }
+      - { name: knp_menu.menu_builder, method: userAccountNavigation, alias: user_account_navigation }
 
   Ferienpass\CoreBundle\EventListener\DataContainer\Edition\GenerateAliasListener:
     arguments: [ '@database_connection', '@contao.slug' ]
@@ -410,6 +411,8 @@ services:
 
   Ferienpass\CoreBundle\Cron\SendRemindersListener:
     arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@messenger.default_bus', '@Ferienpass\CoreBundle\Repository\EventLogRepository' ]
+
+  Ferienpass\CoreBundle\UserAccount\UserAccountFragments: ~
 
   Monolog\Processor\PsrLogMessageProcessor:
     tags: { name: monolog.processor, handler: sentry }
