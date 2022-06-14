@@ -32,14 +32,14 @@ class MenuBuilder
 
         $menu->addChild('Teilnehmer:innen', [
             'route' => 'user_account',
-            'routeParameters' => ['fragment' => 'participants'],
+            'routeParameters' => ['alias' => 'teilnehmer'],
             'current' => $this->isCurrent('user_account', 'participants'),
             'extras' => ['icon' => 'user-group-solid'],
         ]);
 
         $menu->addChild('Nutzer-Account', [
             'route' => 'user_account',
-            'routeParameters' => ['fragment' => 'personal_data'],
+            'routeParameters' => ['alias' => 'persönliche-daten'],
             'current' => $this->isCurrent('user_account', 'personal_data'),
             'extras' => ['icon' => 'lock-closed-solid'],
         ]);

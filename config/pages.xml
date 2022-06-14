@@ -20,7 +20,7 @@
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Page\UserAccountPage">
             <argument type="service" id="Ferienpass\CoreBundle\UserAccount\UserAccountFragments"/>
-            <tag name="contao.page" type="user_account" contentComposition="false" path="{alias?}"/>
+            <tag name="contao.page" type="user_account" contentComposition="false" path="{alias?teilnehmer}"/>
         </service>
         <service id="Ferienpass\CoreBundle\Controller\Page\ApplicationsPage">
             <tag name="contao.page" type="applications" contentComposition="true"/>
