@@ -38,7 +38,7 @@ class ChartUtilizationController extends AbstractEditionStatsWidgetController
             ->select('a.status')
             ->addSelect('o.id as offer_id')
             ->addSelect('o.name as offer_title')
-            ->addSelect('ANY_VALUE(d.begin) as date_start')
+            ->addSelect('MIN(d.begin) as date_start')
             ->addSelect('o.maxParticipants as offer_max')
             ->addSelect('COUNT(a.id) as count_applications')
             ->addSelect('COUNT(a.id) / o.maxParticipants as utilization')
@@ -67,23 +67,19 @@ class ChartUtilizationController extends AbstractEditionStatsWidgetController
 
             foreach ($offerIds as $i => $offerId) {
                 $utilizationOfStatusAndOffer = array_values(array_filter($utilizationOfStatus, fn ($c) => (int) $c['offer_id'] === (int) $offerId));
-                if ([] !== $utilizationOfStatusAndOffer &&
-                    null !== ($a = ($utilizationOfStatusAndOffer[0] ?? null))
-                    && !$a['date_start'] instanceof \DateTimeInterface) {
+                if ([] !== $utilizationOfStatusAndOffer && null !== ($a = ($utilizationOfStatusAndOffer[0] ?? null)) && !$a['date_start'] instanceof \DateTimeInterface) {
                     ${$status}[$i] = (float) $a['utilization'];
-                    $labels[$i] = sprintf(
-                        '%s: %s (max. %d)',
-                        $a['offer_title'],
-                        $a['date_start'] ? (new \DateTime($a['date_start']))->format($GLOBALS['TL_CONFIG']['dateFormat']) : '',
-                        $a['offer_max']
-                    );
                     $overall[$i] += (float) $a['utilization'];
+
+                    $labels[$i] = sprintf('%s: %s (max. %d)', $a['offer_title'], $a['date_start'] ? (new \DateTime($a['date_start']))->format($GLOBALS['TL_CONFIG']['dateFormat']) : '', $a['offer_max']);
                 } else {
                     ${$status}[$i] = 0;
                     $overall[$i] += 0;
+
                     if (!isset($labels[$i])) {
                         $labels[$i] = '';
                     }
+
                     if (!isset($overall[$i])) {
                         $overall[$i] = 0;
                     }
