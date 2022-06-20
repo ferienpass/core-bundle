@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\BackendDashboard;
 
+use Ferienpass\CoreBundle\Entity\Edition;
 use Ferienpass\CoreBundle\Repository\EditionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,21 +26,24 @@ class InformSleepController extends AbstractDashboardWidgetController
 
     public function __invoke(Request $request): Response
     {
-        if (!$this->show()) {
+        /** @var Edition[] $inactiveEditions */
+        $inactiveEditions = iterator_to_array($this->inactiveEditions());
+
+        if (0 === \count($inactiveEditions)) {
             return new Response('', Response::HTTP_NO_CONTENT);
         }
 
-        return $this->render('@FerienpassCore/Backend/Dashboard/sleep.html.twig');
+        return $this->render('@FerienpassCore/Backend/Dashboard/sleep.html.twig', [
+            'editions' => $inactiveEditions,
+        ]);
     }
 
-    private function show(): bool
+    private function inactiveEditions(): \Generator
     {
         foreach ($this->editionRepository->findWithActiveTask('show_offers') as $edition) {
             if ($edition->getActiveTasks('application_system')->isEmpty()) {
-                return true;
+                yield $edition;
             }
         }
-
-        return false;
     }
 }
