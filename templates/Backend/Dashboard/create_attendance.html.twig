@@ -7,15 +7,7 @@
         <div class="mt-5">
             {{ form_start(application) }}
 
-            <div class="space-y-6" x-data="{
-            offer: null,
-            participant: null,
-            status: 'waiting'
-            }"
-                 x-init="$watch('participant', () => fetch(`/admin/api/create_attendance/status/${offer?.id}`)
-                            .then(response => response.json())
-                            .then(data => status = (data.status) ? data.status : status)
-                            .catch())">
+            <div class="space-y-6" x-data="DashboardCreateAttendance()">
 
                 {% do application.status.setRendered %}
                 <input type="hidden"
@@ -39,10 +31,8 @@
                 <div class="grid gap-6 md:grid-cols-3">
                     <div class="col-span-2" @value-changed="offer = $event.detail.data">
 
-
                         {# select field component #}
                         <div x-data="select({ name: 'offer', placeholder: 'Veranstaltung suchen…', emptyOptionsMessage: 'Veranstaltung nicht gefunden' })"
-                             x-init="init()"
                              @click.away="closeListbox()"
                              @keydown.escape="closeListbox()"
                              class="relative"
@@ -55,11 +45,11 @@
                                      aria-haspopup="listbox"
                                      class="relative z-0 w-full py-2 pl-3 pr-10 text-left transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md cursor-default focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"
                                 >
-                            <span x-show="! open"
-                                  x-text="value in options ? options[value].name : placeholder"
-                                  :class="{ 'text-gray-500': ! (value in options) }"
-                                  class="block truncate"
-                            ></span>
+                                    <span x-show="! open"
+                                          x-text="value in options ? options[value].name : placeholder"
+                                          :class="{ 'text-gray-500': ! (value in options) }"
+                                          class="block truncate"
+                                    ></span>
 
                                     <input x-ref="search"
                                            x-show="open"
@@ -72,12 +62,13 @@
                                     />
 
                                     <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                <svg class="w-5 h-5 text-gray-400" viewBox="0 0 20 20" fill="none"
-                                     stroke="currentColor">
-                                    <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" stroke-width="1.5" stroke-linecap="round"
-                                          stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
+                                        <svg class="w-5 h-5 text-gray-400" viewBox="0 0 20 20" fill="none"
+                                             stroke="currentColor">
+                                            <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" stroke-width="1.5"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"></path>
+                                        </svg>
+                                    </span>
                                 </div>
                             </div>
 
@@ -107,30 +98,30 @@
                                             :class="{ 'text-white bg-primary-600': index === focusedOptionIndex, 'text-gray-900': index !== focusedOptionIndex }"
                                             class="relative py-2 pl-3 text-gray-900 cursor-default select-none pr-9"
                                         >
-                                <span class="block truncate">
-                                    <span class="block">
-                                        <span class="font-medium" x-text="options[key].name"></span>
-                                        (<span x-text="options[key].hosts"></span>)
-                                    </span>
-                                    <span class="block" x-text="options[key].date"></span>
-                                    <span class="flex items-center">
-                                        <span class="w-2 h-2 rounded-full inline-block mr-1"
-                                              :class="{ 'bg-red-600': options[key].current >= options[key].maxParticipants, 'bg-green-600': options[key].current < options[key].maxParticipants}"></span>
-                                        <span x-text="options[key].current ?? '0'"></span><span>&nbsp;/&nbsp;</span><span
-                                                x-text="options[key].maxParticipants ?? '-'"></span>&nbsp;TN
-                                    </span>
-                                </span>
+                                            <span class="block truncate">
+                                                <span class="block">
+                                                    <span class="font-medium" x-text="options[key]?.name"></span>
+                                                    (<span x-text="options[key]?.hosts"></span>)
+                                                </span>
+                                                <span class="block" x-text="options[key]?.date"></span>
+                                                <span class="flex items-center">
+                                                    <span class="w-2 h-2 rounded-full inline-block mr-1"
+                                                          :class="{ 'bg-red-600': options[key]?.current >= options[key]?.maxParticipants, 'bg-green-600': options[key]?.current < options[key]?.maxParticipants}"></span>
+                                                    <span x-text="options[key]?.current ?? '0'"></span><span>&nbsp;/&nbsp;</span><span
+                                                            x-text="options[key]?.maxParticipants ?? '-'"></span>&nbsp;TN
+                                                </span>
+                                            </span>
 
                                             <span x-show="key === value"
                                                   :class="{ 'text-white': index === focusedOptionIndex, 'text-primary-600': index !== focusedOptionIndex }"
                                                   class="absolute inset-y-0 right-0 flex items-center pr-4 text-primary-600"
                                             >
-                                    <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd"
-                                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                              clip-rule="evenodd"/>
-                                    </svg>
-                                </span>
+                                                <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd"
+                                                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                          clip-rule="evenodd"/>
+                                                </svg>
+                                            </span>
                                         </li>
                                     </template>
 
@@ -175,14 +166,10 @@
                 {# Participant select #}
                 <template x-if="offer">
                     <div class="grid gap-6 md:grid-cols-3">
-                        <div class="col-span-2" @value-changed="participant = $event.detail.data" @new-element="
-                        participant = false;
-                        setTimeout(() => [$refs.newParticipant.getElementsByTagName('input')[0].value, $refs.newParticipant.getElementsByTagName('input')[1].value] = $event.detail.data.split(' ', 2));">
-
+                        <div class="col-span-2" @value-changed="participant = $event.detail.data">
 
                             {# select field component #}
                             <div x-data="select({ data: {}, name: 'participant', placeholder: 'Teilnehmer:in suchen…', emptyOptionsMessage: 'Neue Teilnehmer:in mit Enter bestätigen' })"
-                                 x-init="init()"
                                  @click.away="closeListbox()"
                                  @keydown.escape="closeListbox()"
                                  class="mt-4 relative"
@@ -196,11 +183,11 @@
                                          aria-haspopup="listbox"
                                          class="relative z-0 w-full py-2 pl-3 pr-10 text-left transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md cursor-default focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"
                                     >
-                            <span x-show="! open"
-                                  x-text="value in options ? options[value].firstname + ' '+options[value].lastname : placeholder"
-                                  :class="{ 'text-gray-500': ! (value in options) }"
-                                  class="block truncate"
-                            ></span>
+                                        <span x-show="! open"
+                                              x-text="value in options ? options[value].firstname + ' '+options[value].lastname : placeholder"
+                                              :class="{ 'text-gray-500': ! (value in options) }"
+                                              class="block truncate"
+                                        ></span>
 
                                         <input x-ref="search"
                                                x-show="open"
@@ -213,12 +200,13 @@
                                         />
 
                                         <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                <svg class="w-5 h-5 text-gray-400" viewBox="0 0 20 20" fill="none"
-                                     stroke="currentColor">
-                                    <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" stroke-width="1.5" stroke-linecap="round"
-                                          stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
+                                            <svg class="w-5 h-5 text-gray-400" viewBox="0 0 20 20" fill="none"
+                                                 stroke="currentColor">
+                                                <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" stroke-width="1.5"
+                                                      stroke-linecap="round"
+                                                      stroke-linejoin="round"></path>
+                                            </svg>
+                                        </span>
                                     </div>
                                 </div>
 
@@ -248,24 +236,24 @@
                                                 :class="{ 'text-white bg-primary-600': index === focusedOptionIndex, 'text-gray-900': index !== focusedOptionIndex }"
                                                 class="relative py-2 pl-3 text-gray-900 cursor-default select-none pr-9"
                                             >
-                                <span class="block truncate">
-                                        <span class="block font-medium"><span
-                                                    x-text="options[key].firstname"></span> <span
-                                                    x-text="options[key].lastname"></span></span>
-                                    <span class="block"><span x-text="options[key].dateOfBirth"></span> (<span
-                                                x-text="options[key].age"></span> Jahre)</span>
-                                </span>
+                                                <span class="block truncate">
+                                                    <span class="block font-medium"><span
+                                                                x-text="options[key]?.firstname"></span> <span
+                                                                x-text="options[key]?.lastname"></span></span>
+                                                    <span class="block"><span x-text="options[key]?.dateOfBirth"></span>
+                                                        (<span x-text="options[key]?.age"></span> Jahre)</span>
+                                                </span>
 
                                                 <span x-show="key === value"
                                                       :class="{ 'text-white': index === focusedOptionIndex, 'text-primary-600': index !== focusedOptionIndex }"
                                                       class="absolute inset-y-0 right-0 flex items-center pr-4 text-primary-600"
                                                 >
-                                    <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd"
-                                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                              clip-rule="evenodd"/>
-                                    </svg>
-                                </span>
+                                                    <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                              clip-rule="evenodd"/>
+                                                    </svg>
+                                                </span>
                                             </li>
                                         </template>
 
@@ -286,7 +274,8 @@
                                         x-text="participant.firstname +' '+ participant.lastname"></h4>
                                     <p class="text-sm text-gray-500 leading-3"
                                        x-text="'geb. '+participant.dateOfBirth + ' ('+participant.age+' Jahre)'"></p>
-                                    <template x-if="(offer.minAge && participant.age < offer.minAge) || (offer.maxAge && participant.age > offer.maxAge)">
+                                    <template
+                                            x-if="(offer.minAge && participant.age < offer.minAge) || (offer.maxAge && participant.age > offer.maxAge)">
                                         <p class="text-red-600 font-medium text-sm">Achtung Alter!</p>
                                     </template>
                                 </div>
@@ -349,6 +338,20 @@
         </div>
 
         <script>
+            function DashboardCreateAttendance() {
+                return {
+                    offer: null,
+                    participant: null,
+                    status: 'waiting',
+                    init: function () {
+                        this.$watch('participant', () => fetch(`/admin/api/create_attendance/status/${this.offer?.id}`)
+                            .then(response => response.json())
+                            .then(data => this.status = (data.status) ? data.status : this.status)
+                            .catch())
+                    },
+                }
+            }
+
             function select(config) {
                 return {
                     emptyOptionsMessage: config.emptyOptionsMessage ?? 'Nichts gefunden.',
@@ -402,9 +405,14 @@
 
                     selectOption: function () {
                         if (!this.open) return this.toggleListboxVisibility()
-                        if (!this.options.length) return this.$el.parentNode.dispatchEvent(new CustomEvent('new-element', {
-                            detail: {data: this.search}
-                        })) && this.closeListbox();
+                        if (!this.options.length) {
+                            this.participant = false;
+
+                            setTimeout(() => [this.$refs.newParticipant.getElementsByTagName('input')[0].value, this.$refs.newParticipant.getElementsByTagName('input')[1].value] = this.search.split(' ', 2));
+
+                            this.closeListbox();
+                            return;
+                        }
                         this.value = Object.keys(this.options)[this.focusedOptionIndex]
                         this.closeListbox()
                     },
