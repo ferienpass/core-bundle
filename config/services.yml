@@ -30,16 +30,16 @@ services:
   Ferienpass\CoreBundle\Controller\Backend\DashboardController:
     arguments: [ '@contao.fragment.registry', '@contao.fragment.handler' ]
 
+  Ferienpass\CoreBundle\Controller\BackendDashboard\InformSleepController:
+    arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
+    tags: [ 'contao.dashboard_widget' ]
+
   Ferienpass\CoreBundle\Controller\BackendDashboard\SendAcceptancesController:
     arguments: [ '@Ferienpass\CoreBundle\Applications\UnconfirmedApplications' ]
     tags: [ 'contao.dashboard_widget' ]
 
   Ferienpass\CoreBundle\Controller\BackendDashboard\EraseDataController:
     arguments: [ '@Ferienpass\CoreBundle\Facade\EraseDataFacade', '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
-    tags: [ 'contao.dashboard_widget' ]
-
-  Ferienpass\CoreBundle\Controller\BackendDashboard\InformSleepController:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
     tags: [ 'contao.dashboard_widget' ]
 
   Ferienpass\CoreBundle\Controller\BackendDashboard\GanttController:
