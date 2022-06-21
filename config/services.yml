@@ -58,7 +58,7 @@ services:
     arguments: [ '@database_connection' ]
     tags: [ 'contao.dashboard_widget' ]
 
-  Ferienpass\CoreBundle\Controller\EditionStats\NumbersController:
+  Ferienpass\CoreBundle\Controller\EditionStats\FiguresController:
     arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@Ferienpass\CoreBundle\Repository\OfferRepository', '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
     tags: [ 'contao.edition_stats_widget' ]
 

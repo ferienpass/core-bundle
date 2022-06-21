@@ -1,14 +1,16 @@
 {% macro figure(label, number, number_preceding=null) %}
     <div class="px-4 py-5 sm:p-6">
-        <dt class="text-base font-normal text-gray-900">{{ label }}        </dt>
+        <dt class="text-base font-normal text-gray-900">{{ label }}</dt>
         <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
             <div class="flex items-baseline text-2xl font-semibold text-primary-600">
-                {{ number }}
-                <span class="ml-2 text-sm font-medium text-gray-500">von {{ number_preceding }} im Vorjahr</span>
+                <span>{{ number }}</span>
+                {% if number_preceding is not null %}
+                    <span class="ml-2 text-sm font-medium text-gray-500">von {{ number_preceding }} im Vorjahr</span>
+                {% endif %}
             </div>
 
             {% if number_preceding is not null and number > 0 %}
-                {% set change = ((number-number_preceding) / number) * 100 %}
+                {% set change = ((number - number_preceding) / number_preceding) * 100 %}
                 {% if change < 0 %}
                     <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800 md:mt-2 lg:mt-0">
                         <span class="-ml-1 mr-0.5 flex-shrink-0 self-center h-5 w-5 text-red-500">{{ source('@FerienpassCore/Icons/arrow-sm-down-solid.svg') }}</span>
