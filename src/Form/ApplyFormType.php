@@ -183,7 +183,7 @@ class ApplyFormType extends AbstractType
         foreach ($offer->getDates() as $currentDate) {
             foreach ($participatingDates as $participatingDate) {
                 // …check for an overlap
-                if (($participatingDate->getEnd() >= $currentDate->getBegin()) && ($currentDate->getEnd() >= $participatingDate->getBegin())) {
+                if (($participatingDate->getEnd() > $currentDate->getBegin()) && ($currentDate->getEnd() > $participatingDate->getBegin())) {
                     throw new IneligibleParticipantException($offer, $participant, new TranslatableMessage('ineligible.overlap', ['name' => $participant->getFirstname(), 'offer' => $participatingDate->getOffer()->getName()]));
                 }
             }
