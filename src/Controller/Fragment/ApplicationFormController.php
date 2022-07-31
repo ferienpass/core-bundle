@@ -54,7 +54,7 @@ class ApplicationFormController extends AbstractController
         }
 
         $countParticipants = $this->attendanceRepository->count(['status' => 'confirmed', 'offer' => $offer]) + $this->attendanceRepository->count(['status' => 'waitlisted', 'offer' => $offer]);
-        $vacant = ($offer->getMaxParticipants() ?? 0) - $countParticipants;
+        $vacant = $offer->getMaxParticipants() > 0 ?$offer->getMaxParticipants() - $countParticipants : null;
 
         $user = $this->getUser();
         $allowAnonymous = (bool) $applicationSystem->getTask()?->isAllowAnonymous();
@@ -80,7 +80,7 @@ class ApplicationFormController extends AbstractController
             'form' => $applicationForm->createView(),
             'newParticipant' => $participantForm->createView(),
             'applicationSystem' => $applicationSystem,
-            'vacant' => max(0, $vacant),
+            'vacant' => null === $vacant ? null : max(0, $vacant),
         ]);
     }
 

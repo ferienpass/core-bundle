@@ -35,6 +35,8 @@ application.spareSpots: >-
       other {# freie Plätze}
   }
 
+application.spareSpotsOpen: freie Plätze
+
 countOverallApplications: >-
   {count, plural,
       one   {Eine Anmeldung aktuell}
