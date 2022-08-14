@@ -203,6 +203,7 @@ class LabelListener
                 ->set('onlineApplication', '?')
                 ->set('applyText', '?')
                 ->set('contact', '?')
+                ->where('varbase = ?')
                 ->setParameter(0, $offer->getName())
                 ->setParameter(1, $offer->getDescription())
                 ->setParameter(2, $offer->getMeetingPoint())
@@ -220,6 +221,7 @@ class LabelListener
                 ->setParameter(14, $offer->isOnlineApplication())
                 ->setParameter(15, $offer->getApplyText())
                 ->setParameter(16, $offer->getContact())
+                ->setParameter(17, $offer->getId())
             ;
         } catch (\Exception) {
         }
