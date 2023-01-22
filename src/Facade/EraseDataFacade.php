@@ -77,15 +77,15 @@ SQL
         $participantIds = array_map(fn (Participant $participant) => $participant->getId(), $this->expiredParticipants());
 
         $this->connection->executeQuery(<<<'SQL'
-DELETE
+DELETE l, r, n
 FROM EventLog l
 INNER JOIN EventLogRelated r ON r.log_id = l.id
 LEFT JOIN NotificationLog n ON n.log_id = l.id
 INNER JOIN Attendance a ON a.id = r.relatedId
 WHERE r.relatedTable = 'Attendance'
-  AND (a.participant_id IN (:ids))
+  AND a.participant_id IN (?)
 SQL
-, ['ids' => $participantIds]);
+, [$participantIds], [Connection::PARAM_INT_ARRAY]);
 
         // Retain participant ids for statistics
         $this->connection->createQueryBuilder()
