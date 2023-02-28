@@ -29,7 +29,7 @@ class EventLogRelated
 
     /**
      * @ORM\ManyToOne(targetEntity="EventLog", inversedBy="related")
-     * @ORM\JoinColumn(name="log_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="log_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private EventLog $logEntry;
 

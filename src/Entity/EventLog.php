@@ -45,12 +45,12 @@ class EventLog
     private string $message;
 
     /**
-     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\EventLogRelated", mappedBy="logEntry")
+     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\EventLogRelated", mappedBy="logEntry", cascade={"persist", "remove"})
      */
     private Collection $related;
 
     /**
-     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\NotificationLog", mappedBy="logEntry")
+     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\NotificationLog", mappedBy="logEntry", cascade={"persist", "remove"})
      */
     private Collection $notifications;
 

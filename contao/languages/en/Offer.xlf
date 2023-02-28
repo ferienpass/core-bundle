@@ -178,6 +178,12 @@
             <trans-unit id="Offer.applyText.1">
                 <target>Wie kann sich zu dem Angebot angemeldet werden (wenn Online-System nicht genutzt)?</target>
             </trans-unit>
+            <trans-unit id="Offer.wheelchairAccessible.0">
+                <target>Rollstuhl-zugängig</target>
+            </trans-unit>
+            <trans-unit id="Offer.wheelchairAccessible.1">
+                <target>Ist das Angebot mit Rollstuhl zugängig?</target>
+            </trans-unit>
             <trans-unit id="Offer.contact.0">
                 <target>Auskunft unter</target>
             </trans-unit>

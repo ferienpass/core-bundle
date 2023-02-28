@@ -245,6 +245,11 @@ class Offer
     private ?array $accessibility = null;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $wheelchairAccessible = null;
+
+    /**
      * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\Offer", mappedBy="variantBase")
      *
      * @psalm-var Collection<int, Offer>
@@ -761,6 +766,16 @@ class Offer
     public function setAccessibility(?array $accessibility): void
     {
         $this->accessibility = $accessibility;
+    }
+
+    public function isWheelchairAccessible(): ?bool
+    {
+        return $this->wheelchairAccessible;
+    }
+
+    public function setWheelchairAccessible(?bool $wheelchairAccessible): void
+    {
+        $this->wheelchairAccessible = $wheelchairAccessible;
     }
 
     public function requiresAgreementLetter(): ?bool

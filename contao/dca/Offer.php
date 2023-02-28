@@ -88,7 +88,7 @@ $GLOBALS['TL_DCA']['Offer'] = [
     ],
     'palettes' => [
         '__selector__' => ['varbase'],
-        'default' => '{admin_legend},varbase,edition,hosts,members,category;{name_legend},name,alias;{text_legend},description,teaser,meetingPoint,bring;{date_legend},dates,datesExport,applicationDeadline;{info_legend},minAge,maxAge,minParticipants,maxParticipants,fee,accessibility;{media_legend},image,downloads;{applications_legend},requiresApplication,onlineApplication,applyText,contact,comment;{status_legend},published,cancelled',
+        'default' => '{admin_legend},varbase,edition,hosts,members,category;{name_legend},name,alias;{text_legend},description,teaser,meetingPoint,bring;{date_legend},dates,datesExport,applicationDeadline;{info_legend},minAge,maxAge,minParticipants,maxParticipants,fee,wheelchairAccessible;{media_legend},image,downloads;{applications_legend},requiresApplication,onlineApplication,applyText,contact,comment;{status_legend},published,cancelled',
     ],
     'fields' => [
         'edition' => [
@@ -255,18 +255,18 @@ $GLOBALS['TL_DCA']['Offer'] = [
             'inputType' => 'text',
             'eval' => ['tl_class' => 'long'],
         ],
-        'accessibility' => [
+        'wheelchairAccessible' => [
             'exclude' => true,
             'filter' => true,
-            'inputType' => 'checkboxWizard',
+            'inputType' => 'radio',
             'options' => [
-                'barrierefrei',
-                'koerperliches-handicap',
-                'assistenz',
-                'geistiges-handicap',
+                '1' => 'Ja',
+                '0' => 'Nein',
+                '2' => 'Bitte erfragen',
             ],
-            'eval' => ['multiple' => true, 'tl_class' => 'clr', 'doNotSaveEmpty' => true],
-            'load_callback' => [fn ($v) => $v ? json_decode($v) : []],
+            'eval' => ['tl_class' => 'clr'],
+            'load_callback' => [fn($v) => null === $v ? '2' : $v],
+            'save_callback' => [fn($v) => strlen($v) < 2 ? (int)$v : null],
         ],
         'minParticipants' => [
             'exclude' => true,

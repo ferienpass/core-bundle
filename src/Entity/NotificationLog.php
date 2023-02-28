@@ -31,7 +31,7 @@ class NotificationLog
 
     /**
      * @ORM\ManyToOne(targetEntity="EventLog", inversedBy="notifications")
-     * @ORM\JoinColumn(name="log_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="log_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private EventLog $logEntry;
 

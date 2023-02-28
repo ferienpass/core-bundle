@@ -85,7 +85,7 @@ INNER JOIN Attendance a ON a.id = r.relatedId
 WHERE r.relatedTable = 'Attendance'
   AND a.participant_id IN (?)
 SQL
-, [$participantIds], [Connection::PARAM_INT_ARRAY]);
+            , [$participantIds], [Connection::PARAM_INT_ARRAY]);
 
         // Retain participant ids for statistics
         $this->connection->createQueryBuilder()
