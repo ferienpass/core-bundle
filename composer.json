@@ -73,6 +73,9 @@
     "twig/intl-extra": "^2.14 || ^3.0",
     "knplabs/knp-menu-bundle": "^3.0"
   },
+  "conflict": {
+    "contao/core-bundle": ">=4.13.16"
+  },
   "require-dev": {
     "contao/manager-plugin": "^2.7",
     "friendsofphp/php-cs-fixer": "^3.3",
