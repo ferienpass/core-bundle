@@ -285,7 +285,7 @@ $GLOBALS['TL_DCA']['Offer'] = [
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w50'],
             'load_callback' => [fn ($val) => $val / 100 ?: null],
-            'save_callback' => [fn ($val) => (int) $val * 100 ?: null],
+            'save_callback' => [fn ($val) => (int) (floatval($val) * 100) ?: null],
         ],
         'image' => [
             'exclude' => true,
