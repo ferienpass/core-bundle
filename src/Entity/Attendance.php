@@ -17,89 +17,65 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity
- * @ORM\Table(uniqueConstraints={
- *   @ORM\UniqueConstraint(columns={"offer_id", "participant_id"})
- * })
- */
+#[ORM\Entity]
+#[ORM\UniqueConstraint(columns: ['offer_id', 'participant_id'])]
 class Attendance
 {
+    public const STATUS_PAID = 'paid';
     public const STATUS_CONFIRMED = 'confirmed';
     public const STATUS_WAITLISTED = 'waitlisted';
     public const STATUS_WITHDRAWN = 'withdrawn';
     public const STATUS_WAITING = 'waiting';
     public const STATUS_ERROR = 'error';
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="tstamp", type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Column(name: 'tstamp', type: 'integer', options: ['unsigned' => true])]
     private int $timestamp;
 
-    /**
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $sorting = 0;
 
-    /**
-     * @ORM\Column(type="string", length=32, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
     private ?string $status = null;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $modifiedAt;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Ferienpass\CoreBundle\Entity\Offer", inversedBy="attendances")
-     * @ORM\JoinColumn(name="offer_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\Offer', inversedBy: 'attendances')]
+    #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id')]
     private Offer $offer;
 
     /**
      * The participant becomes NULL if personal data is erased but attendances are kept for data retention.
-     *
-     * @ORM\ManyToOne(targetEntity="Ferienpass\CoreBundle\Entity\Participant", inversedBy="attendances")
-     * @ORM\JoinColumn(name="participant_id", referencedColumnName="id", nullable=true)
      */
+    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\Participant', inversedBy: 'attendances')]
+    #[ORM\JoinColumn(name: 'participant_id', referencedColumnName: 'id', nullable: true)]
     private ?Participant $participant = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="EditionTask")
-     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: 'EditionTask')]
+    #[ORM\JoinColumn(name: 'task_id', referencedColumnName: 'id')]
     private ?EditionTask $task = null;
 
-    /**
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $userPriority = 0;
 
     /**
      * The participant age, retained for statistics.
-     *
-     * @ORM\Column(length=3, type="integer", nullable=true, options={"unsigned"=true})
      */
+    #[ORM\Column(length: 3, type: 'integer', nullable: true, options: ['unsigned' => true])]
     private ?int $age = null;
 
     /**
      * The original participant id, retained for statistics.
-     *
-     * @ORM\Column(name="participant_id_original", type="integer", nullable=true, options={"unsigned"=true})
      */
+    #[ORM\Column(name: 'participant_id_original', type: 'integer', nullable: true, options: ['unsigned' => true])]
     private ?int $participantId = null;
 
     public function __construct(Offer $offer, Participant $participant, string $status = null)
@@ -140,13 +116,23 @@ class Attendance
 
     public function setStatus(?string $status): void
     {
-        if (null !== $status && !\in_array($status, [self::STATUS_CONFIRMED, self::STATUS_WAITLISTED, self::STATUS_WITHDRAWN, self::STATUS_WAITING, self::STATUS_ERROR], true)) {
+        if (null !== $status && !\in_array($status, [self::STATUS_PAID, self::STATUS_CONFIRMED, self::STATUS_WAITLISTED, self::STATUS_WITHDRAWN, self::STATUS_WAITING, self::STATUS_ERROR], true)) {
             throw new InvalidArgumentException('Invalid attendance status');
         }
 
         $this->status = $status;
 
         $this->setModifiedAt();
+    }
+
+    public function setPaid(): void
+    {
+        $this->setStatus(self::STATUS_PAID);
+    }
+
+    public function isPaid(): bool
+    {
+        return self::STATUS_PAID === $this->status;
     }
 
     public function setConfirmed(): void

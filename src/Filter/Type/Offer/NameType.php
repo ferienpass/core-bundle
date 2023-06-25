@@ -15,15 +15,13 @@ namespace Ferienpass\CoreBundle\Filter\Type\Offer;
 
 use Doctrine\DBAL\ParameterType;
 use Doctrine\ORM\QueryBuilder;
-use Ferienpass\CoreBundle\Filter\Type\OfferFilterType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-class NameType extends AbstractType implements OfferFilterType
+class NameType extends AbstractOfferFilterType
 {
     public static function getName(): string
     {
@@ -37,9 +35,10 @@ class NameType extends AbstractType implements OfferFilterType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
+        parent::configureOptions($resolver);
+
         $resolver->setDefaults([
             'label' => 'Nach Titel suchen',
-            'required' => false,
         ]);
     }
 

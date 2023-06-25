@@ -10,7 +10,7 @@ services:
     class: Ferienpass\CoreBundle\HookListener\VisibleElementListener
     tags:
       - { name: 'contao.hook', hook: 'isVisibleElement' }
-    arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository', '@contao.security.token_checker' ]
+    arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository', '@contao.security.token_checker','@request_stack', '@contao.routing.scope_matcher' ]
 
   richardhj.ferienpass.listener.callback.tl_member.ferienpass_host:
     class: Ferienpass\CoreBundle\EventListener\Callback\Table\Member\FerienpassHostCallbackListener

@@ -7,7 +7,7 @@ services:
       calls:
         - [ setContainer, [ '@Psr\Container\ContainerInterface' ] ]
 
-    Ferienpass\CoreBundle\Filter\Type\OfferFilterType:
+    Ferienpass\CoreBundle\Filter\Type\FilterType:
       tags: [ 'ferienpass.filter.offer_list_type' ]
 
   Ferienpass\CoreBundle\Controller\Frontend\RedirectShortUrlController: ~
@@ -19,71 +19,8 @@ services:
     tags: [ 'controller.service_arguments' ]
     arguments: [ '@database_connection' ]
 
-  Ferienpass\CoreBundle\Controller\Backend\ExportController:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\OfferRepository', '@Ferienpass\CoreBundle\Export\Offer\OfferExporter' ]
-
   Ferienpass\CoreBundle\Controller\Backend\ProofController: ~
 
-  Ferienpass\CoreBundle\Controller\Backend\EditionStatsController:
-    arguments: [ '@contao.fragment.registry', '@contao.fragment.handler' ]
-
-  Ferienpass\CoreBundle\Controller\Backend\DashboardController:
-    arguments: [ '@contao.fragment.registry', '@contao.fragment.handler' ]
-
-  Ferienpass\CoreBundle\Controller\BackendDashboard\InformSleepController:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
-    tags: [ 'contao.dashboard_widget' ]
-
-  Ferienpass\CoreBundle\Controller\BackendDashboard\SendAcceptancesController:
-    arguments: [ '@Ferienpass\CoreBundle\Applications\UnconfirmedApplications' ]
-    tags: [ 'contao.dashboard_widget' ]
-
-  Ferienpass\CoreBundle\Controller\BackendDashboard\EraseDataController:
-    arguments: [ '@Ferienpass\CoreBundle\Facade\EraseDataFacade', '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
-    tags: [ 'contao.dashboard_widget' ]
-
-  Ferienpass\CoreBundle\Controller\BackendDashboard\GanttController:
-    arguments: [ '@translator', '@Ferienpass\CoreBundle\Repository\EditionRepository', '@contao.csrf.token_manager', '%contao.csrf_token_name%' ]
-    tags: [ 'contao.dashboard_widget' ]
-
-  Ferienpass\CoreBundle\Controller\BackendDashboard\CreateSeasonController:
-    arguments: [ '@database_connection' ]
-    tags: [ 'contao.dashboard_widget' ]
-
-  Ferienpass\CoreBundle\Controller\BackendDashboard\CreateAttendanceController:
-    arguments: [ '@Ferienpass\CoreBundle\Facade\AttendanceFacade', '@doctrine' ]
-    tags: [ 'contao.dashboard_widget' ]
-
-  Ferienpass\CoreBundle\Controller\BackendDashboard\HeatmapController:
-    arguments: [ '@database_connection' ]
-    tags: [ 'contao.dashboard_widget' ]
-
-  Ferienpass\CoreBundle\Controller\EditionStats\FiguresController:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@Ferienpass\CoreBundle\Repository\OfferRepository', '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
-    tags: [ 'contao.edition_stats_widget' ]
-
-  Ferienpass\CoreBundle\Controller\EditionStats\ChartUtilizationController:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@translator' ]
-    tags: [ 'contao.edition_stats_widget' ]
-
-  Ferienpass\CoreBundle\Controller\EditionStats\ChartAttendancesController:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository' ]
-    tags: [ 'contao.edition_stats_widget' ]
-
-  Ferienpass\CoreBundle\Controller\EditionStats\ChartStatusController:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@translator' ]
-    tags: [ 'contao.edition_stats_widget' ]
-
-  Ferienpass\CoreBundle\Controller\EditionStats\ChartAgeController:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository' ]
-    tags: [ 'contao.edition_stats_widget' ]
-
-  Ferienpass\CoreBundle\Controller\EditionStats\ChartCategoriesController:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository' ]
-    tags: [ 'contao.edition_stats_widget' ]
-
-  Ferienpass\CoreBundle\Controller\Backend\NotificationCenterController:
-    arguments: [ '@Ferienpass\CoreBundle\Applications\UnconfirmedApplications' ]
   Ferienpass\CoreBundle\Applications\UnconfirmedApplications:
     arguments: [ '@database_connection' ]
 
@@ -106,7 +43,7 @@ services:
       - [ setContainer, [ '@service_container' ] ]
 
   Ferienpass\CoreBundle\Controller\Frontend\Api\OfferController:
-    arguments: [ '@session' ]
+    arguments: [ '@request_stack' ]
     calls:
       - [ setContainer, [ '@service_container' ] ]
 
@@ -130,9 +67,6 @@ services:
 
   Ferienpass\CoreBundle\Monolog\EventLogHandler:
     arguments: [ '@doctrine.orm.entity_manager' ]
-
-  Ferienpass\CoreBundle\Controller\Backend\OfferApplicationsController:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@Ferienpass\CoreBundle\Export\ParticipantList\PdfExport', '@Ferienpass\CoreBundle\Export\ParticipantList\WordExport' ]
 
   Ferienpass\CoreBundle\Controller\Frontend\FaviconIcoController:
     tags: [ 'controller.service_arguments' ]
@@ -159,7 +93,11 @@ services:
   Ferienpass\CoreBundle\Facade\EraseDataFacade:
     arguments: [ '@database_connection', '@Ferienpass\CoreBundle\Repository\ParticipantRepository' ]
 
+  Ferienpass\CoreBundle\Session\Flash:
+    arguments: [ '@request_stack' ]
   Ferienpass\CoreBundle\Repository\HostRepository:
+    arguments: [ '@doctrine' ]
+  Ferienpass\CoreBundle\Repository\NotificationRepository:
     arguments: [ '@doctrine' ]
   Ferienpass\CoreBundle\Repository\OfferRepository:
     public: true
@@ -175,10 +113,13 @@ services:
   Ferienpass\CoreBundle\Repository\NotificationLogRepository:
     arguments: [ '@doctrine' ]
 
+  Ferienpass\CoreBundle\Repository\PaymentRepository:
+    arguments: [ '@doctrine' ]
 
-  Ferienpass\CoreBundle\HttpCache\UserContext\UserContextProvider:
-    arguments: [ '@security.token_storage', '@contao.framework', '@contao.security.token_checker' ]
-    tags: [ 'fos_http_cache.user_context_provider' ]
+
+#  Ferienpass\CoreBundle\HttpCache\UserContext\UserContextProvider:
+#    arguments: [ '@security.token_storage', '@contao.framework', '@contao.security.token_checker' ]
+#    tags: [ 'fos_http_cache.user_context_provider' ]
 
   Ferienpass\CoreBundle\Controller\ContentElement\SignInController:
     arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
@@ -202,11 +143,11 @@ services:
   Ferienpass\CoreBundle\EventListener\DataContainer\Edition\GenerateAliasListener:
     arguments: [ '@database_connection', '@contao.slug' ]
 
-  Ferienpass\CoreBundle\EventListener\Doctrine\Offer\AliasListener:
-    arguments: [ '@contao.slug' ]
-    tags:
-      - { name: 'doctrine.event_listener', event: 'preUpdate' }
+  Ferienpass\CoreBundle\EventListener\Doctrine\Host\AliasListener:
+    arguments: [ '@slugger' ]
 
+  Ferienpass\CoreBundle\EventListener\Doctrine\Offer\AliasListener:
+    arguments: [ '@slugger' ]
   Ferienpass\CoreBundle\EventListener\Doctrine\Offer\SortingFieldsListener:
     tags: [ { name: 'doctrine.event_listener', event: 'preUpdate' } ]
 
@@ -215,7 +156,7 @@ services:
       - { name: 'doctrine.event_listener', event: 'preUpdate' }
 
   Ferienpass\CoreBundle\EventListener\Doctrine\Offer\SetSavedListener:
-    arguments: [ '@session' ]
+    arguments: [ '@request_stack' ]
     tags:
       - { name: 'doctrine.event_listener', event: 'postLoad' }
 
@@ -292,7 +233,7 @@ services:
     tags: [ 'form.type_extension' ]
 
   Ferienpass\CoreBundle\Form\ApplyFormType:
-    arguments: [ '@security.helper', '@doctrine', '@session', '@contao.opt-in', '@database_connection' ]
+    arguments: [ '@security.helper', '@doctrine', '@request_stack', '@contao.opt_in', '@database_connection' ]
 
   Ferienpass\CoreBundle\Form\ApplyFormParticipantType:
     arguments: [ '@security.helper' ]
@@ -307,7 +248,7 @@ services:
     arguments: [ '@contao.csrf.token_manager', '%contao.csrf_token_name%' ]
 
   Ferienpass\CoreBundle\Security\Voter\HostVoter:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\HostRepository' ]
+    arguments: [ '@security.helper', '@Ferienpass\CoreBundle\Repository\HostRepository' ]
     tags:
       - { name: security.voter }
 
@@ -324,8 +265,15 @@ services:
     tags:
       - { name: security.voter }
 
-  Ferienpass\CoreBundle\EventListener\ForwardDashboardControllerListener:
-    arguments: [ '@request_stack', '@kernel' ]
+  Ferienpass\CoreBundle\Security\Voter\ParticipantVoter:
+    arguments:
+      [ '@security.helper' ]
+    tags:
+      - { name: security.voter }
+
+  Ferienpass\CoreBundle\Security\Voter\RoleVoter:
+    tags:
+      - { name: security.voter, priority: 255 }
 
   Ferienpass\CoreBundle\Twig\Extension\RequestTokenExtension:
     arguments:
@@ -347,7 +295,7 @@ services:
   Ferienpass\CoreBundle\Filter\Type\Offer\CategoryType: ~
   Ferienpass\CoreBundle\Filter\Type\Offer\EarliestDateType: ~
   Ferienpass\CoreBundle\Filter\Type\Offer\FavoritesType:
-    arguments: [ '@session' ]
+    arguments: [ '@request_stack' ]
   Ferienpass\CoreBundle\Filter\Type\Offer\FeeType: ~
   Ferienpass\CoreBundle\Filter\Type\Offer\LatestDateType: ~
   Ferienpass\CoreBundle\Filter\Type\Offer\NameType: ~
@@ -365,10 +313,10 @@ services:
     arguments: [ '@messenger.default_bus', '@Ferienpass\CoreBundle\Repository\ParticipantRepository', '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@Ferienpass\CoreBundle\Repository\OfferRepository' ]
 
   Ferienpass\CoreBundle\MessageHandler\WhenAccountCreatedThenNotify:
-    arguments: [ '@contao.opt-in', '@router' ]
+    arguments: [ '@contao.opt_in', '@router' ]
 
   Ferienpass\CoreBundle\MessageHandler\WhenAccountResendNotificationThenNotify:
-    arguments: [ '@contao.opt-in', '@router' ]
+    arguments: [ '@contao.opt_in', '@router' ]
 
   Ferienpass\CoreBundle\MessageHandler\WhenRemindAttendanceThenNotify:
     arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport', '@translator', '@contao.framework' ]
@@ -381,7 +329,7 @@ services:
   Ferienpass\CoreBundle\MessageHandler\WhenConfirmApplicationsThenNotify:
     arguments: [ '@Ferienpass\CoreBundle\Applications\UnconfirmedApplications', '@translator' ]
   Ferienpass\CoreBundle\MessageHandler\WhenAttendanceConfirmedThenNotify:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@translator', '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport', '@router' ]
+    arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@translator', '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport', '@router', '@notifier' ]
   Ferienpass\CoreBundle\MessageHandler\WhenAttendanceWithdrawnThenNotify:
     arguments: [ '@doctrine', '@translator' ]
 
@@ -393,15 +341,14 @@ services:
 
   Ferienpass\CoreBundle\EventListener\DataContainer\PurgeDcaListener: ~
 
-  Ferienpass\CoreBundle\EventListener\Backend\BackendMainListener:
-    arguments: [ '@twig', '@contao.framework', '%ferienpass.version%' ]
-
-  Ferienpass\CoreBundle\EventListener\Backend\BackendMenuListener:
-    arguments: [ '@router', '@request_stack' ]
-    tags: [ { name: 'kernel.event_listener', event: 'contao.backend_menu_build', priority: -255 } ]
-
   Ferienpass\CoreBundle\EventListener\Notification\AddNotificationTokens:
     arguments: [ '@translator' ]
+
+  Ferienpass\CoreBundle\Export\Payments\PaymentsPdfExport:
+    arguments: [ '@filesystem', '@twig' ]
+
+  Ferienpass\CoreBundle\Export\Payments\ReceiptPdfExport:
+    arguments: [ '@filesystem', '@twig' ]
 
   Ferienpass\CoreBundle\Export\ParticipantList\PdfExport:
     arguments: [ '@filesystem', '@twig' ]
@@ -411,6 +358,9 @@ services:
 
   Ferienpass\CoreBundle\Cron\SendRemindersListener:
     arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@messenger.default_bus', '@Ferienpass\CoreBundle\Repository\EventLogRepository' ]
+
+  Ferienpass\CoreBundle\Notifier:
+    arguments: [!tagged_iterator { tag: 'ferienpass.notification', index_by: 'key' }]
 
   Ferienpass\CoreBundle\UserAccount\UserAccountFragments: ~
 

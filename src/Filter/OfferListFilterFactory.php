@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
-use Ferienpass\CoreBundle\Form\OfferFiltersType;
+use Ferienpass\CoreBundle\Form\ListFiltersType;
 use Symfony\Component\Form\FormFactoryInterface;
 
 class OfferListFilterFactory
@@ -28,6 +28,6 @@ class OfferListFilterFactory
 
     public function create(DoctrineQueryBuilder $queryBuilder): OfferListFilter
     {
-        return new OfferListFilter($this->formFactory->create(OfferFiltersType::class), $queryBuilder, $this->filterTypes);
+        return new OfferListFilter($this->formFactory->create(ListFiltersType::class), $queryBuilder, $this->filterTypes);
     }
 }

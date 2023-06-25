@@ -16,10 +16,9 @@ namespace Ferienpass\CoreBundle;
 use Contao\CoreBundle\DependencyInjection\Compiler\RegisterFragmentsPass;
 use Ferienpass\CoreBundle\DependencyInjection\Compiler\UserAccountFragmentsPass;
 use Ferienpass\CoreBundle\DependencyInjection\FerienpassCoreExtension;
-use Ferienpass\CoreBundle\Fragment\DashboardWidgetReference;
-use Ferienpass\CoreBundle\Fragment\EditionStatsWidgetReference;
 use Ferienpass\CoreBundle\Fragment\FragmentReference;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class FerienpassCoreBundle extends Bundle
@@ -29,7 +28,7 @@ class FerienpassCoreBundle extends Bundle
         return \dirname(__DIR__);
     }
 
-    public function getContainerExtension()
+    public function getContainerExtension(): ?ExtensionInterface
     {
         return new FerienpassCoreExtension();
     }
@@ -39,8 +38,6 @@ class FerienpassCoreBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new RegisterFragmentsPass(FragmentReference::TAG_NAME));
-        $container->addCompilerPass(new RegisterFragmentsPass(DashboardWidgetReference::TAG_NAME));
-        $container->addCompilerPass(new RegisterFragmentsPass(EditionStatsWidgetReference::TAG_NAME));
         $container->addCompilerPass(new UserAccountFragmentsPass());
     }
 }

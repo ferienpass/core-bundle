@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 $GLOBALS['TL_DCA']['Edition'] = [
     'config' => [
-        'dataContainer' => 'Table',
+        'dataContainer' => \Contao\DC_Table::class,
         'ctable' => ['EditionTask'],
     ],
     'list' => [
@@ -39,11 +39,6 @@ $GLOBALS['TL_DCA']['Edition'] = [
                 'href' => 'act=delete',
                 'icon' => 'delete.gif',
                 'attributes' => 'onclick="if (!confirm(\'Löschen?\')) return false; Backend.getScrollOffset();"',
-            ],
-
-            'stats' => [
-                'route' => 'backend_edition_stats',
-                'icon' => 'bundles/ferienpasscore/img/stats.svg',
             ],
         ],
     ],

@@ -23,19 +23,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(defaults={"token_check"=true})
- */
+#[Route(defaults: ['token_check' => true])]
 final class WebProofController extends AbstractController
 {
     public function __construct(private TokenChecker $tokenChecker, private ImgExport $imgExport)
     {
     }
 
-    /**
-     * @Route("/angebot/web/{id}.{_format}", name="web-proof", defaults={"format"="jpg"},
-     *                                           requirements={"itemId"="\d+"})
-     */
+    #[Route(path: '/angebot/web/{id}.{_format}', name: 'web-proof', defaults: ['format' => 'jpg'], requirements: ['itemId' => '\d+'])]
     public function __invoke(Offer $offer, string $_format, Request $request)
     {
         if (!\in_array($_format, ['jpg', 'jpeg'], true)) {

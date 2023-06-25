@@ -86,6 +86,7 @@ class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDra
 
         /**
          * @var Message&Model $message
+         *
          * @psalm-suppress UndefinedDocblockClass
          */
         $message = $this->getMessage();

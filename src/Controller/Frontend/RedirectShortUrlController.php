@@ -17,9 +17,7 @@ use Ferienpass\CoreBundle\Entity\Offer;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/{id}", requirements={"id"="\d+"})
- */
+#[Route(path: '/{id}', requirements: ['id' => '\d+'])]
 class RedirectShortUrlController extends \Contao\CoreBundle\Controller\AbstractController
 {
     public function __invoke(Offer $offer)

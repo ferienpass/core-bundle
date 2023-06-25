@@ -33,7 +33,7 @@ class HostRepository extends ServiceEntityRepository
             ->where('a.member=:id')
             ->setParameter('id', $memberId)
             ->getQuery()
-      ;
+        ;
 
         return $query->getResult();
     }

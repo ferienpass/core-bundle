@@ -27,8 +27,10 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['language']['filter'] = false;
 (new PaletteManipulator())
     ->addField('hosts', 'groups', PaletteManipulator::POSITION_AFTER)
     ->addField('public_fields', 'contact_legend', PaletteManipulator::POSITION_APPEND)
+    ->addLegend('admin_legend')
+    ->addField('admin', 'admin_legend')
     ->applyToPalette('default', 'tl_member')
-    ;
+;
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['hosts'] = [
     'inputType' => 'select',
@@ -49,6 +51,13 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['hosts'] = [
         'relationTable' => 'HostMemberAssociation',
         'skipInstall' => true,
     ],
+];
+
+$GLOBALS['TL_DCA']['tl_member']['fields']['admin'] = [
+    'exclude' => false,
+    'inputType' => 'checkbox',
+    'filter' => true,
+    'sql' => ['type' => 'boolean', 'default' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['public_fields'] = [

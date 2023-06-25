@@ -1,0 +1,101 @@
+{% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
+
+<style>
+    @page {
+        header: html_myHeader;
+        footer: html_myFooter;
+        margin-top: 4.5cm;
+    }
+
+    h1 {
+        font-weight: bold;
+        font-size: 12pt;
+    }
+
+    table.items {
+        font-size: 10pt;
+    }
+
+    table.items td {
+        padding: 5pt 6pt;
+        border-bottom: 1px solid cmyk(0, 0, 0, 8);
+        vertical-align: top;
+    }
+
+    table.items tbody tr:nth-child(2n+1) {
+        background-color: cmyk(0, 0, 0, 4);
+    }
+</style>
+
+<div>
+
+    <htmlpageheader name="myHeader" style="display:none">
+        {% block header %}{% endblock %}
+    </htmlpageheader>
+
+    <htmlpagefooter name="myFooter" style="display:none">
+        {% block footer %}
+        <table width="100%">
+            <tr>
+                <td width="50%" style="font-size: 8pt; color: cmyk(0,0,0,60)"></td>
+                <td width="50%" style="font-size: 8pt; color: cmyk(0,0,0,60);text-align: right;">Seite {PAGENO}/{nbpg}
+                </td>
+            </tr>
+        </table>
+        {% endblock %}
+    </htmlpagefooter>
+
+
+    <p style="width: 8cm;font-size:8pt;border-bottom: 1px solid black;padding-bottom: 2px;">Stadt Bad Oldesloe • Postfach 1261 • 23832 Bad Oldesloe</p>
+
+    <p style="font-size: 11pt;">{{ payment.billingAddress|nl2br }}<br><br><br></p>
+
+    <h1>Beleg {{ '#'~payment.receiptNumber }}</h1>
+
+    <p style="text-align: right;font-size:10pt;">{{ payment.createdAt|date('d.m.Y') }}</p>
+
+    <table class="items" cellspacing="0" cellpadding="0" style="width: 100%">
+
+        <thead>
+        <tr>
+            <td style="font-weight:bold">#</td>
+            <td style="font-weight:bold">Angebot</td>
+            <td style="font-weight:bold">Teilnehmer:in</td>
+            <td style="font-weight:bold">Gebühr</td>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for item in payment.items -%}
+            <tr>
+                <td style="width:12pt;text-align:right;font-weight: bold; color: cmyk(0,0,0,70);font-size: 10pt">{{ loop.index }}</td>
+                <td>
+                    <p>{{ item.attendance.offer.name }}</p>
+                    {% if item.attendance.offer.dates is not empty %}
+                        <p>{{ offer_macro.date_single(item.attendance.offer.dates|first) }}</p>
+                    {% endif %}
+                </td>
+                <td>
+                    <p>{{ item.attendance.participant.name }}</p>
+                </td>
+                <td>
+                    <p>
+                        {{ (item.amount/100)|format_currency('EUR', locale='de') }}
+                    </p>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+        <tfoot>
+        <tr>
+            <td colspan="3" style="text-align: right;font-weight: bold;">Belegsumme:</td>
+            <td style="font-weight: bold">{{ (payment.totalAmount/100)|format_currency('EUR', locale='de') }}</td>
+        </tr>
+        </tfoot>
+
+    </table>
+
+    <p style="font-size:11pt;">{{ 'Bitte bringen Sie diese Quittung als Beleg Ihrer Zahlung zu den gebuchten Ferienpass-Angeboten mit.'|trans }}</p>
+
+</div>

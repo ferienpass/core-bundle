@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\Backend;
 
+use Contao\CoreBundle\Controller\AbstractBackendController;
 use Doctrine\Common\Collections\Criteria;
 use Ferienpass\CoreBundle\Message\ParticipantListChanged;
 use Ferienpass\CoreBundle\Repository\EventLogRepository;
@@ -20,9 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/ereignisse", name="backend_event_log")
- */
+#[Route(path: '/ereignisse', name: 'backend_event_log')]
 final class EventLogController extends AbstractBackendController
 {
     public function __construct(private EventLogRepository $eventLogRepository)
@@ -31,8 +30,6 @@ final class EventLogController extends AbstractBackendController
 
     public function __invoke(Request $request): Response
     {
-        // $this->denyAccessUnlessGranted2($request);
-
         $criteria = (new Criteria())
             ->where(Criteria::expr()->neq('message', ParticipantListChanged::class))
             ->orderBy(['createdAt' => 'DESC'])

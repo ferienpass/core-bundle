@@ -39,6 +39,7 @@ class PrettyErrorScreenListener
 
     public function __invoke(ExceptionEvent $event): void
     {
+        return;
         if (!$event->isMainRequest()) {
             return;
         }

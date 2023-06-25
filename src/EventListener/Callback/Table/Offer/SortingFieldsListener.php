@@ -24,8 +24,6 @@ class SortingFieldsListener
 
     /**
      * @var DataContainer|mixed
-     *
-     * @param mixed $dataContainer
      */
     public function __invoke($dataContainer): void
     {

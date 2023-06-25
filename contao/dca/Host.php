@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 $GLOBALS['TL_DCA']['Host'] = [
     'config' => [
-        'dataContainer' => 'Table',
+        'dataContainer' => \Contao\DC_Table::class,
         'enableVersioning' => true,
     ],
     'list' => [

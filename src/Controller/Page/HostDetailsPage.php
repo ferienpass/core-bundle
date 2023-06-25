@@ -34,6 +34,6 @@ class HostDetailsPage extends AbstractController
         return $this->createPageBuilder($request->attributes->get('pageModel'))
             ->addFragment('main', new FragmentReference('ferienpass.fragment.host_details', ['host' => $host]))
             ->getResponse()
-            ;
+        ;
     }
 }

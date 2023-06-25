@@ -24,9 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/angebot/druck/{id}.{_format}", name="pdf-proof", defaults={"format"="pdf"}, requirements={"id"="\d+"})
- */
+#[Route(path: '/angebot/druck/{id}.{_format}', name: 'pdf-proof', defaults: ['format' => 'pdf'], requirements: ['id' => '\d+'])]
 final class PrintSheetProofController extends AbstractController
 {
     public function __construct(private TokenChecker $tokenChecker, private PdfExports $pdfExports)

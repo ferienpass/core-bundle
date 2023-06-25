@@ -25,10 +25,6 @@ class FerienpassHostCallbackListener
 
     /**
      * Throw error if no host is set for member in host group.
-     *
-     * @param mixed $value
-     *
-     * @return mixed
      */
     public function onSaveCallback($value, DataContainer $dc)
     {

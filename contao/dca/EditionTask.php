@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 $GLOBALS['TL_DCA']['EditionTask'] = [
     'config' => [
-        'dataContainer' => 'Table',
+        'dataContainer' => \Contao\DC_Table::class,
         'ptable' => 'Edition',
         'switchToEdit' => false,
         'enableVersioning' => false,

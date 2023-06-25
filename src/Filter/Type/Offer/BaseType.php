@@ -15,12 +15,10 @@ namespace Ferienpass\CoreBundle\Filter\Type\Offer;
 
 use Doctrine\DBAL\ParameterType;
 use Doctrine\ORM\QueryBuilder;
-use Ferienpass\CoreBundle\Filter\Type\OfferFilterType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-class BaseType extends AbstractType implements OfferFilterType
+class BaseType extends AbstractOfferFilterType
 {
     public static function getName(): string
     {

@@ -17,36 +17,24 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class OfferCategory
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    /**
-     * @ORM\Column(name="tstamp", type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Column(name: 'tstamp', type: 'integer', options: ['unsigned' => true])]
     private int $timestamp;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Ferienpass\CoreBundle\Entity\Offer", mappedBy="categories")
-     */
+    #[ORM\ManyToMany(targetEntity: Offer::class, mappedBy: 'categories')]
     private Collection $offers;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true, unique=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
     private ?string $alias = null;
 
     public function __construct()

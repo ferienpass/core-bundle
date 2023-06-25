@@ -16,7 +16,7 @@ namespace Ferienpass\CoreBundle\Controller\Fragment;
 use Contao\CoreBundle\Controller\AbstractController;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\PageModel;
-use Ferienpass\CoreBundle\Form\OfferFiltersType;
+use Ferienpass\CoreBundle\Form\ListFiltersType;
 use Ferienpass\CoreBundle\Repository\EditionRepository;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -41,13 +41,13 @@ final class OfferListFilterController extends AbstractController
 
         // Get the normalized form data from query
         if ($request->query->count()) {
-            $form = $this->createForm(OfferFiltersType::class);
+            $form = $this->createForm(ListFiltersType::class);
             $form->submit($request->query->all());
             $data = $form->getData();
         }
 
         // Build the short form
-        $shortForm = $this->createForm(OfferFiltersType::class, $data ?? null, ['short' => true]);
+        $shortForm = $this->createForm(ListFiltersType::class, $data ?? null, ['short' => true]);
 
         // If filters form submitted, redirect to a pretty URL
         $shortForm->handleRequest($request);
@@ -56,7 +56,7 @@ final class OfferListFilterController extends AbstractController
         }
 
         // Build the full form
-        $form = $this->createForm(OfferFiltersType::class, $data ?? null);
+        $form = $this->createForm(ListFiltersType::class, $data ?? null);
         $form->handleRequest($request);
 
         // If filters form submitted, redirect to a pretty URL

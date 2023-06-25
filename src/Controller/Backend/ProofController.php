@@ -13,17 +13,15 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\Backend;
 
+use Contao\CoreBundle\Controller\AbstractBackendController;
 use Ferienpass\CoreBundle\Repository\EditionRepository;
 use Ferienpass\CoreBundle\Repository\OfferRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/pdf-vorschau", name="backend_pdf_proof")
- */
-final class ProofController extends AbstractController
+#[Route(path: '/pdf-vorschau', name: 'backend_pdf_proof')]
+final class ProofController extends AbstractBackendController
 {
     public function __invoke(EditionRepository $editionRepository, OfferRepository $offerRepository, Request $request): Response
     {

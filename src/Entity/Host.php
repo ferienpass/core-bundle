@@ -17,109 +17,106 @@ use Contao\MemberModel;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="Ferienpass\CoreBundle\Repository\HostRepository")
- */
+#[ORM\Entity(repositoryClass: 'Ferienpass\CoreBundle\Repository\HostRepository')]
+#[UniqueEntity('alias')]
 class Host
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    /**
-     * @ORM\Column(name="tstamp", type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Column(name: 'tstamp', type: 'integer', options: ['unsigned' => true])]
     private int $timestamp;
 
     /**
      * @Groups("notification")
-     * @ORM\Column(type="string", length=255, nullable=false, options={"default"=""})
      */
-    private string $name;
+    #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
+    #[Assert\NotBlank(message: 'notBlank')]
+    private ?string $name = null;
 
     /**
      * @Groups("notification")
-     * @ORM\Column(type="string", length=255, nullable=true, unique=true)
      */
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $alias = null;
 
     /**
      * @Groups("notification")
-     * @ORM\Column(type="string", length=64, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
+    #[PhoneNumber(defaultRegion: 'DE')]
     private ?string $phone = null;
 
     /**
      * @Groups("notification")
-     * @ORM\Column(type="string", length=64, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
+    #[PhoneNumber(defaultRegion: 'DE')]
     private ?string $fax = null;
 
     /**
      * @Groups("notification")
-     * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[PhoneNumber(type: PhoneNumber::MOBILE, defaultRegion: 'DE')]
     private ?string $mobile = null;
 
     /**
      * @Groups("notification")
-     * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Email]
     private ?string $email = null;
 
     /**
      * @Groups("notification")
-     * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Url]
     private ?string $website = null;
 
     /**
      * @Groups("notification")
-     * @ORM\Column(type="string", length=32, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
     private ?string $postal = null;
 
     /**
      * @Groups("notification")
-     * @ORM\Column(type="string", length=64, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
     private ?string $city = null;
 
     /**
      * @Groups("notification")
-     * @ORM\Column(type="string", length=64, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
     private ?string $street = null;
 
     /**
      * @Groups("notification")
-     * @ORM\Column(type="text", nullable=true)
      */
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $text = null;
 
-    /**
-     * @ORM\Column(type="binary_string", length=16, nullable=true)
-     */
+    #[ORM\Column(type: 'binary_string', length: 16, nullable: true)]
     private ?string $logo = null;
 
-    /**
-     * @ORM\Column(type="string", length=1, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 1, nullable: true)]
     private ?string $active = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\HostMemberAssociation", mappedBy="host", cascade={"persist"})
-     */
+    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\HostMemberAssociation', mappedBy: 'host', cascade: ['persist'])]
     private Collection $memberAssociations;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Ferienpass\CoreBundle\Entity\Offer", mappedBy="hosts")
-     */
+    #[ORM\ManyToMany(targetEntity: Offer::class, mappedBy: 'hosts')]
     private Collection $offers;
 
     public function __construct()
@@ -165,7 +162,7 @@ class Host
         $this->timestamp = $timestamp;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -230,12 +227,12 @@ class Host
         return $this->active;
     }
 
-    public function setName(string $name): void
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function setAlias(string $alias): void
+    public function setAlias(?string $alias): void
     {
         $this->alias = $alias;
     }
@@ -303,5 +300,12 @@ class Host
     public function addOffer(Offer $offer): void
     {
         $this->offers->add($offer);
+    }
+
+    public function generateAlias(SluggerInterface $slugger)
+    {
+        if (!$this->alias) {
+            $this->alias = (string) $slugger->slug($this->getName() ?? '')->lower();
+        }
     }
 }

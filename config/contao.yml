@@ -1,5 +1,4 @@
 contao:
-  legacy_routing: false
   localconfig:
     licenseAccepted: true
     enableSearch: false
@@ -14,9 +13,6 @@ contao:
     maxFileSize: 20480000
     gdMaxImgWidth: 6000
     gdMaxImgHeight: 6000
-
-  backend:
-    route_prefix: '/admin'
 
   error_level: 8181
 

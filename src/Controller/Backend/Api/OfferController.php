@@ -20,14 +20,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/offer/{id}", requirements={"id"="\d+"})
- */
+#[Route(path: '/offer/{id}', requirements: ['id' => '\d+'])]
 final class OfferController extends AbstractController
 {
-    /**
-     * @Route("/cancel", name="backend_api_offer_cancel", methods={"POST"})
-     */
+    #[Route(path: '/cancel', name: 'backend_api_offer_cancel', methods: ['POST'])]
     public function cancelOffer(Offer $offer, ManagerRegistry $doctrine, MessageBusInterface $messageBus): Response
     {
         $this->container->get('contao.framework')->initialize();

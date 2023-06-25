@@ -34,6 +34,7 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouteCollection;
+use Symfony\WebpackEncoreBundle\WebpackEncoreBundle;
 
 class Plugin implements BundlePluginInterface, RoutingPluginInterface, ConfigPluginInterface, DependentPluginInterface, ExtensionPluginInterface
 {
@@ -43,6 +44,7 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, ConfigPlu
             BundleConfig::create(SensioFrameworkExtraBundle::class),
             BundleConfig::create(FrameworkBundle::class),
             BundleConfig::create(KnpSnappyBundle::class),
+            BundleConfig::create(WebpackEncoreBundle::class),
             BundleConfig::create(FerienpassCoreBundle::class)
                 ->setLoadAfter([
                     ContaoCoreBundle::class,
@@ -73,7 +75,7 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, ConfigPlu
     public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig): void
     {
         if (isset($_ENV['SENTRY_DSN'])) {
-            $loader->load(__DIR__.'/../../config/sentry.yml');
+            // $loader->load(__DIR__.'/../../config/sentry.yml');
             $loader->load(__DIR__.'/../../config/packages/prod/monolog.yml');
         }
 
@@ -107,6 +109,12 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, ConfigPlu
                     $extensionConfig['firewalls']['contao_frontend']['json_login']['remember_me'] = true;
                     break;
                 }
+            }
+        }
+
+        if ('framework' === $extensionName) {
+            foreach ($extensionConfigs as &$extensionConfig) {
+                $extensionConfig['mailer']['envelope']['sender'] = 'test@example.org';
             }
         }
 

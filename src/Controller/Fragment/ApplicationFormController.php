@@ -27,12 +27,11 @@ use Ferienpass\CoreBundle\Ux\Flash;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ApplicationFormController extends AbstractController
 {
-    public function __construct(private ApplicationSystems $applicationSystems, private AttendanceFacade $attendanceFacade, private AttendanceRepository $attendanceRepository, private ManagerRegistry $doctrine, private Session $session, private OptIn $optIn)
+    public function __construct(private ApplicationSystems $applicationSystems, private AttendanceFacade $attendanceFacade, private AttendanceRepository $attendanceRepository, private ManagerRegistry $doctrine, private OptIn $optIn)
     {
     }
 
@@ -54,7 +53,7 @@ class ApplicationFormController extends AbstractController
         }
 
         $countParticipants = $this->attendanceRepository->count(['status' => 'confirmed', 'offer' => $offer]) + $this->attendanceRepository->count(['status' => 'waitlisted', 'offer' => $offer]);
-        $vacant = $offer->getMaxParticipants() > 0 ?$offer->getMaxParticipants() - $countParticipants : null;
+        $vacant = $offer->getMaxParticipants() > 0 ? $offer->getMaxParticipants() - $countParticipants : null;
 
         $user = $this->getUser();
         $allowAnonymous = (bool) $applicationSystem->getTask()?->isAllowAnonymous();
@@ -101,7 +100,7 @@ class ApplicationFormController extends AbstractController
         $this->doctrine->getManager()->flush();
 
         if (null === $participant->getMember()) {
-            $this->session->set('participant_ids', array_unique(array_merge($this->session->get('participant_ids', []), [$participant->getId()])));
+            $request->getSession()->set('participant_ids', array_unique(array_merge($request->getSession()->get('participant_ids', []), [$participant->getId()])));
 
             // Verify email address
             $optInToken = $this->optIn->create('apply', $participant->getEmail(), ['Participant' => [$participant->getId()]]);

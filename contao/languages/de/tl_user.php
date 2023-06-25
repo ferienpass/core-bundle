@@ -11,11 +11,5 @@ declare(strict_types=1);
  * or the documentation under <https://docs.ferienpass.online>.
  */
 
-/** @noinspection PhpUndefinedMethodInspection */
-$table = UserModel::getTable();
-
-/*
- * Fields
- */
-$GLOBALS['TL_LANG'][$table]['offer_date_picker'][0] = 'Date-Picker für Angebote';
-$GLOBALS['TL_LANG'][$table]['offer_date_picker'][1] = 'Das Date-Period-Picker-Widget für die Ferienpass-Angebote verwenden.';
+$GLOBALS['TL_LANG']['tl_user']['offer_date_picker'][0] = 'Date-Picker für Angebote';
+$GLOBALS['TL_LANG']['tl_user']['offer_date_picker'][1] = 'Das Date-Period-Picker-Widget für die Ferienpass-Angebote verwenden.';

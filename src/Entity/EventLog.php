@@ -17,41 +17,27 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="Ferienpass\CoreBundle\Repository\EventLogRepository")
- */
+#[ORM\Entity(repositoryClass: 'Ferienpass\CoreBundle\Repository\EventLogRepository')]
 class EventLog
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private string $uniqueId;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    /**
-     * @ORM\Column(name="message", type="text")
-     */
+    #[ORM\Column(name: 'message', type: 'text')]
     private string $message;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\EventLogRelated", mappedBy="logEntry", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\EventLogRelated', mappedBy: 'logEntry', cascade: ['persist', 'remove'])]
     private Collection $related;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\NotificationLog", mappedBy="logEntry", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\NotificationLog', mappedBy: 'logEntry', cascade: ['persist', 'remove'])]
     private Collection $notifications;
 
     public function __construct(string $uniqueId, string $message)

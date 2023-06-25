@@ -15,32 +15,22 @@ namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class HostMemberAssociation
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    /**
-     * @ORM\Column(name="member_id", type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Column(name: 'member_id', type: 'integer', options: ['unsigned' => true])]
     private int $member;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Ferienpass\CoreBundle\Entity\Host", inversedBy="memberAssociations")
-     * @ORM\JoinColumn(name="host_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\Host', inversedBy: 'memberAssociations')]
+    #[ORM\JoinColumn(name: 'host_id', referencedColumnName: 'id')]
     private Host $host;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
     public function __construct(int $member = null, Host $host = null)

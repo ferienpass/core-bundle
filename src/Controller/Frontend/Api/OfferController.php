@@ -14,22 +14,18 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Controller\Frontend\Api;
 
 use Ferienpass\CoreBundle\Entity\Offer;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/offer")
- */
+#[Route(path: '/offer')]
 final class OfferController extends AbstractController
 {
-    public function __construct(private Session $session)
+    public function __construct(private RequestStack $requestStack)
     {
     }
 
-    /**
-     * @Route("/{id}/save", methods={"PUT"}, requirements={"id"="\d+"})
-     */
+    #[Route(path: '/{id}/save', methods: ['PUT'], requirements: ['id' => '\d+'])]
     public function save(Offer $offer): Response
     {
         $savedOffers = $this->session->get('saved_offers', []);
@@ -40,7 +36,7 @@ final class OfferController extends AbstractController
             $savedOffers[] = $offer->getId();
         }
 
-        $this->session->set('saved_offers', $savedOffers);
+        $this->requestStack->getSession()->set('saved_offers', $savedOffers);
 
         return new Response('', Response::HTTP_NO_CONTENT);
     }

@@ -18,69 +18,51 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber;
+use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Participant
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    /**
-     * @ORM\Column(name="tstamp", type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Column(name: 'tstamp', type: 'integer', options: ['unsigned' => true])]
     private int $timestamp;
 
-    /**
-     * @ORM\Column(name="member_id", type="integer", options={"unsigned"=true}, nullable=true)
-     */
+    #[ORM\Column(name: 'member_id', type: 'integer', options: ['unsigned' => true], nullable: true)]
     private ?int $member;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=false, options={"default"=""})
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
     private string $firstname;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=false, options={"default"=""})
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
     private string $lastname;
 
-    /**
-     * @ORM\Column(type="date_immutable", nullable=true)
-     */
+    #[ORM\Column(type: 'date_immutable', nullable: true)]
     private ?\DateTimeInterface $dateOfBirth = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[PhoneNumber(defaultRegion: 'DE')]
     private ?string $phone = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[PhoneNumber(type: PhoneNumber::MOBILE, defaultRegion: 'DE')]
     private ?string $mobile = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Email]
     private ?string $email = null;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default"=0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private bool $discounted = false;
 
     /**
-     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\Attendance", mappedBy="participant")
-     *
      * @psalm-var Collection<int, Attendance>
      */
+    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\Attendance', mappedBy: 'participant')]
     private Collection $attendances;
 
     public function __construct(int $memberId = null)
@@ -108,6 +90,11 @@ class Participant
     public function getLastname(): string
     {
         return $this->lastname;
+    }
+
+    public function getName(): string
+    {
+        return sprintf('%s %s', $this->getFirstname(), $this->getLastname());
     }
 
     public function getDateOfBirth(): ?\DateTimeInterface
@@ -146,11 +133,12 @@ class Participant
             return null;
         }
 
-        return $this->dateOfBirth->diff(($atDate ?? new \DateTimeImmutable()))->y;
+        return $this->dateOfBirth->diff($atDate ?? new \DateTimeImmutable())->y;
     }
 
     /**
      * @return Collection|Attendance[]
+     *
      * @psalm-return Collection<int, Attendance>
      */
     public function getAttendances(): Collection
@@ -160,6 +148,7 @@ class Participant
 
     /**
      * @return Collection|Attendance[]
+     *
      * @psalm-return Collection<int, Attendance>
      */
     public function getAttendancesNotWithdrawn(Edition $edition = null): Collection
@@ -169,6 +158,7 @@ class Participant
 
     /**
      * @return ArrayCollection|Attendance[]
+     *
      * @psalm-return ArrayCollection<int, Attendance>
      */
     public function getAttendancesWaiting(): Collection

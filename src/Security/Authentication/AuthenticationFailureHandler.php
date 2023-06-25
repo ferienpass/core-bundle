@@ -28,7 +28,7 @@ class AuthenticationFailureHandler implements AuthenticationFailureHandlerInterf
     {
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
     {
         if ($exception instanceof LockedException) {
             return new JsonResponse([

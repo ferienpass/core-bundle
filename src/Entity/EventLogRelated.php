@@ -15,32 +15,22 @@ namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class EventLogRelated
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="EventLog", inversedBy="related")
-     * @ORM\JoinColumn(name="log_id", referencedColumnName="id", onDelete="CASCADE")
-     */
+    #[ORM\ManyToOne(targetEntity: 'EventLog', inversedBy: 'related')]
+    #[ORM\JoinColumn(name: 'log_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private EventLog $logEntry;
 
-    /**
-     * @ORM\Column(type="text")
-     */
+    #[ORM\Column(type: 'text')]
     private string $relatedTable;
 
-    /**
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $relatedId;
 
     public function __construct(EventLog $logEntry, string $relatedTable, int $relatedId)

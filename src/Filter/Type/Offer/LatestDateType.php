@@ -15,15 +15,13 @@ namespace Ferienpass\CoreBundle\Filter\Type\Offer;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\QueryBuilder;
-use Ferienpass\CoreBundle\Filter\Type\OfferFilterType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-class LatestDateType extends AbstractType implements OfferFilterType
+class LatestDateType extends AbstractOfferFilterType
 {
     public static function getName(): string
     {
@@ -37,10 +35,11 @@ class LatestDateType extends AbstractType implements OfferFilterType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
+        parent::configureOptions($resolver);
+
         $resolver->setDefaults([
             'label' => 'spätestes Datum',
             'widget' => 'single_text',
-            'required' => false,
         ]);
     }
 

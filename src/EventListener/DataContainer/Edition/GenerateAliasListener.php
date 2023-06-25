@@ -30,10 +30,10 @@ class GenerateAliasListener
     public function onSaveCallback(?string $value, DataContainer $dc): ?string
     {
         $aliasExists = fn (string $alias): bool => false !== $this->connection->executeQuery(
-                'SELECT id FROM Edition WHERE alias=:alias AND id!=:id', [
-                    'alias' => $alias,
-                    'id' => $dc->id,
-                ])->fetchOne();
+            'SELECT id FROM Edition WHERE alias=:alias AND id!=:id', [
+                'alias' => $alias,
+                'id' => $dc->id,
+            ])->fetchOne();
 
         // Generate an alias if there is none
         if (!$value && $dc->activeRecord->name) {

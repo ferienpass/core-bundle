@@ -25,18 +25,14 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/attendance/{id}", requirements={"id"="\d+"})
- */
+#[Route(path: '/attendance/{id}', requirements: ['id' => '\d+'])]
 final class AttendanceController extends AbstractController
 {
     public function __construct(private MessageBusInterface $messageBus)
     {
     }
 
-    /**
-     * @Route("/sort", methods={"POST"})
-     */
+    #[Route(path: '/sort', methods: ['POST'])]
     public function sortParticipantList(Attendance $attendance, Request $request, Session $session, ManagerRegistry $doctrine): Response
     {
         $this->container->get('contao.framework')->initialize();

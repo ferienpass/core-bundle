@@ -23,6 +23,7 @@
 
         <input type="{{ type|default('number') }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}
                class="block pl-7"
+               step="any"
                placeholder="0,00"/>
     </div>
 {% endblock %}
@@ -283,13 +284,13 @@
 {%- endblock toggle_widget -%}
 
 {%- block checkbox_widget -%}
-    <div class="flex items-center">
+{#    <div class="flex items-center">#}
         <input type="checkbox"
                class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
 
-        <label class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200"
-               for="{{ id }}">{{- label|trans(label_translation_parameters, translation_domain ?: null)|raw -}}</label>
-    </div>
+{#        <label class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200"#}
+{#               for="{{ id }}">{{- label|trans(label_translation_parameters, translation_domain ?: null)|raw -}}</label>#}
+{#    </div>#}
 
 {%- endblock checkbox_widget -%}
 

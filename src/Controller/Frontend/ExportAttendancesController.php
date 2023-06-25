@@ -25,19 +25,14 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
-/**
- * @Route(defaults={"token_check"=false})
- */
+#[Route(defaults: ['token_check' => false])]
 class ExportAttendancesController extends \Contao\CoreBundle\Controller\AbstractController
 {
     public function __construct(private string $secret, private ICalExport $iCal, private OfferRepository $offerRepository)
     {
     }
 
-    /**
-     * @Route("/share/anmeldungen-ferienpass-{memberId}-{token}.{_format}", defaults={"format"="ics"},
-     *                                                                      requirements={"memberId"="\d+"})
-     */
+    #[Route(path: '/share/anmeldungen-ferienpass-{memberId}-{token}.{_format}', defaults: ['format' => 'ics'], requirements: ['memberId' => '\d+'])]
     public function __invoke(int $memberId, string $token, string $_format, Request $request)
     {
         if (null === $member = MemberModel::findByPk($memberId)) {

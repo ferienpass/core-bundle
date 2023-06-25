@@ -13,28 +13,26 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\EventListener\Doctrine\Offer;
 
-use Contao\CoreBundle\Slug\Slug;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Events;
 use Ferienpass\CoreBundle\Entity\Offer;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
+#[AsEntityListener(event: Events::prePersist, entity: Offer::class)]
+#[AsEntityListener(event: Events::preUpdate, entity: Offer::class)]
 class AliasListener
 {
-    public function __construct(private Slug $slug)
+    public function __construct(private SluggerInterface $slugger)
     {
     }
 
-    public function preUpdate(PreUpdateEventArgs $args): void
+    public function prePersist(Offer $offer)
     {
-        $entity = $args->getObject();
-        if (!$entity instanceof Offer) {
-            return;
-        }
+        $offer->generateAlias($this->slugger);
+    }
 
-        if (!$args->hasChangedField('alias')) {
-            return;
-        }
-
-        $alias = ($entity->getId() ?? uniqid()).'-'.$this->slug->generate($entity->getName());
-        $args->setNewValue('alias', $alias);
+    public function preUpdate(Offer $offer)
+    {
+        $offer->generateAlias($this->slugger);
     }
 }

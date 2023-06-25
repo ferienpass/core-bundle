@@ -13,222 +13,205 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Entity;
 
+use Contao\StringUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Offer
 {
+    public const STATUS_SUBMITTED = 'submitted';
+    public const STATUS_PUBLISHED = 'published';
+
     /**
      * @Groups("docx_export")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", options={"unsigned"=true})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="tstamp", type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Column(name: 'tstamp', type: 'integer', options: ['unsigned' => true])]
     private int $timestamp;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Edition", inversedBy="offers")
-     * @ORM\JoinColumn(name="edition", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: 'Edition', inversedBy: 'offers')]
+    #[ORM\JoinColumn(name: 'edition', referencedColumnName: 'id')]
     private ?Edition $edition = null;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Ferienpass\CoreBundle\Entity\Host", inversedBy="offers", cascade={"persist"})
-     * @ORM\JoinTable(
-     *     name="HostOfferAssociation",
-     *     joinColumns={@ORM\JoinColumn(name="offer_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="host_id", referencedColumnName="id")}
-     * )
-     *
      * @psalm-var Collection<int, Host>
      */
+    #[ORM\ManyToMany(targetEntity: Host::class, inversedBy: 'offers', cascade: ['persist'])]
+    #[ORM\JoinTable(name: 'HostOfferAssociation', )]
+    #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'host_id', referencedColumnName: 'id')]
     private Collection $hosts;
 
     /**
-     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\OfferMemberAssociation", mappedBy="offer")
-     *
      * @psalm-var Collection<int, OfferMemberAssociation>
      */
+    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\OfferMemberAssociation', mappedBy: 'offer')]
     private Collection $memberAssociations;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="string", length=255, nullable=false, options={"default"=""})
-     * @Assert\NotBlank()
      */
+    #[Assert\NotBlank]
+    #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
     private string $name = '';
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="string", length=255, nullable=true, unique=true)
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
     private ?string $alias = null;
+
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    private ?string $status = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $comment = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="text", nullable=true)
      */
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="text", nullable=true)
      */
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $teaser = null;
 
-    /**
-     * @ORM\Column(type="binary_string", length=16, nullable=true)
-     */
+    #[ORM\Column(type: 'binary_string', length: 16, nullable: true)]
     private ?string $image = null;
 
-    /**
-     * @ORM\Column(type="binary_string", length=16, nullable=true)
-     */
+    #[ORM\Column(type: 'binary_string', length: 16, nullable: true)]
     private ?string $agreementLetter = null;
 
-    /**
-     * @ORM\Column(type="binary_string", nullable=true)
-     */
+    #[ORM\Column(type: 'binary_string', nullable: true)]
     private ?string $downloads = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="boolean", options={"default"=0})
      */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private bool $published = false;
 
-    /**
-     * @ORM\Column(type="string", length=16, nullable=false, options={"default"=""})
-     */
+    #[ORM\Column(type: 'string', length: 16, nullable: false, options: ['default' => ''])]
     private string $label = '';
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $aktivPass = null;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $requiresAgreementLetter = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="boolean", options={"default"=0})
      */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private bool $requiresApplication = false;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="boolean", options={"default"=0})
      */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private bool $onlineApplication = false;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="date", nullable=true)
      */
+    #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTimeInterface $applicationDeadline = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="boolean", options={"default"=0})
      */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private bool $cancelled = false;
 
     private bool $saved = false;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="smallint", nullable=true, options={"unsigned"=true})
      */
+    #[ORM\Column(type: 'smallint', nullable: true, options: ['unsigned' => true])]
     private ?int $minParticipants = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="smallint", nullable=true, options={"unsigned"=true})
      */
+    #[ORM\Column(type: 'smallint', nullable: true, options: ['unsigned' => true])]
     private ?int $maxParticipants = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="smallint", length=2, nullable=true, options={"unsigned"=true})
      */
+    #[ORM\Column(type: 'smallint', length: 2, nullable: true, options: ['unsigned' => true])]
     private ?int $minAge = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="smallint", length=2, nullable=true, options={"unsigned"=true})
      */
+    #[ORM\Column(type: 'smallint', length: 2, nullable: true, options: ['unsigned' => true])]
     private ?int $maxAge = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="integer", nullable=true, options={"unsigned"=true})
      */
+    #[ORM\Column(type: 'integer', nullable: true, options: ['unsigned' => true])]
     private ?int $fee = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $meetingPoint = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $applyText = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $calculationNotes = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $datesExport = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $contact = null;
 
     /**
      * @Groups("docx_export")
-     * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $bring = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\OfferDate", mappedBy="offer", cascade={"persist"}, orphanRemoval=true)
-     * @ORM\OrderBy({"begin" = "ASC"})
-     *
      * @psalm-var Collection<int, OfferDate>
      */
+    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\OfferDate', mappedBy: 'offer', cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OrderBy(['begin' => 'ASC'])]
     private Collection $dates;
 
     /**
      * @ORM\ManyToMany(targetEntity="Ferienpass\CoreBundle\Entity\OfferCategory", inversedBy="offers")
+     *
      * @ORM\JoinTable(
      *     name="OfferCategoryAssociation",
      *     joinColumns={@ORM\JoinColumn(name="offer_id", referencedColumnName="id")},
@@ -239,49 +222,39 @@ class Offer
      */
     private Collection $categories;
 
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     */
+    #[ORM\Column(type: 'json', nullable: true)]
     private ?array $accessibility = null;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $wheelchairAccessible = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\Offer", mappedBy="variantBase")
-     *
      * @psalm-var Collection<int, Offer>
      */
+    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\Offer', mappedBy: 'variantBase')]
     private Collection $variants;
 
     /**
-     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\Attendance", mappedBy="offer")
-     * @ORM\OrderBy({"status" = "ASC", "sorting" = "ASC"})
-     *
      * @psalm-var Collection<int, Attendance>
      */
+    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\Attendance', mappedBy: 'offer')]
+    #[ORM\OrderBy(['status' => 'ASC', 'sorting' => 'ASC'])]
     private Collection $attendances;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Ferienpass\CoreBundle\Entity\Offer", inversedBy="variants")
-     * @ORM\JoinColumn(name="varbase", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\Offer', inversedBy: 'variants')]
+    #[ORM\JoinColumn(name: 'varbase', referencedColumnName: 'id')]
     private ?Offer $variantBase = null;
 
     /**
      * Used internally for DC_Table to sort on date relation.
-     *
-     * @ORM\Column(name="dates", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'dates', type: 'integer', nullable: true)]
     private ?int $datesSorting = null;
 
     /**
      * Used internally for DC_Table to sort on hosts relation.
-     *
-     * @ORM\Column(name="hosts", type="text", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'hosts', type: 'text', length: 255, nullable: true)]
     private ?string $hostsSorting = null;
 
     public function __construct()
@@ -305,6 +278,7 @@ class Offer
 
     /**
      * @return Collection|OfferDate[]
+     *
      * @psalm-return Collection<int, OfferDate>
      */
     public function getDates(): Collection
@@ -314,6 +288,7 @@ class Offer
 
     /**
      * @param  Collection|OfferDate[]
+     *
      * @psalm-param  Collection<int, OfferDate>
      */
     public function setDates(Collection $dates): void
@@ -338,6 +313,7 @@ class Offer
 
     /**
      * @return Collection|Offer[]
+     *
      * @psalm-return Collection<int, Offer>
      */
     public function getVariants(bool $include = false): Collection
@@ -545,9 +521,13 @@ class Offer
         $this->maxAge = $maxAge;
     }
 
-    public function getDownloads(): ?string
+    public function getDownloads(): ?array
     {
-        return $this->downloads;
+        if ('' === $this->downloads) {
+            return null;
+        }
+
+        return StringUtil::deserialize($this->downloads);
     }
 
     public function getApplicationDeadline(): ?\DateTimeInterface
@@ -562,6 +542,7 @@ class Offer
 
     /**
      * @return Collection|OfferCategory[]
+     *
      * @psalm-return Collection<int, OfferCategory>
      */
     public function getCategories(): Collection
@@ -571,6 +552,7 @@ class Offer
 
     /**
      * @param  Collection|OfferCategory[]
+     *
      * @psalm-param  Collection<int, OfferCategory>
      */
     public function setCategories(Collection $categories): void
@@ -590,6 +572,7 @@ class Offer
 
     /**
      * @return Collection|Attendance[]
+     *
      * @psalm-return Collection<int, Attendance>
      */
     public function getAttendances(): Collection
@@ -599,6 +582,7 @@ class Offer
 
     /**
      * @return Collection|Attendance[]
+     *
      * @psalm-return Collection<int, Attendance>
      */
     public function getAttendancesNotWithdrawn(): Collection
@@ -608,6 +592,7 @@ class Offer
 
     /**
      * @return Collection|Attendance[]
+     *
      * @psalm-return Collection<int, Attendance>
      */
     public function getAttendancesConfirmed(): Collection
@@ -617,6 +602,7 @@ class Offer
 
     /**
      * @return Collection|Attendance[]
+     *
      * @psalm-return Collection<int, Attendance>
      */
     public function getAttendancesWaiting(): Collection
@@ -626,6 +612,7 @@ class Offer
 
     /**
      * @return Collection|Attendance[]
+     *
      * @psalm-return Collection<int, Attendance>
      */
     public function getAttendancesWaitlisted(): Collection
@@ -635,6 +622,7 @@ class Offer
 
     /**
      * @return Collection|Attendance[]
+     *
      * @psalm-return Collection<int, Attendance>
      */
     public function getAttendancesConfirmedOrWaitlisted(): Collection
@@ -644,6 +632,7 @@ class Offer
 
     /**
      * @return Collection|Attendance[]
+     *
      * @psalm-return Collection<int, Attendance>
      */
     public function getAttendancesWithStatus(string $status): Collection
@@ -655,6 +644,7 @@ class Offer
      * @param array<string> $status
      *
      * @return Collection|Attendance[]
+     *
      * @psalm-return Collection<int, Attendance>
      */
     public function getAttendancesWithStatuses(array $status): Collection
@@ -699,6 +689,20 @@ class Offer
     public function setComment(?string $comment): void
     {
         $this->comment = $comment;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): void
+    {
+        if (null !== $status && !\in_array($status, [self::STATUS_SUBMITTED, self::STATUS_PUBLISHED], true)) {
+            throw new InvalidArgumentException('Invalid offer workflow status');
+        }
+
+        $this->status = $status;
     }
 
     public function isAktivPass(): ?bool
@@ -818,28 +822,16 @@ class Offer
         $this->hostsSorting = $hostsSorting;
     }
 
-    public function getStatus(): string
+    public function generateAlias(SluggerInterface $slugger)
     {
-        if ($this->isCancelled()) {
-            return 'cancelled';
+        if (!$this->id) {
+            $this->alias = uniqid();
+
+            return;
         }
 
-        if ($this->isPublished()) {
-            if (null === $edition = $this->getEdition()) {
-                return 'online';
-            }
-
-            if ($edition->getActiveTasks('show_offers')) {
-                return 'online';
-            }
-
-            return 'accepted';
+        if (!$this->alias) {
+            $this->alias = (string) $slugger->slug("{$this->getId()}-{$this->getName()}")->lower();
         }
-
-        // if ($item->get('on_hold')) {
-        //    return 'on_hold';
-        // }
-
-        return 'created';
     }
 }

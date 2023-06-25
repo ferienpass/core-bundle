@@ -14,50 +14,32 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use NotificationCenter\Model\Message;
-use NotificationCenter\Model\Notification;
 
-/**
- * @ORM\Entity(repositoryClass="Ferienpass\CoreBundle\Repository\NotificationLogRepository")
- */
+#[ORM\Entity(repositoryClass: 'Ferienpass\CoreBundle\Repository\NotificationLogRepository')]
 class NotificationLog
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="EventLog", inversedBy="notifications")
-     * @ORM\JoinColumn(name="log_id", referencedColumnName="id", onDelete="CASCADE")
-     */
+    #[ORM\ManyToOne(targetEntity: 'EventLog', inversedBy: 'notifications')]
+    #[ORM\JoinColumn(name: 'log_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private EventLog $logEntry;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    /**
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $notification;
 
-    /**
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $message;
 
-    /**
-     * @ORM\Column(name="vars", type="json")
-     */
+    #[ORM\Column(name: 'vars', type: 'json')]
     private array $variables;
 
-    /**
-     * @ORM\Column(type="string", length=6)
-     */
+    #[ORM\Column(type: 'string', length: 6)]
     private string $language;
 
     public function __construct(EventLog $logEntry, int $notification, int $message, array $variables, string $language)
@@ -83,16 +65,6 @@ class NotificationLog
     public function getLogEntry(): EventLog
     {
         return $this->logEntry;
-    }
-
-    public function getNotification(): ?Notification
-    {
-        return Notification::findByPk($this->notification);
-    }
-
-    public function getMessage(): ?Message
-    {
-        return Message::findByPk($this->message);
     }
 
     public function getVariables(): array

@@ -13,15 +13,14 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\Backend;
 
+use Contao\CoreBundle\Controller\AbstractBackendController;
 use Ferienpass\CoreBundle\Facade\EraseDataFacade;
 use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/daten-löschen", name="backend_erase_data")
- */
+#[Route(path: '/daten-löschen', name: 'backend_erase_data')]
 final class EraseDataController extends AbstractBackendController
 {
     public function __construct(private EraseDataFacade $eraseDataFacade)

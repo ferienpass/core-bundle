@@ -27,8 +27,6 @@ class SaveAccessibilityListener
 
     /**
      * @Callback(table="Offer", target="fields.accessibility.save")
-     *
-     * @param mixed $value
      */
     public function labelCallback($value, DataContainer $dc)
     {

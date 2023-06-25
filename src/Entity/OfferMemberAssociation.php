@@ -15,32 +15,22 @@ namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class OfferMemberAssociation
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    /**
-     * @ORM\Column(name="member_id", type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Column(name: 'member_id', type: 'integer', options: ['unsigned' => true])]
     private int $member;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Ferienpass\CoreBundle\Entity\Offer", inversedBy="memberAssociations")
-     * @ORM\JoinColumn(name="offer_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\Offer', inversedBy: 'memberAssociations')]
+    #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id')]
     private Offer $offer;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
     public function getMember(): int

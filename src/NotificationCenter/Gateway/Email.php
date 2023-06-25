@@ -25,8 +25,6 @@ class Email extends \NotificationCenter\Gateway\Email
 {
     /**
      * @psalm-suppress UndefinedConstant
-     *
-     * @param mixed $strLanguage
      */
     public function createDraft(Message $objMessage, array $arrTokens, $strLanguage = '')
     {

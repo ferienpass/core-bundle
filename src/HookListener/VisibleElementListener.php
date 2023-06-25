@@ -13,13 +13,15 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\HookListener;
 
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\Model;
 use Ferienpass\CoreBundle\Repository\EditionRepository;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class VisibleElementListener
 {
-    public function __construct(private EditionRepository $passEditionRepository, private TokenChecker $tokenChecker)
+    public function __construct(private EditionRepository $passEditionRepository, private TokenChecker $tokenChecker, private RequestStack $requestStack, private ScopeMatcher $scopeMatcher)
     {
     }
 
@@ -32,7 +34,9 @@ class VisibleElementListener
             return false;
         }
 
-        if ('FE' === TL_MODE && $element->ferienpass_task_condition) {
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (null !== $request && $this->scopeMatcher->isFrontendRequest($request) && $element->ferienpass_task_condition) {
             if ($this->tokenChecker->isPreviewMode()) {
                 // Do not apply further logic.
                 return $visible;

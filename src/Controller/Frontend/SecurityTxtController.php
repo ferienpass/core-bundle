@@ -16,10 +16,8 @@ namespace Ferienpass\CoreBundle\Controller\Frontend;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/.well-known/security.txt")
- * @Route("/security.txt")
- */
+#[Route(path: '/.well-known/security.txt')]
+#[Route(path: '/security.txt')]
 final class SecurityTxtController
 {
     public function __invoke(): Response

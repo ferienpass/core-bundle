@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults autoconfigure="true"/>
+
+        <service id="Ferienpass\CoreBundle\Notification\AttendanceChangedConfirmedNotification">
+            <tag name="ferienpass.notification" key="attendance_new"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Notification\HostRegistrationNotification">
+            <tag name="ferienpass.notification" key="veranstalter-registrierung"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Notification\HostInviteMemberNotification">
+            <tag name="ferienpass.notification" key="veranstalter-einladung"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Notification\PdfProofsNotification">
+            <tag name="ferienpass.notification" key="korrekturabzüge"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Notification\AdmissionLetterNotification">
+            <tag name="ferienpass.notification" key="teilnahme-übersicht"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Notification\AttendanceReminderNotification">
+            <tag name="ferienpass.notification" key="teilnahme-erinnern"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Notification\OfferRelaunchedNotification">
+            <tag name="ferienpass.notification" key="angebot-wiederhergestellt"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Notification\OfferCancelledNotification">
+            <tag name="ferienpass.notification" key="angebot-abgesagt"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Notification\AttendanceCreatedConfirmedNotification">
+            <tag name="ferienpass.notification" key="teilnahme-bestätigt"/>
+        </service>
+        <service id="Ferienpass\CoreBundle\Notification\AttendanceChangedWithdrawnNotification">
+            <tag name="ferienpass.notification" key="teilnahme-abgesagt"/>
+        </service>
+
+    </services>
+</container>

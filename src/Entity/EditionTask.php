@@ -17,97 +17,61 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class EditionTask
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Edition", inversedBy="tasks")
-     * @ORM\JoinColumn(name="pid", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: 'Edition', inversedBy: 'tasks')]
+    #[ORM\JoinColumn(name: 'pid', referencedColumnName: 'id')]
     private Edition $edition;
 
-    /**
-     * @ORM\Column(name="tstamp", type="integer")
-     */
+    #[ORM\Column(name: 'tstamp', type: 'integer')]
     private int $timestamp;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private int $sorting;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private string $type;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(name="max_applications", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'max_applications', type: 'integer', nullable: true)]
     private ?int $maxApplications = null;
 
-    /**
-     * @ORM\Column(name="max_applications_day", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'max_applications_day', type: 'integer', nullable: true)]
     private ?int $maxApplicationsDay = null;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private \DateTimeImmutable $periodBegin;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private \DateTimeImmutable $periodEnd;
 
-    /**
-     * @ORM\Column(name="hide_status", type="boolean", nullable=true)
-     */
+    #[ORM\Column(name: 'hide_status', type: 'boolean', nullable: true)]
     private ?bool $hideStatus = null;
 
-    /**
-     * @ORM\Column(name="allow_anonymous", type="boolean", nullable=true)
-     */
+    #[ORM\Column(name: 'allow_anonymous', type: 'boolean', nullable: true)]
     private ?bool $allowAnonymous = null;
 
-    /**
-     * @ORM\Column(name="allow_anonymous_fee", type="boolean", nullable=true)
-     */
+    #[ORM\Column(name: 'allow_anonymous_fee', type: 'boolean', nullable: true)]
     private ?bool $allowAnonymousFee = null;
 
-    /**
-     * @ORM\Column(name="skip_max_applications", type="boolean", nullable=true)
-     */
+    #[ORM\Column(name: 'skip_max_applications', type: 'boolean', nullable: true)]
     private ?bool $skipMaxApplications = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $description = null;
 
-    /**
-     * @ORM\Column(name="application_system", type="string", nullable=true)
-     */
+    #[ORM\Column(name: 'application_system', type: 'string', nullable: true)]
     private ?string $applicationSystem = null;
 
-    /**
-     * @ORM\Column(name="age_check", type="string", nullable=true)
-     */
+    #[ORM\Column(name: 'age_check', type: 'string', nullable: true)]
     private ?string $ageCheck = null;
 
     public function getId(): ?int
@@ -251,6 +215,7 @@ class EditionTask
 
     /**
      * @return Collection|EditionTask[]
+     *
      * @psalm-return Collection<int, EditionTask>
      */
     public function getDependencies(): Collection
@@ -276,9 +241,9 @@ class EditionTask
         if ('allocation' === $this->type) {
             $waiting = 0;
             // FIXME
-//            foreach ($this->getEdition()->getOffers() as $offer) {
-//                $waiting += $offer->getAttendancesWaiting()->count();
-//            }
+            //            foreach ($this->getEdition()->getOffers() as $offer) {
+            //                $waiting += $offer->getAttendancesWaiting()->count();
+            //            }
 
             return 0 === $waiting;
         }

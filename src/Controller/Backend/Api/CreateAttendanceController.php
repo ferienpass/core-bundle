@@ -26,18 +26,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/create_attendance")
- */
+#[Route(path: '/create_attendance')]
 final class CreateAttendanceController extends AbstractController
 {
     public function __construct(private OfferRepository $offerRepository, private ParticipantRepository $participantRepository, private AttendanceFacade $attendanceFacade)
     {
     }
 
-    /**
-     * @Route("/offers", methods={"GET"})
-     */
+    #[Route(path: '/offers', methods: ['GET'])]
     public function offers(Request $request): JsonResponse
     {
         $this->checkToken();
@@ -80,9 +76,7 @@ final class CreateAttendanceController extends AbstractController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/participants", methods={"GET"})
-     */
+    #[Route(path: '/participants', methods: ['GET'])]
     public function participants(Request $request): JsonResponse
     {
         $this->checkToken();
@@ -114,9 +108,7 @@ final class CreateAttendanceController extends AbstractController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/status/{id}", methods={"GET"})
-     */
+    #[Route(path: '/status/{id}', methods: ['GET'])]
     public function status(Offer $offer): JsonResponse
     {
         $this->checkToken();

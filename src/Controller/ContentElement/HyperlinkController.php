@@ -29,7 +29,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class HyperlinkController extends AbstractContentElementController
 {
-    public static function getSubscribedServices()
+    public static function getSubscribedServices(): array
     {
         $services = parent::getSubscribedServices();
 

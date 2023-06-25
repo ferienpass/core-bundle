@@ -2,7 +2,7 @@ doctrine:
   orm:
     mappings:
       FerienpassCoreBundle:
-        type: annotation
+        type: attribute
         dir: src/Entity
         is_bundle: true
     dql:

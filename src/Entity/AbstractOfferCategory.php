@@ -15,30 +15,20 @@ namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\MappedSuperclass()
- */
+#[ORM\MappedSuperclass()]
 abstract class AbstractOfferCategory
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    /**
-     * @ORM\Column(name="tstamp", type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Column(name: 'tstamp', type: 'integer', options: ['unsigned' => true])]
     private int $timestamp;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=false, options={"default"=""})
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
     private string $title;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=false, options={"default"=""}, unique=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''], unique: true)]
     private string $alias;
 }

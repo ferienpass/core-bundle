@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 $GLOBALS['TL_DCA']['Offer'] = [
     'config' => [
-        'dataContainer' => 'Table',
+        'dataContainer' => \Contao\DC_Table::class,
         'enableVersioning' => true,
     ],
     'list' => [
@@ -265,8 +265,8 @@ $GLOBALS['TL_DCA']['Offer'] = [
                 '2' => 'Bitte erfragen',
             ],
             'eval' => ['tl_class' => 'clr'],
-            'load_callback' => [fn($v) => null === $v ? '2' : $v],
-            'save_callback' => [fn($v) => strlen($v) < 2 ? (int)$v : null],
+            'load_callback' => [fn ($v) => null === $v ? '2' : $v],
+            'save_callback' => [fn ($v) => \strlen($v) < 2 ? (int) $v : null],
         ],
         'minParticipants' => [
             'exclude' => true,
@@ -285,7 +285,7 @@ $GLOBALS['TL_DCA']['Offer'] = [
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w50'],
             'load_callback' => [fn ($val) => $val / 100 ?: null],
-            'save_callback' => [fn ($val) => (int) (floatval($val) * 100) ?: null],
+            'save_callback' => [fn ($val) => (int) ((float) $val * 100) ?: null],
         ],
         'image' => [
             'exclude' => true,

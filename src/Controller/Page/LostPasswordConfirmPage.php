@@ -27,6 +27,6 @@ class LostPasswordConfirmPage extends AbstractController
         return $this->createPageBuilder($request->attributes->get('pageModel'))
             ->addFragment('main', new FragmentReference('ferienpass.fragment.lost_password_confirm'))
             ->getResponse()
-            ;
+        ;
     }
 }

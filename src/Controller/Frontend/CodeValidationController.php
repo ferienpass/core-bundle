@@ -30,9 +30,8 @@ final class CodeValidationController
      * or not.
      *
      * @param Request $request the current request
-     *
-     * @Route("/ferienpass-code-validate")
      */
+    #[Route(path: '/ferienpass-code-validate')]
     public function __invoke(Request $request): Response
     {
         if (!$request->isMethod('post')) {

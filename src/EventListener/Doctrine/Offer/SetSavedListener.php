@@ -15,11 +15,11 @@ namespace Ferienpass\CoreBundle\EventListener\Doctrine\Offer;
 
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Ferienpass\CoreBundle\Entity\Offer;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class SetSavedListener
 {
-    public function __construct(private Session $session)
+    public function __construct(private RequestStack $requestStack)
     {
     }
 
@@ -30,11 +30,11 @@ class SetSavedListener
             return;
         }
 
-        if (!$this->session->isStarted()) {
+        if (!$this->requestStack->getSession()->isStarted()) {
             return;
         }
 
-        $savedOffers = $this->session->get('saved_offers');
+        $savedOffers = $this->requestStack->getSession()->get('saved_offers');
         if (!$savedOffers) {
             return;
         }

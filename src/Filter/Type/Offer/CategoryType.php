@@ -15,15 +15,13 @@ namespace Ferienpass\CoreBundle\Filter\Type\Offer;
 
 use Doctrine\ORM\QueryBuilder;
 use Ferienpass\CoreBundle\Entity\OfferCategory;
-use Ferienpass\CoreBundle\Filter\Type\OfferFilterType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-class CategoryType extends AbstractType implements OfferFilterType
+class CategoryType extends AbstractOfferFilterType
 {
     public static function getName(): string
     {
@@ -37,9 +35,10 @@ class CategoryType extends AbstractType implements OfferFilterType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
+        parent::configureOptions($resolver);
+
         $resolver->setDefaults([
             'label' => 'Kategorie',
-            'required' => false,
             'multiple' => true,
             'class' => OfferCategory::class,
             'choice_value' => fn (?OfferCategory $entity) => $entity ? $entity->getAlias() : '',

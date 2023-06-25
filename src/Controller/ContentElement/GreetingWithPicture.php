@@ -30,7 +30,7 @@ class GreetingWithPicture extends AbstractContentElementController
     protected function getResponse(Template $template, ContentModel $model, Request $request): Response
     {
         $headline = StringUtil::deserialize($model->headline);
-        $text = StringUtil::toHtml5($model->text);
+        $text = $model->text;
 
         if ($this->container->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
             $template = new BackendTemplate('be_wildcard');

@@ -167,7 +167,7 @@ class PageBuilder
 
         $moduleModels = ModuleModel::findMultipleByIds($moduleIds);
 
-        if ((null !== $moduleModels)) {
+        if (null !== $moduleModels) {
             $mapper = [];
             while ($moduleModels->next()) {
                 $mapper[$moduleModels->id] = $moduleModels->current();

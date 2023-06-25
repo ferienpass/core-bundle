@@ -50,6 +50,10 @@ final class OfferDetailsController extends AbstractController
             $files[] = $offer->getAgreementLetter();
         }
 
+        if ($offer->getDownloads()) {
+            $files = array_merge($files, $offer->getDownloads());
+        }
+
         $download = $request->query->get('file');
         $file = FilesModel::findByPath($download);
         if (null === $file || !\in_array($file->uuid, $files, true)) {

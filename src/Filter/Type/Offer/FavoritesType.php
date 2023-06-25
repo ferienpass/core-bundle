@@ -14,18 +14,16 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Filter\Type\Offer;
 
 use Doctrine\ORM\QueryBuilder;
-use Ferienpass\CoreBundle\Filter\Type\OfferFilterType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-class FavoritesType extends AbstractType implements OfferFilterType
+class FavoritesType extends AbstractOfferFilterType
 {
-    public function __construct(private Session $session)
+    public function __construct(private RequestStack $requestStack)
     {
     }
 
@@ -41,17 +39,18 @@ class FavoritesType extends AbstractType implements OfferFilterType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
+        parent::configureOptions($resolver);
+
         $resolver->setDefaults([
             'label' => 'nur gespeicherte',
             'false_values' => ['', null],
-            'required' => false,
         ]);
     }
 
     public function applyFilter(QueryBuilder $qb, FormInterface $form)
     {
         $k = $form->getName();
-        $savedOffers = $this->session->isStarted() ? $this->session->get('saved_offers') : [];
+        $savedOffers = $this->requestStack->getSession()->isStarted() ? $this->requestStack->getSession()->get('saved_offers') : [];
 
         $qb
             ->andWhere('o.id IN (:q_'.$k.')')

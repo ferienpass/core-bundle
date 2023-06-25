@@ -57,7 +57,7 @@ class Flash
         return $this;
     }
 
-    public function headline(string $headline): self
+    public function headline(string|TranslatableInterface $headline): self
     {
         $this->message['headline'] = $headline;
 

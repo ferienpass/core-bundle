@@ -21,7 +21,7 @@ ineligible.unconfirmedEmail: Bitte bestätigen zuerst die E-Mail, die an {email}
 ineligible.limitReached: >-
   {max, plural,
       one   {Sie können {name} nicht anmelden, da maximal eine Anmeldung in dieser Anmeldephase möglich ist.}
-      other {Sie können {name} nicht anmelden, da maximal # Anmeldungen in diese Anmeldephase möglich ist.}
+      other {Sie können {name} nicht anmelden, da maximal # Anmeldungen in dieser Anmeldephase möglich sind.}
   }
 ineligible.dayLimitReached: >-
   {max, plural,
@@ -66,11 +66,12 @@ applications.status:
   error.title: fehlerhaft
   error.caption: Irgendwas ist hier schief gelaufen.
 
-confirmed: nimmt teil
-waiting: nicht zugeteilt
-waitlisted: auf Warteliste
-error: fehlerhaft
-withdrawn: abgemeldet
+status:
+  confirmed: nimmt teil
+  waiting: nicht zugeteilt
+  waitlisted: auf Warteliste
+  error: fehlerhaft
+  withdrawn: abgemeldet
 
 noApplications: Sie haben sich noch zu keinen Veranstaltugen angemeldet.
 
@@ -137,3 +138,36 @@ userAccount:
   personal_data: Persönliche Daten
   change_password: Passwort ändern
   close_account: Account löschen
+
+notification:
+  attendance_new:
+    - 'Windhund-Verfahren: Kind hat einen Platz bekommen (vorher Warteliste)'
+    - 'Diese Benachrichtigung wird an Teilnehmer:innen geschickt, sobald sich der Teilnahmestatus auf
+                    bestätigt ändert. Das heißt, dass das Kind schon auf der Warteliste o.vgl. stand und die Anmeldung
+                    nun zugesagt wird. Wenn sich ein Kind von einem Angebot abmeldet und das nächste Kind nachrückt,
+                    dann erhält die Nachrücker:in diese Benachrichtigung.'
+  teilnahme-bestätigt:
+    - 'Windhundverfahren: Kind hat erfolgreich einen Platz gebucht'
+    - 'Diese Benachrichtigung wird an Teilnehmer:innen geschickt, die sich soeben für ein Angebot
+                           angemeldet haben und die Zusage erhalten haben. Die Nachricht bestätigt die Anmeldung und kann einen
+                           Kalendereintrag des Angebotes enthalten.'
+  teilnahme-übersicht:
+    - 'Los-Verfahren: Zulassungsbescheid (Übersicht über alle Veranstaltungen)'
+    - 'Diese Benachrichtigung wird manuell nach dem Zuteilen der Plätze verschickt. Die Nachricht geht
+                           raus an die Eltern und enthält eine Übersicht über alle Teilnahmen der Kinder inkl. Anmeldestatus.'
+  teilnahme-erinnern:
+    - 'Teilnahme-Erinnerung mit Termin (36h vor Veranstaltungsbeginn)'
+    - 'Diese Benachrichtigung wird an Teilnehmer:innen verschickt, wenn eine eine Veranstaltung, zu der
+                           das Kind angemeldet ist, in weniger als 24 Stunden stattfindet. Diese Nachricht soll an das Angebot
+                           erinnern und die Möglichkeit geben, sich notfalls noch rechtzeitig vom Angebot abmelden zu können.'
+  veranstalter-einladung:
+    - 'Veranstalter-Einladung'
+    - 'Diese Benachrichtigung wird verschickt, wenn Veranstalter:innen andere Personen zu ihrem Team
+                           einladen. Die E-Mail muss den Link zum Annehmen der Einladung enthalten.'
+  veranstalter-registrierung:
+    - 'Veranstalter-Registrierung'
+    - 'Diese Benachrichtigung wird verschickt, wenn Veranstalter:innen sich auf der Seite registrieren.'
+  angebot-abgesagt:
+    - 'Angebot wurde abgesagt'
+    - 'Diese Benachrichtigung wird an alle Kinder verschickt, die auf der Teilnahmeliste eines
+                           Angebotes standen, das abgesagt wurde.'

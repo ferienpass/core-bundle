@@ -19,51 +19,37 @@ use Doctrine\ORM\Mapping as ORM;
 use Ferienpass\CoreBundle\Exception\AmbiguousHolidayTaskException;
 use Ferienpass\CoreBundle\Exception\MissingHolidayTaskException;
 
-/**
- * @ORM\Entity(repositoryClass="Ferienpass\CoreBundle\Repository\EditionRepository")
- */
+#[ORM\Entity(repositoryClass: 'Ferienpass\CoreBundle\Repository\EditionRepository')]
 class Edition
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", options={"unsigned"=true})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private int $tstamp;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $alias = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\EditionTask", mappedBy="edition")
-     * @ORM\OrderBy({"sorting"="ASC"})
-     *
      * @psalm-var Collection<int, EditionTask>
      */
+    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\EditionTask', mappedBy: 'edition')]
+    #[ORM\OrderBy(['sorting' => 'ASC'])]
     private Collection $tasks;
 
     /**
-     * @ORM\OneToMany(targetEntity="Ferienpass\CoreBundle\Entity\Offer", mappedBy="edition")
-     *
      * @psalm-var Collection<int, Offer>
      */
+    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\Offer', mappedBy: 'edition')]
     private Collection $offers;
 
-    /**
-     * @ORM\Column(type="integer", options={"unsigned"=true}, nullable=true)
-     */
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true], nullable: true)]
     private ?int $listPage = null;
 
     private \Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface $applicationSystem;
@@ -116,6 +102,7 @@ class Edition
 
     /**
      * @return Collection|EditionTask[]
+     *
      * @psalm-return Collection<int, EditionTask>
      */
     public function getTasks(): Collection
@@ -143,6 +130,7 @@ class Edition
 
     /**
      * @return Collection|Offer[]
+     *
      * @psalm-return Collection<int, Offer>
      */
     public function getOffers(): Collection

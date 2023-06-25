@@ -17,9 +17,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/favicon.ico")
- */
+#[Route(path: '/favicon.ico')]
 final class FaviconIcoController
 {
     public function __construct(private string $webDir)

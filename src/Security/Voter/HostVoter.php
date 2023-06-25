@@ -16,12 +16,13 @@ namespace Ferienpass\CoreBundle\Security\Voter;
 use Contao\FrontendUser;
 use Ferienpass\CoreBundle\Entity\Host;
 use Ferienpass\CoreBundle\Repository\HostRepository;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class HostVoter extends Voter
 {
-    public function __construct(private HostRepository $hostRepository)
+    public function __construct(private Security $security, private HostRepository $hostRepository)
     {
     }
 
@@ -57,6 +58,10 @@ class HostVoter extends Voter
 
     private function canView(Host $host, FrontendUser $user): bool
     {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
         $hosts = $this->hostRepository->findByMemberId((int) $user->id);
         $hostIds = array_map(fn (Host $host) => $host->getId(), $hosts);
 

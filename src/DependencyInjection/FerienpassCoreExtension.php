@@ -37,6 +37,7 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
 
         $xmlLoader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
         $xmlLoader->load('fragments.xml');
+        $xmlLoader->load('notifications.xml');
         $xmlLoader->load('pages.xml');
 
         // Parameters
@@ -60,12 +61,12 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
         $docxParticipantList->setArgument(2, $config['participant_list']['docx_template'] ?? null);
     }
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'ferienpass';
     }
 
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         // Prepend the ferienpass version to make it available for third-party bundle configuration
         $container->setParameter('ferienpass.version', $this->getVersion());

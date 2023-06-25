@@ -32,14 +32,14 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatableMessage;
 
 class ApplyFormType extends AbstractType
 {
-    public function __construct(private Security $security, private ManagerRegistry $doctrine, private Session $session, private OptIn $optIn, private Connection $connection)
+    public function __construct(private Security $security, private ManagerRegistry $doctrine, private RequestStack $requestStack, private OptIn $optIn, private Connection $connection)
     {
     }
 
@@ -103,7 +103,7 @@ class ApplyFormType extends AbstractType
         yield 'query_builder' => fn (EntityRepository $er) => $er
             ->createQueryBuilder('p')
             ->andWhere('p.id IN (:ids)')
-            ->setParameter('ids', $this->session->isStarted() ? $this->session->get('participant_ids') : [])
+            ->setParameter('ids', $this->requestStack->getSession()->isStarted() ? $this->requestStack->getSession()->get('participant_ids') : [])
         ;
     }
 
@@ -141,8 +141,8 @@ class ApplyFormType extends AbstractType
         $ageCheck = $applicationSystem->getTask()?->getAgeCheck();
         if ('vague_on_year' === $ageCheck) {
             $ages = [
-                $dateOfBirth->diff((new \DateTimeImmutable($dateBegin->format('Y').'-01-01')))->y,
-                $dateOfBirth->diff((new \DateTimeImmutable($dateBegin->format('Y').'-12-31')))->y,
+                $dateOfBirth->diff(new \DateTimeImmutable($dateBegin->format('Y').'-01-01'))->y,
+                $dateOfBirth->diff(new \DateTimeImmutable($dateBegin->format('Y').'-12-31'))->y,
             ];
 
             if (($offer->getMinAge() && max($ages) < $offer->getMinAge()) || ($offer->getMaxAge() && min($ages) > $offer->getMaxAge())) {

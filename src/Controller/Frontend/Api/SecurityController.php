@@ -20,9 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class SecurityController extends AbstractController
 {
-    /**
-     * @Route("/login", name="api_login", methods={"POST"})
-     */
+    #[Route(path: '/login', name: 'api_login', methods: ['POST'])]
     public function login(Request $request): Response
     {
         $this->container->get('contao.framework')->initialize();

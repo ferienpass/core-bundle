@@ -33,7 +33,7 @@ class SignInController extends AbstractContentElementController
     {
     }
 
-    public static function getSubscribedServices()
+    public static function getSubscribedServices(): array
     {
         $services = parent::getSubscribedServices();
 

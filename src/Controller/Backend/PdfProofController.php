@@ -13,18 +13,16 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\Backend;
 
+use Contao\CoreBundle\Controller\AbstractBackendController;
 use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/angebot/{id}/vorschau", name="backend_offer_pdf_proof", requirements={"itemId"="\d+"})
- */
-class PdfProofController extends AbstractController
+#[Route(path: '/angebot/{id}/vorschau', name: 'backend_offer_pdf_proof', requirements: ['itemId' => '\d+'])]
+class PdfProofController extends AbstractBackendController
 {
     public function __construct(private PdfExports $pdfExports)
     {

@@ -86,12 +86,6 @@ class LabelListener
 
     /**
      * @Callback(table="Attendance", target="list.operations.attendances.button")
-     *
-     * @param mixed $href
-     * @param mixed $label
-     * @param mixed $title
-     * @param mixed $icon
-     * @param mixed $attributes
      */
     public function attendancesButton(array $row, $href, $label, $title, $icon, $attributes): string
     {
