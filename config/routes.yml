@@ -17,10 +17,7 @@ ferienpass.backend:
 ferienpass.backend_api:
     resource: '../src/Controller/Backend/Api'
     type: annotation
-    prefix: '%contao.backend.route_prefix%/api'
-    defaults:
-        _scope: backend
-        _token_check: false
+    prefix: '/admin/api'
 
 ferienpass.frontend_api:
     resource: '../src/Controller/Frontend/Api'

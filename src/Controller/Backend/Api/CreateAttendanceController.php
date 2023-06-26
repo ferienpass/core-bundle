@@ -25,9 +25,11 @@ use Ferienpass\CoreBundle\Repository\ParticipantRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/create_attendance')]
-final class CreateAttendanceController extends AbstractController
+#[IsGranted('ROLE_ADMIN')]
+final class CreateAttendanceController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
     public function __construct(private OfferRepository $offerRepository, private ParticipantRepository $participantRepository, private AttendanceFacade $attendanceFacade)
     {
@@ -36,8 +38,6 @@ final class CreateAttendanceController extends AbstractController
     #[Route(path: '/offers', methods: ['GET'])]
     public function offers(Request $request): JsonResponse
     {
-        $this->checkToken();
-
         $qb = $this->offerRepository->createQueryBuilder('o');
 
         $i = 0;
@@ -79,8 +79,6 @@ final class CreateAttendanceController extends AbstractController
     #[Route(path: '/participants', methods: ['GET'])]
     public function participants(Request $request): JsonResponse
     {
-        $this->checkToken();
-
         $qb = $this->participantRepository->createQueryBuilder('p');
 
         $i = 0;
@@ -111,8 +109,6 @@ final class CreateAttendanceController extends AbstractController
     #[Route(path: '/status/{id}', methods: ['GET'])]
     public function status(Offer $offer): JsonResponse
     {
-        $this->checkToken();
-
         $attendance = $this->attendanceFacade->preview($offer, new Participant());
 
         return new JsonResponse(['status' => $attendance->getStatus()]);
