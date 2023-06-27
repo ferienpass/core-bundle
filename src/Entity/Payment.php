@@ -33,7 +33,7 @@ class Payment
 
     #[ORM\JoinTable(name: 'PaymentItemAssociation')]
     #[ORM\JoinColumn(name: 'payment_id', referencedColumnName: 'id')]
-    #[ORM\InverseJoinColumn(name: 'item_id', referencedColumnName: 'id', unique: true)]
+    #[ORM\InverseJoinColumn(name: 'item_id', referencedColumnName: 'id')]
     #[ORM\ManyToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\PaymentItem', cascade: ['persist'])]
     private Collection $items;
 
@@ -43,7 +43,7 @@ class Payment
     #[ORM\Column(type: 'text')]
     private ?string $billingAddress = null;
 
-    #[ORM\Column(type: 'text', length: 255)]
+    #[ORM\Column(type: 'text', length: 255, nullable: true)]
     private ?string $billingEmail = null;
 
     #[ORM\Column(type: 'text', length: 255)]
@@ -65,7 +65,7 @@ class Payment
     /**
      * @param array<Attendance> $attendances
      */
-    public static function fromAttendances(?iterable $attendances, string $receiptNumber = null): static
+    public static function fromAttendances(iterable $attendances, string $receiptNumber = null): static
     {
         $self = new self($receiptNumber);
 
