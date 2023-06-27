@@ -19,12 +19,13 @@ use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\OfferDate;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Ferienpass\CoreBundle\Repository\HostRepository;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class OfferVoter extends Voter
 {
-    public function __construct(private AttendanceRepository $attendanceRepository, private HostRepository $hostRepository)
+    public function __construct(private Security $security, private AttendanceRepository $attendanceRepository, private HostRepository $hostRepository)
     {
     }
 
@@ -77,6 +78,10 @@ class OfferVoter extends Voter
 
     private function canView(Offer $offer, FrontendUser $user): bool
     {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
         $userHosts = $this->hostRepository->findByMemberId((int) $user->id);
         $userHostIds = array_map(fn (Host $host) => $host->getId(), $userHosts);
 
@@ -85,6 +90,10 @@ class OfferVoter extends Voter
 
     private function canEdit(Offer $offer, FrontendUser $user): bool
     {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
         if (false === $this->canView($offer, $user)) {
             return false;
         }
@@ -94,6 +103,10 @@ class OfferVoter extends Voter
 
     private function canCreate(Offer $offer): bool
     {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
         if (null === $edition = $offer->getEdition()) {
             return true;
         }
@@ -112,8 +125,15 @@ class OfferVoter extends Voter
             return false;
         }
 
-        return $offer->getAttendances()->isEmpty()
-            && (null === ($edition = $offer->getEdition()) || $edition->isEditableForHosts());
+        if (!$offer->getAttendances()->isEmpty()) {
+            return false;
+        }
+
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        return null === ($edition = $offer->getEdition()) || $edition->isEditableForHosts();
     }
 
     private function canCancel(Offer $offer, FrontendUser $user): bool

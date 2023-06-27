@@ -30,6 +30,7 @@ use Scheb\TwoFactorBundle\Security\Authentication\Exception\InvalidTwoFactorCode
 use Scheb\TwoFactorBundle\Security\TwoFactor\Event\TwoFactorAuthenticationEvent;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Event\TwoFactorAuthenticationEvents;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,7 +43,7 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class SignInController extends AbstractController
 {
-    public function __construct(private PasswordHasherInterface $passwordHasher, private AuthenticationUtils $authenticationUtils, private MessageBusInterface $messageBus, private EventDispatcherInterface $eventDispatcher, private ParticipantRepository $participantRepository, private ManagerRegistry $doctrine)
+    public function __construct(private PasswordHasherInterface $passwordHasher, private AuthenticationUtils $authenticationUtils, private MessageBusInterface $messageBus, private EventDispatcherInterface $eventDispatcher, private ParticipantRepository $participantRepository, private ManagerRegistry $doctrine, private FormFactoryInterface $formFactory)
     {
     }
 
@@ -54,9 +55,9 @@ class SignInController extends AbstractController
         }
 
         $targetPath = $this->findTargetPath($request);
-        $loginForm = $this->createForm(UserLoginType::class, null, ['target_path' => base64_encode($targetPath)]);
+        $loginForm = $this->formFactory->create(UserLoginType::class, null, ['target_path' => base64_encode($targetPath)]);
 
-        $registrationForm = $this->createForm(UserRegistrationType::class, new MemberModel());
+        $registrationForm = $this->formFactory->create(UserRegistrationType::class, new MemberModel());
         $registrationForm->handleRequest($request);
         if ($response = $this->handleRegistrationForm($registrationForm, $session)) {
             return $response;

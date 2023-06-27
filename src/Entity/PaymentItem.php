@@ -58,4 +58,9 @@ class PaymentItem
     {
         return $this->amount;
     }
+
+    public function setAmount(int $amount): void
+    {
+        $this->amount = $amount;
+    }
 }

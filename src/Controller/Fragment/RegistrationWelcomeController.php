@@ -20,12 +20,13 @@ use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Participant;
 use Ferienpass\CoreBundle\Form\UserParticipantsType;
 use Ferienpass\CoreBundle\Ux\Flash;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class RegistrationWelcomeController extends AbstractController
 {
-    public function __construct(private ManagerRegistry $doctrine)
+    public function __construct(private ManagerRegistry $doctrine, private FormFactoryInterface $formFactory)
     {
     }
 
@@ -39,7 +40,7 @@ class RegistrationWelcomeController extends AbstractController
         $em = $this->doctrine->getManager();
         $member = MemberModel::findByPk($user->id);
 
-        $form = $this->createForm(UserParticipantsType::class, null, ['member' => $member]);
+        $form = $this->formFactory->create(UserParticipantsType::class, null, ['member' => $member]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -63,7 +64,7 @@ class RegistrationWelcomeController extends AbstractController
             return $this->redirectToRoute($request->attributes->get('_route') ?: 'personal_data');
         }
 
-        return $this->renderForm('@FerienpassCore/Fragment/registration_welcome.html.twig', [
+        return $this->render('@FerienpassCore/Fragment/registration_welcome.html.twig', [
             'form' => $form,
         ]);
     }

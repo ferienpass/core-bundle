@@ -37,35 +37,6 @@ application.spareSpots: >-
 
 application.spareSpotsOpen: freie Plätze
 
-countOverallApplications: >-
-  {count, plural,
-      one   {Eine Anmeldung aktuell}
-      other {# Anmeldungen aktuell}
-  }
-
-enrolledBefore: >-
-  {days, plural,
-      zero   {heute angemeldet}
-      one   {gestern angemeldet}
-      other {vor # Tagen angemeldet}
-  }
-
-applications.status:
-  confirmed.title: angemeldet
-  confirmed.caption: Kinder sind zugesagt und nehmen am Angebot teil.
-
-  waitlisted.title: auf Warteliste
-  waitlisted.caption: Kinder rücken automatisch nach, WENN Windhundverfahren aktiv.
-
-  waiting.title: unbestimmt
-  waiting.caption: Bitte weisen Sie diesen Kindern einen Status zu.
-
-  withdrawn.title: abgemeldet
-  withdrawn.caption: Anmeldung wurde auf Wunsch zurückgezogen.
-
-  error.title: fehlerhaft
-  error.caption: Irgendwas ist hier schief gelaufen.
-
 status:
   confirmed: nimmt teil
   waiting: nicht zugeteilt

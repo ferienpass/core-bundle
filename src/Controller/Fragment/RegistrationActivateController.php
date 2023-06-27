@@ -69,7 +69,7 @@ class RegistrationActivateController extends AbstractController
         }
 
         /** @psalm-suppress InvalidPropertyAssignmentValue */
-        $memberModel->disable = '';
+        $memberModel->disable = '0';
         $memberModel->save();
 
         $optInToken->confirm();

@@ -18,11 +18,16 @@ use Contao\FrontendUser;
 use Contao\MemberModel;
 use Ferienpass\CoreBundle\Form\UserPersonalDataType;
 use Ferienpass\CoreBundle\Ux\Flash;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class PersonalDataController extends AbstractFragmentController
 {
+    public function __construct(private FormFactoryInterface $formFactory)
+    {
+    }
+
     public function __invoke(Request $request): Response
     {
         $user = $this->getUser();
@@ -32,7 +37,7 @@ final class PersonalDataController extends AbstractFragmentController
 
         $memberModel = MemberModel::findByPk($user->id);
 
-        $form = $this->createForm(UserPersonalDataType::class, $memberModel);
+        $form = $this->formFactory->create(UserPersonalDataType::class, $memberModel);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // Fix some "Column cannot be null" errors
@@ -48,6 +53,6 @@ final class PersonalDataController extends AbstractFragmentController
             $this->addFlash(...Flash::confirmation()->text('Die Daten wurden erfolgreich gespeichert.')->create());
         }
 
-        return $this->renderForm('@FerienpassCore/Fragment/user_account/personal_data.html.twig', ['form' => $form]);
+        return $this->render('@FerienpassCore/Fragment/user_account/personal_data.html.twig', ['form' => $form]);
     }
 }

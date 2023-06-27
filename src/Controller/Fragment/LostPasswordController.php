@@ -22,6 +22,7 @@ use Ferienpass\CoreBundle\Ux\Flash;
 use NotificationCenter\Model\Notification;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\PasswordHasherInterface;
@@ -30,7 +31,7 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class LostPasswordController extends AbstractController
 {
-    public function __construct(private LoggerInterface $logger, private OptInInterface $optIn, private PasswordHasherInterface $passwordHasher)
+    public function __construct(private LoggerInterface $logger, private OptInInterface $optIn, private PasswordHasherInterface $passwordHasher, private FormFactoryInterface $formFactory)
     {
     }
 
@@ -41,7 +42,7 @@ class LostPasswordController extends AbstractController
             return $this->setNewPassword($request);
         }
 
-        $form = $this->createForm(UserLostPasswordType::class);
+        $form = $this->formFactory->create(UserLostPasswordType::class);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -116,7 +117,7 @@ class LostPasswordController extends AbstractController
             ]);
         }
 
-        $form = $this->createForm(UserLostPasswordType::class, $memberModel, ['reset_password' => true]);
+        $form = $this->formFactory->create(UserLostPasswordType::class, $memberModel, ['reset_password' => true]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

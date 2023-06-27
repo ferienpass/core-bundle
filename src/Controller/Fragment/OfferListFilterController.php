@@ -18,6 +18,7 @@ use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\PageModel;
 use Ferienpass\CoreBundle\Form\ListFiltersType;
 use Ferienpass\CoreBundle\Repository\EditionRepository;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,7 +27,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 final class OfferListFilterController extends AbstractController
 {
-    public function __construct(private EditionRepository $editionRepository)
+    public function __construct(private EditionRepository $editionRepository, private FormFactoryInterface $formFactory)
     {
     }
 
@@ -41,13 +42,13 @@ final class OfferListFilterController extends AbstractController
 
         // Get the normalized form data from query
         if ($request->query->count()) {
-            $form = $this->createForm(ListFiltersType::class);
+            $form = $this->formFactory->create(ListFiltersType::class);
             $form->submit($request->query->all());
             $data = $form->getData();
         }
 
         // Build the short form
-        $shortForm = $this->createForm(ListFiltersType::class, $data ?? null, ['short' => true]);
+        $shortForm = $this->formFactory->create(ListFiltersType::class, $data ?? null, ['short' => true]);
 
         // If filters form submitted, redirect to a pretty URL
         $shortForm->handleRequest($request);
@@ -56,7 +57,7 @@ final class OfferListFilterController extends AbstractController
         }
 
         // Build the full form
-        $form = $this->createForm(ListFiltersType::class, $data ?? null);
+        $form = $this->formFactory->create(ListFiltersType::class, $data ?? null);
         $form->handleRequest($request);
 
         // If filters form submitted, redirect to a pretty URL

@@ -17,6 +17,7 @@ use Contao\CoreBundle\Controller\AbstractFragmentController;
 use Contao\FrontendUser;
 use Ferienpass\CoreBundle\Form\UserChangePasswordType;
 use Ferienpass\CoreBundle\Ux\Flash;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\PasswordHasherInterface;
@@ -25,7 +26,7 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 final class ChangePasswordController extends AbstractFragmentController
 {
-    public function __construct(private PasswordHasherInterface $passwordHasher, private Security $security)
+    public function __construct(private PasswordHasherInterface $passwordHasher, private Security $security, private FormFactoryInterface $formFactory)
     {
     }
 
@@ -36,7 +37,7 @@ final class ChangePasswordController extends AbstractFragmentController
             return new Response('', Response::HTTP_NO_CONTENT);
         }
 
-        $form = $this->createForm(UserChangePasswordType::class);
+        $form = $this->formFactory->create(UserChangePasswordType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $user->tstamp = time();

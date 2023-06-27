@@ -21,12 +21,13 @@ use Ferienpass\CoreBundle\Entity\Participant;
 use Ferienpass\CoreBundle\Form\UserParticipantsType;
 use Ferienpass\CoreBundle\Repository\ParticipantRepository;
 use Ferienpass\CoreBundle\Ux\Flash;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ParticipantsController extends AbstractController
 {
-    public function __construct(private ParticipantRepository $participantRepository, private ManagerRegistry $doctrine)
+    public function __construct(private ParticipantRepository $participantRepository, private ManagerRegistry $doctrine, private FormFactoryInterface $formFactory)
     {
     }
 
@@ -41,7 +42,7 @@ final class ParticipantsController extends AbstractController
 
         // TODO if originalParticipants.length eq 0 then add constraint {MinLength=1}
         $originalParticipants = $this->participantRepository->findBy(['member' => $user->id]);
-        $form = $this->createForm(UserParticipantsType::class, null, ['member' => MemberModel::findByPk($user->id)]);
+        $form = $this->formFactory->create(UserParticipantsType::class, null, ['member' => MemberModel::findByPk($user->id)]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

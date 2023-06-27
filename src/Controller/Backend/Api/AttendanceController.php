@@ -26,7 +26,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/attendance/{id}', requirements: ['id' => '\d+'])]
-final class AttendanceController extends AbstractController
+final class AttendanceController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
     public function __construct(private MessageBusInterface $messageBus)
     {
@@ -35,9 +35,7 @@ final class AttendanceController extends AbstractController
     #[Route(path: '/sort', methods: ['POST'])]
     public function sortParticipantList(Attendance $attendance, Request $request, Session $session, ManagerRegistry $doctrine): Response
     {
-        $this->container->get('contao.framework')->initialize();
-
-        $this->checkToken();
+        $this->denyAccessUnlessGranted('participants.view', $attendance->getOffer());
 
         /** @var AttributeBagInterface $sessionBag */
         $sessionBag = $session->getBag('contao_backend');

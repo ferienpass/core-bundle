@@ -24,6 +24,7 @@ use Ferienpass\CoreBundle\Form\ApplyFormParticipantType;
 use Ferienpass\CoreBundle\Form\ApplyFormType;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Ferienpass\CoreBundle\Ux\Flash;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +32,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ApplicationFormController extends AbstractController
 {
-    public function __construct(private ApplicationSystems $applicationSystems, private AttendanceFacade $attendanceFacade, private AttendanceRepository $attendanceRepository, private ManagerRegistry $doctrine, private OptIn $optIn)
+    public function __construct(private ApplicationSystems $applicationSystems, private AttendanceFacade $attendanceFacade, private AttendanceRepository $attendanceRepository, private ManagerRegistry $doctrine, private OptIn $optIn, private FormFactoryInterface $formFactory)
     {
     }
 
@@ -58,8 +59,8 @@ class ApplicationFormController extends AbstractController
         $user = $this->getUser();
         $allowAnonymous = (bool) $applicationSystem->getTask()?->isAllowAnonymous();
         $allowAnonymousFee = (bool) $applicationSystem->getTask()?->isAllowAnonymousFee();
-        $participantForm = $this->createForm(ApplyFormParticipantType::class);
-        $applicationForm = $this->createForm(ApplyFormType::class, null, [
+        $participantForm = $this->formFactory->create(ApplyFormParticipantType::class);
+        $applicationForm = $this->formFactory->create(ApplyFormType::class, null, [
             'offer' => $offer,
             'application_system' => $applicationSystem,
         ]);

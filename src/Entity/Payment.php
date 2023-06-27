@@ -88,9 +88,17 @@ class Payment
         return $this->createdAt;
     }
 
+    /** @return Collection<PaymentItem> */
     public function getItems(): Collection
     {
         return $this->items;
+    }
+
+    public function addItem(PaymentItem $item): void
+    {
+        $this->items->add(new PaymentItem($item->getAttendance(), $item->getAmount()));
+
+        $this->calculateTotalAmount();
     }
 
     public function getTotalAmount(): int

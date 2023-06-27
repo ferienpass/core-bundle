@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Controller\Page;
 
 use Contao\ArticleModel;
-use Contao\CoreBundle\ServiceAnnotation\Page;
 use Ferienpass\CoreBundle\Controller\Frontend\AbstractController;
 use Ferienpass\CoreBundle\Fragment\FragmentReference;
 use Ferienpass\CoreBundle\Page\PageBuilder;
