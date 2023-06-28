@@ -89,6 +89,11 @@ class Attendance
         $this->setStatus($status);
     }
 
+    public function __toString(): string
+    {
+        return (string) $this->getId();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

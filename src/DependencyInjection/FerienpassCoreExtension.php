@@ -23,6 +23,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 final class FerienpassCoreExtension extends Extension implements PrependExtensionInterface
 {
@@ -43,6 +44,10 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
         // Parameters
         $container->setParameter('ferienpass.logos_dir', $config['logos_dir']);
         $container->setParameter('ferienpass.images_dir', $config['images_dir']);
+
+        $expressionLanguage = new ExpressionLanguage();
+        $container->setParameter('ferienpass.receipt_number_prefix', null === $config['receipt_number_prefix'] ? '' : $expressionLanguage->evaluate($config['receipt_number_prefix'], ['date' => new \DateTimeImmutable()]));
+        $container->setParameter('ferienpass.receipt_number_suffix', null === $config['receipt_number_suffix'] ? '' : $expressionLanguage->evaluate($config['receipt_number_suffix'], ['date' => new \DateTimeImmutable()]));
 
         // Injection
         if (isset($config['export'])) {

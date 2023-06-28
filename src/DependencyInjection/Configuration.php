@@ -35,6 +35,12 @@ final class Configuration implements ConfigurationInterface
                 ->scalarNode('images_dir')
                     ->defaultValue('%kernel.project_dir%/files/bilder')
                 ->end()
+                ->scalarNode('receipt_number_prefix')
+                    ->defaultNull()
+                ->end()
+                ->scalarNode('receipt_number_suffix')
+                    ->defaultNull()
+                ->end()
                 ->append($this->addExportNode())
             ->end()
         ;
