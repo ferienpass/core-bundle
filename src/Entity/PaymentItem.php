@@ -26,10 +26,10 @@ class PaymentItem
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\OneToOne]
+    #[ORM\ManyToOne(targetEntity: Attendance::class)]
     private Attendance $attendance;
 
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => false])]
     private int $amount;
 
     public function __construct(Attendance $attendance, int $amount)

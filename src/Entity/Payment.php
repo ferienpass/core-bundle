@@ -37,7 +37,7 @@ class Payment
     #[ORM\ManyToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\PaymentItem', cascade: ['persist'])]
     private Collection $items;
 
-    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => false])]
     private int $totalAmount = 0;
 
     #[ORM\Column(type: 'text')]
@@ -96,7 +96,7 @@ class Payment
 
     public function addItem(PaymentItem $item): void
     {
-        $this->items->add(new PaymentItem($item->getAttendance(), $item->getAmount()));
+        $this->items->add($item);
 
         $this->calculateTotalAmount();
     }
