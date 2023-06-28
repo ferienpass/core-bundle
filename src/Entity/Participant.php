@@ -38,8 +38,8 @@ class Participant
     #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
     private string $firstname;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
-    private string $lastname;
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => ''])]
+    private ?string $lastname = null;
 
     #[ORM\Column(type: 'date_immutable', nullable: true)]
     private ?\DateTimeInterface $dateOfBirth = null;
@@ -87,7 +87,7 @@ class Participant
         return $this->firstname;
     }
 
-    public function getLastname(): string
+    public function getLastname(): ?string
     {
         return $this->lastname;
     }
@@ -127,6 +127,11 @@ class Participant
         return MemberModel::findByPk($this->member);
     }
 
+    public function setMember(?MemberModel $memberModel)
+    {
+        $this->setMemberId($memberModel?->id);
+    }
+
     public function getAge(\DateTimeInterface $atDate = null): ?int
     {
         if (null === $this->dateOfBirth) {
@@ -156,14 +161,19 @@ class Participant
         return $this->attendances->filter(fn (Attendance $attendance) => Attendance::STATUS_WITHDRAWN !== $attendance->getStatus() && (null === $edition || $edition === $attendance->getOffer()->getEdition()));
     }
 
+    public function getAttendancesWaiting(): Collection
+    {
+        return $this->getAttendancesByStatus(Attendance::STATUS_WAITING);
+    }
+
     /**
      * @return ArrayCollection|Attendance[]
      *
      * @psalm-return ArrayCollection<int, Attendance>
      */
-    public function getAttendancesWaiting(): Collection
+    public function getAttendancesByStatus(string $status): Collection
     {
-        return $this->attendances->filter(fn (Attendance $attendance) => Attendance::STATUS_WAITING === $attendance->getStatus());
+        return $this->attendances->filter(fn (Attendance $attendance) => $status === $attendance->getStatus());
     }
 
     public function getLastAttendance(): ?Attendance

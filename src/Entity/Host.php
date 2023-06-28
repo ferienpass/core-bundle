@@ -123,6 +123,7 @@ class Host
     {
         $this->memberAssociations = new ArrayCollection();
         $this->offers = new ArrayCollection();
+        $this->timestamp = time();
     }
 
     public function addMember(MemberModel $memberModel): self
