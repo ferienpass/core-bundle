@@ -68,6 +68,8 @@
     "symfony/translation": "^5.2 || ^6.1",
     "symfony/twig-bridge": "^5.2 || ^6.1",
     "symfony/validator": "^5.2 || ^6.1",
+    "symfony/ux-live-component": "^2.0",
+    "symfony/stimulus-bundle": "^2.9",
     "twig/twig": "^2.12 || ^3.0",
     "twig/intl-extra": "^2.14 || ^3.0",
     "knplabs/knp-menu-bundle": "^3.0"

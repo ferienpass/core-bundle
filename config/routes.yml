@@ -27,11 +27,6 @@ ferienpass.frontend_api:
         _scope: frontend
         _token_check: false
 
-# Redirect /contao to /admin
-contao_backend_redirect:
-    path: '/contao'
-    defaults:
-        _scope: backend
-        _controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::redirectAction
-        route: contao_backend
-        permanent: true
+live_component:
+    resource: '@LiveComponentBundle/config/routes.php'
+    prefix: /_components
