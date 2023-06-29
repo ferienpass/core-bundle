@@ -21,7 +21,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\UniqueConstraint(columns: ['offer_id', 'participant_id'])]
 class Attendance
 {
-    public const STATUS_PAID = 'paid';
     public const STATUS_CONFIRMED = 'confirmed';
     public const STATUS_WAITLISTED = 'waitlisted';
     public const STATUS_WITHDRAWN = 'withdrawn';
@@ -41,6 +40,9 @@ class Attendance
 
     #[ORM\Column(type: 'string', length: 32, nullable: true)]
     private ?string $status = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
+    private bool $paid = false;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
@@ -121,7 +123,7 @@ class Attendance
 
     public function setStatus(?string $status): void
     {
-        if (null !== $status && !\in_array($status, [self::STATUS_PAID, self::STATUS_CONFIRMED, self::STATUS_WAITLISTED, self::STATUS_WITHDRAWN, self::STATUS_WAITING, self::STATUS_ERROR], true)) {
+        if (null !== $status && !\in_array($status, [self::STATUS_CONFIRMED, self::STATUS_WAITLISTED, self::STATUS_WITHDRAWN, self::STATUS_WAITING, self::STATUS_ERROR], true)) {
             throw new InvalidArgumentException('Invalid attendance status');
         }
 
@@ -130,14 +132,14 @@ class Attendance
         $this->setModifiedAt();
     }
 
-    public function setPaid(): void
+    public function setPaid($paid = true): void
     {
-        $this->setStatus(self::STATUS_PAID);
+        $this->paid = $paid;
     }
 
     public function isPaid(): bool
     {
-        return self::STATUS_PAID === $this->status;
+        return $this->paid;
     }
 
     public function setConfirmed(): void

@@ -136,7 +136,7 @@ class Payment
         return $this->status;
     }
 
-    private function calculateTotalAmount()
+    public function calculateTotalAmount()
     {
         $this->totalAmount = array_sum(array_map(fn (PaymentItem $item) => $item->getAmount(), $this->items->toArray()));
     }

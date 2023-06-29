@@ -161,9 +161,24 @@ class Participant
         return $this->attendances->filter(fn (Attendance $attendance) => Attendance::STATUS_WITHDRAWN !== $attendance->getStatus() && (null === $edition || $edition === $attendance->getOffer()->getEdition()));
     }
 
+    public function getAttendancesConfirmed(): Collection
+    {
+        return $this->getAttendancesByStatus(Attendance::STATUS_CONFIRMED);
+    }
+
+    public function getAttendancesWaitlisted(): Collection
+    {
+        return $this->getAttendancesByStatus(Attendance::STATUS_WAITLISTED);
+    }
+
     public function getAttendancesWaiting(): Collection
     {
         return $this->getAttendancesByStatus(Attendance::STATUS_WAITING);
+    }
+
+    public function getAttendancesErrored(): Collection
+    {
+        return $this->getAttendancesByStatus(Attendance::STATUS_ERROR);
     }
 
     /**
@@ -173,7 +188,21 @@ class Participant
      */
     public function getAttendancesByStatus(string $status): Collection
     {
+        if (!\in_array($status, [Attendance::STATUS_CONFIRMED, Attendance::STATUS_WAITLISTED, Attendance::STATUS_WAITLISTED, Attendance::STATUS_WITHDRAWN, Attendance::STATUS_ERROR], true)) {
+            throw new \InvalidArgumentException('Status is unknown to the application.');
+        }
+
         return $this->attendances->filter(fn (Attendance $attendance) => $status === $attendance->getStatus());
+    }
+
+    /**
+     * @return ArrayCollection|Attendance[]
+     *
+     * @psalm-return ArrayCollection<int, Attendance>
+     */
+    public function getAttendancesPaid(): Collection
+    {
+        return $this->attendances->filter(fn (Attendance $attendance) => $attendance->isPaid());
     }
 
     public function getLastAttendance(): ?Attendance
