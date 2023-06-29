@@ -188,8 +188,8 @@ class Participant
      */
     public function getAttendancesByStatus(string $status): Collection
     {
-        if (!\in_array($status, [Attendance::STATUS_CONFIRMED, Attendance::STATUS_WAITLISTED, Attendance::STATUS_WAITLISTED, Attendance::STATUS_WITHDRAWN, Attendance::STATUS_ERROR], true)) {
-            throw new \InvalidArgumentException('Status is unknown to the application.');
+        if (!\in_array($status, [Attendance::STATUS_CONFIRMED, Attendance::STATUS_WAITLISTED, Attendance::STATUS_WAITING, Attendance::STATUS_WITHDRAWN, Attendance::STATUS_ERROR], true)) {
+            throw new \InvalidArgumentException("Status \"$status\" is unknown to the application.");
         }
 
         return $this->attendances->filter(fn (Attendance $attendance) => $status === $attendance->getStatus());
