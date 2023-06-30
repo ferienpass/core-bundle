@@ -6,7 +6,7 @@
     <nav class="border-t border-gray-200 px-4 flex items-center justify-between sm:px-0">
         <div class="w-0 flex-1 flex">
             {% if pagination.hasPreviousPage %}
-                <a href="{{ path(app.request.get('_route'), app.request.query.all|merge({page: pagination.previousPage})) }}"
+                <a href="{{ path(originalRoute ?? app.request.get('_route'), (originalQuery ?? app.request.query.all)|merge({page: pagination.previousPage})) }}"
                    title="{{ goToLabel|replace({'%s': pagination.previousPage})|e }}"
                    class="-mt-px border-t-2 border-transparent pt-4 pr-1 inline-flex items-center text-sm leading-5 font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-400 transition ease-in-out duration-150">
                     <svg class="mr-3 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
@@ -24,7 +24,7 @@
                 {% if i == pagination.currentPage %}
                     <strong class="-mt-px border-t-2 border-primary-500 pt-4 px-4 inline-flex items-center text-sm leading-5 font-medium text-primary-600 focus:outline-none focus:text-primary-800 focus:border-primary-700 transition ease-in-out duration-150">{{ i }}</strong>
                 {% else %}
-                    <a href="{{ path(app.request.get('_route'), app.request.query.all|merge({page: i})) }}"
+                    <a href="{{ path(originalRoute ?? app.request.get('_route'), (originalQuery ?? app.request.query.all)|merge({page: i})) }}"
                        class="-mt-px border-t-2 border-transparent pt-4 px-4 inline-flex items-center text-sm leading-5 font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-400 transition ease-in-out duration-150"
                        title="{{ goToLabel|replace({'%s': i})|e }}">{{ i }}</a>
                 {% endif %}
@@ -33,7 +33,7 @@
 
         <div class="w-0 flex-1 flex justify-end">
             {% if pagination.hasNextPage %}
-                <a href="{{ path(app.request.get('_route'), app.request.query.all|merge({page: pagination.nextPage})) }}"
+                <a href="{{ path(originalRoute ?? app.request.get('_route'), (originalQuery ?? app.request.query.all)|merge({page: pagination.nextPage})) }}"
                    class="-mt-px border-t-2 border-transparent pt-4 pl-1 inline-flex items-center text-sm leading-5 font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-400 transition ease-in-out duration-150"
                    title="{{ goToLabel|replace({'%s': pagination.nextPage})|e }}">
                     {{ 'MSC.next'|trans }}
