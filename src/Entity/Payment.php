@@ -63,9 +63,10 @@ class Payment
     #[ORM\Column(name: 'user_id', type: 'integer', options: ['unsigned' => true], nullable: true)]
     private ?int $user;
 
-    public function __construct(string $receiptNumber = null)
+    public function __construct(string $receiptNumber = null, int $user = null)
     {
         $this->receiptNumber = $receiptNumber;
+        $this->user = $user;
 
         $this->status = self::STATUS_PAID;
 

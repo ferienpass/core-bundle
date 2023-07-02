@@ -38,9 +38,6 @@ final class Configuration implements ConfigurationInterface
                 ->scalarNode('receipt_number_prefix')
                     ->defaultNull()
                 ->end()
-                ->scalarNode('receipt_number_suffix')
-                    ->defaultNull()
-                ->end()
                 ->append($this->addExportNode())
             ->end()
         ;

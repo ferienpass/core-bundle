@@ -359,6 +359,9 @@ services:
   Ferienpass\CoreBundle\Cron\SendRemindersListener:
     arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@messenger.default_bus', '@Ferienpass\CoreBundle\Repository\EventLogRepository' ]
 
+  Ferienpass\CoreBundle\Payments\ReceiptNumberGenerator:
+    arguments: [ '%ferienpass.receipt_number_prefix%', '@Ferienpass\CoreBundle\Repository\PaymentRepository' ]
+
   Ferienpass\CoreBundle\Notifier:
     arguments: [!tagged_iterator { tag: 'ferienpass.notification', index_by: 'key' }]
 

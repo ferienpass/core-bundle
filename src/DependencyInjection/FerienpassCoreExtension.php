@@ -47,7 +47,6 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
 
         $expressionLanguage = new ExpressionLanguage();
         $container->setParameter('ferienpass.receipt_number_prefix', null === $config['receipt_number_prefix'] ? '' : $expressionLanguage->evaluate($config['receipt_number_prefix'], ['date' => new \DateTimeImmutable()]));
-        $container->setParameter('ferienpass.receipt_number_suffix', null === $config['receipt_number_suffix'] ? '' : $expressionLanguage->evaluate($config['receipt_number_suffix'], ['date' => new \DateTimeImmutable()]));
 
         // Injection
         if (isset($config['export'])) {
