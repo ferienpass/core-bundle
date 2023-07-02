@@ -42,13 +42,9 @@ class ReceiptNumberGenerator
 
         $qb->orderBy('docNumber', 'DESC');
 
-        $result = $qb->getQuery()->getOneOrNullResult();
+        $result = $qb->setMaxResults(1)->getQuery()->getOneOrNullResult();
         $docNumber = null === $result ? 0 : ((int) ($result['docNumber'] ?? 0));
 
-        return sprintf('%s%s%s',
-            $this->prefix,
-            str_pad((string) ++$docNumber, $this->length, '0', \STR_PAD_LEFT),
-            $this->suffix
-        );
+        return sprintf('%s%s', $this->prefix, str_pad((string) ++$docNumber, $this->length, '0', \STR_PAD_LEFT));
     }
 }

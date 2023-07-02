@@ -318,6 +318,9 @@ services:
   Ferienpass\CoreBundle\MessageHandler\WhenAccountResendNotificationThenNotify:
     arguments: [ '@contao.opt_in', '@router' ]
 
+  Ferienpass\CoreBundle\MessageHandler\WhenPaymentReceiptCreatedThenNotify:
+    arguments: [ '@Ferienpass\CoreBundle\Notifier', '@doctrine' ]
+
   Ferienpass\CoreBundle\MessageHandler\WhenRemindAttendanceThenNotify:
     arguments: [ '@Ferienpass\CoreBundle\Repository\AttendanceRepository', '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport', '@translator', '@contao.framework' ]
 
@@ -363,7 +366,7 @@ services:
     arguments: [ '%ferienpass.receipt_number_prefix%', '@Ferienpass\CoreBundle\Repository\PaymentRepository' ]
 
   Ferienpass\CoreBundle\Notifier:
-    arguments: [!tagged_iterator { tag: 'ferienpass.notification', index_by: 'key' }]
+    arguments: [!tagged_iterator { tag: 'ferienpass.notification', index_by: 'key' }, '@notifier', '@Ferienpass\CoreBundle\Repository\NotificationRepository']
 
   Ferienpass\CoreBundle\UserAccount\UserAccountFragments: ~
 

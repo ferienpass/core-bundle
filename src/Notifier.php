@@ -13,16 +13,19 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle;
 
+use Ferienpass\CoreBundle\Repository\NotificationRepository;
 use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\NotifierInterface;
+use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class Notifier
+class Notifier implements NotifierInterface
 {
     /**
      * @var array<string, Notification>
      */
     private array $notifications;
 
-    public function __construct(iterable $notifications)
+    public function __construct(iterable $notifications, private \Symfony\Component\Notifier\Notifier $notifier, private NotificationRepository $notificationRepository)
     {
         $this->notifications = $notifications instanceof \Traversable ? iterator_to_array($notifications) : $notifications;
     }
@@ -35,5 +38,31 @@ class Notifier
     public function getNotificationNames(): array
     {
         return array_keys($this->notifications);
+    }
+
+    public function get(string $key): ?Notification
+    {
+        if (!$this->has($key)) {
+            throw new \InvalidArgumentException('');
+        }
+
+        $notification = $this->notifications[$key];
+
+        $entity = $this->notificationRepository->findOneBy(['type' => $key]);
+        if (!($entity instanceof \Ferienpass\CoreBundle\Entity\Notification)) {
+            return null;
+        }
+
+        $notification
+            ->subject($entity->getEmailSubject())
+            ->content($entity->getEmailText())
+        ;
+
+        return $notification;
+    }
+
+    public function send(Notification $notification, RecipientInterface ...$recipients): void
+    {
+        $this->notifier->send($notification, ...$recipients);
     }
 }

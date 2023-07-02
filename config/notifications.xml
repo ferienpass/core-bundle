@@ -5,36 +5,42 @@
 
     <services>
         <defaults autoconfigure="true"/>
-
+<!--
         <service id="Ferienpass\CoreBundle\Notification\AttendanceChangedConfirmedNotification">
-            <tag name="ferienpass.notification" key="attendance_new"/>
+            <tag name="ferienpass.notification" key="attendance_newly_confirmed"/>
         </service>
         <service id="Ferienpass\CoreBundle\Notification\HostRegistrationNotification">
-            <tag name="ferienpass.notification" key="veranstalter-registrierung"/>
+            <tag name="ferienpass.notification" key="host_registration"/>
         </service>
         <service id="Ferienpass\CoreBundle\Notification\HostInviteMemberNotification">
-            <tag name="ferienpass.notification" key="veranstalter-einladung"/>
+            <tag name="ferienpass.notification" key="host_invitation"/>
         </service>
         <service id="Ferienpass\CoreBundle\Notification\PdfProofsNotification">
-            <tag name="ferienpass.notification" key="korrekturabzüge"/>
+            <tag name="ferienpass.notification" key="proofs"/>
         </service>
         <service id="Ferienpass\CoreBundle\Notification\AdmissionLetterNotification">
-            <tag name="ferienpass.notification" key="teilnahme-übersicht"/>
+            <tag name="ferienpass.notification" key="attendance_decisions"/>
         </service>
         <service id="Ferienpass\CoreBundle\Notification\AttendanceReminderNotification">
-            <tag name="ferienpass.notification" key="teilnahme-erinnern"/>
+            <tag name="ferienpass.notification" key="attendance_reminder"/>
         </service>
         <service id="Ferienpass\CoreBundle\Notification\OfferRelaunchedNotification">
-            <tag name="ferienpass.notification" key="angebot-wiederhergestellt"/>
+            <tag name="ferienpass.notification" key="offer_relaunched"/>
         </service>
         <service id="Ferienpass\CoreBundle\Notification\OfferCancelledNotification">
-            <tag name="ferienpass.notification" key="angebot-abgesagt"/>
+            <tag name="ferienpass.notification" key="offer_cancelled"/>
         </service>
         <service id="Ferienpass\CoreBundle\Notification\AttendanceCreatedConfirmedNotification">
-            <tag name="ferienpass.notification" key="teilnahme-bestätigt"/>
+            <tag name="ferienpass.notification" key="attendance_confirmed"/>
         </service>
         <service id="Ferienpass\CoreBundle\Notification\AttendanceChangedWithdrawnNotification">
-            <tag name="ferienpass.notification" key="teilnahme-abgesagt"/>
+            <tag name="ferienpass.notification" key="attendance_withdrawn"/>
+        </service>
+        -->
+
+        <service id="Ferienpass\CoreBundle\Notification\PaymentCreatedNotification">
+            <argument type="service" id="Ferienpass\CoreBundle\Export\Payments\ReceiptPdfExport"/>
+            <tag name="ferienpass.notification" key="payment_created"/>
         </service>
 
     </services>

@@ -37,13 +37,13 @@ class Notification
     private string $type;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private string $emailSubject;
+    private ?string $emailSubject = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
-    private string $emailText;
+    private ?string $emailText = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
-    private string $smsText;
+    private ?string $smsText = null;
 
     public function __construct(string $type)
     {
@@ -92,7 +92,7 @@ class Notification
         return $this->type;
     }
 
-    public function getEmailSubject(): string
+    public function getEmailSubject(): ?string
     {
         return $this->emailSubject;
     }
@@ -102,7 +102,7 @@ class Notification
         $this->emailSubject = $emailSubject;
     }
 
-    public function getEmailText(): string
+    public function getEmailText(): ?string
     {
         return $this->emailText;
     }
@@ -112,7 +112,7 @@ class Notification
         $this->emailText = $emailText;
     }
 
-    public function getSmsText(): string
+    public function getSmsText(): ?string
     {
         return $this->smsText;
     }
