@@ -14,11 +14,12 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Export\Offer\Excel;
 
 use Contao\StringUtil;
+use Ferienpass\CoreBundle\Export\Offer\OffersExportInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
 use Symfony\Component\Filesystem\Filesystem;
 
-abstract class AbstractExcelExport implements ExcelExportInterface
+abstract class AbstractExcelExport implements ExcelExportInterface, OffersExportInterface
 {
     public function generate(iterable $offers, string $destination = null): string
     {

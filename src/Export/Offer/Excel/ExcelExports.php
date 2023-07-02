@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Export\Offer\Excel;
 
 use Ferienpass\CoreBundle\Export\Offer\OfferExportTypeInterface;
+use Ferienpass\CoreBundle\Export\Offer\OffersExportInterface;
 
 final class ExcelExports implements OfferExportTypeInterface
 {
@@ -37,7 +38,7 @@ final class ExcelExports implements OfferExportTypeInterface
         return isset($this->exports[$key]);
     }
 
-    public function get(string $key): ExcelExportInterface
+    public function get(string $key): OffersExportInterface
     {
         if (!isset($this->exports[$key])) {
             throw new \LogicException('Excel export not supported');

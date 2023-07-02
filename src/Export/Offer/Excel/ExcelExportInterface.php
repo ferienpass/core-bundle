@@ -13,9 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Export\Offer\Excel;
 
-use Ferienpass\CoreBundle\Export\Offer\OffersExportInterface;
-
-interface ExcelExportInterface extends OffersExportInterface
+interface ExcelExportInterface
 {
     /**
      * Return an iterable collection of cells to export into XLSX spreadsheet with

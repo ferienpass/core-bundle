@@ -13,10 +13,13 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Entity;
 
+use Contao\MemberModel;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\Dto\Currency;
 use Ferienpass\CoreBundle\Repository\PaymentRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PaymentRepository::class)]
 class Payment
@@ -28,6 +31,7 @@ class Payment
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
+    #[Groups('admin_list')]
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
@@ -40,17 +44,24 @@ class Payment
     #[ORM\Column(type: 'integer', options: ['unsigned' => false])]
     private int $totalAmount = 0;
 
+    #[Groups('admin_list')]
     #[ORM\Column(type: 'text')]
     private ?string $billingAddress = null;
 
+    #[Groups('admin_list')]
     #[ORM\Column(type: 'text', length: 255, nullable: true)]
     private ?string $billingEmail = null;
 
+    #[Groups('admin_list')]
     #[ORM\Column(type: 'text', length: 255)]
     private ?string $receiptNumber;
 
+    #[Groups('admin_list')]
     #[ORM\Column(type: 'text', length: 64)]
     private ?string $status = null;
+
+    #[ORM\Column(name: 'user_id', type: 'integer', options: ['unsigned' => true], nullable: true)]
+    private ?int $user;
 
     public function __construct(string $receiptNumber = null)
     {
@@ -106,6 +117,12 @@ class Payment
         return $this->totalAmount;
     }
 
+    #[Groups('admin_list')]
+    public function getTotalAmountExcel(): Currency
+    {
+        return new Currency($this->getTotalAmount());
+    }
+
     public function getBillingAddress(): ?string
     {
         return $this->billingAddress;
@@ -134,6 +151,32 @@ class Payment
     public function getStatus(): ?string
     {
         return $this->status;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->user;
+    }
+
+    public function getUser(): ?MemberModel
+    {
+        return MemberModel::findByPk($this->user);
+    }
+
+    public function setUser(?MemberModel $memberModel)
+    {
+        $this->setUserId($memberModel?->id);
+    }
+
+    public function setUserId(?int $userId): void
+    {
+        $this->user = $userId;
+    }
+
+    #[Groups('admin_list')]
+    public function getUserEmail()
+    {
+        return $this->getUser()?->email;
     }
 
     public function calculateTotalAmount()
