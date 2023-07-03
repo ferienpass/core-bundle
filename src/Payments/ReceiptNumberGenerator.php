@@ -34,7 +34,7 @@ class ReceiptNumberGenerator
             $select = sprintf('substring(%s, %s)', $select, ++$offset1);
         }
 
-        // Easy way to "cast" to integer (substring returns string, no sorting naturally)
+        // Easy way to "cast" to integer (substring returns string, no natural sorting)
         // when CAST() function is not available in ORM.
         $select = "$select + 0";
 
