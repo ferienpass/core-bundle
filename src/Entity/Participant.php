@@ -19,6 +19,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
@@ -27,6 +28,7 @@ class Participant
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
+    #[Groups('admin_list')]
     private int $id;
 
     #[ORM\Column(name: 'tstamp', type: 'integer', options: ['unsigned' => true])]
@@ -36,27 +38,34 @@ class Participant
     private ?int $member;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
+    #[Groups('admin_list')]
     private string $firstname;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => ''])]
+    #[Groups('admin_list')]
     private ?string $lastname = null;
 
     #[ORM\Column(type: 'date_immutable', nullable: true)]
+    #[Groups('admin_list')]
     private ?\DateTimeInterface $dateOfBirth = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[PhoneNumber(defaultRegion: 'DE')]
+    #[Groups('admin_list')]
     private ?string $phone = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[PhoneNumber(type: PhoneNumber::MOBILE, defaultRegion: 'DE')]
+    #[Groups('admin_list')]
     private ?string $mobile = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Email]
+    #[Groups('admin_list')]
     private ?string $email = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => 0])]
+    #[Groups('admin_list')]
     private bool $discounted = false;
 
     /**
@@ -195,6 +204,30 @@ class Participant
         return $this->attendances->filter(fn (Attendance $attendance) => $status === $attendance->getStatus());
     }
 
+    #[Groups('admin_list')]
+    public function getAttendancesConfirmedCount(): int
+    {
+        return $this->getAttendancesConfirmed()->count();
+    }
+
+    #[Groups('admin_list')]
+    public function getAttendancesWaitlistedCount(): int
+    {
+        return $this->getAttendancesWaitlisted()->count();
+    }
+
+    #[Groups('admin_list')]
+    public function getAttendancesWaitingCount(): int
+    {
+        return $this->getAttendancesWaiting()->count();
+    }
+
+    #[Groups('admin_list')]
+    public function getAttendancesErroredCount(): int
+    {
+        return $this->getAttendancesErrored()->count();
+    }
+
     /**
      * @return ArrayCollection|Attendance[]
      *
@@ -203,6 +236,12 @@ class Participant
     public function getAttendancesPaid(): Collection
     {
         return $this->attendances->filter(fn (Attendance $attendance) => $attendance->isPaid());
+    }
+
+    #[Groups('admin_list')]
+    public function getAttendancesPaidCount(): int
+    {
+        return $this->getAttendancesPaid()->count();
     }
 
     public function getLastAttendance(): ?Attendance
@@ -260,5 +299,11 @@ class Participant
     public function setDiscounted(bool $discounted): void
     {
         $this->discounted = $discounted;
+    }
+
+    #[Groups('admin_list')]
+    public function hasUnpaidAttendances(): bool
+    {
+        return $this->getAttendancesConfirmed()->map(fn (Attendance $a) => !$a->isPaid())->isEmpty();
     }
 }
