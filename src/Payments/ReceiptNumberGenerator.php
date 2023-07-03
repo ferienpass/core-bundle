@@ -34,6 +34,10 @@ class ReceiptNumberGenerator
             $select = sprintf('substring(%s, %s)', $select, ++$offset1);
         }
 
+        // Easy way to "cast" to integer (substring returns string, no sorting naturally)
+        // when CAST() function is not available in ORM.
+        $select = "$select + 0";
+
         $qb->select("$select AS docNumber");
 
         if ($this->prefix) {

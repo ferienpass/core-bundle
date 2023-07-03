@@ -59,6 +59,7 @@ class PaymentCreatedNotification extends Notification implements EmailNotificati
 
         $email = (new Email())
             ->to($recipient->getEmail())
+            ->from('ferienpass@badoldesloe.de')
             ->subject($this->getSubject())
             ->text($this->getContent())
             ->attachFromPath($this->receiptExport->generate($this->payment), sprintf('beleg-%s', $this->payment->getId()))

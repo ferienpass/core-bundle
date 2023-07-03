@@ -304,6 +304,6 @@ class Participant
     #[Groups('admin_list')]
     public function hasUnpaidAttendances(): bool
     {
-        return $this->getAttendancesConfirmed()->map(fn (Attendance $a) => !$a->isPaid())->isEmpty();
+        return !$this->getAttendancesConfirmed()->map(fn (Attendance $a) => !$a->isPaid())->isEmpty();
     }
 }
