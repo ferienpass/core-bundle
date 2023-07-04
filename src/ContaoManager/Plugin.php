@@ -118,7 +118,7 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, ConfigPlu
 
         if ('framework' === $extensionName) {
             foreach ($extensionConfigs as &$extensionConfig) {
-                $extensionConfig['mailer']['envelope']['sender'] = 'test@example.org';
+                $extensionConfig['mailer']['envelope']['sender'] = '%env(ADMIN_EMAIL)%';
             }
         }
 
