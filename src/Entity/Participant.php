@@ -56,12 +56,10 @@ class Participant
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[PhoneNumber(type: PhoneNumber::MOBILE, defaultRegion: 'DE')]
-    #[Groups('admin_list')]
     private ?string $mobile = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Email]
-    #[Groups('admin_list')]
     private ?string $email = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => 0])]
@@ -111,19 +109,60 @@ class Participant
         return $this->dateOfBirth;
     }
 
-    public function getPhone(): ?string
+    public function getOwnPhone(): ?string
     {
         return $this->phone;
     }
 
-    public function getMobile(): ?string
+    public function getPhone(): ?string
+    {
+        if ($this->phone) {
+            return $this->phone;
+        }
+
+        if (null === $member = $this->getMember()) {
+            return null;
+        }
+
+        return $member->phone;
+    }
+
+    public function getOwnMobile(): ?string
     {
         return $this->mobile;
     }
 
-    public function getEmail(): ?string
+    #[Groups('admin_list')]
+    public function getMobile(): ?string
+    {
+        if ($this->mobile) {
+            return $this->mobile;
+        }
+
+        if (null === $member = $this->getMember()) {
+            return null;
+        }
+
+        return $member->mobile;
+    }
+
+    public function getOwnEmail(): ?string
     {
         return $this->email;
+    }
+
+    #[Groups('admin_list')]
+    public function getEmail(): ?string
+    {
+        if ($this->email) {
+            return $this->email;
+        }
+
+        if (null === $member = $this->getMember()) {
+            return null;
+        }
+
+        return $member->email;
     }
 
     public function getMemberId(): ?int
@@ -276,14 +315,29 @@ class Participant
         $this->phone = $phone;
     }
 
+    public function setOwnPhone(?string $phone): void
+    {
+        $this->setPhone($phone);
+    }
+
     public function setMobile(?string $mobile): void
     {
         $this->mobile = $mobile;
     }
 
+    public function setOwnMobile(?string $mobile): void
+    {
+        $this->setMobile($mobile);
+    }
+
     public function setEmail(?string $email): void
     {
         $this->email = $email;
+    }
+
+    public function setOwnEmail(?string $email): void
+    {
+        $this->setEmail($email);
     }
 
     public function setMemberId(?int $memberId): void
@@ -304,6 +358,6 @@ class Participant
     #[Groups('admin_list')]
     public function hasUnpaidAttendances(): bool
     {
-        return !$this->getAttendancesConfirmed()->map(fn (Attendance $a) => !$a->isPaid())->isEmpty();
+        return !$this->getAttendancesConfirmed()->filter(fn (Attendance $a) => !$a->isPaid())->isEmpty();
     }
 }
