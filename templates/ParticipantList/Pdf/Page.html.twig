@@ -69,8 +69,13 @@
                             </span>
                     </p>
                 </td>
-                <td style="color: cmyk(0,0,0,70)">Gebühr: {{ (participant.discounted ? offer.fee/2 : offer.fee)/100 }}
-                    €
+                <td style="color: cmyk(0,0,0,70)">
+                    <p>
+                        Gebühr: {{ (participant.discounted ? offer.fee/2 : offer.fee)/100 }} €
+                    </p>
+                    <p>
+                        {{ attendance.paid ? 'bezahlt' : 'nicht bezahlt' }}
+                    </p>
                 </td>
                 <td style="width: 22%"></td>
             </tr>
@@ -119,7 +124,7 @@
         <p>Es sind keine Anmeldungen vorhanden.</p>
     {% endif %}
 
-    {% set attendances = offer.attendancesConfirmed %}
+    {% set attendances = offer.attendancesConfirmed|sort((a, b) => a.participant.lastname|default <=> b.participant.lastname|default) %}
     <div>
         {{ _self.table(attendances, offer) }}
     </div>

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -65,6 +66,9 @@ class Attendance
     #[ORM\JoinColumn(name: 'task_id', referencedColumnName: 'id')]
     private ?EditionTask $task = null;
 
+    #[ORM\OneToMany(mappedBy: 'attendance', targetEntity: AttendanceLog::class, cascade: ['persist', 'remove'])]
+    private Collection $activity;
+
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $userPriority = 0;
 
@@ -87,6 +91,7 @@ class Attendance
 
         $this->createdAt = new \DateTimeImmutable();
         $this->timestamp = time();
+        $this->activity = new ArrayCollection();
 
         $this->setStatus($status);
     }
@@ -121,7 +126,7 @@ class Attendance
         return $this->status;
     }
 
-    public function setStatus(?string $status): void
+    public function setStatus(?string $status, int $user = null): void
     {
         if (null !== $status && !\in_array($status, [self::STATUS_CONFIRMED, self::STATUS_WAITLISTED, self::STATUS_WITHDRAWN, self::STATUS_WAITING, self::STATUS_ERROR], true)) {
             throw new InvalidArgumentException('Invalid attendance status');
@@ -130,6 +135,16 @@ class Attendance
         $this->status = $status;
 
         $this->setModifiedAt();
+
+        if (null !== $user) {
+        $activity = new AttendanceLog($this, $status, $user);
+        $this->activity[] = $activity;
+        }
+    }
+
+    public function getActivity(): Collection
+    {
+        return $this->activity;
     }
 
     public function setPaid($paid = true): void

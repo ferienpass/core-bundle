@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\Backend\Api;
 
+use Contao\FrontendUser;
 use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer;
@@ -24,6 +25,7 @@ use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route(path: '/attendance/{id}', requirements: ['id' => '\d+'])]
 final class AttendanceController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
@@ -43,7 +45,7 @@ final class AttendanceController extends \Symfony\Bundle\FrameworkBundle\Control
 
         $offer = $attendance->getOffer();
         if ($request->request->has('newStatus')) {
-            $this->setNewStatus($attendance, $request, $autoAssign);
+            $this->setNewStatus($attendance, $request, $this->getUser(), $autoAssign);
         } else {
             $this->setNewIndex($offer, $attendance, $request);
         }
@@ -60,11 +62,11 @@ final class AttendanceController extends \Symfony\Bundle\FrameworkBundle\Control
         return new Response('', Response::HTTP_OK);
     }
 
-    private function setNewStatus(Attendance $attendance, Request $request, $autoAssign): void
+    private function setNewStatus(Attendance $attendance, Request $request, UserInterface $user, $autoAssign): void
     {
         $oldStatus = $attendance->getStatus();
 
-        $attendance->setStatus($request->request->getAlnum('newStatus'));
+        $attendance->setStatus($request->request->getAlnum('newStatus'), $user instanceof FrontendUser ? $user->id : null);
         $attendance->setSorting(($request->request->getInt('newIndex') * 128) + 64);
 
         if ($autoAssign) {

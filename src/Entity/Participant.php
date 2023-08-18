@@ -72,11 +72,15 @@ class Participant
     #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\Attendance', mappedBy: 'participant')]
     private Collection $attendances;
 
+    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: ParticipantLog::class, cascade: ['persist', 'remove'])]
+    private Collection $activity;
+
     public function __construct(int $memberId = null)
     {
         $this->member = $memberId;
         $this->timestamp = time();
         $this->attendances = new ArrayCollection();
+        $this->activity = new ArrayCollection();
     }
 
     public function getId(): int
@@ -293,6 +297,11 @@ class Participant
         $attendances = $this->attendances->matching($criteria);
 
         return $attendances->first() ?: null;
+    }
+
+    public function getActivity(): Collection
+    {
+        return $this->activity;
     }
 
     public function setFirstname(string $firstname): void
