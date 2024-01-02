@@ -2,33 +2,7 @@
 <xliff version="1.1">
     <file>
         <body>
-            <trans-unit id="MOD.ferienpass_codes.0">
-                <target>Zugangcodes</target>
-            </trans-unit>
-            <trans-unit id="MOD.hosts.0">
-                <target>Veranstalter</target>
-            </trans-unit>
-            <trans-unit id="MOD.member_hosts.0">
-                <target>Mitglieder: Veranstalter</target>
-            </trans-unit>
-            <trans-unit id="MOD.member_parents.0">
-                <target>Mitglieder: Eltern</target>
-            </trans-unit>
-            <trans-unit id="MOD.participants.0">
-                <target>Teilnehmende</target>
-            </trans-unit>
-            <trans-unit id="MOD.offers.0">
-                <target>Angebote</target>
-            </trans-unit>
-            <trans-unit id="MOD.ferienpass_data_processings.0">
-                <target>Import &amp; Export</target>
-            </trans-unit>
-            <trans-unit id="MOD.ferienpass_export_mail_addresses.0">
-                <target>E-Mail-Adressen exportieren</target>
-            </trans-unit>
-            <trans-unit id="MOD.editions.0">
-                <target>Ferienpässe</target>
-            </trans-unit>
+
             <trans-unit id="CTE.text_block.0">
                 <target>Text-Block</target>
             </trans-unit>

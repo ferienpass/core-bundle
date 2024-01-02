@@ -17,7 +17,7 @@ use Contao\BackendTemplate;
 use Contao\ContentModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController;
-use Contao\CoreBundle\ServiceAnnotation\ContentElement;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsContentElement;
 use Contao\Model\Collection;
 use Contao\NewsArchiveModel;
 use Contao\NewsModel;
@@ -25,9 +25,7 @@ use Contao\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @ContentElement("home_news_list", category="texts")
- */
+#[AsContentElement(type: 'home_news_list', category: 'texts')]
 class HomeNewsList extends AbstractContentElementController
 {
     protected function getResponse(Template $template, ContentModel $model, Request $request): Response

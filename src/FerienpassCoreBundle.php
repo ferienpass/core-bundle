@@ -19,9 +19,10 @@ use Ferienpass\CoreBundle\DependencyInjection\FerienpassCoreExtension;
 use Ferienpass\CoreBundle\Fragment\FragmentReference;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
-class FerienpassCoreBundle extends Bundle
+class FerienpassCoreBundle extends AbstractBundle
 {
     public function getPath(): string
     {
@@ -39,5 +40,22 @@ class FerienpassCoreBundle extends Bundle
 
         $container->addCompilerPass(new RegisterFragmentsPass(FragmentReference::TAG_NAME));
         $container->addCompilerPass(new UserAccountFragmentsPass());
+    }
+
+    public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
+    {
+        if (isset($_ENV['SENTRY_DSN'])) {
+            // $loader->load(__DIR__.'/../config/sentry.yml');
+            $container->import(__DIR__.'/../config/packages/prod/monolog.php');
+        }
+
+        $container->import(__DIR__.'/../config/packages/contao.php');
+        $container->import(__DIR__.'/../config/packages/doctrine.php');
+        $container->import(__DIR__.'/../config/packages/monolog.php');
+        $container->import(__DIR__.'/../config/packages/messenger.php');
+        $container->import(__DIR__.'/../config/packages/framework.php');
+        // $container->import(__DIR__.'/../config/packages/privacydump.php');
+        $container->import(__DIR__.'/../config/twig.php');
+        // $container->import(__DIR__.'/../config/uploader.yml');
     }
 }

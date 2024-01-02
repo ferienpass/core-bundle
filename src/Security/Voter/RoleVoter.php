@@ -27,12 +27,11 @@ class RoleVoter extends \Symfony\Component\Security\Core\Authorization\Voter\Rol
 
         $roles = $token->getRoleNames();
 
-        if ($user->admin) {
-            $roles[] = 'ROLE_ADMIN';
-            $roles[] = 'ROLE_HOST';
+        if (\in_array($user->role, ['ROLE_ADMIN', 'ROLE_MEMBER', 'ROLE_HOST'], true)) {
+            $roles = [$user->role];
         }
 
-        if ($user->isMemberOf(1)) {
+        if (\in_array('ROLE_ADMIN', $roles, true)) {
             $roles[] = 'ROLE_HOST';
         }
 

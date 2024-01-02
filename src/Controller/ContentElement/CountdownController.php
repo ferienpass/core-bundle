@@ -15,7 +15,7 @@ namespace Ferienpass\CoreBundle\Controller\ContentElement;
 
 use Contao\ContentModel;
 use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController;
-use Contao\CoreBundle\ServiceAnnotation\ContentElement;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsContentElement;
 use Contao\StringUtil;
 use Contao\Template;
 use Ferienpass\CoreBundle\Entity\EditionTask;
@@ -23,9 +23,7 @@ use Ferienpass\CoreBundle\Repository\EditionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @ContentElement("countdown", category="ferienpass")
- */
+#[AsContentElement(type: 'countdown', category: 'ferienpass')]
 class CountdownController extends AbstractContentElementController
 {
     public function __construct(private EditionRepository $editionRepository)

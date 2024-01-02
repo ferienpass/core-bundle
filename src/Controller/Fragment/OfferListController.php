@@ -50,7 +50,6 @@ final class OfferListController extends AbstractController
 
         $qb->leftJoin('o.dates', 'dates');
 
-
         if ('Restplätze' === $pageModel->title) {
             $qb
                 ->andWhere('o.onlineApplication = 1')
@@ -66,9 +65,6 @@ final class OfferListController extends AbstractController
                 ->andWhere('o.cancelled <> 1')
             ;
         }
-
-
-
 
         $filter = $this->filterFactory->create($qb)->applyFilter($request->query->all());
 

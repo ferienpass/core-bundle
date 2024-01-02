@@ -18,16 +18,14 @@ use Contao\Config;
 use Contao\ContentModel;
 use Contao\CoreBundle\Asset\ContaoContext;
 use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController;
-use Contao\CoreBundle\ServiceAnnotation\ContentElement;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsContentElement;
 use Contao\FilesModel;
 use Contao\StringUtil;
 use Contao\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @ContentElement("text_block", category="texts")
- */
+#[AsContentElement(type: 'text_block', category: 'texts')]
 class TextBlockController extends AbstractContentElementController
 {
     public function __construct(private ContaoContext $assetsFilesContext, private string $projectDir)

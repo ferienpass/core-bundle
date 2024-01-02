@@ -53,12 +53,7 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['hosts'] = [
     ],
 ];
 
-$GLOBALS['TL_DCA']['tl_member']['fields']['admin'] = [
-    'exclude' => false,
-    'inputType' => 'checkbox',
-    'filter' => true,
-    'sql' => ['type' => 'boolean', 'default' => false],
-];
+$GLOBALS['TL_DCA']['tl_member']['fields']['role']['sql'] = ['type' => 'string', 'default' => 'ROLE_MEMBER'];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['public_fields'] = [
     'exclude' => true,

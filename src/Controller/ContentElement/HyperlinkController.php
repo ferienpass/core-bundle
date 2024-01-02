@@ -16,7 +16,7 @@ namespace Ferienpass\CoreBundle\Controller\ContentElement;
 use Contao\BackendTemplate;
 use Contao\ContentModel;
 use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController;
-use Contao\CoreBundle\ServiceAnnotation\ContentElement;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsContentElement;
 use Contao\InsertTags;
 use Contao\StringUtil;
 use Contao\Template;
@@ -24,9 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @ContentElement("hyperlink_button", category="links")
- */
+#[AsContentElement(type: 'hyperlink_button', category: 'links')]
 class HyperlinkController extends AbstractContentElementController
 {
     public static function getSubscribedServices(): array

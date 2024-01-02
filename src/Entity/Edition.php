@@ -17,7 +17,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ferienpass\CoreBundle\Exception\AmbiguousHolidayTaskException;
-use Ferienpass\CoreBundle\Exception\MissingHolidayTaskException;
 
 #[ORM\Entity(repositoryClass: 'Ferienpass\CoreBundle\Repository\EditionRepository')]
 class Edition
@@ -138,7 +137,7 @@ class Edition
         return $this->offers;
     }
 
-    public function getHoliday(): EditionTask
+    public function getHoliday(): ?EditionTask
     {
         $tasks = $this->getTasks()->filter(static fn (EditionTask $element) => 'holiday' === $element->getType());
 
@@ -146,12 +145,9 @@ class Edition
             throw new AmbiguousHolidayTaskException('More than one holiday found for the pass edition ID '.($this->getId() ?? 0));
         }
 
-        if ($tasks->isEmpty()) {
-            throw new MissingHolidayTaskException('No holiday found for pass edition ID '.($this->getId() ?? 0));
+        if (false === $task = $tasks->current()) {
+            return null;
         }
-
-        /** @var EditionTask $task */
-        $task = $tasks->current();
 
         return $task;
     }

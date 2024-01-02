@@ -13,35 +13,60 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Security\Voter;
 
+use Contao\FrontendUser;
 use Ferienpass\CoreBundle\Entity\Edition;
+use Ferienpass\CoreBundle\Repository\EditionRepository;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class EditionVoter extends Voter
 {
-    protected function supports(string $attribute, $subject): bool
+    public function __construct(private Security $security, private EditionRepository $editionRepository)
     {
-        $operations = [
-            'offer.create',
-        ];
-
-        return $subject instanceof Edition && \in_array($attribute, $operations, true);
     }
 
-    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
+    protected function supports($attribute, $subject): bool
     {
+        if (!\in_array($attribute, ['view', 'edit', 'stats'], true)) {
+            return false;
+        }
+
+        if (!$subject instanceof Edition) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+    {
+        $user = $token->getUser();
+        if (!$user instanceof FrontendUser) {
+            return false;
+        }
+
         /** @var Edition $edition */
         $edition = $subject;
 
-        if ('offer.create' === $attribute) {
-            return $this->canCreateOffer($edition);
-        }
-
-        throw new \LogicException('This code should not be reached!');
+        return match ($attribute) {
+            'view', 'stats' => $this->canView($edition, $user),
+            'edit' => $this->canEdit($edition, $user),
+            default => throw new \LogicException('This code should not be reached!'),
+        };
     }
 
-    private function canCreateOffer(Edition $edition): bool
+    private function canView(Edition $host, FrontendUser $user): bool
     {
-        return !$edition->getActiveTasks('host_editing_stage')->isEmpty();
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function canEdit(Edition $host, FrontendUser $user): bool
+    {
+        return $this->canView($host, $user);
     }
 }

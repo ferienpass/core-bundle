@@ -137,8 +137,8 @@ class Attendance
         $this->setModifiedAt();
 
         if (null !== $user) {
-        $activity = new AttendanceLog($this, $status, $user);
-        $this->activity[] = $activity;
+            $activity = new AttendanceLog($this, $status, $user);
+            $this->activity[] = $activity;
         }
     }
 

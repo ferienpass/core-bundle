@@ -16,7 +16,7 @@ namespace Ferienpass\CoreBundle\Controller\ContentElement;
 use Contao\BackendTemplate;
 use Contao\ContentModel;
 use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController;
-use Contao\CoreBundle\ServiceAnnotation\ContentElement;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsContentElement;
 use Contao\Template;
 use Ferienpass\CoreBundle\Controller\Fragment\SignInController as SignInFragmentController;
 use Ferienpass\CoreBundle\Repository\EditionRepository;
@@ -24,9 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @ContentElement("sign_in", category="ferienpass")
- */
+#[AsContentElement(type: 'sign_in', category: 'ferienpass')]
 class SignInController extends AbstractContentElementController
 {
     public function __construct(private EditionRepository $editionRepository)

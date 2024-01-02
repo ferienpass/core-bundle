@@ -11,8 +11,6 @@ declare(strict_types=1);
  * or the documentation under <https://docs.ferienpass.online>.
  */
 
-$GLOBALS['TL_LANG']['MSC']['mm_participant']['noItemsMsg'] = 'No participants found! Create children so that you can apply to offers.';
-
 $GLOBALS['TL_LANG']['MSC']['attendance_status']['confirmed'] = 'Confirmed';
 $GLOBALS['TL_LANG']['MSC']['attendance_status']['waiting'] = 'Waiting';
 $GLOBALS['TL_LANG']['MSC']['attendance_status']['waitlisted'] = 'On waitlist';

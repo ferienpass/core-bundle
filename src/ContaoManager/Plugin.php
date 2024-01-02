@@ -18,7 +18,6 @@ use Contao\ManagerBundle\ContaoManagerBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
-use Contao\ManagerPlugin\Config\ConfigPluginInterface;
 use Contao\ManagerPlugin\Config\ContainerBuilder;
 use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
 use Contao\ManagerPlugin\Dependency\DependentPluginInterface;
@@ -30,7 +29,6 @@ use Knp\Bundle\SnappyBundle\KnpSnappyBundle;
 use Mvo\ContaoGroupWidget\MvoContaoGroupWidgetBundle;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
-use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouteCollection;
@@ -38,7 +36,7 @@ use Symfony\UX\LiveComponent\LiveComponentBundle;
 use Symfony\UX\TwigComponent\TwigComponentBundle;
 use Symfony\WebpackEncoreBundle\WebpackEncoreBundle;
 
-class Plugin implements BundlePluginInterface, RoutingPluginInterface, ConfigPluginInterface, DependentPluginInterface, ExtensionPluginInterface
+class Plugin implements BundlePluginInterface, RoutingPluginInterface, DependentPluginInterface, ExtensionPluginInterface
 {
     public function getBundles(ParserInterface $parser): array
     {
@@ -74,23 +72,6 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, ConfigPlu
         return $resolver
             ->resolve(__DIR__.'/../../config/routes.yml')
             ->load(__DIR__.'/../../config/routes.yml');
-    }
-
-    public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig): void
-    {
-        if (isset($_ENV['SENTRY_DSN'])) {
-            // $loader->load(__DIR__.'/../../config/sentry.yml');
-            $loader->load(__DIR__.'/../../config/packages/prod/monolog.yml');
-        }
-
-        $loader->load(__DIR__.'/../../config/contao.yml');
-        $loader->load(__DIR__.'/../../config/packages/doctrine.yml');
-        $loader->load(__DIR__.'/../../config/packages/monolog.yml');
-        $loader->load(__DIR__.'/../../config/packages/messenger.yml');
-        $loader->load(__DIR__.'/../../config/packages/framework.yml');
-        // $loader->load(__DIR__.'/../../config/packages/privacydump.yml');
-        $loader->load(__DIR__.'/../../config/twig.yml');
-        // $loader->load(__DIR__.'/../../config/uploader.yml');
     }
 
     public function getPackageDependencies(): array

@@ -13,7 +13,7 @@ services:
   Ferienpass\CoreBundle\Controller\Frontend\RedirectShortUrlController: ~
 
   Ferienpass\CoreBundle\Controller\Frontend\ExportAttendancesController:
-    arguments: [ '%secret%', '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport', '@Ferienpass\CoreBundle\Repository\OfferRepository' ]
+    arguments: [ '%kernel.secret%', '@Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport', '@Ferienpass\CoreBundle\Repository\OfferRepository' ]
 
   Ferienpass\CoreBundle\Controller\Frontend\CodeValidationController:
     tags: [ 'controller.service_arguments' ]
@@ -189,9 +189,6 @@ services:
   Ferienpass\CoreBundle\EventListener\DataContainer\Offer\SaveAccessibilityListener:
     arguments: [ '@doctrine' ]
 
-  Ferienpass\CoreBundle\EventListener\DataContainer\EditionTask\LabelListener:
-    arguments: [ '@translator' ]
-
   Ferienpass\CoreBundle\EventListener\DataContainer\Participant\LabelListener: ~
   Ferienpass\CoreBundle\EventListener\DataContainer\Participant\DeleteListener:
     arguments: [ '@database_connection' ]
@@ -247,16 +244,17 @@ services:
   Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType:
     arguments: [ '@contao.csrf.token_manager', '%contao.csrf_token_name%' ]
 
+  Ferienpass\CoreBundle\Security\Voter\EditionVoter:
+    arguments: [ '@security.helper', '@Ferienpass\CoreBundle\Repository\EditionRepository' ]
+    tags:
+      - { name: security.voter }
+
   Ferienpass\CoreBundle\Security\Voter\HostVoter:
     arguments: [ '@security.helper', '@Ferienpass\CoreBundle\Repository\HostRepository' ]
     tags:
       - { name: security.voter }
 
   Ferienpass\CoreBundle\Security\Voter\AttendanceVoter:
-    tags:
-      - { name: security.voter }
-
-  Ferienpass\CoreBundle\Security\Voter\EditionVoter:
     tags:
       - { name: security.voter }
 
