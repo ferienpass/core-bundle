@@ -45,7 +45,7 @@ class Participant
     #[Groups('admin_list')]
     private ?string $lastname = null;
 
-    #[ORM\Column(type: 'date_immutable', nullable: true)]
+    #[ORM\Column(type: 'date', nullable: true)]
     #[Groups('admin_list')]
     private ?\DateTimeInterface $dateOfBirth = null;
 

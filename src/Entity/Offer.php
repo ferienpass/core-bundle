@@ -36,9 +36,6 @@ class Offer
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'tstamp', type: 'integer', options: ['unsigned' => true])]
-    private int $timestamp;
-
     #[ORM\ManyToOne(targetEntity: 'Edition', inversedBy: 'offers')]
     #[ORM\JoinColumn(name: 'edition', referencedColumnName: 'id')]
     private ?Edition $edition = null;

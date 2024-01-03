@@ -33,9 +33,6 @@ class Attendance
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'tstamp', type: 'integer', options: ['unsigned' => true])]
-    private int $timestamp;
-
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $sorting = 0;
 
@@ -90,7 +87,6 @@ class Attendance
         $this->participant = $participant;
 
         $this->createdAt = new \DateTimeImmutable();
-        $this->timestamp = time();
         $this->activity = new ArrayCollection();
 
         $this->setStatus($status);
@@ -104,11 +100,6 @@ class Attendance
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getTimestamp(): int
-    {
-        return $this->timestamp;
     }
 
     public function getSorting(): int
