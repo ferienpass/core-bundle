@@ -23,7 +23,6 @@
     "ext-pdo": "*",
 
     "contao/core-bundle": "^5.1",
-    "contao/news-bundle": "^5.1",
 
     "mvo/contao-group-widget": "^1.3",
     "richardhj/contao-knp-menu": "^1.0",
@@ -89,7 +88,10 @@
     }
   },
   "extra": {
-    "contao-manager-plugin": "Ferienpass\\CoreBundle\\ContaoManager\\Plugin"
+    "contao-manager-plugin": "Ferienpass\\CoreBundle\\ContaoManager\\Plugin",
+    "branch-alias": {
+      "dev-4.x": "4.x-dev"
+    }
   },
   "config": {
     "allow-plugins": {
