@@ -36,7 +36,7 @@ class EditionTask
     private int $sorting;
 
     #[ORM\Column(type: 'string', nullable: true)]
-    private string $type;
+    private ?string $type = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $title = null;
@@ -48,10 +48,10 @@ class EditionTask
     private ?int $maxApplicationsDay = null;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private \DateTimeImmutable $periodBegin;
+    private ?\DateTimeImmutable $periodBegin = null;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private \DateTimeImmutable $periodEnd;
+    private ?\DateTimeImmutable $periodEnd = null;
 
     #[ORM\Column(name: 'hide_status', type: 'boolean', nullable: true)]
     private ?bool $hideStatus = null;
@@ -114,12 +114,12 @@ class EditionTask
         $this->sorting = $sorting;
     }
 
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    public function setType(string $type): void
+    public function setType(?string $type): void
     {
         $this->type = $type;
     }
@@ -159,7 +159,7 @@ class EditionTask
         return $this->periodBegin;
     }
 
-    public function setPeriodBegin(\DateTimeImmutable $periodBegin): void
+    public function setPeriodBegin(?\DateTimeImmutable $periodBegin): void
     {
         $this->periodBegin = $periodBegin;
     }
@@ -169,7 +169,7 @@ class EditionTask
         return $this->periodEnd;
     }
 
-    public function setPeriodEnd(\DateTimeImmutable $periodEnd): void
+    public function setPeriodEnd(?\DateTimeImmutable $periodEnd): void
     {
         $this->periodEnd = $periodEnd;
     }

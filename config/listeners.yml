@@ -12,18 +12,6 @@ services:
       - { name: 'contao.hook', hook: 'isVisibleElement' }
     arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository', '@contao.security.token_checker','@request_stack', '@contao.routing.scope_matcher' ]
 
-  richardhj.ferienpass.listener.callback.tl_member.ferienpass_host:
-    class: Ferienpass\CoreBundle\EventListener\Callback\Table\Member\FerienpassHostCallbackListener
-    tags:
-      - { name: contao.callback, table: tl_member, target: config.onsubmit }
-      - { name: contao.callback, table: tl_member, target: fields.ferienpass_host.save }
-    arguments:
-      [ '@database_connection' ]
-
-  Ferienpass\CoreBundle\EventListener\Callback\Table\Offer\SortingFieldsListener:
-    tags: [ { name: contao.callback, table: Offer, target: config.onsubmit } ]
-    arguments: [ '@database_connection' ]
-
   Ferienpass\CoreBundle\EventListener\PrettyErrorScreenListener:
     arguments:
       - '%contao.pretty_error_screens%'

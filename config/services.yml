@@ -148,8 +148,6 @@ services:
 
   Ferienpass\CoreBundle\EventListener\Doctrine\Offer\AliasListener:
     arguments: [ '@slugger' ]
-  Ferienpass\CoreBundle\EventListener\Doctrine\Offer\SortingFieldsListener:
-    tags: [ { name: 'doctrine.event_listener', event: 'preUpdate' } ]
 
   Ferienpass\CoreBundle\EventListener\Doctrine\Offer\VariantListener:
     tags:

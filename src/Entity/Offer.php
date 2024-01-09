@@ -242,18 +242,6 @@ class Offer
     #[ORM\JoinColumn(name: 'varbase', referencedColumnName: 'id')]
     private ?Offer $variantBase = null;
 
-    /**
-     * Used internally for DC_Table to sort on date relation.
-     */
-    #[ORM\Column(name: 'dates', type: 'integer', nullable: true)]
-    private ?int $datesSorting = null;
-
-    /**
-     * Used internally for DC_Table to sort on hosts relation.
-     */
-    #[ORM\Column(name: 'hosts', type: 'text', length: 255, nullable: true)]
-    private ?string $hostsSorting = null;
-
     public function __construct()
     {
         $this->hosts = new ArrayCollection();
@@ -265,7 +253,7 @@ class Offer
 
     public function addDate(OfferDate $offerDate): void
     {
-        $this->dates->add($offerDate->withOffer($this));
+        $this->dates->add($offerDate);
     }
 
     public function removeDate(OfferDate $offerDate): void
@@ -336,16 +324,6 @@ class Offer
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getTimestamp(): int
-    {
-        return $this->timestamp;
-    }
-
-    public function setTimestamp(int $timestamp): void
-    {
-        $this->timestamp = $timestamp;
     }
 
     public function getEdition(): ?Edition
@@ -807,16 +785,6 @@ class Offer
     public function setSaved(bool $saved): void
     {
         $this->saved = $saved;
-    }
-
-    public function setDatesSorting(?int $datesSorting): void
-    {
-        $this->datesSorting = $datesSorting;
-    }
-
-    public function setHostsSorting(?string $hostsSorting): void
-    {
-        $this->hostsSorting = $hostsSorting;
     }
 
     public function generateAlias(SluggerInterface $slugger)

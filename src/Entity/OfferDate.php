@@ -33,22 +33,9 @@ class OfferDate
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $end = null;
 
-    public function __construct(Offer $offer = null)
+    public function __construct(Offer $offer)
     {
-        if ($offer) {
-            $this->offer = $offer;
-        }
-    }
-
-    /**
-     * Contao group widget cannot use constructor arguments.
-     */
-    public function withOffer(Offer $offer): self
-    {
-        $clone = clone $this;
-        $clone->offer = $offer;
-
-        return $clone;
+        $this->offer = $offer;
     }
 
     public function getOffer(): Offer
@@ -66,12 +53,12 @@ class OfferDate
         return $this->end;
     }
 
-    public function setBegin(\DateTimeInterface $begin): void
+    public function setBegin(?\DateTimeInterface $begin): void
     {
         $this->begin = $begin;
     }
 
-    public function setEnd(\DateTimeInterface $end): void
+    public function setEnd(?\DateTimeInterface $end): void
     {
         $this->end = $end;
     }

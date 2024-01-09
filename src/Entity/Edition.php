@@ -117,6 +117,16 @@ class Edition
         $this->tasks = $tasks;
     }
 
+    public function addTask(EditionTask $editionTask): void
+    {
+        $this->tasks->add($editionTask);
+    }
+
+    public function removeTask(EditionTask $editionTask): void
+    {
+        $this->tasks->removeElement($editionTask);
+    }
+
     public function getListPage(): ?int
     {
         return $this->listPage;
