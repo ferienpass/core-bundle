@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Entity;
 
-use Contao\MemberModel;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -126,9 +125,9 @@ class Host
         $this->timestamp = time();
     }
 
-    public function addMember(MemberModel $memberModel): self
+    public function addMember(User $user): self
     {
-        return $this->addMemberAssociation(new HostMemberAssociation((int) $memberModel->id, $this));
+        return $this->addMemberAssociation(new HostMemberAssociation($user, $this));
     }
 
     public function addMemberAssociation(HostMemberAssociation $memberAssociation): self
@@ -146,6 +145,11 @@ class Host
     public function getMemberAssociations(): Collection
     {
         return $this->memberAssociations;
+    }
+
+    public function getUsers(): array
+    {
+        return array_filter($this->memberAssociations->map(fn (HostMemberAssociation $a) => $a->getUser())->toArray());
     }
 
     public function getId(): int

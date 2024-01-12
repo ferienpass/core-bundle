@@ -19,7 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ListFiltersType2 extends AbstractType
+class ListFiltersType extends AbstractType
 {
     /** @var array<FilterType> */
     private array $filterTypes = [];

@@ -23,8 +23,9 @@ class HostMemberAssociation
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    #[ORM\Column(name: 'member_id', type: 'integer', options: ['unsigned' => true])]
-    private int $member;
+    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\User', inversedBy: 'hostAssociations')]
+    #[ORM\JoinColumn(name: 'member_id', referencedColumnName: 'id')]
+    private User $user;
 
     #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\Host', inversedBy: 'memberAssociations')]
     #[ORM\JoinColumn(name: 'host_id', referencedColumnName: 'id')]
@@ -33,12 +34,12 @@ class HostMemberAssociation
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    public function __construct(int $member = null, Host $host = null)
+    public function __construct(User $user = null, Host $host = null)
     {
         $this->createdAt = new \DateTimeImmutable();
 
-        if (null !== $member) {
-            $this->member = $member;
+        if (null !== $user) {
+            $this->user = $user;
         }
 
         if (null !== $host) {
@@ -46,9 +47,9 @@ class HostMemberAssociation
         }
     }
 
-    public function getMember(): int
+    public function getUser(): User
     {
-        return $this->member;
+        return $this->user;
     }
 
     public function getHost(): Host

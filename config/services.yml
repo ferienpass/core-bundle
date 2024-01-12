@@ -116,6 +116,9 @@ services:
   Ferienpass\CoreBundle\Repository\PaymentRepository:
     arguments: [ '@doctrine' ]
 
+  Ferienpass\CoreBundle\Repository\UserRepository:
+    arguments: [ '@doctrine' ]
+
 
 #  Ferienpass\CoreBundle\HttpCache\UserContext\UserContextProvider:
 #    arguments: [ '@security.token_storage', '@contao.framework', '@contao.security.token_checker' ]

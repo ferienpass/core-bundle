@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Entity;
 
-use Contao\MemberModel;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,6 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Payment
 {
     public const STATUS_PAID = 'paid';
+    public const STATUS_UNPAID = 'unpaid';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -60,10 +60,11 @@ class Payment
     #[ORM\Column(type: 'text', length: 64)]
     private ?string $status = null;
 
-    #[ORM\Column(name: 'user_id', type: 'integer', options: ['unsigned' => true], nullable: true)]
-    private ?int $user;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    private ?User $user = null;
 
-    public function __construct(string $receiptNumber = null, int $user = null)
+    public function __construct(string $receiptNumber = null, User $user = null)
     {
         $this->receiptNumber = $receiptNumber;
         $this->user = $user;
@@ -154,30 +155,20 @@ class Payment
         return $this->status;
     }
 
-    public function getUserId(): ?int
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function getUser(): ?MemberModel
+    public function setUser(?User $user)
     {
-        return MemberModel::findByPk($this->user);
-    }
-
-    public function setUser(?MemberModel $memberModel)
-    {
-        $this->setUserId($memberModel?->id);
-    }
-
-    public function setUserId(?int $userId): void
-    {
-        $this->user = $userId;
+        $this->user = $user;
     }
 
     #[Groups('admin_list')]
     public function getUserEmail()
     {
-        return $this->getUser()?->email;
+        return $this->user?->getEmail();
     }
 
     public function calculateTotalAmount()

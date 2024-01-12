@@ -68,7 +68,8 @@
     "symfony/stimulus-bundle": "^2.9",
     "twig/twig": "^2.12 || ^3.0",
     "twig/intl-extra": "^2.14 || ^3.0",
-    "knplabs/knp-menu-bundle": "^3.0"
+    "knplabs/knp-menu-bundle": "^3.0",
+    "scienta/doctrine-json-functions": "^5.3"
   },
   "require-dev": {
     "contao/manager-plugin": "^2.7",
