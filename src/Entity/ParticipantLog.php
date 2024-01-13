@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Entity;
 
-use Contao\MemberModel;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -31,13 +30,14 @@ class ParticipantLog
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
-    private int $user;
+    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\User')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    private User $user;
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $comment;
 
-    public function __construct(Participant $participant, string $comment, int $user)
+    public function __construct(Participant $participant, string $comment, User $user)
     {
         $this->participant = $participant;
         $this->comment = $comment;
@@ -66,13 +66,8 @@ class ParticipantLog
         return $this->comment;
     }
 
-    public function getUserId(): ?int
+    public function getUser(): User
     {
         return $this->user;
-    }
-
-    public function getUser(): ?MemberModel
-    {
-        return MemberModel::findByPk($this->user);
     }
 }

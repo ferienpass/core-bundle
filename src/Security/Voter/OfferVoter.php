@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Security\Voter;
 
-use Contao\FrontendUser;
 use Ferienpass\CoreBundle\Entity\Host;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\OfferDate;
+use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Ferienpass\CoreBundle\Repository\HostRepository;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -52,7 +52,7 @@ class OfferVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
-        if (!$user instanceof FrontendUser) {
+        if (!$user instanceof User) {
             return false;
         }
 
@@ -76,19 +76,19 @@ class OfferVoter extends Voter
         };
     }
 
-    private function canView(Offer $offer, FrontendUser $user): bool
+    private function canView(Offer $offer, User $user): bool
     {
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
 
-        $userHosts = $this->hostRepository->findByMemberId((int) $user->id);
+        $userHosts = $this->hostRepository->findByUser($user);
         $userHostIds = array_map(fn (Host $host) => $host->getId(), $userHosts);
 
         return $offer->getHosts()->filter(fn (Host $host) => \in_array($host->getId(), $userHostIds, false))->count() > 0;
     }
 
-    private function canEdit(Offer $offer, FrontendUser $user): bool
+    private function canEdit(Offer $offer, User $user): bool
     {
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
@@ -114,12 +114,12 @@ class OfferVoter extends Voter
         return !$edition->getActiveTasks('host_editing_stage')->isEmpty();
     }
 
-    private function canCopy(Offer $offer, FrontendUser $user): bool
+    private function canCopy(Offer $offer, User $user): bool
     {
         return $this->canCreate($offer) && $this->canView($offer, $user);
     }
 
-    private function canDelete(Offer $offer, FrontendUser $user): bool
+    private function canDelete(Offer $offer, User $user): bool
     {
         if (false === $this->canView($offer, $user)) {
             return false;
@@ -136,7 +136,7 @@ class OfferVoter extends Voter
         return null === ($edition = $offer->getEdition()) || $edition->isEditableForHosts();
     }
 
-    private function canCancel(Offer $offer, FrontendUser $user): bool
+    private function canCancel(Offer $offer, User $user): bool
     {
         if (false === $this->canView($offer, $user)) {
             return false;
@@ -149,7 +149,7 @@ class OfferVoter extends Voter
         return true;
     }
 
-    private function canFreeze(Offer $offer, FrontendUser $user): bool
+    private function canFreeze(Offer $offer, User $user): bool
     {
         if (false === $this->canView($offer, $user)) {
             return false;
@@ -164,7 +164,7 @@ class OfferVoter extends Voter
         return 0 === \count($attendances);
     }
 
-    private function canRelaunch(Offer $offer, FrontendUser $user): bool
+    private function canRelaunch(Offer $offer, User $user): bool
     {
         if (false === $this->canView($offer, $user)) {
             return false;
@@ -177,21 +177,12 @@ class OfferVoter extends Voter
         return true;
     }
 
-    private function canViewParticipants(Offer $offer, FrontendUser $user): bool
+    private function canViewParticipants(Offer $offer, User $user): bool
     {
         return $this->canView($offer, $user);
     }
 
-    private function canRejectParticipants(Offer $offer, FrontendUser $user): bool
-    {
-        if ($this->offerIsImmutable($offer)) {
-            return false;
-        }
-
-        return $this->canView($offer, $user);
-    }
-
-    private function canConfirmParticipants(Offer $offer, FrontendUser $user): bool
+    private function canRejectParticipants(Offer $offer, User $user): bool
     {
         if ($this->offerIsImmutable($offer)) {
             return false;
@@ -200,7 +191,16 @@ class OfferVoter extends Voter
         return $this->canView($offer, $user);
     }
 
-    private function canAddParticipants(Offer $offer, FrontendUser $user): bool
+    private function canConfirmParticipants(Offer $offer, User $user): bool
+    {
+        if ($this->offerIsImmutable($offer)) {
+            return false;
+        }
+
+        return $this->canView($offer, $user);
+    }
+
+    private function canAddParticipants(Offer $offer, User $user): bool
     {
         if ($this->offerIsImmutable($offer)) {
             return false;

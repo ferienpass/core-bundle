@@ -270,10 +270,6 @@ services:
     tags:
       - { name: security.voter }
 
-  Ferienpass\CoreBundle\Security\Voter\RoleVoter:
-    tags:
-      - { name: security.voter, priority: 255 }
-
   Ferienpass\CoreBundle\Twig\Extension\RequestTokenExtension:
     arguments:
       - '@contao.csrf.token_manager'
@@ -374,3 +370,21 @@ services:
 
   ferienpass.dto.offer_filter:
     class: Ferienpass\CoreBundle\Dto\OfferFilterDto
+
+  ferienpass.security.contao_backend_user_provider:
+    class: Ferienpass\CoreBundle\Security\ContaoUserProvider
+    arguments:
+      - '@contao.framework'
+      - Ferienpass\CoreBundle\Security\ContaoBackendUser
+      - '@doctrine'
+      - Ferienpass\CoreBundle\Entity\User
+      - email
+
+  ferienpass.security.contao_frontend_user_provider:
+    class: Ferienpass\CoreBundle\Security\ContaoUserProvider
+    arguments:
+      - '@contao.framework'
+      - Ferienpass\CoreBundle\Security\ContaoFrontendUser
+      - '@doctrine'
+      - Ferienpass\CoreBundle\Entity\User
+      - email

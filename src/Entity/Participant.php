@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Entity;
 
-use Contao\MemberModel;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -34,8 +33,9 @@ class Participant
     #[ORM\Column(name: 'tstamp', type: 'integer', options: ['unsigned' => true])]
     private int $timestamp;
 
-    #[ORM\Column(name: 'member_id', type: 'integer', options: ['unsigned' => true], nullable: true)]
-    private ?int $member;
+    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\User', inversedBy: 'participants')]
+    #[ORM\JoinColumn(name: 'member_id', referencedColumnName: 'id')]
+    private ?User $user;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
     #[Groups('admin_list')]
@@ -124,11 +124,11 @@ class Participant
             return $this->phone;
         }
 
-        if (null === $member = $this->getMember()) {
+        if (null === $user = $this->getMember()) {
             return null;
         }
 
-        return $member->phone;
+        return $user->getPhone();
     }
 
     public function getOwnMobile(): ?string
@@ -143,11 +143,11 @@ class Participant
             return $this->mobile;
         }
 
-        if (null === $member = $this->getMember()) {
+        if (null === $user = $this->getMember()) {
             return null;
         }
 
-        return $member->mobile;
+        return $user->getMobile();
     }
 
     public function getOwnEmail(): ?string
@@ -162,26 +162,21 @@ class Participant
             return $this->email;
         }
 
-        if (null === $member = $this->getMember()) {
+        if (null === $user = $this->getMember()) {
             return null;
         }
 
-        return $member->email;
+        return $user->getEmail();
     }
 
-    public function getMemberId(): ?int
+    public function getMember(): ?User
     {
-        return $this->member;
+        return $this->user;
     }
 
-    public function getMember(): ?MemberModel
+    public function setMember(?User $user)
     {
-        return MemberModel::findByPk($this->member);
-    }
-
-    public function setMember(?MemberModel $memberModel)
-    {
-        $this->setMemberId($memberModel?->id);
+        $this->user = $user;
     }
 
     public function getAge(\DateTimeInterface $atDate = null): ?int

@@ -17,6 +17,9 @@ use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Exception\NoLayoutSpecifiedException;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
+use Contao\CoreBundle\Routing\ResponseContext\ResponseContext;
+use Contao\CoreBundle\Util\LocaleUtil;
 use Contao\Environment;
 use Contao\FrontendTemplate;
 use Contao\LayoutModel;
@@ -42,6 +45,7 @@ class PageBuilder
     private string $pageTitle;
 
     private PageModel $pageModel;
+    private ResponseContext $responseContext;
 
     public function __construct(
         PageModel $pageModel,
@@ -110,20 +114,20 @@ class PageBuilder
             }
         }
 
+        $headBag = $this->responseContext->get(HtmlHeadBag::class);
+
         $template->mainTitle = $this->pageModel->rootPageTitle;
-        $template->pageTitle = $this->pageModel->pageTitle ?: $this->pageModel->title;
-
-        $template->robots = $this->pageModel->robots ?: 'index,follow';
-
+        $template->pageTitle = htmlspecialchars($headBag->getTitle());
         $template->mainTitle = str_replace('[-]', '', $template->mainTitle);
         $template->pageTitle = str_replace('[-]', '', $template->pageTitle);
+        $template->robots = htmlspecialchars($headBag->getMetaRobots());
 
         if (!$layoutModel->titleTag) {
             $layoutModel->titleTag = '{{page::pageTitle}} - {{page::rootPageTitle}}';
         }
 
-        $template->title = strip_tags(Controller::replaceInsertTags($layoutModel->titleTag));
-        $template->description = str_replace(["\n", "\r", '"'], [' ', '', ''], (string) $this->pageModel->description);
+        $template->title = strip_tags(System::getContainer()->get('contao.insert_tag.parser')->replaceInline($layoutModel->titleTag));
+        $template->description = htmlspecialchars($headBag->getMetaDescription());
 
         return $template;
     }
@@ -133,10 +137,7 @@ class PageBuilder
         $GLOBALS['objPage'] = $this->pageModel;
         $this->requestStack->getCurrentRequest()->attributes->set('pageModel', $this->pageModel);
 
-        $GLOBALS['TL_KEYWORDS'] = '';
-        $GLOBALS['TL_LANGUAGE'] = $this->pageModel->language;
-
-        $locale = str_replace('-', '_', $this->pageModel->language);
+        $locale = LocaleUtil::formatAsLocale($this->pageModel->language);
 
         if (null !== $request = $this->requestStack->getCurrentRequest()) {
             $request->setLocale($locale);
@@ -146,9 +147,11 @@ class PageBuilder
             $this->translator->setLocale($locale);
         }
 
+        $this->responseContext = System::getContainer()->get('contao.routing.response_context_factory')->createContaoWebpageResponseContext($this->pageModel);
+
         System::loadLanguageFile('default');
 
-        $this->framework->initialize(true);
+        $this->framework->initialize();
     }
 
     private function initializeSections(LayoutModel $layoutModel, Template $template): void

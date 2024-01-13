@@ -15,7 +15,6 @@ namespace Ferienpass\CoreBundle\Controller\Fragment;
 
 use Contao\CoreBundle\Controller\AbstractController;
 use Contao\CoreBundle\Exception\RedirectResponseException;
-use Contao\PageModel;
 use Ferienpass\CoreBundle\Form\ListFiltersType;
 use Ferienpass\CoreBundle\Repository\EditionRepository;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -34,7 +33,7 @@ final class OfferListFilterController extends AbstractController
     public function __invoke(Request $request, Session $session): Response
     {
         $hasEditions = $this->editionRepository->count([]) > 0;
-        $edition = $this->editionRepository->findOneToShow(PageModel::findByPk($request->attributes->get('pageModel')));
+        $edition = $this->editionRepository->findOneToShow($request->attributes->get('pageModel'));
 
         if ($hasEditions && null === $edition) {
             return new Response('', Response::HTTP_NO_CONTENT);

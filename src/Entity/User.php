@@ -53,6 +53,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private \DateTimeInterface $modifiedAt;
+
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
@@ -62,10 +65,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\HostMemberAssociation', mappedBy: 'user', cascade: ['persist'])]
     private Collection $hostAssociations;
 
+    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\Participant', mappedBy: 'user', cascade: ['persist'])]
+    private Collection $participants;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->modifiedAt = new \DateTimeImmutable();
         $this->hostAssociations = new ArrayCollection();
+        $this->participants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -151,6 +159,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
+    }
+
+    public function getModifiedAt(): \DateTimeInterface
+    {
+        return $this->modifiedAt;
+    }
+
+    public function setModifiedAt(\DateTimeInterface $dateTime = new \DateTime()): void
+    {
+        $this->modifiedAt = $dateTime;
     }
 
     public function getEmail(): ?string

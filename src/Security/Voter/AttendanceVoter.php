@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Security\Voter;
 
-use Contao\FrontendUser;
 use Ferienpass\CoreBundle\Entity\Attendance;
+use Ferienpass\CoreBundle\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -36,7 +36,7 @@ class AttendanceVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
-        if (!$user instanceof FrontendUser) {
+        if (!$user instanceof User) {
             return false;
         }
 
@@ -50,7 +50,7 @@ class AttendanceVoter extends Voter
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canWithdraw(Attendance $attendance, FrontendUser $user): bool
+    private function canWithdraw(Attendance $attendance, User $user): bool
     {
         $participant = $attendance->getParticipant();
         if (null === $participant) {
@@ -61,6 +61,6 @@ class AttendanceVoter extends Voter
             return false;
         }
 
-        return (int) $member->id === (int) $user->id;
+        return (int) $member->getId() === (int) $user->getId();
     }
 }

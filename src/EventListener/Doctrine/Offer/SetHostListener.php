@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\EventListener\Doctrine\Offer;
 
-use Contao\FrontendUser;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Ferienpass\CoreBundle\Entity\Host;
 use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\User;
 use Symfony\Component\Security\Core\Security;
 
 class SetHostListener
@@ -37,11 +37,11 @@ class SetHostListener
         }
 
         $user = $this->security->getUser();
-        if (!$user instanceof FrontendUser) {
+        if (!$user instanceof User) {
             return;
         }
 
-        $hosts = $args->getObjectManager()->getRepository(Host::class)->findByMemberId((int) $user->id);
+        $hosts = $args->getObjectManager()->getRepository(Host::class)->findByUser($user);
         if (empty($hosts)) {
             return;
         }

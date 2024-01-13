@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Controller\Fragment;
 
 use Contao\CoreBundle\Controller\AbstractController;
-use Contao\PageModel;
 use Doctrine\DBAL\Types\Types;
 use Ferienpass\CoreBundle\Filter\OfferListFilterFactory;
 use Ferienpass\CoreBundle\Pagination\Paginator;
@@ -32,12 +31,9 @@ final class OfferListController extends AbstractController
 
     public function __invoke(Request $request, Session $session): Response
     {
-        $qb = $this->offerRepository->createQueryBuilder('o')
-            ->where('o.published = 1')
-        ;
-
+        $qb = $this->offerRepository->createQueryBuilder('o')->where('o.published = 1');
         $hasEditions = $this->editionRepository->count([]) > 0;
-        $pageModel = PageModel::findByPk($request->attributes->get('pageModel'));
+        $pageModel = $request->attributes->get('pageModel');
         $edition = $this->editionRepository->findOneToShow($pageModel);
 
         if ($hasEditions && null !== $edition) {

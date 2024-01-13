@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Security\Voter;
 
-use Contao\FrontendUser;
 use Ferienpass\CoreBundle\Entity\Host;
+use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Repository\HostRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -42,7 +42,7 @@ class HostVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
-        if (!$user instanceof FrontendUser) {
+        if (!$user instanceof User) {
             return false;
         }
 
@@ -56,19 +56,19 @@ class HostVoter extends Voter
         };
     }
 
-    private function canView(Host $host, FrontendUser $user): bool
+    private function canView(Host $host, User $user): bool
     {
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
 
-        $hosts = $this->hostRepository->findByMemberId((int) $user->id);
+        $hosts = $this->hostRepository->findByUser($user);
         $hostIds = array_map(fn (Host $host) => $host->getId(), $hosts);
 
         return \in_array($host->getId(), $hostIds, false);
     }
 
-    private function canEdit(Host $host, FrontendUser $user): bool
+    private function canEdit(Host $host, User $user): bool
     {
         return $this->canView($host, $user);
     }

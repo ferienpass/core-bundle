@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Host;
+use Ferienpass\CoreBundle\Entity\User;
 
 class HostRepository extends ServiceEntityRepository
 {
@@ -25,13 +26,13 @@ class HostRepository extends ServiceEntityRepository
     }
 
     /** @return Host[] */
-    public function findByMemberId(int $memberId): array
+    public function findByUser(User $user): array
     {
         $query = $this->createQueryBuilder('h')
             ->select('h')
             ->innerJoin('h.memberAssociations', 'a')
-            ->where('a.member=:id')
-            ->setParameter('id', $memberId)
+            ->where('a.user = :user')
+            ->setParameter('user', $user)
             ->getQuery()
         ;
 
