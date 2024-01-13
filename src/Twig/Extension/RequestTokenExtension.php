@@ -19,14 +19,14 @@ use Twig\TwigFunction;
 
 class RequestTokenExtension extends AbstractExtension
 {
-    public function __construct(private CsrfTokenManagerInterface $csrfTokenStorage, private string $csrfTokenName)
+    public function __construct(private readonly CsrfTokenManagerInterface $csrfTokenStorage, private readonly string $csrfTokenName)
     {
     }
 
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('contao_request_token', [$this, 'requestToken']),
+            new TwigFunction('contao_request_token', $this->requestToken(...)),
         ];
     }
 

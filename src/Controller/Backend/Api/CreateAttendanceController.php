@@ -24,14 +24,14 @@ use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Ferienpass\CoreBundle\Repository\ParticipantRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/create_attendance')]
 #[IsGranted('ROLE_ADMIN')]
 final class CreateAttendanceController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
-    public function __construct(private OfferRepository $offerRepository, private ParticipantRepository $participantRepository, private AttendanceFacade $attendanceFacade)
+    public function __construct(private readonly OfferRepository $offerRepository, private readonly ParticipantRepository $participantRepository, private readonly AttendanceFacade $attendanceFacade)
     {
     }
 
@@ -44,7 +44,7 @@ final class CreateAttendanceController extends \Symfony\Bundle\FrameworkBundle\C
         foreach (StringUtil::trimsplit(' ', $request->query->get('q', '')) as $q) {
             $qb
                 ->andWhere($qb->expr()->orX('o.id LIKE :q'.$i, 'o.name LIKE :q'.$i))
-                ->setParameter('q'.$i++, '%'.addcslashes($q, '%_').'%')
+                ->setParameter('q'.$i++, '%'.addcslashes((string) $q, '%_').'%')
             ;
         }
 
@@ -85,7 +85,7 @@ final class CreateAttendanceController extends \Symfony\Bundle\FrameworkBundle\C
         foreach (StringUtil::trimsplit(' ', $request->query->get('q', '')) as $q) {
             $qb
                 ->andWhere($qb->expr()->orX('p.id LIKE :q'.$i, 'p.firstname LIKE :q'.$i, 'p.lastname LIKE :q'.$i))
-                ->setParameter('q'.$i++, '%'.addcslashes($q, '%_').'%')
+                ->setParameter('q'.$i++, '%'.addcslashes((string) $q, '%_').'%')
             ;
         }
 

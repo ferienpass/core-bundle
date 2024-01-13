@@ -20,7 +20,7 @@ use Ferienpass\CoreBundle\Message\LoggableMessageInterface;
  */
 class MessageContext
 {
-    public function __construct(private LoggableMessageInterface $message)
+    public function __construct(private readonly LoggableMessageInterface $message)
     {
     }
 

@@ -19,12 +19,12 @@ use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/angebot/{id}/vorschau', name: 'backend_offer_pdf_proof', requirements: ['itemId' => '\d+'])]
 class PdfProofController extends AbstractBackendController
 {
-    public function __construct(private PdfExports $pdfExports)
+    public function __construct(private readonly PdfExports $pdfExports)
     {
     }
 

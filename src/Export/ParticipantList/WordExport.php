@@ -23,7 +23,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 final class WordExport implements OfferExportInterface
 {
-    public function __construct(private Filesystem $filesystem, private NormalizerInterface $serializer, private ?string $templatePath)
+    public function __construct(private readonly Filesystem $filesystem, private readonly NormalizerInterface $serializer, private readonly ?string $templatePath)
     {
     }
 

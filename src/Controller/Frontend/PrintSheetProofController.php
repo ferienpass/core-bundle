@@ -22,12 +22,12 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/angebot/druck/{id}.{_format}', name: 'pdf-proof', defaults: ['format' => 'pdf'], requirements: ['id' => '\d+'])]
 final class PrintSheetProofController extends AbstractController
 {
-    public function __construct(private TokenChecker $tokenChecker, private PdfExports $pdfExports)
+    public function __construct(private readonly TokenChecker $tokenChecker, private readonly PdfExports $pdfExports)
     {
     }
 

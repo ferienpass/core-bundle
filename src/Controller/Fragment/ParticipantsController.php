@@ -27,7 +27,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class ParticipantsController extends AbstractController
 {
-    public function __construct(private ParticipantRepository $participantRepository, private ManagerRegistry $doctrine, private FormFactoryInterface $formFactory)
+    public function __construct(private readonly ParticipantRepository $participantRepository, private readonly ManagerRegistry $doctrine, private readonly FormFactoryInterface $formFactory)
     {
     }
 

@@ -22,11 +22,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\UniqueConstraint(columns: ['offer_id', 'participant_id'])]
 class Attendance
 {
-    public const STATUS_CONFIRMED = 'confirmed';
-    public const STATUS_WAITLISTED = 'waitlisted';
-    public const STATUS_WITHDRAWN = 'withdrawn';
-    public const STATUS_WAITING = 'waiting';
-    public const STATUS_ERROR = 'error';
+    final public const STATUS_CONFIRMED = 'confirmed';
+    final public const STATUS_WAITLISTED = 'waitlisted';
+    final public const STATUS_WITHDRAWN = 'withdrawn';
+    final public const STATUS_WAITING = 'waiting';
+    final public const STATUS_ERROR = 'error';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

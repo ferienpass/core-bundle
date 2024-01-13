@@ -21,7 +21,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 final class ContaoRequestTokenType extends HiddenType
 {
-    public function __construct(private CsrfTokenManagerInterface $tokenManager, private string $tokenName)
+    public function __construct(private readonly CsrfTokenManagerInterface $tokenManager, private readonly string $tokenName)
     {
     }
 

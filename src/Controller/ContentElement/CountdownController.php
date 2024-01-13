@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[AsContentElement(type: 'countdown', category: 'ferienpass')]
 class CountdownController extends AbstractContentElementController
 {
-    public function __construct(private EditionRepository $editionRepository)
+    public function __construct(private readonly EditionRepository $editionRepository)
     {
     }
 

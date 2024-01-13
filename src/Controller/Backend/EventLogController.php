@@ -19,12 +19,12 @@ use Ferienpass\CoreBundle\Message\ParticipantListChanged;
 use Ferienpass\CoreBundle\Repository\EventLogRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/ereignisse', name: 'backend_event_log')]
 final class EventLogController extends AbstractBackendController
 {
-    public function __construct(private EventLogRepository $eventLogRepository)
+    public function __construct(private readonly EventLogRepository $eventLogRepository)
     {
     }
 

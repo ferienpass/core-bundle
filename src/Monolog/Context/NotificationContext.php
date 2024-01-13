@@ -18,7 +18,7 @@ namespace Ferienpass\CoreBundle\Monolog\Context;
  */
 class NotificationContext
 {
-    public function __construct(private int $notification, private int $message, private array $tokens, private string $language, private bool $success)
+    public function __construct(private readonly int $notification, private readonly int $message, private readonly array $tokens, private readonly string $language, private readonly bool $success)
     {
     }
 

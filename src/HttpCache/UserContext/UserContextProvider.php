@@ -26,7 +26,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class UserContextProvider implements ContextProvider
 {
-    public function __construct(private TokenStorageInterface $tokenStorage, private ContaoFramework $framework, private TokenChecker $tokenChecker)
+    public function __construct(private readonly TokenStorageInterface $tokenStorage, private readonly ContaoFramework $framework, private readonly TokenChecker $tokenChecker)
     {
     }
 

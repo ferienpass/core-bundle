@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class VisibleElementListener
 {
-    public function __construct(private EditionRepository $passEditionRepository, private TokenChecker $tokenChecker, private RequestStack $requestStack, private ScopeMatcher $scopeMatcher)
+    public function __construct(private readonly EditionRepository $passEditionRepository, private readonly TokenChecker $tokenChecker, private readonly RequestStack $requestStack, private readonly ScopeMatcher $scopeMatcher)
     {
     }
 

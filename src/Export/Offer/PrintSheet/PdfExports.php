@@ -22,7 +22,7 @@ final class PdfExports implements OfferExportTypeInterface
      */
     private array $configs = [];
 
-    public function __construct(private PdfExport $pdfExport)
+    public function __construct(private readonly PdfExport $pdfExport)
     {
     }
 

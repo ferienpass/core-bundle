@@ -25,7 +25,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class OfferVoter extends Voter
 {
-    public function __construct(private Security $security, private AttendanceRepository $attendanceRepository, private HostRepository $hostRepository)
+    public function __construct(private readonly Security $security, private readonly AttendanceRepository $attendanceRepository, private readonly HostRepository $hostRepository)
     {
     }
 

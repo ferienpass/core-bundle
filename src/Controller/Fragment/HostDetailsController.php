@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class HostDetailsController extends AbstractController
 {
-    public function __construct(private OfferRepository $offerRepository, private EditionRepository $editionRepository)
+    public function __construct(private readonly OfferRepository $offerRepository, private readonly EditionRepository $editionRepository)
     {
     }
 

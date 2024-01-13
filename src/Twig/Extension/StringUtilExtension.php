@@ -23,8 +23,8 @@ class StringUtilExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('encodeEmail', [$this, 'encodeEmail'], ['is_safe' => ['html']]),
-            new TwigFilter('filesModel', [$this, 'filesModel']),
+            new TwigFilter('encodeEmail', $this->encodeEmail(...), ['is_safe' => ['html']]),
+            new TwigFilter('filesModel', $this->filesModel(...)),
         ];
     }
 

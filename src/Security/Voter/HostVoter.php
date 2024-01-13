@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class HostVoter extends Voter
 {
-    public function __construct(private Security $security, private HostRepository $hostRepository)
+    public function __construct(private readonly Security $security, private readonly HostRepository $hostRepository)
     {
     }
 

@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApplicationListController extends AbstractController
 {
-    public function __construct(private ApplicationSystems $applicationSystems, private AttendanceFacade $attendanceFacade, private AttendanceRepository $attendanceRepository)
+    public function __construct(private readonly ApplicationSystems $applicationSystems, private readonly AttendanceFacade $attendanceFacade, private readonly AttendanceRepository $attendanceRepository)
     {
     }
 

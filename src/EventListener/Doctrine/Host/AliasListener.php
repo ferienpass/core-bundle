@@ -22,7 +22,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 #[AsEntityListener(event: Events::preUpdate, entity: Host::class)]
 class AliasListener
 {
-    public function __construct(private SluggerInterface $slugger)
+    public function __construct(private readonly SluggerInterface $slugger)
     {
     }
 

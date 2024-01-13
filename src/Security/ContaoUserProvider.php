@@ -23,10 +23,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ContaoUserProvider extends EntityUserProvider
 {
-    private ContaoFramework $contaoFramework;
-    private string $userClass;
-    private ManagerRegistry $registry;
-    private string $classOrAlias;
+    private readonly ContaoFramework $contaoFramework;
+    private readonly string $userClass;
+    private readonly ManagerRegistry $registry;
+    private readonly string $classOrAlias;
 
     public function __construct(ContaoFramework $contaoFramework, string $userClass, ManagerRegistry $registry, string $classOrAlias, string $property = null, string $managerName = null)
     {

@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class PersonalDataController extends AbstractFragmentController
 {
-    public function __construct(private FormFactoryInterface $formFactory)
+    public function __construct(private readonly FormFactoryInterface $formFactory)
     {
     }
 

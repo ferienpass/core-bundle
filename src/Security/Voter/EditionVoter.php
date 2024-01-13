@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class EditionVoter extends Voter
 {
-    public function __construct(private Security $security, private EditionRepository $editionRepository)
+    public function __construct(private readonly Security $security, private readonly EditionRepository $editionRepository)
     {
     }
 

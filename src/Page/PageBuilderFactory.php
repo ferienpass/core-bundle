@@ -21,7 +21,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PageBuilderFactory
 {
-    public function __construct(private FragmentHandler $fragmentHandler, private TranslatorInterface $translator, private ContaoFramework $framework, private RequestStack $requestStack)
+    public function __construct(private readonly FragmentHandler $fragmentHandler, private readonly TranslatorInterface $translator, private readonly ContaoFramework $framework, private readonly RequestStack $requestStack)
     {
     }
 

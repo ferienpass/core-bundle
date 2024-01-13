@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 final class OfferListFilterController extends AbstractController
 {
-    public function __construct(private EditionRepository $editionRepository, private FormFactoryInterface $formFactory)
+    public function __construct(private readonly EditionRepository $editionRepository, private readonly FormFactoryInterface $formFactory)
     {
     }
 

@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RegistrationWelcomeController extends AbstractController
 {
-    public function __construct(private ManagerRegistry $doctrine, private FormFactoryInterface $formFactory)
+    public function __construct(private readonly ManagerRegistry $doctrine, private readonly FormFactoryInterface $formFactory)
     {
     }
 

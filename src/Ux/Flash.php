@@ -19,7 +19,7 @@ class Flash
 {
     private array $message;
 
-    private function __construct(private string $type)
+    private function __construct(private readonly string $type)
     {
         $this->message = [
             'headline' => null,

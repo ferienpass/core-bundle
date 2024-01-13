@@ -25,7 +25,7 @@ class Notifier implements NotifierInterface
      */
     private array $notifications;
 
-    public function __construct(iterable $notifications, private \Symfony\Component\Notifier\Notifier $notifier, private NotificationRepository $notificationRepository)
+    public function __construct(iterable $notifications, private readonly \Symfony\Component\Notifier\Notifier $notifier, private readonly NotificationRepository $notificationRepository)
     {
         $this->notifications = $notifications instanceof \Traversable ? iterator_to_array($notifications) : $notifications;
     }

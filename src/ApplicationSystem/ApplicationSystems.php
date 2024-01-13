@@ -21,7 +21,7 @@ use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
 class ApplicationSystems implements ServiceSubscriberInterface
 {
-    public function __construct(private ContainerInterface $locator)
+    public function __construct(private readonly ContainerInterface $locator)
     {
     }
 

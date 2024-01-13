@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserAccountPage extends AbstractController
 {
-    public function __construct(private UserAccountFragments $fragments)
+    public function __construct(private readonly UserAccountFragments $fragments)
     {
     }
 

@@ -31,7 +31,7 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class LostPasswordController extends AbstractController
 {
-    public function __construct(private LoggerInterface $logger, private OptInInterface $optIn, private PasswordHasherInterface $passwordHasher, private FormFactoryInterface $formFactory)
+    public function __construct(private readonly LoggerInterface $logger, private readonly OptInInterface $optIn, private readonly PasswordHasherInterface $passwordHasher, private readonly FormFactoryInterface $formFactory)
     {
     }
 

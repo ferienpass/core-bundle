@@ -54,7 +54,7 @@ class HyperlinkController extends AbstractContentElementController
             return new Response($template->parse());
         }
 
-        [$style, $size] = explode('+', $model->buttonStyle, 2);
+        [$style, $size] = explode('+', (string) $model->buttonStyle, 2);
 
         return $this->render('@FerienpassCore/Fragment/hyperlink.html.twig', [
             'href' => $model->url,

@@ -23,7 +23,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class WhenAccountDeletedDeleteParticipants implements MessageHandlerInterface
 {
-    public function __construct(private MessageBusInterface $messageBus, private ParticipantRepository $participantRepository, private AttendanceRepository $attendanceRepository, private OfferRepository $offerRepository)
+    public function __construct(private readonly MessageBusInterface $messageBus, private readonly ParticipantRepository $participantRepository, private readonly AttendanceRepository $attendanceRepository, private readonly OfferRepository $offerRepository)
     {
     }
 

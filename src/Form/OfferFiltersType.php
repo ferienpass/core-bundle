@@ -25,7 +25,7 @@ class OfferFiltersType extends AbstractType
 {
     private array $filterTypes = [];
 
-    public function __construct(private FilterDto $dto, iterable $filterTypes)
+    public function __construct(private readonly FilterDto $dto, iterable $filterTypes)
     {
         $this->filterTypes = $filterTypes instanceof \Traversable ? iterator_to_array($filterTypes, true) : $this->filterTypes;
     }

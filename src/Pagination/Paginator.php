@@ -19,12 +19,12 @@ use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
 
 class Paginator
 {
-    public const PAGE_SIZE = 24;
+    final public const PAGE_SIZE = 24;
     private int $currentPage;
     private \Traversable $results;
     private int $numResults;
 
-    public function __construct(private DoctrineQueryBuilder $queryBuilder, private int $pageSize = self::PAGE_SIZE)
+    public function __construct(private readonly DoctrineQueryBuilder $queryBuilder, private readonly int $pageSize = self::PAGE_SIZE)
     {
     }
 

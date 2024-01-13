@@ -23,7 +23,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 
 class FavoritesType extends AbstractOfferFilterType
 {
-    public function __construct(private RequestStack $requestStack)
+    public function __construct(private readonly RequestStack $requestStack)
     {
     }
 

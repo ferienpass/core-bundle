@@ -15,5 +15,5 @@ namespace Ferienpass\CoreBundle\Fragment;
 
 class FragmentReference extends \Contao\CoreBundle\Fragment\Reference\FragmentReference
 {
-    public const TAG_NAME = 'ferienpass.fragment';
+    final public const TAG_NAME = 'ferienpass.fragment';
 }

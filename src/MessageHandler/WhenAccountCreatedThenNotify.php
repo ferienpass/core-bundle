@@ -27,7 +27,7 @@ use Symfony\Component\Routing\RouterInterface;
 
 class WhenAccountCreatedThenNotify implements MessageHandlerInterface
 {
-    public function __construct(private OptIn $optIn, private RouterInterface $router)
+    public function __construct(private readonly OptIn $optIn, private readonly RouterInterface $router)
     {
     }
 

@@ -30,7 +30,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
  */
 class SendRemindersListener
 {
-    public function __construct(private AttendanceRepository $attendanceRepository, private MessageBusInterface $messageBus, private EventLogRepository $eventLogRepository)
+    public function __construct(private readonly AttendanceRepository $attendanceRepository, private readonly MessageBusInterface $messageBus, private readonly EventLogRepository $eventLogRepository)
     {
     }
 

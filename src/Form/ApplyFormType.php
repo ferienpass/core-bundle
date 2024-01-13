@@ -39,7 +39,7 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class ApplyFormType extends AbstractType
 {
-    public function __construct(private Security $security, private ManagerRegistry $doctrine, private RequestStack $requestStack, private OptIn $optIn, private Connection $connection)
+    public function __construct(private readonly Security $security, private readonly ManagerRegistry $doctrine, private readonly RequestStack $requestStack, private readonly OptIn $optIn, private readonly Connection $connection)
     {
     }
 

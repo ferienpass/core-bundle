@@ -15,8 +15,8 @@ namespace Ferienpass\CoreBundle\Dto;
 
 class Currency
 {
-    private int $amount;
-    private int $divisor;
+    private readonly int $amount;
+    private readonly int $divisor;
 
     public function __construct(int $amount, int $divisor = 100)
     {

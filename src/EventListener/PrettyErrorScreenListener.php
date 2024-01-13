@@ -33,7 +33,7 @@ use Twig\Error\Error;
 
 class PrettyErrorScreenListener
 {
-    public function __construct(private bool $prettyErrorScreens, private Environment $twig, private PageBuilderFactory $pageBuilderFactory)
+    public function __construct(private readonly bool $prettyErrorScreens, private readonly Environment $twig, private readonly PageBuilderFactory $pageBuilderFactory)
     {
     }
 

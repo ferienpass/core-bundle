@@ -29,7 +29,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class CloseAccount extends AbstractController
 {
-    public function __construct(private UserPasswordHasherInterface $passwordHasher, private LoggerInterface $logger, private MessageBusInterface $messageBus)
+    public function __construct(private readonly UserPasswordHasherInterface $passwordHasher, private readonly LoggerInterface $logger, private readonly MessageBusInterface $messageBus)
     {
     }
 

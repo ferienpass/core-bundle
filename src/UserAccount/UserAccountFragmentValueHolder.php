@@ -15,7 +15,7 @@ namespace Ferienpass\CoreBundle\UserAccount;
 
 class UserAccountFragmentValueHolder
 {
-    public function __construct(private string $key, private string $alias, private string $icon)
+    public function __construct(private readonly string $key, private readonly string $alias, private readonly string $icon)
     {
     }
 

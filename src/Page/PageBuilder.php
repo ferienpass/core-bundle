@@ -126,7 +126,7 @@ class PageBuilder
             $layoutModel->titleTag = '{{page::pageTitle}} - {{page::rootPageTitle}}';
         }
 
-        $template->title = strip_tags(System::getContainer()->get('contao.insert_tag.parser')->replaceInline($layoutModel->titleTag));
+        $template->title = strip_tags((string) System::getContainer()->get('contao.insert_tag.parser')->replaceInline($layoutModel->titleTag));
         $template->description = htmlspecialchars($headBag->getMetaDescription());
 
         return $template;

@@ -15,7 +15,7 @@ namespace Ferienpass\CoreBundle\Controller\Frontend;
 
 use Ferienpass\CoreBundle\Entity\Offer;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/{id}', requirements: ['id' => '\d+'])]
 class RedirectShortUrlController extends \Contao\CoreBundle\Controller\AbstractController

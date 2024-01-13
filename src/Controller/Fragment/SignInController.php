@@ -43,7 +43,7 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class SignInController extends AbstractController
 {
-    public function __construct(private PasswordHasherInterface $passwordHasher, private AuthenticationUtils $authenticationUtils, private MessageBusInterface $messageBus, private EventDispatcherInterface $eventDispatcher, private ParticipantRepository $participantRepository, private ManagerRegistry $doctrine, private FormFactoryInterface $formFactory)
+    public function __construct(private readonly PasswordHasherInterface $passwordHasher, private readonly AuthenticationUtils $authenticationUtils, private readonly MessageBusInterface $messageBus, private readonly EventDispatcherInterface $eventDispatcher, private readonly ParticipantRepository $participantRepository, private readonly ManagerRegistry $doctrine, private readonly FormFactoryInterface $formFactory)
     {
     }
 

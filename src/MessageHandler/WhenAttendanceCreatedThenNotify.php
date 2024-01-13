@@ -26,7 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WhenAttendanceCreatedThenNotify implements MessageHandlerInterface
 {
-    public function __construct(private ICalExport $iCal, private TranslatorInterface $translator, private AttendanceRepository $attendanceRepository, private UrlGeneratorInterface $router)
+    public function __construct(private readonly ICalExport $iCal, private readonly TranslatorInterface $translator, private readonly AttendanceRepository $attendanceRepository, private readonly UrlGeneratorInterface $router)
     {
     }
 

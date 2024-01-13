@@ -25,8 +25,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity]
 class Offer
 {
-    public const STATUS_SUBMITTED = 'submitted';
-    public const STATUS_PUBLISHED = 'published';
+    final public const STATUS_SUBMITTED = 'submitted';
+    final public const STATUS_PUBLISHED = 'published';
 
     /**
      * @Groups("docx_export")

@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[AsContentElement(type: 'text_block', category: 'texts')]
 class TextBlockController extends AbstractContentElementController
 {
-    public function __construct(private ContaoContext $assetsFilesContext, private string $projectDir)
+    public function __construct(private readonly ContaoContext $assetsFilesContext, private readonly string $projectDir)
     {
     }
 

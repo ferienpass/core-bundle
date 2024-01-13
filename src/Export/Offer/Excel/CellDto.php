@@ -19,7 +19,7 @@ use PhpOffice\PhpSpreadsheet\Style\Style;
 
 final class CellDto
 {
-    public function __construct(private Offer $offer, private Cell $cell, private Style $style)
+    public function __construct(private readonly Offer $offer, private readonly Cell $cell, private readonly Style $style)
     {
     }
 

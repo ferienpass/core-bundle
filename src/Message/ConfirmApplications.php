@@ -18,7 +18,7 @@ namespace Ferienpass\CoreBundle\Message;
  */
 class ConfirmApplications implements LoggableMessageInterface
 {
-    public function __construct(private array $attendances)
+    public function __construct(private readonly array $attendances)
     {
     }
 

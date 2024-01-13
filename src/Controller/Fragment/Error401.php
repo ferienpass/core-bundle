@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Error401 extends AbstractController
 {
-    public function __construct(private EditionRepository $ferienpassRepository)
+    public function __construct(private readonly EditionRepository $ferienpassRepository)
     {
     }
 

@@ -26,7 +26,7 @@ class OfferListFilter
     /**
      * @param array<string,FilterType> $filterTypes
      */
-    public function __construct(private FormInterface $form, private DoctrineQueryBuilder $queryBuilder, private array $filterTypes)
+    public function __construct(private readonly FormInterface $form, private readonly DoctrineQueryBuilder $queryBuilder, private array $filterTypes)
     {
     }
 

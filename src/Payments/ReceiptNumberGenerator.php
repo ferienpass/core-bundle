@@ -19,7 +19,7 @@ class ReceiptNumberGenerator
 {
     private int $length = 0;
 
-    public function __construct(private string $prefix, private PaymentRepository $paymentRepository)
+    public function __construct(private readonly string $prefix, private readonly PaymentRepository $paymentRepository)
     {
     }
 

@@ -23,8 +23,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: PaymentRepository::class)]
 class Payment
 {
-    public const STATUS_PAID = 'paid';
-    public const STATUS_UNPAID = 'unpaid';
+    final public const STATUS_PAID = 'paid';
+    final public const STATUS_UNPAID = 'unpaid';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

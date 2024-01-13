@@ -18,7 +18,7 @@ namespace Ferienpass\CoreBundle\Message;
  */
 class OfferRelaunched implements LoggableMessageInterface
 {
-    public function __construct(private int $offerId)
+    public function __construct(private readonly int $offerId)
     {
     }
 

@@ -29,7 +29,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WhenRemindAttendanceThenNotify implements MessageHandlerInterface
 {
-    public function __construct(private AttendanceRepository $attendanceRepository, private ICalExport $iCal, private TranslatorInterface $translator, private ContaoFramework $framework)
+    public function __construct(private readonly AttendanceRepository $attendanceRepository, private readonly ICalExport $iCal, private readonly TranslatorInterface $translator, private readonly ContaoFramework $framework)
     {
     }
 

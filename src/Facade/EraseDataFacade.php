@@ -19,7 +19,7 @@ use Ferienpass\CoreBundle\Repository\ParticipantRepository;
 
 class EraseDataFacade
 {
-    public function __construct(private Connection $connection, private ParticipantRepository $participantRepository)
+    public function __construct(private readonly Connection $connection, private readonly ParticipantRepository $participantRepository)
     {
     }
 

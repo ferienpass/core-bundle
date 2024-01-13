@@ -18,12 +18,12 @@ use Ferienpass\CoreBundle\Facade\EraseDataFacade;
 use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/daten-löschen', name: 'backend_erase_data')]
 final class EraseDataController extends AbstractBackendController
 {
-    public function __construct(private EraseDataFacade $eraseDataFacade)
+    public function __construct(private readonly EraseDataFacade $eraseDataFacade)
     {
     }
 

@@ -21,7 +21,7 @@ class OfferListFilterFactory
 {
     private array $filterTypes = [];
 
-    public function __construct(private FormFactoryInterface $formFactory, iterable $filterTypes)
+    public function __construct(private readonly FormFactoryInterface $formFactory, iterable $filterTypes)
     {
         $this->filterTypes = $filterTypes instanceof \Traversable ? iterator_to_array($filterTypes, true) : $this->filterTypes;
     }

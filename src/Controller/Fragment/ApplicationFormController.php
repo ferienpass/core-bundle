@@ -32,7 +32,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ApplicationFormController extends AbstractController
 {
-    public function __construct(private ApplicationSystems $applicationSystems, private AttendanceFacade $attendanceFacade, private AttendanceRepository $attendanceRepository, private ManagerRegistry $doctrine, private OptIn $optIn, private FormFactoryInterface $formFactory)
+    public function __construct(private readonly ApplicationSystems $applicationSystems, private readonly AttendanceFacade $attendanceFacade, private readonly AttendanceRepository $attendanceRepository, private readonly ManagerRegistry $doctrine, private readonly OptIn $optIn, private readonly FormFactoryInterface $formFactory)
     {
     }
 

@@ -96,7 +96,7 @@ class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDra
         $rootPage = PageModel::findPublishedRootPages()[0];
 
         $parameters = array_merge($tokens, [
-            'baseUrl' => \dirname($rootPage->getAbsoluteUrl()),
+            'baseUrl' => \dirname((string) $rootPage->getAbsoluteUrl()),
             'email_text' => $this->getTextBodyRaw(),
         ]);
 

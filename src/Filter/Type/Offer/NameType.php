@@ -49,7 +49,7 @@ class NameType extends AbstractOfferFilterType
 
         $qb
             ->andWhere('o.name LIKE :q_'.$k)
-            ->setParameter('q_'.$k, '%'.addcslashes($v, '%_').'%', ParameterType::STRING)
+            ->setParameter('q_'.$k, '%'.addcslashes((string) $v, '%_').'%', ParameterType::STRING)
         ;
     }
 

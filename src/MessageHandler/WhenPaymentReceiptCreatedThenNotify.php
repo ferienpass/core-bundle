@@ -28,7 +28,7 @@ class WhenPaymentReceiptCreatedThenNotify
 {
     use GetNotificationTokensTrait;
 
-    public function __construct(private Notifier $notifier, private ManagerRegistry $doctrine)
+    public function __construct(private readonly Notifier $notifier, private readonly ManagerRegistry $doctrine)
     {
     }
 

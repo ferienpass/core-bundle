@@ -20,7 +20,7 @@ use Twig\Environment as TwigEnvironment;
 
 final class PaymentsPdfExport implements PaymentsExportInterface
 {
-    public function __construct(private Filesystem $filesystem, private TwigEnvironment $twig)
+    public function __construct(private readonly Filesystem $filesystem, private readonly TwigEnvironment $twig)
     {
     }
 

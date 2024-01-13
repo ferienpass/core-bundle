@@ -22,7 +22,7 @@ final class XmlExports implements OfferExportTypeInterface
      */
     private array $templates = [];
 
-    public function __construct(private XmlExport $xmlExport)
+    public function __construct(private readonly XmlExport $xmlExport)
     {
     }
 

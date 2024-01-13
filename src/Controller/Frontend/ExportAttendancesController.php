@@ -22,13 +22,13 @@ use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
 #[Route(defaults: ['token_check' => false])]
 class ExportAttendancesController extends \Contao\CoreBundle\Controller\AbstractController
 {
-    public function __construct(private string $secret, private ICalExport $iCal, private OfferRepository $offerRepository)
+    public function __construct(private readonly string $secret, private readonly ICalExport $iCal, private readonly OfferRepository $offerRepository)
     {
     }
 

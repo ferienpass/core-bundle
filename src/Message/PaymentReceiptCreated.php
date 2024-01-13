@@ -18,7 +18,7 @@ namespace Ferienpass\CoreBundle\Message;
  */
 class PaymentReceiptCreated implements LoggableMessageInterface
 {
-    public function __construct(private int $paymentId)
+    public function __construct(private readonly int $paymentId)
     {
     }
 

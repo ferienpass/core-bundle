@@ -37,7 +37,7 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class RegistrationActivateController extends AbstractController
 {
-    public function __construct(private UserProviderInterface $userProvider, private TokenStorageInterface $tokenStorage, private LoggerInterface $logger, private EventDispatcherInterface $eventDispatcher, private UserCheckerInterface $userChecker, private AuthenticationSuccessHandlerInterface $authenticationSuccessHandler, private OptIn $optIn, private TokenChecker $tokenChecker, private MessageBusInterface $messageBus)
+    public function __construct(private readonly UserProviderInterface $userProvider, private readonly TokenStorageInterface $tokenStorage, private readonly LoggerInterface $logger, private readonly EventDispatcherInterface $eventDispatcher, private readonly UserCheckerInterface $userChecker, private readonly AuthenticationSuccessHandlerInterface $authenticationSuccessHandler, private readonly OptIn $optIn, private readonly TokenChecker $tokenChecker, private readonly MessageBusInterface $messageBus)
     {
     }
 
