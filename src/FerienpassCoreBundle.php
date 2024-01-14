@@ -49,7 +49,6 @@ class FerienpassCoreBundle extends AbstractBundle
             $container->import(__DIR__.'/../config/packages/prod/monolog.php');
         }
 
-        $container->import(__DIR__.'/../config/packages/contao.php');
         $container->import(__DIR__.'/../config/packages/doctrine.php');
         $container->import(__DIR__.'/../config/packages/monolog.php');
         $container->import(__DIR__.'/../config/packages/messenger.php');

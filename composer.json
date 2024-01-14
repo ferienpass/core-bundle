@@ -2,7 +2,7 @@
   "name": "ferienpass/core-bundle",
   "license": "proprietary",
   "description": "",
-  "type": "contao-bundle",
+  "type": "symfony-bundle",
   "homepage": "https://ferienpass.online/",
   "authors": [
     {
@@ -22,11 +22,6 @@
     "ext-json": "*",
     "ext-pdo": "*",
 
-    "contao/core-bundle": "^5.1",
-
-    "mvo/contao-group-widget": "^1.3",
-    "richardhj/contao-knp-menu": "^1.0",
-
     "eluceo/ical": "^2.1",
     "mpdf/mpdf": "^8.0",
     "knplabs/knp-snappy-bundle": "^1.7",
@@ -34,8 +29,6 @@
     "phpoffice/phpword": "^0.18",
     "michelf/php-markdown": "^1.8",
     "psr/log": "^1.0",
-    "friendsofsymfony/http-cache-bundle": "^2.7",
-    "terminal42/service-annotation-bundle": "^1.0",
     "odolbeau/phone-number-bundle": "^3.0",
 
     "beberlei/doctrineextensions": "^1.3",
@@ -64,19 +57,9 @@
     "symfony/translation": "^5.2 || ^6.1",
     "symfony/twig-bridge": "^5.2 || ^6.1",
     "symfony/validator": "^5.2 || ^6.1",
-    "symfony/ux-live-component": "^2.0",
-    "symfony/stimulus-bundle": "^2.9",
     "twig/twig": "^2.12 || ^3.0",
     "twig/intl-extra": "^2.14 || ^3.0",
-    "knplabs/knp-menu-bundle": "^3.0",
     "scienta/doctrine-json-functions": "^5.3"
-  },
-  "require-dev": {
-    "contao/manager-plugin": "^2.7",
-    "zenstruck/foundry": "^1.10"
-  },
-  "suggest": {
-    "spatie/pdf-to-image": "To generate images from PDF Print Sheets"
   },
   "autoload": {
     "psr-4": {
@@ -89,16 +72,8 @@
     }
   },
   "extra": {
-    "contao-manager-plugin": "Ferienpass\\CoreBundle\\ContaoManager\\Plugin",
     "branch-alias": {
       "dev-4.x": "4.x-dev"
-    }
-  },
-  "config": {
-    "allow-plugins": {
-      "contao-components/installer": true,
-      "php-http/discovery": true,
-      "contao/manager-plugin": true
     }
   }
 }

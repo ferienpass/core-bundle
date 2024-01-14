@@ -49,7 +49,7 @@ class Notifier implements NotifierInterface
         $notification = $this->notifications[$key];
 
         $entity = $this->notificationRepository->findOneBy(['type' => $key]);
-        if (!($entity instanceof \Ferienpass\CoreBundle\Entity\Notification)) {
+        if (!($entity instanceof Entity\Notification)) {
             return null;
         }
 

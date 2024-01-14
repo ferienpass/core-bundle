@@ -32,10 +32,6 @@ class ListFiltersType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         foreach ($this->filterTypes as $filterType) {
-            if (!$filterType->supports($options['query_builder'])) {
-                continue;
-            }
-
             $builder->add($filterType::getName(), $filterType::class);
         }
 
@@ -46,8 +42,6 @@ class ListFiltersType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setRequired('query_builder');
-
         $resolver->setDefined('short');
         $resolver->setAllowedTypes('short', 'bool');
     }

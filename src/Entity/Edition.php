@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface;
 use Ferienpass\CoreBundle\Exception\AmbiguousHolidayTaskException;
 
 #[ORM\Entity(repositoryClass: 'Ferienpass\CoreBundle\Repository\EditionRepository')]
@@ -51,7 +52,7 @@ class Edition
     #[ORM\Column(type: 'integer', options: ['unsigned' => true], nullable: true)]
     private ?int $listPage = null;
 
-    private \Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface $applicationSystem;
+    private ApplicationSystemInterface $applicationSystem;
 
     public function __construct()
     {

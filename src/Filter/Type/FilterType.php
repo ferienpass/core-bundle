@@ -24,6 +24,4 @@ interface FilterType
     public function applyFilter(QueryBuilder $qb, FormInterface $form);
 
     public function getViewData(FormInterface $form): ?TranslatableInterface;
-
-    // public function supports(QueryBuilder $qb):bool;
 }

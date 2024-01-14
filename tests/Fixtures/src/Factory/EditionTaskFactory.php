@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Fixtures\Factory;
 
+use DateTime;
 use Ferienpass\CoreBundle\Entity\EditionTask;
 use Zenstruck\Foundry\ModelFactory;
 
@@ -45,7 +46,7 @@ class EditionTaskFactory extends ModelFactory
 
     public function isInPast(): self
     {
-        return $this->addState(['periodEnd' => new \DateTime('-2 seconds')]);
+        return $this->addState(['periodEnd' => new DateTime('-2 seconds')]);
     }
 
     public function withEdition($edition)
@@ -58,8 +59,8 @@ class EditionTaskFactory extends ModelFactory
         return [
             'timestamp' => time(),
             'sorting' => 0,
-            'periodBegin' => new \DateTime('-1 week'),
-            'periodEnd' => new \DateTime('+2 months'),
+            'periodBegin' => new DateTime('-1 week'),
+            'periodEnd' => new DateTime('+2 months'),
         ];
     }
 

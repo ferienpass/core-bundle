@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Export\Offer\Web;
 
-use Ferienpass\CoreBundle\Controller\Fragment\OfferDetailsController;
+use Ferienpass\CmsBundle\Controller\Fragment\OfferDetailsController;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\Offer\OfferExportInterface;
 use Knp\Snappy\Image as SnappyImage;

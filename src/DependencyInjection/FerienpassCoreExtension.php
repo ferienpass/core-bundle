@@ -37,9 +37,7 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
         $loader->load('migrations.yml');
 
         $xmlLoader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
-        $xmlLoader->load('fragments.xml');
         $xmlLoader->load('notifications.xml');
-        $xmlLoader->load('pages.xml');
 
         // Parameters
         $container->setParameter('ferienpass.logos_dir', $config['logos_dir']);
