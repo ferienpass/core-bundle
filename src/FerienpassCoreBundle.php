@@ -13,10 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle;
 
-use Contao\CoreBundle\DependencyInjection\Compiler\RegisterFragmentsPass;
-use Ferienpass\CoreBundle\DependencyInjection\Compiler\UserAccountFragmentsPass;
 use Ferienpass\CoreBundle\DependencyInjection\FerienpassCoreExtension;
-use Ferienpass\CoreBundle\Fragment\FragmentReference;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -32,14 +29,6 @@ class FerienpassCoreBundle extends AbstractBundle
     public function getContainerExtension(): ?ExtensionInterface
     {
         return new FerienpassCoreExtension();
-    }
-
-    public function build(ContainerBuilder $container): void
-    {
-        parent::build($container);
-
-        $container->addCompilerPass(new RegisterFragmentsPass(FragmentReference::TAG_NAME));
-        $container->addCompilerPass(new UserAccountFragmentsPass());
     }
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void

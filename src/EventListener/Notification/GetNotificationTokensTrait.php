@@ -30,7 +30,7 @@ trait GetNotificationTokensTrait
         $tokens['participant_email'] = $participant->getEmail();
 
         // Add all the parent's member fields
-        if ($member = $participant->getMember()) {
+        if ($member = $participant->getUser()) {
             $tokens['member_firstname'] = $member->firstname;
             $tokens['member_lastname'] = $member->lastname;
             $tokens['member_email'] = $member->email;

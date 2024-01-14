@@ -57,7 +57,7 @@ class AttendanceVoter extends Voter
             return false;
         }
 
-        if (null === $member = $participant->getMember()) {
+        if (null === $member = $participant->getUser()) {
             return false;
         }
 

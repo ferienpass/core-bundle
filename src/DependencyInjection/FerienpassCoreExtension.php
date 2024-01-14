@@ -34,7 +34,6 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
         $loader->load('listeners.yml');
         $loader->load('services.yml');
-        $loader->load('migrations.yml');
 
         $xmlLoader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
         $xmlLoader->load('notifications.xml');

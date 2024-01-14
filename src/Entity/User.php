@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ferienpass\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 // #[ORM\UniqueConstraint(columns: ['offer_id', 'participant_id'])]
@@ -61,6 +62,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $password;
+
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 4096)]
+    private ?string $plainPassword;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $disable = false;
 
     #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\HostMemberAssociation', mappedBy: 'user', cascade: ['persist'])]
     private Collection $hostAssociations;
@@ -216,6 +224,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): void
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+    public function isDisabled(): bool
+    {
+        return $this->disable;
+    }
+
+    public function setDisabled(bool $disable = true): void
+    {
+        $this->disable = $disable;
+    }
+
     public function getHosts(): Collection
     {
         return $this->hostAssociations->map(fn (HostMemberAssociation $a) => $a->getHost());
@@ -228,7 +256,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 }

@@ -1,5 +1,0 @@
-services:
-  _instanceof:
-    Contao\CoreBundle\Migration\MigrationInterface:
-      tags:
-        - { name: contao.migration }

@@ -28,16 +28,6 @@ services:
     calls:
       - [ setContainer, [ '@service_container' ] ]
 
-  Ferienpass\CoreBundle\Controller\Backend\EventLogController:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\EventLogRepository' ]
-    tags:
-      - { name: contao.backend_module, key: 'event_log', priority: 10, category: 'content' }
-
-  Ferienpass\CoreBundle\Controller\Backend\EraseDataController:
-    arguments: [ '@Ferienpass\CoreBundle\Facade\EraseDataFacade' ]
-    tags:
-      - { name: contao.backend_module, key: 'erase_data', priority: 10, category: 'content' }
-
   Ferienpass\CoreBundle\Controller\Backend\PdfProofController:
     arguments: [ '@Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports' ]
 
@@ -91,12 +81,6 @@ services:
 #  Ferienpass\CoreBundle\HttpCache\UserContext\UserContextProvider:
 #    arguments: [ '@security.token_storage', '@contao.framework', '@contao.security.token_checker' ]
 #    tags: [ 'fos_http_cache.user_context_provider' ]
-
-  Ferienpass\CoreBundle\Menu\MenuBuilder:
-    arguments: [ "@knp_menu.factory", '@security.logout_url_generator', '@request_stack', '@Ferienpass\CoreBundle\UserAccount\UserAccountFragments' ]
-    tags:
-      - { name: knp_menu.menu_builder, method: userNavigation, alias: user_navigation }
-      - { name: knp_menu.menu_builder, method: userAccountNavigation, alias: user_account_navigation }
 
   Ferienpass\CoreBundle\EventListener\DataContainer\Edition\GenerateAliasListener:
     arguments: [ '@database_connection', '@contao.slug' ]
@@ -176,9 +160,6 @@ services:
   Ferienpass\CoreBundle\Export\Offer\OfferExporter:
     arguments: [ !tagged_iterator { tag: 'ferienpass.offer_export_type', index_by: 'key' } ]
 
-  Ferienpass\CoreBundle\Security\Authentication\AuthenticationFailureHandler:
-    arguments: [ '@translator' ]
-
   Ferienpass\CoreBundle\Form\Extension\AutoSubmitExtension:
     tags: [ 'form.type_extension' ]
 
@@ -230,15 +211,7 @@ services:
       - '@contao.csrf.token_manager'
       - '%contao.csrf_token_name%'
 
-  Ferienpass\CoreBundle\EventListener\Routing\PageUrlGeneratorListener:
-    tags:
-      - { name: kernel.event_listener, event: cmf_routing.pre_dynamic_generate }
-
   Ferienpass\CoreBundle\Twig\Extension\StringUtilExtension: ~
-
-  Ferienpass\CoreBundle\Page\PageBuilderFactory:
-    arguments: [ '@fragment.handler', '@translator', '@contao.framework', '@request_stack' ]
-    public: true
 
   Ferienpass\CoreBundle\Filter\Type\Offer\AgeType: ~
   Ferienpass\CoreBundle\Filter\Type\Offer\BaseType: ~

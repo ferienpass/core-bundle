@@ -56,7 +56,7 @@ class UserRegistrationType extends AbstractType
                     new Email(),
                 ],
             ])
-            ->add('password', PasswordType::class, [
+            ->add('plainPassword', PasswordType::class, [
                 'label' => 'MSC.password.0',
                 'translation_domain' => 'contao_default',
                 'help' => 'Ihr Passwort muss aus mindestens 8 Zeichen bestehen.',

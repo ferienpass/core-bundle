@@ -30,8 +30,8 @@ class Participant
     #[Groups('admin_list')]
     private int $id;
 
-    #[ORM\Column(name: 'tstamp', type: 'integer', options: ['unsigned' => true])]
-    private int $timestamp;
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeInterface $createdAt;
 
     #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\User', inversedBy: 'participants')]
     #[ORM\JoinColumn(name: 'member_id', referencedColumnName: 'id')]
@@ -75,10 +75,10 @@ class Participant
     #[ORM\OneToMany(mappedBy: 'participant', targetEntity: ParticipantLog::class, cascade: ['persist', 'remove'])]
     private Collection $activity;
 
-    public function __construct(int $memberId = null)
+    public function __construct(User $user = null)
     {
-        $this->member = $memberId;
-        $this->timestamp = time();
+        $this->user = $user;
+        $this->createdAt = new \DateTimeImmutable();
         $this->attendances = new ArrayCollection();
         $this->activity = new ArrayCollection();
     }
@@ -86,11 +86,6 @@ class Participant
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function getTimestamp(): int
-    {
-        return $this->timestamp;
     }
 
     public function getFirstname(): string
@@ -124,7 +119,7 @@ class Participant
             return $this->phone;
         }
 
-        if (null === $user = $this->getMember()) {
+        if (null === $user = $this->getUser()) {
             return null;
         }
 
@@ -143,7 +138,7 @@ class Participant
             return $this->mobile;
         }
 
-        if (null === $user = $this->getMember()) {
+        if (null === $user = $this->getUser()) {
             return null;
         }
 
@@ -162,19 +157,19 @@ class Participant
             return $this->email;
         }
 
-        if (null === $user = $this->getMember()) {
+        if (null === $user = $this->getUser()) {
             return null;
         }
 
         return $user->getEmail();
     }
 
-    public function getMember(): ?User
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setMember(?User $user)
+    public function setUser(?User $user)
     {
         $this->user = $user;
     }
@@ -342,11 +337,6 @@ class Participant
     public function setOwnEmail(?string $email): void
     {
         $this->setEmail($email);
-    }
-
-    public function setMemberId(?int $memberId): void
-    {
-        $this->member = $memberId;
     }
 
     public function isDiscounted(): bool

@@ -12,11 +12,11 @@ services:
       - { name: 'contao.hook', hook: 'isVisibleElement' }
     arguments: [ '@Ferienpass\CoreBundle\Repository\EditionRepository', '@contao.security.token_checker','@request_stack', '@contao.routing.scope_matcher' ]
 
-  Ferienpass\CoreBundle\EventListener\PrettyErrorScreenListener:
-    arguments:
-      - '%contao.pretty_error_screens%'
-      - '@twig'
-      - '@Ferienpass\CoreBundle\Page\PageBuilderFactory'
-    tags:
-      # The priority must be higher than the one of the one of contao.listener.pretty_error_screens
-      - { name: kernel.event_listener, priority: -48 }
+#  Ferienpass\CoreBundle\EventListener\PrettyErrorScreenListener:
+#    arguments:
+#      - '%contao.pretty_error_screens%'
+#      - '@twig'
+#      - '@Ferienpass\CoreBundle\Page\PageBuilderFactory'
+#    tags:
+#      # The priority must be higher than the one of the one of contao.listener.pretty_error_screens
+#      - { name: kernel.event_listener, priority: -48 }

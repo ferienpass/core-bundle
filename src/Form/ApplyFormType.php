@@ -234,7 +234,7 @@ class ApplyFormType extends AbstractType
 
     private function unconfirmed(Offer $offer, Participant $participant, ApplicationSystemInterface $applicationSystem): void
     {
-        if (null !== $participant->getMember()) {
+        if (null !== $participant->getUser()) {
             return;
         }
 

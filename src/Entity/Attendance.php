@@ -240,7 +240,7 @@ class Attendance
      */
     public function getPhone(): string
     {
-        return $this->participant?->getPhone() ?? $this->participant?->getMember()?->phone ?? '';
+        return $this->participant?->getPhone() ?? $this->participant?->getUser()?->phone ?? '';
     }
 
     /**
@@ -248,7 +248,7 @@ class Attendance
      */
     public function getEmail(): string
     {
-        return $this->participant?->getEmail() ?? $this->participant?->getMember()?->email ?? '';
+        return $this->participant?->getEmail() ?? $this->participant?->getUser()?->email ?? '';
     }
 
     /**
