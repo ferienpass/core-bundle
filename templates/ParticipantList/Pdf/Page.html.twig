@@ -49,9 +49,9 @@
                         <span style="font-weight: bold">{{ participant.firstname ~' '~ participant.lastname }}</span>, {{ participant.age ?: '?' }}
                         Jahre
                     </p>
-                    {% if participant.member %}
+                    {% if participant.user %}
                         <p style="color: cmyk(0,0,0,70)">
-                            <span style="font-weight: bold">Kontakt:</span> {{ participant.member.firstname ~ ' ' ~ participant.member.lastname }}
+                            <span style="font-weight: bold">Kontakt:</span> {{ participant.user.firstname ~ ' ' ~ participant.user.lastname }}
                         </p>
                     {% endif %}
                 </td>
@@ -59,13 +59,13 @@
                     <p>
                         <span>T:</span>
                         <span>
-                                {{ ((participant.phone ?: (participant.member and participant.member.phone ? participant.member.phone : '')) ~ ' / ' ~ (participant.mobile ?: (participant.member and participant.member.mobile ? participant.member.mobile : '')))|trim('/ ') }}
+                                {{ (participant.phone ~ ' / ' ~ participant.mobile)|trim('/ ') }}
                             </span>
                     </p>
                     <p>
                         <span>E:</span>
                         <span>
-                                {{ participant.email ?: (participant.member and participant.member.email ? participant.member.email : '-') }}
+                                {{ participant.email }}
                             </span>
                     </p>
                 </td>

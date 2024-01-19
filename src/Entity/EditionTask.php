@@ -29,9 +29,6 @@ class EditionTask
     #[ORM\JoinColumn(name: 'pid', referencedColumnName: 'id')]
     private Edition $edition;
 
-    #[ORM\Column(name: 'tstamp', type: 'integer')]
-    private int $timestamp;
-
     #[ORM\Column(type: 'integer')]
     private int $sorting;
 
@@ -74,6 +71,11 @@ class EditionTask
     #[ORM\Column(name: 'age_check', type: 'string', nullable: true)]
     private ?string $ageCheck = null;
 
+    public function __construct(Edition $edition)
+    {
+        $this->edition = $edition;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -92,16 +94,6 @@ class EditionTask
     public function setEdition(Edition $edition): void
     {
         $this->edition = $edition;
-    }
-
-    public function getTimestamp(): int
-    {
-        return $this->timestamp;
-    }
-
-    public function setTimestamp(int $timestamp): void
-    {
-        $this->timestamp = $timestamp;
     }
 
     public function getSorting(): int

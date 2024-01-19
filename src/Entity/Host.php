@@ -31,8 +31,8 @@ class Host
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    #[ORM\Column(name: 'tstamp', type: 'integer', options: ['unsigned' => true])]
-    private int $timestamp;
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private \DateTimeInterface $createdAt;
 
     /**
      * @Groups("notification")
@@ -122,7 +122,7 @@ class Host
     {
         $this->memberAssociations = new ArrayCollection();
         $this->offers = new ArrayCollection();
-        $this->timestamp = time();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function addMember(User $user): self
@@ -157,14 +157,9 @@ class Host
         return $this->id;
     }
 
-    public function getTimestamp(): int
+    public function getCreatedAt(): \DateTimeInterface
     {
-        return $this->timestamp;
-    }
-
-    public function setTimestamp(int $timestamp): void
-    {
-        $this->timestamp = $timestamp;
+        return $this->createdAt;
     }
 
     public function getName(): ?string

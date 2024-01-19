@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
+#[ORM\UniqueConstraint(columns: ['member_id', 'host_id'])]
 class HostMemberAssociation
 {
     #[ORM\Id]

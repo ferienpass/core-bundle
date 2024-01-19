@@ -27,9 +27,6 @@ class Edition
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'integer')]
-    private int $tstamp;
-
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $name = null;
 
@@ -70,16 +67,6 @@ class Edition
         $this->id = $id;
     }
 
-    public function getTstamp(): int
-    {
-        return $this->tstamp;
-    }
-
-    public function setTstamp(int $tstamp): void
-    {
-        $this->tstamp = $tstamp;
-    }
-
     public function getName(): ?string
     {
         return $this->name;
@@ -110,16 +97,15 @@ class Edition
         return $this->tasks;
     }
 
-    /**
-     * @param ArrayCollection $tasks
-     */
-    public function setTasks($tasks): void
+    public function setTasks(Collection $tasks): void
     {
         $this->tasks = $tasks;
     }
 
     public function addTask(EditionTask $editionTask): void
     {
+        $editionTask->setEdition($this);
+
         $this->tasks->add($editionTask);
     }
 

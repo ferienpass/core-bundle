@@ -14,22 +14,86 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Security;
 
 use Contao\BackendUser;
+use Doctrine\ORM\EntityManagerInterface;
 use Ferienpass\CoreBundle\Entity\User;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class ContaoBackendUser extends BackendUser
 {
+    private EntityManagerInterface $em;
+    private ?User $user = null;
+
     public static function fromFerienpassUser(User $user): BackendUser
     {
         $contaoUser = new static();
 
-        $contaoUser->id = $user->getId();
-        $contaoUser->email = $user->getEmail();
-        $contaoUser->username = $user->getUserIdentifier();
-        $contaoUser->name = $user->getName();
-        $contaoUser->password = $user->getPassword();
-        $contaoUser->admin = \in_array('ROLE_ADMIN', $user->getRoles(), true);
-        $contaoUser->filemounts = [];
+        $contaoUser->user = $user;
+        $contaoUser->arrData = new class($user) implements \ArrayAccess {
+            public function __construct(private User $user)
+            {
+            }
+
+            public function offsetExists(mixed $offset): bool
+            {
+                if (\in_array($offset, ['admin', 'username', 'start', 'stop'], true)) {
+                    return true;
+                }
+
+                $propertyAccessor = PropertyAccess::createPropertyAccessor();
+
+                return $propertyAccessor->isReadable($this->user, $offset);
+            }
+
+            public function offsetGet(mixed $offset): mixed
+            {
+                $propertyAccessor = PropertyAccess::createPropertyAccessor();
+
+                return match ($offset) {
+                    'admin' => \in_array('ROLE_ADMIN', $this->user->getRoles(), true),
+                    'username' => $this->user->getEmail(),
+                    'start', 'stop' => '',
+                    default => $propertyAccessor->getValue($this->user, $offset)
+                };
+            }
+
+            public function offsetSet(mixed $offset, mixed $value): void
+            {
+                if (\in_array($offset, ['currentLogin'], true)) {
+                    return;
+                }
+
+                $propertyAccessor = PropertyAccess::createPropertyAccessor();
+                $propertyAccessor->setValue($this->user, $offset, $value);
+            }
+
+            public function offsetUnset(mixed $offset): void
+            {
+                $propertyAccessor = PropertyAccess::createPropertyAccessor();
+                $propertyAccessor->setValue($this->user, $offset, null);
+            }
+        };
 
         return $contaoUser;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->getOriginalUser()->getUserIdentifier();
+    }
+
+    public function getOriginalUser(): User
+    {
+        if (null !== $this->user) {
+            return $this->user;
+        }
+
+        $this->user = new User();
+
+        return $this->user;
+    }
+
+    public function save()
+    {
+        // $this->em->flush();
     }
 }

@@ -57,6 +57,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $modifiedAt;
 
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $lastLogin = null;
+
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
@@ -252,6 +255,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setHosts(Collection $hosts): void
     {
         $this->hostAssociations = $hosts->map(fn (Host $h) => new HostMemberAssociation($this, $h));
+    }
+
+    public function getLastLogin(): ?\DateTimeInterface
+    {
+        return $this->lastLogin;
+    }
+
+    public function setLastLogin(?\DateTimeInterface $lastLogin): void
+    {
+        $this->lastLogin = $lastLogin;
     }
 
     public function eraseCredentials(): void
