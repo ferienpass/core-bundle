@@ -13,94 +13,34 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
-use Contao\Model;
 use Ferienpass\CoreBundle\Applications\UnconfirmedApplications;
+use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Message\ConfirmApplications;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
-use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
-use NotificationCenter\Model\Notification;
+use Ferienpass\CoreBundle\Notifier;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Notifier\Recipient\Recipient;
 
 #[AsMessageHandler]
 class WhenConfirmApplicationsThenNotify
 {
-    public function __construct(private readonly UnconfirmedApplications $unconfirmedApplications, private readonly TranslatorInterface $translator)
+    public function __construct(private readonly Notifier $notifier, private readonly UnconfirmedApplications $unconfirmedApplications)
     {
     }
 
     public function __invoke(ConfirmApplications $message): ?NotificationHandlerResult
     {
-        $notification = Notification::findOneByType('admission_letter');
-        if (null === $notification) {
-            throw new \RuntimeException('Missing notification for confirming applications!');
+        foreach (array_merge([$this->unconfirmedApplications->getUninformedMembers(), $this->unconfirmedApplications->getUninformedParticipants()]) as $uninformedMember) {
+            /** @var Attendance[] $attendances */
+            $attendances = [];
+            $notification = $this->notifier->admissionLetter($attendances);
+            if (null === $notification || '' === $email = (string) $attendances[0]?->getParticipant()?->getEmail()) {
+                continue;
+            }
+
+            $this->notifier->send($notification, new Recipient($email));
         }
 
-        $result = [];
-
-        foreach ($this->unconfirmedApplications->getUninformedMembers() as $uninformedMember) {
-            $result[] = $this->sendNotificationToMember($notification, $uninformedMember);
-        }
-
-        foreach ($this->unconfirmedApplications->getUninformedParticipants() as $uninformedParticipant) {
-            $result[] = $this->sendNotificationToParticipant($notification, $uninformedParticipant);
-        }
-
-        return new NotificationHandlerResult(array_merge(...$result));
-    }
-
-    private function sendNotificationToMember(Notification $notification, array $data): array
-    {
-        $data = array_values($data);
-
-        $result = [];
-        $language = $GLOBALS['TL_LANGUAGE'];
-
-        $tokens = $data;
-
-        $first = reset($data[0]);
-
-        $tokens['recipient_email'] = $first['member_email'];
-        $tokens['recipient_firstname'] = $first['member_firstname'];
-        $tokens['recipient_lastname'] = $first['member_lastname'];
-        $tokens['link'] = null;
-        $tokens['participants'] = $data;
-        $tokens['copyright'] = $this->translator->trans('email.copyright', [], null, $language);
-        $tokens['footer_reason'] = $this->translator->trans('email.reason.applied', [], null, $language);
-
-        /** @var Notification|Model $notification */
-        foreach ($notification->send($tokens, $language) as $messageId => $success) {
-            $result[] =
-                new NotificationContext((int) $notification->id, (int) $messageId, $tokens, $language, $success);
-        }
-
-        return $result;
-    }
-
-    private function sendNotificationToParticipant(Notification $notification, array $data): array
-    {
-        $data = array_values($data);
-
-        $result = [];
-        $language = $GLOBALS['TL_LANGUAGE'];
-
-        $tokens = $data;
-
-        $first = reset($data);
-
-        $tokens['recipient_email'] = $first['participant_email'];
-        $tokens['recipient_firstname'] = $first['participant_firstname'];
-        $tokens['recipient_lastname'] = $first['participant_lastname'];
-        $tokens['link'] = null;
-        $tokens['participants'] = [$data];
-        $tokens['footer_reason'] = $this->translator->trans('email.reason.applied', [], null, $language);
-
-        /** @var Notification|Model $notification */
-        foreach ($notification->send($tokens, $language) as $messageId => $success) {
-            $result[] =
-                new NotificationContext((int) $notification->id, (int) $messageId, $tokens, $language, $success);
-        }
-
-        return $result;
+        return null;
     }
 }

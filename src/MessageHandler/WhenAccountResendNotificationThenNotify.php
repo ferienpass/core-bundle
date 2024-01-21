@@ -20,8 +20,6 @@ use Contao\OptInModel;
 use Ferienpass\CoreBundle\Message\AccountResendActivation;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
 use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
-use Haste\Util\Format;
-use NotificationCenter\Model\Notification;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;

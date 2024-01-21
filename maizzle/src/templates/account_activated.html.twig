@@ -16,9 +16,9 @@ bodyClass: bg-gray-postmark-lighter
                     <tr>
                       <td class="p-45">
                         <div class="text-base">
-                          <h1 class="mt-0 text-2xl font-bold text-left text-gray-postmark-darker">Hallo, {{ member_firstname|default }} {{ member_lastname|default }}!</h1>
+                          <h1 class="mt-0 text-2xl font-bold text-left text-gray-postmark-darker">Hallo, {{ user.name }}!</h1>
                           <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
-                            {{ email_text|nl2br }}
+                            {{ content|nl2br }}
                           </p>
                         </div>
                       </td>

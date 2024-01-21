@@ -13,45 +13,35 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
-use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Payment;
-use Ferienpass\CoreBundle\EventListener\Notification\GetNotificationTokensTrait;
 use Ferienpass\CoreBundle\Message\PaymentReceiptCreated;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
-use Ferienpass\CoreBundle\Notification\PaymentCreatedNotification;
 use Ferienpass\CoreBundle\Notifier;
+use Ferienpass\CoreBundle\Repository\PaymentRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Notifier\Recipient\Recipient;
 
 #[AsMessageHandler]
 class WhenPaymentReceiptCreatedThenNotify
 {
-    use GetNotificationTokensTrait;
-
-    public function __construct(private readonly Notifier $notifier, private readonly ManagerRegistry $doctrine)
+    public function __construct(private readonly Notifier $notifier, private readonly PaymentRepository $repository)
     {
     }
 
     public function __invoke(PaymentReceiptCreated $message): ?NotificationHandlerResult
     {
-        $payment = $this->doctrine->getRepository(Payment::class)->find($message->getPaymentId());
+        /** @var Payment $payment */
+        $payment = $this->repository->find($message->getPaymentId());
         if (null === $payment || '' === (string) $payment->getBillingEmail()) {
             return null;
         }
 
-        if (!$this->notifier->has('payment_created')) {
+        $notification = $this->notifier->paymentCreated($payment);
+        if (null === $notification) {
             return null;
         }
 
-        if (!(($notification = $this->notifier->get('payment_created')) instanceof PaymentCreatedNotification)) {
-            return null;
-        }
-
-        $notification = $notification->withPayment($payment);
-
-        $recipient = new Recipient($payment->getBillingEmail());
-
-        $this->notifier->send($notification, $recipient);
+        $this->notifier->send($notification, new Recipient($payment->getBillingEmail()));
 
         return null;
     }

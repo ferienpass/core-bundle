@@ -13,34 +13,28 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Notification;
 
-use Ferienpass\CoreBundle\Entity\Payment;
-use Ferienpass\CoreBundle\Export\Payments\ReceiptExportInterface;
+use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
+use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class PaymentCreatedNotification extends Notification implements NotificationInterface, EmailNotificationInterface
+class AccountCreatedNotification extends Notification implements NotificationInterface, EmailNotificationInterface
 {
-    private Payment $payment;
+    private User $user;
 
-    public function __construct(private ReceiptExportInterface $receiptExport)
+    public function __construct(private readonly UrlGeneratorInterface $urlGenerator, private readonly UriSigner $uriSigner)
     {
         parent::__construct();
     }
 
     public static function getName(): string
     {
-        return 'payment_created';
-    }
-
-    public function payment(Payment $payment): static
-    {
-        $this->payment = $payment;
-
-        return $this;
+        return 'account_created';
     }
 
     public function getChannels(RecipientInterface $recipient): array
@@ -48,16 +42,25 @@ class PaymentCreatedNotification extends Notification implements NotificationInt
         return ['email'];
     }
 
+    public function user(User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
+        $actionUrl = $this->uriSigner->sign($this->urlGenerator->generate('registration_activate', ['id' => $this->user->getId()], UrlGeneratorInterface::ABSOLUTE_URL));
+
         $email = (new NotificationEmail(self::getName()))
             ->to($recipient->getEmail())
             ->subject($this->getSubject())
             ->content($this->getContent())
-            ->attachFromPath($this->receiptExport->generate($this->payment), sprintf('beleg-%s', $this->payment->getId()))
             ->context([
-                'payment' => $this->payment,
+                'user' => $this->user,
             ])
+            ->action('email.account_created.activate', $actionUrl)
         ;
 
         return new EmailMessage($email);

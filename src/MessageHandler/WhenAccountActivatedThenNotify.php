@@ -13,49 +13,36 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
-use Contao\MemberModel;
-use Contao\Model;
+use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Message\AccountActivated;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
-use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
-use Haste\Util\Format;
-use NotificationCenter\Model\Notification;
+use Ferienpass\CoreBundle\Notifier;
+use Ferienpass\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Notifier\Recipient\Recipient;
 
 #[AsMessageHandler]
 class WhenAccountActivatedThenNotify
 {
+    public function __construct(private readonly Notifier $notifier, private readonly UserRepository $repository)
+    {
+    }
+
     public function __invoke(AccountActivated $message): ?NotificationHandlerResult
     {
-        $memberModel = MemberModel::findByPk($message->getUserId());
-        if (null === $memberModel) {
+        /** @var User $user */
+        $user = $this->repository->find($message->getUserId());
+        if (null === $user) {
             return null;
         }
 
-        $notification = Notification::findOneByType('member_activation');
-        if (null === $notification) {
-            throw new \RuntimeException('Missing notification for account activation for users!');
+        $notification = $this->notifier->accountActivated($user);
+        if (null === $notification || '' === $email = (string) $user->getEmail()) {
+            return null;
         }
 
-        return $this->sendNotification($notification, $memberModel->row());
-    }
+        $this->notifier->send($notification, new Recipient($email));
 
-    private function sendNotification(Notification $notification, array $data, array $tokens = []): NotificationHandlerResult
-    {
-        $tokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
-
-        foreach ($data as $k => $v) {
-            $tokens['member_'.$k] = Format::dcaValue('tl_member', $k, $v);
-        }
-
-        $result = [];
-        $language = $GLOBALS['TL_LANGUAGE'];
-
-        /** @var Notification|Model $notification */
-        foreach ($notification->send($tokens, $language) as $messageId => $success) {
-            $result[] = new NotificationContext((int) $notification->id, (int) $messageId, $tokens, $language, $success);
-        }
-
-        return new NotificationHandlerResult($result);
+        return null;
     }
 }

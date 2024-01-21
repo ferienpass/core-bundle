@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Controller\Backend\Api;
 
-use Contao\FrontendUser;
 use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer;
@@ -66,7 +65,7 @@ final class AttendanceController extends \Symfony\Bundle\FrameworkBundle\Control
     {
         $oldStatus = $attendance->getStatus();
 
-        $attendance->setStatus($request->request->getAlnum('newStatus'), $user instanceof FrontendUser ? $user->id : null);
+        $attendance->setStatus($request->request->getAlnum('newStatus'), $user);
         $attendance->setSorting(($request->request->getInt('newIndex') * 128) + 64);
 
         if ($autoAssign) {

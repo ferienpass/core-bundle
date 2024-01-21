@@ -13,64 +13,36 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
-use Contao\CoreBundle\OptIn\OptIn;
-use Contao\MemberModel;
-use Contao\Model;
+use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Message\AccountCreated;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
-use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
-use Haste\Util\Format;
-use NotificationCenter\Model\Notification;
+use Ferienpass\CoreBundle\Notifier;
+use Ferienpass\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Notifier\Recipient\Recipient;
 
 #[AsMessageHandler]
 class WhenAccountCreatedThenNotify
 {
-    public function __construct(private readonly OptIn $optIn, private readonly RouterInterface $router)
+    public function __construct(private readonly Notifier $notifier, private readonly UserRepository $repository)
     {
     }
 
     public function __invoke(AccountCreated $message): ?NotificationHandlerResult
     {
-        $memberModel = MemberModel::findByPk($message->getUserId());
-        if (null === $memberModel) {
+        /** @var User $user */
+        $user = $this->repository->find($message->getUserId());
+        if (null === $user) {
             return null;
         }
 
-        $data = $memberModel->row();
-
-        $optInToken = $this->optIn->create('reg-', $memberModel->email, ['tl_member' => [$memberModel->id]]);
-
-        $tokens = [
-            'link' => $this->router->generate('registration_activate', ['token' => $optInToken->getIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL),
-        ];
-
-        $notification = Notification::findOneByType('member_registration');
-        if (null === $notification) {
-            throw new \RuntimeException('Missing notification for account registration for users!');
+        $notification = $this->notifier->accountCreated($user);
+        if (null === $notification || '' === $email = (string) $user->getEmail()) {
+            return null;
         }
 
-        return $this->sendNotification($notification, $data, $tokens);
-    }
+        $this->notifier->send($notification, new Recipient($email));
 
-    private function sendNotification(Notification $notification, array $data, array $tokens = []): NotificationHandlerResult
-    {
-        $tokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
-
-        foreach ($data as $k => $v) {
-            $tokens['member_'.$k] = Format::dcaValue('tl_member', $k, $v);
-        }
-
-        $result = [];
-        $language = $GLOBALS['TL_LANGUAGE'];
-
-        /** @var Notification|Model $notification */
-        foreach ($notification->send($tokens, $language) as $messageId => $success) {
-            $result[] = new NotificationContext((int) $notification->id, (int) $messageId, $tokens, $language, $success);
-        }
-
-        return new NotificationHandlerResult($result);
+        return null;
     }
 }

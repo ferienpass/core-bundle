@@ -236,9 +236,6 @@ module.exports = {
       lineHeight: theme => ({
         ...theme('spacing'),
       }),
-      maxHeight: theme => ({
-        ...theme('spacing'),
-      }),
       maxWidth: theme => ({
         ...theme('spacing'),
       }),
@@ -253,8 +250,10 @@ module.exports = {
   variants: {},
   corePlugins: {
     animation: false,
+    preflight: false,
     backgroundOpacity: false,
     borderOpacity: false,
+    boxShadow: false,
     divideOpacity: false,
     placeholderOpacity: false,
     textOpacity: false,

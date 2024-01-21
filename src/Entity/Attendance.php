@@ -117,7 +117,7 @@ class Attendance
         return $this->status;
     }
 
-    public function setStatus(?string $status, int $user = null): void
+    public function setStatus(?string $status, User $user = null): void
     {
         if (null !== $status && !\in_array($status, [self::STATUS_CONFIRMED, self::STATUS_WAITLISTED, self::STATUS_WITHDRAWN, self::STATUS_WAITING, self::STATUS_ERROR], true)) {
             throw new InvalidArgumentException('Invalid attendance status');
@@ -232,7 +232,7 @@ class Attendance
      */
     public function getName(): string
     {
-        return sprintf('%s %s', $this->participant?->getFirstname() ?? '', $this->participant?->getLastname() ?? '');
+        return $this->participant->getName();
     }
 
     /**
@@ -240,7 +240,7 @@ class Attendance
      */
     public function getPhone(): string
     {
-        return $this->participant?->getPhone() ?? $this->participant?->getUser()?->phone ?? '';
+        return $this->participant?->getPhone() ?? '';
     }
 
     /**
@@ -248,7 +248,7 @@ class Attendance
      */
     public function getEmail(): string
     {
-        return $this->participant?->getEmail() ?? $this->participant?->getUser()?->email ?? '';
+        return $this->participant?->getEmail() ?? '';
     }
 
     /**

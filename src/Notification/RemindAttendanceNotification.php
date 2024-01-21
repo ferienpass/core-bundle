@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Notification;
 
-use Ferienpass\CoreBundle\Entity\Payment;
-use Ferienpass\CoreBundle\Export\Payments\ReceiptExportInterface;
+use Ferienpass\CoreBundle\Entity\Attendance;
+use Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport;
 use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
@@ -22,30 +22,30 @@ use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class PaymentCreatedNotification extends Notification implements NotificationInterface, EmailNotificationInterface
+class RemindAttendanceNotification extends Notification implements NotificationInterface, EmailNotificationInterface
 {
-    private Payment $payment;
+    private Attendance $attendance;
 
-    public function __construct(private ReceiptExportInterface $receiptExport)
+    public function __construct(private readonly ICalExport $iCalExport)
     {
         parent::__construct();
     }
 
     public static function getName(): string
     {
-        return 'payment_created';
-    }
-
-    public function payment(Payment $payment): static
-    {
-        $this->payment = $payment;
-
-        return $this;
+        return 'remind_attendance';
     }
 
     public function getChannels(RecipientInterface $recipient): array
     {
         return ['email'];
+    }
+
+    public function attendance(Attendance $attendance): static
+    {
+        $this->attendance = $attendance;
+
+        return $this;
     }
 
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
@@ -54,9 +54,9 @@ class PaymentCreatedNotification extends Notification implements NotificationInt
             ->to($recipient->getEmail())
             ->subject($this->getSubject())
             ->content($this->getContent())
-            ->attachFromPath($this->receiptExport->generate($this->payment), sprintf('beleg-%s', $this->payment->getId()))
+            ->attachFromPath($this->iCalExport->generate([$this->attendance->getOffer()]), $this->attendance->getOffer()->getAlias())
             ->context([
-                'payment' => $this->payment,
+                'attendance' => $this->attendance,
             ])
         ;
 

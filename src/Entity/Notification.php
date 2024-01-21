@@ -24,9 +24,6 @@ class Notification
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
-    private int $sorting = 0;
-
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
@@ -56,16 +53,6 @@ class Notification
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getSorting(): int
-    {
-        return $this->sorting;
-    }
-
-    public function setSorting(int $sorting): void
-    {
-        $this->sorting = $sorting;
     }
 
     public function getCreatedAt(): \DateTimeInterface

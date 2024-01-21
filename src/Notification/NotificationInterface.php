@@ -13,13 +13,10 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Notification;
 
-use Symfony\Component\Notifier\Notification\Notification;
-use Symfony\Component\Notifier\Recipient\RecipientInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-class HostRegistrationNotification extends Notification
+#[AutoconfigureTag('ferienpass.notification')]
+interface NotificationInterface
 {
-    public function getChannels(RecipientInterface $recipient): array
-    {
-        return ['email'];
-    }
+    public static function getName(): string;
 }

@@ -13,64 +13,45 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
-use Ferienpass\CoreBundle\Message\AccountDeleted;
+use Doctrine\ORM\EntityManagerInterface;
+use Ferienpass\CoreBundle\Entity\User;
+use Ferienpass\CoreBundle\Message\AccountDelete;
 use Ferienpass\CoreBundle\Message\ParticipantListChanged;
-use Ferienpass\CoreBundle\Repository\AttendanceRepository;
-use Ferienpass\CoreBundle\Repository\OfferRepository;
-use Ferienpass\CoreBundle\Repository\ParticipantRepository;
+use Ferienpass\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsMessageHandler]
 class WhenAccountDeletedDeleteParticipants
 {
-    public function __construct(private readonly MessageBusInterface $messageBus, private readonly ParticipantRepository $participantRepository, private readonly AttendanceRepository $attendanceRepository, private readonly OfferRepository $offerRepository)
+    public function __construct(private readonly MessageBusInterface $messageBus, private readonly UserRepository $repository, private readonly EntityManagerInterface $em)
     {
     }
 
-    public function __invoke(AccountDeleted $message)
+    public function __invoke(AccountDelete $message)
     {
-        $offers = $this->offerRepository->createQueryBuilder('o')
-            ->select('o.id')
-            ->innerJoin('o.attendances', 'a')
-            ->innerJoin('a.participant', 'p')
-            ->where('p.member = :member')
-            ->setParameter('member', $message->getUserId())
-            ->getQuery()
-            ->getResult()
-        ;
-
-        // Delete attendances
-        $attendances = $this->attendanceRepository->createQueryBuilder('a')
-            ->select('a.id')
-            ->join('a.participant', 'p')
-            ->where('p.member = :member')
-            ->setParameter('member', $message->getUserId())
-            ->getQuery()
-            ->getResult()
-        ;
-
-        if (!empty($attendances)) {
-            $this->attendanceRepository->createQueryBuilder('a')
-                ->where('a.id in (:ids)')
-                ->setParameter('ids', array_column($attendances, 'id'))
-                ->delete()
-                ->getQuery()
-                ->execute()
-            ;
+        /** @var User $user */
+        $user = $this->repository->find($message->getUserId());
+        if (null === $user) {
+            return;
         }
 
-        // Delete participants
-        $this->participantRepository->createQueryBuilder('p')
-            ->where('p.member = :member')
-            ->setParameter('member', $message->getUserId())
-            ->delete()
-            ->getQuery()
-            ->execute()
-        ;
+        $offers = [];
+        foreach ($user->getParticipants() as $participant) {
+            foreach ($participant->getAttendances() as $attendance) {
+                $offers[] = $attendance->getOffer()->getId();
 
-        foreach ($offers as $offer) {
-            $this->messageBus->dispatch(new ParticipantListChanged((int) $offer['id']));
+                $this->em->remove($attendance);
+            }
+
+            $this->em->remove($participant);
+        }
+
+        $this->em->remove($user);
+        $this->em->flush();
+
+        foreach ($offers as $offerId) {
+            $this->messageBus->dispatch(new ParticipantListChanged($offerId));
         }
     }
 }

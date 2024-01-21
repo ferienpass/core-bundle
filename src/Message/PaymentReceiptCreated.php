@@ -13,9 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Message;
 
-/**
- * This message is dispatched when a payment receipt was created.
- */
 class PaymentReceiptCreated implements LoggableMessageInterface
 {
     public function __construct(private readonly int $paymentId)

@@ -13,54 +13,38 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
-use Contao\Model;
 use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Offer;
-use Ferienpass\CoreBundle\EventListener\Notification\GetNotificationTokensTrait;
 use Ferienpass\CoreBundle\Message\OfferCancelled;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
-use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
-use NotificationCenter\Model\Notification;
+use Ferienpass\CoreBundle\Notifier;
+use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 class WhenOfferCancelledThenNotify
 {
-    use GetNotificationTokensTrait;
-
-    public function __construct(private readonly ManagerRegistry $doctrine)
+    public function __construct(private readonly Notifier $notifier, private readonly OfferRepository $repository, private readonly ManagerRegistry $doctrine)
     {
     }
 
     public function __invoke(OfferCancelled $message): ?NotificationHandlerResult
     {
-        $offer = $this->doctrine->getRepository(Offer::class)->find($message->getOfferId());
+        /** @var Offer $offer */
+        $offer = $this->repository->find($message->getOfferId());
         if (null === $offer) {
             return null;
         }
 
-        /** @var Notification $notification */
-        $notification = Notification::findOneByType('offer_cancelled');
-        if (null === $notification) {
-            return null;
-        }
-
-        $result = [];
         foreach ($offer->getAttendances() as $attendance) {
-            $participant = $attendance->getParticipant();
-            if (null === $participant) {
+            $notification = $this->notifier->offerCancelled($attendance);
+            if (null === $notification || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
                 continue;
             }
 
-            $tokens = self::getNotificationTokens($participant, $offer);
-            $language = $GLOBALS['TL_LANGUAGE'];
-
-            /** @var Notification|Model $notification */
-            foreach ($notification->send($tokens, $language) as $messageId => $success) {
-                $result[] = new NotificationContext((int) $notification->id, (int) $messageId, $tokens, $language, $success);
-            }
+            $this->notifier->send($notification, new Recipient($email));
         }
 
-        return new NotificationHandlerResult($result);
+        return null;
     }
 }

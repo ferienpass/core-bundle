@@ -22,23 +22,26 @@ bodyClass: bg-gray-postmark-lighter
                                                     <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
                                                         Heute erhalten Sie die Bestätigung für die Ferienpass-Anmeldung
                                                         Ihres Kindes bzw. Ihrer Kinder.</p>
-                                                    {% for participant in participants %}
+                                                    {% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
+
+                                                    {% for p, a in attendances %}
+                                                        {% set participant = attribute(a|first, 'participant') %}
                                                     <table class="w-full py-35">
                                                         <tr>
                                                             <td>
                                                                 <h3 class="mt-0 mb-0 text-sm text-left text-gray-postmark-darker font-bold">
-                                                                    {{ attribute(participant|first,'participant_firstname') ~' '~ attribute(participant|first, 'participant_lastname') }}</h3>
+                                                                    {{ participant.name }}</h3>
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td colspan="2">
                                                                 <table class="w-full pt-25">
-                                                                    {% for attendance in participant %}
+                                                                    {% for attendance in a %}
                                                                     <tr>
                                                                         <td class="border-t border-solid border-b-0 border-l-0 border-r-0 border-gray-200 w-3/5 text-base leading-18 py-10 text-gray-postmark-dark">
-                                                                            {{ attendance.offer_name|raw }}<br><span
-                                                                                    class="text-gray-500">{{ attendance.offer_date_start|date('d.m.Y H:i') }}</span>
-                                                                            {% if attendance.offer_cancelled %}
+                                                                            {{ attendance.offer.name }}<br><span
+                                                                                    class="text-gray-500">{{ offer_macro.date_single(attendance.offer.dates|first) }}</span>
+                                                                            {% if attendance.offer.cancelled %}
                                                                                 <p>
                                                                                     <span class="mt-2 rounded bg-red-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-red-100">
                                                                                         <span class="text-sm mt-0 mb-0 leading-5 text-red-700">
@@ -46,7 +49,7 @@ bodyClass: bg-gray-postmark-lighter
                                                                                             abgesagt.</span>
                                                                                     </span>
                                                                                 </p>
-                                                                            {% elseif attendance.offer_agreement_letter %}
+                                                                            {% elseif attendance.offer.requiresAgreementLetter %}
                                                                                 <p>
                                                                                     <span class="mt-2 rounded bg-yellow-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-yellow-100">
                                                                                         <span class="text-sm mt-0 mb-0 leading-5 text-yellow-700">
@@ -59,9 +62,9 @@ bodyClass: bg-gray-postmark-lighter
                                                                         </td>
                                                                         <td align="right"
                                                                             class="border-t border-solid border-b-0 border-l-0 border-r-0 border-gray-200 w-2/5 text-base text-right">
-                                                                            {% if attendance.attendance_status == "confirmed" %}
+                                                                            {% if attendance.status == "confirmed" %}
                                                                             <span class="inline-block border-solid border-l-8 border-r-8 border-t-2 border-b-2 border-green-100 rounded-full text-sm font-medium leading-5 bg-green-100 text-green-800">{{ attendance.attendance_status|trans }}</span>
-                                                                            {% elseif attendance.attendance_status == "error" %}
+                                                                            {% elseif attendance.status == "error" %}
                                                                             <span class="inline-block border-solid border-l-8 border-r-8 border-t-2 border-b-2 border-red-100 rounded-full text-sm font-medium leading-5 bg-red-100 text-red-800">{{ attendance.attendance_status|trans }}</span>
                                                                             {% else %}
                                                                             <span class="inline-block border-solid border-l-8 border-r-8 border-t-2 border-b-2 border-yellow-100 rounded-full text-sm font-medium leading-5 bg-yellow-100 text-yellow-800">{{ attendance.attendance_status|trans }}</span>
@@ -74,14 +77,14 @@ bodyClass: bg-gray-postmark-lighter
                                                         </tr>
                                                     </table>
                                                     {% endfor %}
-                                                    {% if link|default %}
+                                                    {% if action_url %}
                                                     <table align="center" class="w-full text-center my-30 mx-auto">
                                                         <tr>
                                                             <td align="center">
                                                                 <table class="w-full">
                                                                     <tr>
                                                                         <td align="center" class="text-base">
-                                                                            <a href="{{ link }}"
+                                                                            <a href="{{ action_url }}"
                                                                                class="button button--blue"
                                                                                target="_blank">Ferienpass-Webseite
                                                                                 aufrufen</a>
@@ -93,7 +96,7 @@ bodyClass: bg-gray-postmark-lighter
                                                     </table>
                                                     {% endif %}
                                                     <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
-                                                        {{ email_text|nl2br }}</p>
+                                                        {{ content|nl2br }}</p>
                                                 </div>
                                             </td>
                                         </tr>

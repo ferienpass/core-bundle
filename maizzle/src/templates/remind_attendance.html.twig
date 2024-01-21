@@ -19,34 +19,34 @@ bodyClass: bg-gray-postmark-lighter
                                                     <h1 class="mt-0 text-2xl font-bold text-left text-gray-postmark-darker">
                                                         Erinnerung an Ferienpass-Angebot</h1>
                                                     <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
-                                                        Es ist bald soweit und {{ participant.firstname }} nimmt am
+                                                        Es ist bald soweit und {{ attendance.participant.firstname }} nimmt am
                                                         folgenden Angebot teil.</p>
 
                                                     <table align="center" class="w-full p-24 bg-gray-postmark-lightest">
                                                         {% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
                                                         <tr>
                                                             <td align="center">
-                                                                <h2 class="mt-0 mb-2 text-xl text-center font-bold text-gray-postmark-darker">{{ offer.name }}</h2>
+                                                                <h2 class="mt-0 mb-2 text-xl text-center font-bold text-gray-postmark-darker">{{ attendance.offer.name }}</h2>
                                                                 <p class="mt-0 text-xs text-center text-gray-postmark-dark">
-                                                                    Veranstalter: {{ offer.hosts|map(h => h.name)|join(', ') }}</p>
+                                                                    Veranstalter: {{ attendance.offer.hosts|map(h => h.name)|join(', ') }}</p>
                                                                 <div class="mt-6 mb-20">
                                                                     <p class="mt-0 mb-0 text-base leading-24 text-center text-gray-postmark-dark">
-                                                                        <span class="font-medium">Beginn:</span> {{ offer_macro.date_single(offer.dates|first) }}
+                                                                        <span class="font-medium">Beginn:</span> {{ offer_macro.date_single(attendance.offer.dates|first) }}
                                                                     </p>
                                                                     <p class="mt-0 mb-0 text-base leading-24 text-center text-gray-postmark-dark">
                                                                         <span class="font-medium">Treffpunkt:</span>
-                                                                        {{ offer.meetingPoint }}</p>
-                                                                    {% if offer.bring %}
+                                                                        {{ attendance.offer.meetingPoint }}</p>
+                                                                    {% if attendance.offer.bring %}
                                                                         <p class="mt-0 mb-0 text-base leading-24 text-center text-gray-postmark-dark">
                                                                             <span class="font-medium">Bitte mitbringen:</span>
-                                                                            {{ offer.bring }}</p>
+                                                                            {{ attendance.offer.bring }}</p>
                                                                     {% endif %}
                                                                     <p class="mt-0 mb-0 text-base leading-24 text-center text-gray-postmark-dark">
-                                                                        <span class="font-medium">Teilnahmegebühr:</span> {{ (participant.discounted ? offer.fee/2 : offer.fee)/100 }}
+                                                                        <span class="font-medium">Teilnahmegebühr:</span> {{ (attendance.participant.discounted|default ? attendance.offer.fee/2 : attendance.offer.fee)/100 }}
                                                                         &euro;</p>
                                                                 </div>
 
-                                                                {% if offer.requiresAgreementLetter %}
+                                                                {% if attendance.offer.requiresAgreementLetter %}
                                                                     <p class="mb-2">
                                                                         <span class="mt-2 rounded bg-yellow-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-yellow-100">
                                                                             <span class="text-sm mt-0 mb-0 leading-5 text-yellow-700">Bitte Einverständniserklärung mitgeben.</span>
@@ -54,8 +54,8 @@ bodyClass: bg-gray-postmark-lighter
                                                                     </p>
                                                                     <p class="mt-0 mb-20 leading-24 text-center text-gray-postmark-dark text-xs">
                                                                         Download unter:
-                                                                        <a href="{{ baseUrl ~ '/' ~ offer.id }}"
-                                                                           class="text-gray-postmark-dark underline">{{ baseUrl ~ '/' ~ offer.id }}</a>
+                                                                        <a href="{{ baseUrl|default ~ '/' ~ attendance.offer.id }}"
+                                                                           class="text-gray-postmark-dark underline">{{ baseUrl|default ~ '/' ~ attendance.offer.id }}</a>
                                                                     </p>
                                                                 {% endif %}
                                                             </td>
@@ -63,16 +63,16 @@ bodyClass: bg-gray-postmark-lighter
                                                     </table>
 
                                                     <p class="mt-20 mb-20 text-base leading-24 text-gray-postmark-dark">
-                                                        {{ email_text|nl2br }}</p>
+                                                        {{ content|nl2br }}</p>
 
-                                                    {% if link|default %}
+                                                    {% if action_url %}
                                                         <table align="center" class="w-full text-center my-30 mx-auto">
                                                             <tr>
                                                                 <td align="center">
                                                                     <table class="w-full">
                                                                         <tr>
                                                                             <td align="center" class="text-base">
-                                                                                <a href="{{ link }}"
+                                                                                <a href="{{ action_url }}"
                                                                                    class="button button--blue"
                                                                                    target="_blank">Anmeldungen
                                                                                     einsehen</a>

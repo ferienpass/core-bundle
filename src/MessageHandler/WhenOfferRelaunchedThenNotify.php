@@ -13,53 +13,37 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
-use Contao\Model;
-use Doctrine\Persistence\ManagerRegistry;
-use Ferienpass\CoreBundle\Entity\Offer;
-use Ferienpass\CoreBundle\EventListener\Notification\GetNotificationTokensTrait;
 use Ferienpass\CoreBundle\Message\OfferRelaunched;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
-use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
-use NotificationCenter\Model\Notification;
+use Ferienpass\CoreBundle\Notifier;
+use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Notifier\Recipient\Recipient;
 
 #[AsMessageHandler]
 class WhenOfferRelaunchedThenNotify
 {
-    use GetNotificationTokensTrait;
-
-    public function __construct(private readonly ManagerRegistry $doctrine)
+    public function __construct(private readonly Notifier $notifier, private readonly OfferRepository $repository)
     {
     }
 
     public function __invoke(OfferRelaunched $message): ?NotificationHandlerResult
     {
-        $offer = $this->doctrine->getRepository(Offer::class)->find($message->getOfferId());
+        $offer = $this->repository->find($message->getOfferId());
         if (null === $offer) {
             return null;
         }
 
-        // Todo if not reactive participants then discard attendances
-
-        /** @var Notification $notification */
-        $notification = Notification::findOneByType('offer_relaunched');
-        if (null === $notification) {
-            return null;
-        }
-
-        $result = [];
         foreach ($offer->getAttendances() as $attendance) {
-            $participant = $attendance->getParticipant();
-
-            $tokens = self::getNotificationTokens($participant, $offer);
-            $language = $GLOBALS['TL_LANGUAGE'];
-
-            /** @var Notification|Model $notification */
-            foreach ($notification->send($tokens, $language) as $messageId => $success) {
-                $result[] = new NotificationContext((int) $notification->id, (int) $messageId, $tokens, $language, $success);
+            $notification = $this->notifier->offerRelaunched($attendance);
+            if (null === $notification || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
+                continue;
             }
+
+            // Todo if not reactive participants then discard attendances
+            $this->notifier->send($notification, new Recipient($email));
         }
 
-        return new NotificationHandlerResult($result);
+        return null;
     }
 }

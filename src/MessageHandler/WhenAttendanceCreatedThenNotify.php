@@ -13,21 +13,18 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
-use Contao\Model;
-use Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport;
+use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Message\AttendanceCreated;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
-use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
+use Ferienpass\CoreBundle\Notifier;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
-use NotificationCenter\Model\Notification;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Notifier\Recipient\Recipient;
 
 #[AsMessageHandler]
 class WhenAttendanceCreatedThenNotify
 {
-    public function __construct(private readonly ICalExport $iCal, private readonly TranslatorInterface $translator, private readonly AttendanceRepository $attendanceRepository, private readonly UrlGeneratorInterface $router)
+    public function __construct(private readonly Notifier $notifier, private readonly AttendanceRepository $repository)
     {
     }
 
@@ -37,41 +34,19 @@ class WhenAttendanceCreatedThenNotify
             return null;
         }
 
-        $attendance = $this->attendanceRepository->find($message->getAttendance());
+        /** @var Attendance $attendance */
+        $attendance = $this->repository->find($message->getAttendance());
         if (null === $attendance || !$attendance->isConfirmed()) {
             return null;
         }
 
-        $offer = $attendance->getOffer();
-        $participant = $attendance->getParticipant();
-        if (null === $participant) {
+        $notification = $this->notifier->attendanceCreatedConfirmed($attendance);
+        if (null === $notification || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
             return null;
         }
 
-        /** @var Notification $notification */
-        $notification = Notification::findOneByType('attendance_created_confirmed');
-        if (null === $notification) {
-            return null;
-        }
+        $this->notifier->send($notification, new Recipient($email, (string) $attendance->getParticipant()->getMobile()));
 
-        $result = [];
-        $language = $GLOBALS['TL_LANGUAGE'];
-
-        $tokens = [];
-
-        $tokens['offer'] = $offer->getId();
-        $tokens['participant'] = $participant->getId();
-
-        $tokens['attachment'] = $this->iCal->generate([$offer]);
-        $tokens['footer_reason'] = $this->translator->trans('email.reason.applied', [], null, $language);
-
-        $tokens['link'] = $this->router->generate('applications', [], UrlGeneratorInterface::ABSOLUTE_URL);
-
-        /** @var Notification|Model $notification */
-        foreach ($notification->send($tokens, $language) as $messageId => $success) {
-            $result[] = new NotificationContext((int) $notification->id, (int) $messageId, $tokens, $language, $success);
-        }
-
-        return new NotificationHandlerResult($result);
+        return null;
     }
 }

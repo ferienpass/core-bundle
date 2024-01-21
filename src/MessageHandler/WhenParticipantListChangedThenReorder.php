@@ -13,19 +13,20 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\OfferDate;
 use Ferienpass\CoreBundle\Message\AttendanceStatusChanged;
 use Ferienpass\CoreBundle\Message\ParticipantListChanged;
+use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsMessageHandler]
 class WhenParticipantListChangedThenReorder
 {
-    public function __construct(private readonly ApplicationSystems $applicationSystems, private readonly MessageBusInterface $messageBus, private readonly ManagerRegistry $doctrine)
+    public function __construct(private readonly ApplicationSystems $applicationSystems, private readonly MessageBusInterface $messageBus, private readonly OfferRepository $repository, private readonly EntityManagerInterface $em)
     {
     }
 
@@ -35,7 +36,7 @@ class WhenParticipantListChangedThenReorder
         $offerId = $message->getOfferId();
 
         /** @var Offer $offer */
-        $offer = $this->doctrine->getRepository(Offer::class)->find($offerId);
+        $offer = $this->repository->find($offerId);
         /** @var OfferDate|false $date */
         $date = $offer->getDates()->first();
 
@@ -65,6 +66,6 @@ class WhenParticipantListChangedThenReorder
             $this->messageBus->dispatch(new AttendanceStatusChanged($attendance->getId(), $currentStatus, $attendance->getStatus()));
         }
 
-        $this->doctrine->getManager()->flush();
+        $this->em->flush();
     }
 }

@@ -13,71 +13,36 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
-use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\Model;
 use Ferienpass\CoreBundle\Entity\Attendance;
-use Ferienpass\CoreBundle\Entity\Offer;
-use Ferienpass\CoreBundle\Entity\Participant;
-use Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport;
 use Ferienpass\CoreBundle\Message\RemindAttendance;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
-use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
+use Ferienpass\CoreBundle\Notifier;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
-use NotificationCenter\Model\Notification;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Notifier\Recipient\Recipient;
 
 #[AsMessageHandler]
 class WhenRemindAttendanceThenNotify
 {
-    public function __construct(private readonly AttendanceRepository $attendanceRepository, private readonly ICalExport $iCal, private readonly TranslatorInterface $translator, private readonly ContaoFramework $framework)
+    public function __construct(private readonly Notifier $notifier, private readonly AttendanceRepository $repository)
     {
     }
 
     public function __invoke(RemindAttendance $message): ?NotificationHandlerResult
     {
         /** @var Attendance $attendance */
-        $attendance = $this->attendanceRepository->find($message->getAttendance());
-        if (null === $attendance) {
+        $attendance = $this->repository->find($message->getAttendance());
+        if (null === $attendance || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
             return null;
         }
 
-        if (null === $participant = $attendance->getParticipant()) {
-            return null;
-        }
-
-        $this->framework->initialize();
-
-        $notification = Notification::findOneByType('attendance_reminder');
+        $notification = $this->notifier->remindAttendance($attendance);
         if (null === $notification) {
-            throw new \RuntimeException('Missing notification for attendance reminder!');
+            return null;
         }
 
-        $offer = $attendance->getOffer();
+        $this->notifier->send($notification, new Recipient($email));
 
-        return $this->sendNotification($notification, $participant, $offer);
-    }
-
-    private function sendNotification(Notification $notification, Participant $participant, Offer $offer): NotificationHandlerResult
-    {
-        $tokens = [];
-        $tokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
-
-        $result = [];
-        $language = $GLOBALS['TL_LANGUAGE'];
-
-        $tokens['footer_reason'] = $this->translator->trans('email.reason.applied', [], null, $language);
-        $tokens['copyright'] = $this->translator->trans('email.copyright', [], null, $language);
-        $tokens['attachment'] = $this->iCal->generate([$offer]);
-
-        $tokens['offer'] = $offer->getId();
-        $tokens['participant'] = $participant->getId();
-
-        /** @var Notification|Model $notification */
-        foreach ($notification->send($tokens, $language) as $messageId => $success) {
-            $result[] = new NotificationContext((int) $notification->id, (int) $messageId, $tokens, $language, $success);
-        }
-
-        return new NotificationHandlerResult($result);
+        return null;
     }
 }

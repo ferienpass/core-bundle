@@ -13,20 +13,20 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
-use Contao\Model;
 use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Message\AttendanceStatusChanged;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
-use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
-use NotificationCenter\Model\Notification;
+use Ferienpass\CoreBundle\Notifier;
+use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Notifier\Recipient\Recipient;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsMessageHandler]
 class WhenAttendanceWithdrawnThenNotify
 {
-    public function __construct(private readonly ManagerRegistry $doctrine, private readonly TranslatorInterface $translator)
+    public function __construct(private readonly Notifier $notifier, private readonly AttendanceRepository $repository, private readonly ManagerRegistry $doctrine, private readonly TranslatorInterface $translator)
     {
     }
 
@@ -36,39 +36,19 @@ class WhenAttendanceWithdrawnThenNotify
             return null;
         }
 
-        $attendance = $this->doctrine->getRepository(Attendance::class)->find($message->getAttendance());
+        /** @var Attendance $attendance */
+        $attendance = $this->repository->find($message->getAttendanceId());
         if (null === $attendance || !$attendance->isWithdrawn()) {
             return null;
         }
 
-        $offer = $attendance->getOffer();
-        $participant = $attendance->getParticipant();
-        if (null === $participant) {
+        $notification = $this->notifier->attendanceWithdrawn($attendance);
+        if (null === $notification || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
             return null;
         }
 
-        /** @var Notification $notification */
-        $notification = Notification::findOneByType('attendance_changed_withdrawn');
-        if (null === $notification) {
-            return null;
-        }
+        $this->notifier->send($notification, new Recipient($email));
 
-        $result = [];
-        $language = $GLOBALS['TL_LANGUAGE'];
-
-        $tokens = [];
-
-        $tokens['offer'] = $offer->getId();
-        $tokens['participant'] = $participant->getId();
-
-        $tokens['footer_reason'] = $this->translator->trans('email.reason.applied', [], null, $language);
-        $tokens['copyright'] = $this->translator->trans('email.copyright', [], null, $language);
-
-        /** @var Notification|Model $notification */
-        foreach ($notification->send($tokens, $language) as $messageId => $success) {
-            $result[] = new NotificationContext((int) $notification->id, (int) $messageId, $tokens, $language, $success);
-        }
-
-        return new NotificationHandlerResult($result);
+        return null;
     }
 }

@@ -17,11 +17,9 @@ bodyClass: bg-gray-postmark-lighter
                                             <td class="p-45">
                                                 <div class="text-base">
                                                     <h1 class="mt-0 text-2xl font-bold text-left text-gray-postmark-darker">
-                                                        {{ attendance.participant.firstname }} nimmt nun am Angebot teil!</h1>
+                                                        {{ attendance.offer.name }} wurde leider abgesagt!</h1>
                                                     <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
-                                                        {{ attendance.participant.firstname }} stand auf der Warteliste
-                                                        von {{ attendance.offer.name }} und ist jetzt zu diesem Angebot angemeldet,
-                                                        nachdem jemand anderes abgesprungen ist.</p>
+                                                        {{ attendance.participant.firstname }} kann leider nicht an {{ attendance.offer.name }} teilnehmen. Das Angebot wurde abgesagt.</p>
 
                                                     <table align="center" class="w-full p-24 bg-gray-postmark-lightest">
                                                         {% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
@@ -34,31 +32,15 @@ bodyClass: bg-gray-postmark-lighter
                                                                     <p class="mt-0 mb-0 text-base leading-24 text-center text-gray-postmark-dark">
                                                                         <span class="font-medium">Beginn:</span> {{ offer_macro.date_single(attendance.offer.dates|first) }}
                                                                     </p>
-                                                                    <p class="mt-0 mb-0 text-base leading-24 text-center text-gray-postmark-dark">
-                                                                        <span class="font-medium">Treffpunkt:</span>
-                                                                        {{ attendance.offer.meetingPoint }}</p>
-                                                                    {% if attendance.offer.bring %}
-                                                                        <p class="mt-0 mb-0 text-base leading-24 text-center text-gray-postmark-dark">
-                                                                            <span class="font-medium">Bitte mitbringen:</span>
-                                                                            {{ attendance.offer.bring }}</p>
-                                                                    {% endif %}
-                                                                    <p class="mt-0 mb-0 text-base leading-24 text-center text-gray-postmark-dark">
-                                                                        <span class="font-medium">Teilnahmegebühr:</span> {{ (attendance.participant.discounted|default ? attendance.offer.fee/2 : attendance.offer.fee)/100 }}
-                                                                        &euro;</p>
+
                                                                 </div>
 
-                                                                {% if attendance.offer.requiresAgreementLetter %}
-                                                                    <p class="mb-2">
-                                                                        <span class="mt-2 rounded bg-yellow-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-yellow-100">
-                                                                            <span class="text-sm mt-0 mb-0 leading-5 text-yellow-700">Bitte Einverständniserklärung mitgeben.</span>
+                                                                    <p>
+                                                                        <span class="mt-2 rounded bg-red-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-red-100">
+                                                                            <span class="text-sm mt-0 mb-0 leading-5 text-red-700">Angebot abgesagt</span>
                                                                         </span>
                                                                     </p>
-                                                                    <p class="mt-0 mb-20 leading-24 text-center text-gray-postmark-dark text-xs">
-                                                                        Download unter:
-                                                                        <a href="{{ baseUrl|default ~ '/' ~ attendance.offer.id }}"
-                                                                           class="text-gray-postmark-dark underline">{{ baseUrl|default ~ '/' ~ attendance.offer.id }}</a>
-                                                                    </p>
-                                                                {% endif %}
+
                                                             </td>
                                                         </tr>
                                                     </table>

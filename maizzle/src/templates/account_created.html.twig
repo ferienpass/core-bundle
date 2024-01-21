@@ -16,15 +16,15 @@ bodyClass: bg-gray-postmark-lighter
                     <tr>
                       <td class="p-45">
                         <div class="text-base">
-                          <h1 class="mt-0 text-2xl font-bold text-left text-gray-postmark-darker">Hallo {{ member_firstname|default }},</h1>
-                          <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">{{ email_text|nl2br }}</p>
+                          <h1 class="mt-0 text-2xl font-bold text-left text-gray-postmark-darker">Hallo {{ user.firstname|default }},</h1>
+                          <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">{{ content|nl2br }}</p>
                           <table align="center" class="w-full text-center my-30 mx-auto">
                             <tr>
                               <td align="center">
                                 <table class="w-full">
                                   <tr>
                                     <td align="center" class="text-base">
-                                      <a href="{{ link }}" class="button button--green" target="_blank">Account aktivieren</a>
+                                      <a href="{{ action_url }}" class="button button--green" target="_blank">Account aktivieren</a>
                                     </td>
                                   </tr>
                                 </table>
@@ -35,7 +35,7 @@ bodyClass: bg-gray-postmark-lighter
                             <tr>
                               <td>
                                 <p class="mt-6 mb-20 text-xs leading-24 text-gray-postmark-dark">Wenn Sie Probleme haben, den Button zu betätigen, kopieren Sie diesen Link in Ihren Browser:</p>
-                                <p class="mt-6 mb-20 text-xs leading-24 text-gray-postmark-dark">{{ link }}</p>
+                                <p class="mt-6 mb-20 text-xs leading-24 text-gray-postmark-dark">{{ action_url }}</p>
                               </td>
                             </tr>
                           </table>

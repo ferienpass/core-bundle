@@ -22,7 +22,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-// #[ORM\UniqueConstraint(columns: ['offer_id', 'participant_id'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -265,6 +264,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastLogin(?\DateTimeInterface $lastLogin): void
     {
         $this->lastLogin = $lastLogin;
+    }
+
+    /** @return Collection<Participant> */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
     }
 
     public function eraseCredentials(): void

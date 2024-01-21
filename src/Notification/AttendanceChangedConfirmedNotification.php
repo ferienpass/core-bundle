@@ -13,25 +13,53 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Notification;
 
+use Ferienpass\CoreBundle\Entity\Attendance;
+use Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport;
+use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
+use Symfony\Component\Notifier\Message\EmailMessage;
+use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class AttendanceChangedConfirmedNotification extends Notification
+class AttendanceChangedConfirmedNotification extends Notification implements NotificationInterface, EmailNotificationInterface
 {
+    private Attendance $attendance;
+
+    public function __construct(private readonly ICalExport $iCalExport)
+    {
+        parent::__construct();
+    }
+
+    public static function getName(): string
+    {
+        return 'attendance_changed_confirmed';
+    }
+
     public function getChannels(RecipientInterface $recipient): array
     {
         return ['email', 'sms'];
     }
 
-    // $tokens = [];
-    //
-    //        $tokens['offer'] = $offer->getId();
-    //        $tokens['participant'] = $participant->getId();
-    //
-    //        $tokens['footer_reason'] = $this->translator->trans('email.reason.applied', [], null, $language);
-    //        $tokens['copyright'] = $this->translator->trans('email.copyright', [], null, $language);
-    //        $tokens['attachment'] = $this->iCal->generate([$offer]);
-    //
-    //        $tokens['link'] = $this->router->generate('applications', [], UrlGeneratorInterface::ABSOLUTE_URL);
+    public function attendance(Attendance $attendance): static
+    {
+        $this->attendance = $attendance;
+
+        return $this;
+    }
+
+    public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
+    {
+        $email = (new NotificationEmail(self::getName()))
+            ->to($recipient->getEmail())
+            ->subject($this->getSubject())
+            ->content($this->getContent())
+            ->attachFromPath($this->iCalExport->generate([$this->attendance->getOffer()]), $this->attendance->getOffer()->getAlias())
+            ->context([
+                'attendance' => $this->attendance,
+            ])
+        ;
+
+        return new EmailMessage($email);
+    }
 }

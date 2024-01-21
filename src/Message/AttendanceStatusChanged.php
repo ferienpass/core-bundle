@@ -15,13 +15,13 @@ namespace Ferienpass\CoreBundle\Message;
 
 class AttendanceStatusChanged implements LoggableMessageInterface
 {
-    public function __construct(private readonly int $attendance, private readonly ?string $oldStatus, private readonly string $newStatus, private $notify = true)
+    public function __construct(private readonly int $attendanceId, private readonly ?string $oldStatus, private readonly string $newStatus, private $notify = true)
     {
     }
 
-    public function getAttendance(): int
+    public function getAttendanceId(): int
     {
-        return $this->attendance;
+        return $this->attendanceId;
     }
 
     public function getOldStatus(): ?string
@@ -42,7 +42,7 @@ class AttendanceStatusChanged implements LoggableMessageInterface
     public function getRelated(): array
     {
         return [
-            'Attendance' => $this->attendance,
+            'Attendance' => $this->attendanceId,
         ];
     }
 }

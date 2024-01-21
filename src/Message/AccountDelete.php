@@ -16,7 +16,7 @@ namespace Ferienpass\CoreBundle\Message;
 /**
  * This message is dispatched after a front end user deleted their account.
  */
-class AccountDeleted implements LoggableMessageInterface
+class AccountDelete implements LoggableMessageInterface
 {
     public function __construct(private readonly int $userId)
     {
