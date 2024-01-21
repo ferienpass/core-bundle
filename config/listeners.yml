@@ -1,11 +1,4 @@
 services:
-  richardhj.ferienpass.listener.host_invited_registration:
-    class: Ferienpass\CoreBundle\HookListener\HostInvitedRegistrationListener
-    tags:
-      - { name: 'contao.hook', hook: 'createNewUser' }
-    arguments:
-      [ '@database_connection' ]
-
   richardhj.ferienpass.listener.visible_element:
     class: Ferienpass\CoreBundle\HookListener\VisibleElementListener
     tags:

@@ -34,10 +34,10 @@ class EventLog
     #[ORM\Column(name: 'message', type: 'text')]
     private string $message;
 
-    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\EventLogRelated', mappedBy: 'logEntry', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'logEntry', targetEntity: 'Ferienpass\CoreBundle\Entity\EventLogRelated', cascade: ['persist', 'remove'])]
     private Collection $related;
 
-    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\NotificationLog', mappedBy: 'logEntry', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'logEntry', targetEntity: 'Ferienpass\CoreBundle\Entity\NotificationLog', cascade: ['persist', 'remove'])]
     private Collection $notifications;
 
     public function __construct(string $uniqueId, string $message)

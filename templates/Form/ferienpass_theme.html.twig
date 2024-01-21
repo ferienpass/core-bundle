@@ -284,13 +284,14 @@
 {%- endblock toggle_widget -%}
 
 {%- block checkbox_widget -%}
-{#    <div class="flex items-center">#}
+    <div class="flex items-center">
         <input type="checkbox"
+               id="{{ id }}"
                class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
 
-{#        <label class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200"#}
-{#               for="{{ id }}">{{- label|trans(label_translation_parameters, translation_domain ?: null)|raw -}}</label>#}
-{#    </div>#}
+        <label class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200"
+               for="{{ id }}">{{- label|trans(label_translation_parameters, translation_domain ?: null)|raw -}}</label>
+    </div>
 
 {%- endblock checkbox_widget -%}
 
@@ -320,6 +321,15 @@
         {{ form_errors(form) }}
     </div>
 {%- endblock form_row %}
+
+
+{%- block live_collection_entry_widget -%}
+
+    {%- set attr = attr|merge({'class': 'space-y-6' }) -%}
+    {{- block('form_widget') -}}
+
+{%- endblock -%}
+
 
 {%- block form_errors -%}
     {%- if errors|length > 0 -%}

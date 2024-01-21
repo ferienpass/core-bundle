@@ -270,7 +270,7 @@ class EditionTask
         return !$this->isActive() && !$this->isCompleted();
     }
 
-    public function setDescription(string $description): void
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }

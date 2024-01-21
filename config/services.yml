@@ -14,23 +14,6 @@ services:
   Ferienpass\CoreBundle\Applications\UnconfirmedApplications:
     arguments: [ '@database_connection' ]
 
-  Ferienpass\CoreBundle\Controller\Backend\Api\OfferController:
-    calls:
-      - [ setContainer, [ '@service_container' ] ]
-
-  Ferienpass\CoreBundle\Controller\Backend\Api\AttendanceController:
-    arguments: [ '@messenger.default_bus' ]
-    calls:
-      - [ setContainer, [ '@service_container' ] ]
-
-  Ferienpass\CoreBundle\Controller\Backend\Api\CreateAttendanceController:
-    arguments: [ '@Ferienpass\CoreBundle\Repository\OfferRepository', '@Ferienpass\CoreBundle\Repository\ParticipantRepository', '@Ferienpass\CoreBundle\Facade\AttendanceFacade' ]
-    calls:
-      - [ setContainer, [ '@service_container' ] ]
-
-  Ferienpass\CoreBundle\Controller\Backend\PdfProofController:
-    arguments: [ '@Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports' ]
-
   Ferienpass\CoreBundle\Messenger\EventLogMiddleware:
     arguments: [ '@logger' ]
     tags:
