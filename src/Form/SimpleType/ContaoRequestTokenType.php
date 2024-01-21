@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Form\SimpleType;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -21,7 +22,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 final class ContaoRequestTokenType extends HiddenType
 {
-    public function __construct(private readonly CsrfTokenManagerInterface $tokenManager, private readonly string $tokenName)
+    public function __construct(private readonly CsrfTokenManagerInterface $tokenManager, #[Autowire(param: 'contao.csrf_token_name')] private readonly string $tokenName)
     {
     }
 

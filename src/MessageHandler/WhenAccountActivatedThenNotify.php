@@ -20,9 +20,10 @@ use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
 use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
 use Haste\Util\Format;
 use NotificationCenter\Model\Notification;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-class WhenAccountActivatedThenNotify implements MessageHandlerInterface
+#[AsMessageHandler]
+class WhenAccountActivatedThenNotify
 {
     public function __invoke(AccountActivated $message): ?NotificationHandlerResult
     {

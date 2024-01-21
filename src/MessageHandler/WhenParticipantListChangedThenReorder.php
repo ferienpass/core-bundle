@@ -19,10 +19,11 @@ use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\OfferDate;
 use Ferienpass\CoreBundle\Message\AttendanceStatusChanged;
 use Ferienpass\CoreBundle\Message\ParticipantListChanged;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class WhenParticipantListChangedThenReorder implements MessageHandlerInterface
+#[AsMessageHandler]
+class WhenParticipantListChangedThenReorder
 {
     public function __construct(private readonly ApplicationSystems $applicationSystems, private readonly MessageBusInterface $messageBus, private readonly ManagerRegistry $doctrine)
     {

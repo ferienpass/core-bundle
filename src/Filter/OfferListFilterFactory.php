@@ -15,13 +15,14 @@ namespace Ferienpass\CoreBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
 use Ferienpass\CoreBundle\Form\ListFiltersType;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\Form\FormFactoryInterface;
 
 class OfferListFilterFactory
 {
     private array $filterTypes = [];
 
-    public function __construct(private readonly FormFactoryInterface $formFactory, iterable $filterTypes)
+    public function __construct(private readonly FormFactoryInterface $formFactory, #[TaggedIterator('ferienpass.filter.offer_list_type', defaultIndexMethod: 'getName')] iterable $filterTypes)
     {
         $this->filterTypes = $filterTypes instanceof \Traversable ? iterator_to_array($filterTypes, true) : $this->filterTypes;
     }

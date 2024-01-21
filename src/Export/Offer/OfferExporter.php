@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Export\Offer;
 
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+
 class OfferExporter
 {
     /**
@@ -20,7 +22,7 @@ class OfferExporter
      */
     private array $exportTypes;
 
-    public function __construct(iterable $types)
+    public function __construct(#[TaggedIterator('ferienpass.offer_export_type', indexAttribute: 'key')] iterable $types)
     {
         $this->exportTypes = $types instanceof \Traversable ? iterator_to_array($types, true) : $types;
     }

@@ -29,9 +29,6 @@ class XmlExport implements OffersExportInterface
     {
     }
 
-    /**
-     * @required
-     */
     public function withTemplate(string $template): self
     {
         $clone = clone $this;

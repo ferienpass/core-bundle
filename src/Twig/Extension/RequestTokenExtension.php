@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Twig\Extension;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class RequestTokenExtension extends AbstractExtension
 {
-    public function __construct(private readonly CsrfTokenManagerInterface $csrfTokenStorage, private readonly string $csrfTokenName)
+    public function __construct(private readonly CsrfTokenManagerInterface $csrfTokenStorage, #[Autowire(param: 'contao.csrf_token_name')] private readonly string $csrfTokenName)
     {
     }
 

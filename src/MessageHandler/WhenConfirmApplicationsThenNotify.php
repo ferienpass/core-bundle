@@ -19,10 +19,11 @@ use Ferienpass\CoreBundle\Message\ConfirmApplications;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
 use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
 use NotificationCenter\Model\Notification;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class WhenConfirmApplicationsThenNotify implements MessageHandlerInterface
+#[AsMessageHandler]
+class WhenConfirmApplicationsThenNotify
 {
     public function __construct(private readonly UnconfirmedApplications $unconfirmedApplications, private readonly TranslatorInterface $translator)
     {

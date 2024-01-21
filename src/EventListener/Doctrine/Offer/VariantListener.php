@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\EventListener\Doctrine\Offer;
 
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Ferienpass\CoreBundle\Entity\Offer;
 
+#[AsDoctrineListener('preUpdate')]
 class VariantListener
 {
     public static $processing = false;

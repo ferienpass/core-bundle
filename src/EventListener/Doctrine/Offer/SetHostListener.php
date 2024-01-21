@@ -13,12 +13,14 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\EventListener\Doctrine\Offer;
 
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Ferienpass\CoreBundle\Entity\Host;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\User;
 use Symfony\Component\Security\Core\Security;
 
+#[AsDoctrineListener('prePersist')]
 class SetHostListener
 {
     public function __construct(private readonly Security $security)

@@ -21,8 +21,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 final class FerienpassCoreExtension extends Extension implements PrependExtensionInterface
@@ -31,12 +30,8 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
 
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
-        $loader->load('listeners.yml');
-        $loader->load('services.yml');
-
-        $xmlLoader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
-        $xmlLoader->load('notifications.xml');
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../config'));
+        $loader->load('services.php');
 
         // Parameters
         $container->setParameter('ferienpass.logos_dir', $config['logos_dir']);

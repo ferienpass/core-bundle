@@ -21,9 +21,10 @@ use Ferienpass\CoreBundle\Message\OfferRelaunched;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
 use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
 use NotificationCenter\Model\Notification;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-class WhenOfferRelaunchedThenNotify implements MessageHandlerInterface
+#[AsMessageHandler]
+class WhenOfferRelaunchedThenNotify
 {
     use GetNotificationTokensTrait;
 

@@ -17,13 +17,14 @@ use Ferienpass\CmsBundle\Controller\Fragment\OfferDetailsController;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\Offer\OfferExportInterface;
 use Knp\Snappy\Image as SnappyImage;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 final class ImgExport implements OfferExportInterface
 {
-    public function __construct(private readonly HttpKernelInterface $httpKernel, private readonly Filesystem $filesystem, private readonly SnappyImage $snappyImage, private readonly string $rootDir)
+    public function __construct(private readonly HttpKernelInterface $httpKernel, private readonly Filesystem $filesystem, private readonly SnappyImage $snappyImage, #[Autowire('%kernel.project_dir%')] private readonly string $rootDir)
     {
     }
 

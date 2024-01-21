@@ -18,10 +18,11 @@ use Ferienpass\CoreBundle\Message\ParticipantListChanged;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Ferienpass\CoreBundle\Repository\ParticipantRepository;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class WhenAccountDeletedDeleteParticipants implements MessageHandlerInterface
+#[AsMessageHandler]
+class WhenAccountDeletedDeleteParticipants
 {
     public function __construct(private readonly MessageBusInterface $messageBus, private readonly ParticipantRepository $participantRepository, private readonly AttendanceRepository $attendanceRepository, private readonly OfferRepository $offerRepository)
     {

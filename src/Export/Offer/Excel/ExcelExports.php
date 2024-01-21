@@ -15,6 +15,7 @@ namespace Ferienpass\CoreBundle\Export\Offer\Excel;
 
 use Ferienpass\CoreBundle\Export\Offer\OfferExportTypeInterface;
 use Ferienpass\CoreBundle\Export\Offer\OffersExportInterface;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
 final class ExcelExports implements OfferExportTypeInterface
 {
@@ -23,7 +24,7 @@ final class ExcelExports implements OfferExportTypeInterface
      */
     private array $exports;
 
-    public function __construct(iterable $exports)
+    public function __construct(#[TaggedIterator('ferienpass.export.offer.xlsx', indexAttribute: 'key')] iterable $exports)
     {
         $this->exports = $exports instanceof \Traversable ? iterator_to_array($exports, true) : $exports;
     }

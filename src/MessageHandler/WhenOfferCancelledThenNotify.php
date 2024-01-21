@@ -21,9 +21,10 @@ use Ferienpass\CoreBundle\Message\OfferCancelled;
 use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
 use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
 use NotificationCenter\Model\Notification;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-class WhenOfferCancelledThenNotify implements MessageHandlerInterface
+#[AsMessageHandler]
+class WhenOfferCancelledThenNotify
 {
     use GetNotificationTokensTrait;
 

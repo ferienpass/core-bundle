@@ -14,12 +14,13 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Payments;
 
 use Ferienpass\CoreBundle\Repository\PaymentRepository;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class ReceiptNumberGenerator
 {
     private int $length = 0;
 
-    public function __construct(private readonly string $prefix, private readonly PaymentRepository $paymentRepository)
+    public function __construct(#[Autowire(param: 'ferienpass.receipt_number_prefix')] private readonly string $prefix, private readonly PaymentRepository $paymentRepository)
     {
     }
 

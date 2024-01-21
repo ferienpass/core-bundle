@@ -20,11 +20,12 @@ use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
 use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use NotificationCenter\Model\Notification;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class WhenAttendanceCreatedThenNotify implements MessageHandlerInterface
+#[AsMessageHandler]
+class WhenAttendanceCreatedThenNotify
 {
     public function __construct(private readonly ICalExport $iCal, private readonly TranslatorInterface $translator, private readonly AttendanceRepository $attendanceRepository, private readonly UrlGeneratorInterface $router)
     {

@@ -20,6 +20,7 @@ use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\Offer\OffersExportInterface;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination as MpdfDestination;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Twig\Environment;
 
@@ -27,13 +28,10 @@ class PdfExport implements OffersExportInterface
 {
     private PdfExportConfig $config;
 
-    public function __construct(private Filesystem $filesystem, private string $projectDir, private Environment $twig)
+    public function __construct(private Filesystem $filesystem, #[Autowire('%kernel.project_dir%')] private string $projectDir, private Environment $twig)
     {
     }
 
-    /**
-     * @required
-     */
     public function withConfig(PdfExportConfig $config): self
     {
         $clone = clone $this;

@@ -101,9 +101,6 @@ offerList.filter:
   favorites: nur gespeicherte Angebote
   category: '{value}'
 
-export.pdf.print.0: 'Druckbögen (PDF)'
-export.pdf.print.1: 'Exportiert alle Angebote im druckfertigen PDF-Format.'
-
 userAccount:
   participants: Teilnehmer:innen
   personal_data: Persönliche Daten

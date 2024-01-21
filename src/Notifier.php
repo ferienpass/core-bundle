@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle;
 
 use Ferienpass\CoreBundle\Repository\NotificationRepository;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
@@ -25,7 +26,7 @@ class Notifier implements NotifierInterface
      */
     private array $notifications;
 
-    public function __construct(iterable $notifications, private readonly \Symfony\Component\Notifier\Notifier $notifier, private readonly NotificationRepository $notificationRepository)
+    public function __construct(#[TaggedIterator('ferienpass.notification', indexAttribute: 'key')] iterable $notifications, private readonly NotifierInterface $notifier, private readonly NotificationRepository $notificationRepository)
     {
         $this->notifications = $notifications instanceof \Traversable ? iterator_to_array($notifications) : $notifications;
     }
