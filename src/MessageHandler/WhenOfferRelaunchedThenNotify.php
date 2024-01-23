@@ -34,13 +34,13 @@ class WhenOfferRelaunchedThenNotify
         }
 
         foreach ($offer->getAttendances() as $attendance) {
-            $notification = $this->notifier->offerRelaunched($attendance);
+            $notification = $this->notifier->offerRelaunched($attendance, $attendance->getOffer()->getEdition());
             if (null === $notification || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
                 continue;
             }
 
             // Todo if not reactive participants then discard attendances
-            $this->notifier->send($notification, new Recipient($email));
+            $this->notifier->send($notification, new Recipient($email, (string) $attendance->getParticipant()->getMobile()));
         }
     }
 }

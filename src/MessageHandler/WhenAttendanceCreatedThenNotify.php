@@ -39,7 +39,7 @@ class WhenAttendanceCreatedThenNotify
             return;
         }
 
-        $notification = $this->notifier->attendanceCreatedConfirmed($attendance);
+        $notification = $this->notifier->attendanceConfirmed($attendance, $attendance->getOffer()->getEdition());
         if (null === $notification || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
             return;
         }

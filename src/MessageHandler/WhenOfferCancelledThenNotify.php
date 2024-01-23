@@ -36,12 +36,12 @@ class WhenOfferCancelledThenNotify
         }
 
         foreach ($offer->getAttendances() as $attendance) {
-            $notification = $this->notifier->offerCancelled($attendance);
+            $notification = $this->notifier->offerCancelled($attendance, $attendance->getOffer()->getEdition());
             if (null === $notification || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
                 continue;
             }
 
-            $this->notifier->send($notification, new Recipient($email));
+            $this->notifier->send($notification, new Recipient($email, (string) $attendance->getParticipant()->getMobile()));
         }
     }
 }

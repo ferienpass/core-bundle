@@ -33,6 +33,10 @@ class Notification
     #[ORM\Column(type: 'string', length: 64, unique: true)]
     private string $type;
 
+    #[ORM\ManyToOne(targetEntity: Edition::class)]
+    #[ORM\JoinColumn(name: 'edition_id', referencedColumnName: 'id')]
+    private ?Edition $edition;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $emailSubject = null;
 
@@ -42,12 +46,16 @@ class Notification
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $smsText = null;
 
-    public function __construct(string $type)
+    #[ORM\Column(type: 'boolean')]
+    private bool $disable = false;
+
+    public function __construct(string $type, Edition $edition = null)
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->modifiedAt = new \DateTimeImmutable();
 
         $this->type = $type;
+        $this->edition = $edition;
     }
 
     public function getId(): ?int
@@ -107,5 +115,25 @@ class Notification
     public function setSmsText(string $smsText): void
     {
         $this->smsText = $smsText;
+    }
+
+    public function isDisabled(): bool
+    {
+        return $this->disable;
+    }
+
+    public function setDisabled(bool $disable = true): void
+    {
+        $this->disable = $disable;
+    }
+
+    public function setEdition(Edition $edition): void
+    {
+        $this->edition = $edition;
+    }
+
+    public function getEdition(): ?Edition
+    {
+        return $this->edition;
     }
 }

@@ -35,11 +35,11 @@ class WhenRemindAttendanceThenNotify
             return;
         }
 
-        $notification = $this->notifier->remindAttendance($attendance);
+        $notification = $this->notifier->remindAttendance($attendance, $attendance->getOffer()->getEdition());
         if (null === $notification) {
             return;
         }
 
-        $this->notifier->send($notification, new Recipient($email));
+        $this->notifier->send($notification, new Recipient($email, (string) $attendance->getParticipant()->getMobile()));
     }
 }

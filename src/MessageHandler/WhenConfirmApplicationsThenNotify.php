@@ -32,7 +32,7 @@ class WhenConfirmApplicationsThenNotify
         foreach (array_merge([$this->unconfirmedApplications->getUninformedMembers(), $this->unconfirmedApplications->getUninformedParticipants()]) as $uninformedMember) {
             /** @var Attendance[] $attendances */
             $attendances = [];
-            $notification = $this->notifier->admissionLetter($attendances);
+            $notification = $this->notifier->attendanceDecisions($attendances);
             if (null === $notification || '' === $email = (string) $attendances[0]?->getParticipant()?->getEmail()) {
                 continue;
             }

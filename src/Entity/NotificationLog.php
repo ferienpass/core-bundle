@@ -32,13 +32,13 @@ class NotificationLog
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\Column(name: 'message', type: 'json_document')]
+    // #[ORM\Column(name: 'message', type: 'json_document')]
     private object $message;
 
     #[ORM\Column(name: 'recipients', type: 'json')]
     private array $recipients;
 
-    #[ORM\Column(name: 'message', type: 'string')]
+    #[ORM\Column(name: 'sender', type: 'string')]
     private string $sender;
 
     public function __construct(EventLog $logEntry, Message $message, Address $sender, Address ...$recipients)

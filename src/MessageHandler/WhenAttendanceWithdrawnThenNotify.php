@@ -41,11 +41,11 @@ class WhenAttendanceWithdrawnThenNotify
             return;
         }
 
-        $notification = $this->notifier->attendanceWithdrawn($attendance);
+        $notification = $this->notifier->attendanceWithdrawn($attendance, $attendance->getOffer()->getEdition());
         if (null === $notification || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
             return;
         }
 
-        $this->notifier->send($notification, new Recipient($email));
+        $this->notifier->send($notification, new Recipient($email, (string) $attendance->getParticipant()->getMobile()));
     }
 }

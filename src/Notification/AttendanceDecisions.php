@@ -21,14 +21,14 @@ use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class AdmissionLetterNotification extends Notification implements NotificationInterface, EmailNotificationInterface
+class AttendanceDecisions extends Notification implements NotificationInterface, EmailNotificationInterface
 {
     /** @var array<int, array<int, Attendance>> */
     private array $attendances;
 
     public static function getName(): string
     {
-        return 'admission_letter';
+        return 'attendance_decisions';
     }
 
     public function getChannels(RecipientInterface $recipient): array

@@ -22,7 +22,7 @@ use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class AttendanceChangedConfirmedNotification extends Notification implements NotificationInterface, EmailNotificationInterface
+class AttendanceConfirmedNotification extends Notification implements NotificationInterface, EmailNotificationInterface
 {
     private Attendance $attendance;
 
@@ -33,12 +33,12 @@ class AttendanceChangedConfirmedNotification extends Notification implements Not
 
     public static function getName(): string
     {
-        return 'attendance_changed_confirmed';
+        return 'attendance_confirmed';
     }
 
     public function getChannels(RecipientInterface $recipient): array
     {
-        return ['email', 'sms'];
+        return ['email'];
     }
 
     public function attendance(Attendance $attendance): static

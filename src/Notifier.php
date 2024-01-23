@@ -14,14 +14,15 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle;
 
 use Ferienpass\CoreBundle\Entity\Attendance;
+use Ferienpass\CoreBundle\Entity\Edition;
 use Ferienpass\CoreBundle\Entity\Host;
 use Ferienpass\CoreBundle\Entity\Payment;
 use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Notification\AccountActivatedNotification;
 use Ferienpass\CoreBundle\Notification\AccountCreatedNotification;
-use Ferienpass\CoreBundle\Notification\AdmissionLetterNotification;
-use Ferienpass\CoreBundle\Notification\AttendanceChangedConfirmedNotification;
-use Ferienpass\CoreBundle\Notification\AttendanceCreatedConfirmedNotification;
+use Ferienpass\CoreBundle\Notification\AttendanceConfirmedNotification;
+use Ferienpass\CoreBundle\Notification\AttendanceDecisions;
+use Ferienpass\CoreBundle\Notification\AttendanceNewlyConfirmedNotification;
 use Ferienpass\CoreBundle\Notification\AttendanceWithdrawnNotification;
 use Ferienpass\CoreBundle\Notification\OfferCancelledNotification;
 use Ferienpass\CoreBundle\Notification\OfferRelaunchedNotification;
@@ -67,29 +68,29 @@ class Notifier implements NotifierInterface
         return $notification->user($user);
     }
 
-    public function attendanceChangedConfirmed(Attendance $attendance): ?AttendanceChangedConfirmedNotification
+    public function attendanceNewlyConfirmed(Attendance $attendance, Edition $edition = null): ?AttendanceNewlyConfirmedNotification
     {
-        $notification = $this->get(AttendanceChangedConfirmedNotification::getName());
-        if (!$notification instanceof AttendanceChangedConfirmedNotification) {
+        $notification = $this->get(AttendanceNewlyConfirmedNotification::getName(), $edition);
+        if (!$notification instanceof AttendanceNewlyConfirmedNotification) {
             return null;
         }
 
         return $notification->attendance($attendance);
     }
 
-    public function attendanceCreatedConfirmed(Attendance $attendance): ?AttendanceCreatedConfirmedNotification
+    public function attendanceConfirmed(Attendance $attendance, Edition $edition = null): ?AttendanceConfirmedNotification
     {
-        $notification = $this->get(AttendanceCreatedConfirmedNotification::getName());
-        if (!$notification instanceof AttendanceCreatedConfirmedNotification) {
+        $notification = $this->get(AttendanceConfirmedNotification::getName(), $edition);
+        if (!$notification instanceof AttendanceConfirmedNotification) {
             return null;
         }
 
         return $notification->attendance($attendance);
     }
 
-    public function attendanceWithdrawn(Attendance $attendance): ?AttendanceWithdrawnNotification
+    public function attendanceWithdrawn(Attendance $attendance, Edition $edition = null): ?AttendanceWithdrawnNotification
     {
-        $notification = $this->get(AttendanceWithdrawnNotification::getName());
+        $notification = $this->get(AttendanceWithdrawnNotification::getName(), $edition);
         if (!$notification instanceof AttendanceWithdrawnNotification) {
             return null;
         }
@@ -97,10 +98,10 @@ class Notifier implements NotifierInterface
         return $notification->attendance($attendance);
     }
 
-    public function admissionLetter(...$attendances): ?AdmissionLetterNotification
+    public function attendanceDecisions(...$attendances): ?AttendanceDecisions
     {
-        $notification = $this->get(AdmissionLetterNotification::getName());
-        if (!$notification instanceof AdmissionLetterNotification) {
+        $notification = $this->get(AttendanceDecisions::getName());
+        if (!$notification instanceof AttendanceDecisions) {
             return null;
         }
 
@@ -111,9 +112,9 @@ class Notifier implements NotifierInterface
         return $notification;
     }
 
-    public function offerCancelled(Attendance $attendance): ?OfferCancelledNotification
+    public function offerCancelled(Attendance $attendance, Edition $edition = null): ?OfferCancelledNotification
     {
-        $notification = $this->get(OfferCancelledNotification::getName());
+        $notification = $this->get(OfferCancelledNotification::getName(), $edition);
         if (!$notification instanceof OfferCancelledNotification) {
             return null;
         }
@@ -121,9 +122,9 @@ class Notifier implements NotifierInterface
         return $notification->attendance($attendance);
     }
 
-    public function offerRelaunched(Attendance $attendance): ?OfferRelaunchedNotification
+    public function offerRelaunched(Attendance $attendance, Edition $edition = null): ?OfferRelaunchedNotification
     {
-        $notification = $this->get(OfferRelaunchedNotification::getName());
+        $notification = $this->get(OfferRelaunchedNotification::getName(), $edition);
         if (!$notification instanceof OfferRelaunchedNotification) {
             return null;
         }
@@ -141,9 +142,9 @@ class Notifier implements NotifierInterface
         return $notification->payment($payment);
     }
 
-    public function remindAttendance(Attendance $attendance): ?RemindAttendanceNotification
+    public function remindAttendance(Attendance $attendance, Edition $edition = null): ?RemindAttendanceNotification
     {
-        $notification = $this->get(RemindAttendanceNotification::getName());
+        $notification = $this->get(RemindAttendanceNotification::getName(), $edition);
         if (!$notification instanceof RemindAttendanceNotification) {
             return null;
         }
@@ -176,32 +177,32 @@ class Notifier implements NotifierInterface
         $this->notifier->send($notification, ...$recipients);
     }
 
-    private function has(string $key): bool
-    {
-        return \array_key_exists($key, $this->notifications);
-    }
-
-    private function getNotificationNames(): array
+    public function types(): array
     {
         return array_keys($this->notifications);
     }
 
-    private function get(string $key): ?Notification
+    public function isActive(string $key, Edition $edition = null): bool
     {
-        if (!$this->has($key)) {
+        return null !== $this->get($key, $edition);
+    }
+
+    private function get(string $key, Edition $edition = null): ?Notification
+    {
+        if (!\array_key_exists($key, $this->notifications)) {
             return null;
         }
 
         $notification = $this->notifications[$key];
 
-        $entity = $this->notificationRepository->findOneBy(['type' => $key]);
+        $entity = $this->notificationRepository->findOneBy(['type' => $key, 'disable' => false]/* ['edition = '.(int) $edition?->getId() => 'DESC'] */);
         if (!($entity instanceof Entity\Notification)) {
             return null;
         }
 
         $notification
-            ->subject($entity->getEmailSubject())
-            ->content($entity->getEmailText())
+            ->subject($entity->getEmailSubject() ?? '')
+            ->content($entity->getEmailText() ?? '')
         ;
 
         return $notification;
