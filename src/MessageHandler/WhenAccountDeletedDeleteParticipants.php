@@ -28,7 +28,7 @@ class WhenAccountDeletedDeleteParticipants
     {
     }
 
-    public function __invoke(AccountDelete $message)
+    public function __invoke(AccountDelete $message): void
     {
         /** @var User $user */
         $user = $this->repository->find($message->getUserId());

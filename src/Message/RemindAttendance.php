@@ -13,21 +13,23 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Message;
 
+use Ferienpass\CoreBundle\Entity\Attendance;
+
 class RemindAttendance implements LoggableMessageInterface
 {
-    public function __construct(private readonly int $attendance)
+    public function __construct(private readonly int $attendanceId)
     {
     }
 
-    public function getAttendance(): int
+    public function getAttendanceId(): int
     {
-        return $this->attendance;
+        return $this->attendanceId;
     }
 
     public function getRelated(): array
     {
         return [
-            'Attendance' => $this->attendance,
+            Attendance::class => $this->attendanceId,
         ];
     }
 }

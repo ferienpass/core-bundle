@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Message;
 
+use Ferienpass\CoreBundle\Entity\User;
+
 /**
  * This message is dispatched after a non-activated front end user filled the sign-up form the second time.
  */
@@ -30,7 +32,7 @@ class AccountResendActivation implements LoggableMessageInterface
     public function getRelated(): array
     {
         return [
-            'tl_member' => $this->userId,
+            User::class => $this->userId,
         ];
     }
 }

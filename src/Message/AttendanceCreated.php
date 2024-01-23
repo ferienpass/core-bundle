@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Message;
 
+use Ferienpass\CoreBundle\Entity\Attendance;
+
 class AttendanceCreated implements LoggableMessageInterface
 {
     public function __construct(private readonly int $attendance, private readonly bool $notify = true)
@@ -32,7 +34,7 @@ class AttendanceCreated implements LoggableMessageInterface
     public function getRelated(): array
     {
         return [
-            'Attendance' => $this->attendance,
+            Attendance::class => $this->attendance,
         ];
     }
 }

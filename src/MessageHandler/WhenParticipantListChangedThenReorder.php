@@ -30,7 +30,7 @@ class WhenParticipantListChangedThenReorder
     {
     }
 
-    public function __invoke(ParticipantListChanged $message)
+    public function __invoke(ParticipantListChanged $message): void
     {
         $now = new \DateTimeImmutable();
         $offerId = $message->getOfferId();

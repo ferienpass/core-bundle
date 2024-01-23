@@ -15,18 +15,13 @@ namespace Ferienpass\CoreBundle\Monolog;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Ferienpass\CoreBundle\Entity\EventLog;
-use Ferienpass\CoreBundle\Entity\EventLogRelated;
-use Ferienpass\CoreBundle\Entity\NotificationLog;
 use Ferienpass\CoreBundle\Monolog\Context\MessageContext;
-use Ferienpass\CoreBundle\Monolog\Context\NotificationContext;
+use Ferienpass\CoreBundle\Repository\EventLogRepository;
 use Monolog\Handler\AbstractProcessingHandler;
 
-/**
- * When a log record holds a MessageContext or NotificationContext, persist the log in the database.
- */
 class EventLogHandler extends AbstractProcessingHandler
 {
-    public function __construct(protected EntityManagerInterface $em)
+    public function __construct(private readonly EventLogRepository $repository, private readonly EntityManagerInterface $em)
     {
         parent::__construct();
     }
@@ -41,36 +36,18 @@ class EventLogHandler extends AbstractProcessingHandler
         $message = $messageContext->getMessage();
 
         $id = $record['context']['id'];
-        if (null === $logEntry = $this->em->getRepository(EventLog::class)->findOneBy(['uniqueId' => $id])) {
-            $logEntry = new EventLog($id, $message::class);
-
-            // Flush to get id
-            $this->em->persist($logEntry);
-            $this->em->flush();
-
-            foreach ($message->getRelated() as $relatedTable => $relatedIds) {
-                foreach ((array) $relatedIds as $relatedId) {
-                    $relatedEntry = new EventLogRelated($logEntry, $relatedTable, $relatedId);
-
-                    $this->em->persist($relatedEntry);
-                }
-            }
+        if (null !== $this->repository->findOneBy(['uniqueId' => $id])) {
+            return;
         }
 
-        if (isset($record['context']['notification'])
-            && ($context = $record['context']['notification'])
-            && $context instanceof NotificationContext
-            && $context->isSuccessful()) {
-            $notificationLog = new NotificationLog(
-                $logEntry,
-                $context->getNotification(),
-                $context->getMessage(),
-                $context->getTokens(),
-                $context->getLanguage()
-            );
-
-            $this->em->persist($notificationLog);
+        $related = [];
+        foreach ($message->getRelated() as $entity => $id) {
+            $related[] = $this->em->getReference($entity, $id);
         }
+
+        $logEntry = new EventLog($id, $message::class, related: $related);
+
+        $this->em->persist($logEntry);
 
         $this->em->flush();
     }

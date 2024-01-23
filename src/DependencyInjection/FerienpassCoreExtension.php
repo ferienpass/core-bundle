@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\DependencyInjection;
 use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
 use Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports;
 use Ferienpass\CoreBundle\Export\ParticipantList\WordExport;
+use Ferienpass\CoreBundle\Monolog\EventLogHandler;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -67,6 +68,17 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
             'mailer' => [
                 'envelope' => [
                     'sender' => '%env(ADMIN_EMAIL)%',
+                ],
+            ],
+        ]);
+
+        $container->prependExtensionConfig('monolog', [
+            'channels' => ['ferienpass_event'],
+            'handlers' => [
+                'ferienpass_event' => [
+                    'channels' => ['ferienpass_event'],
+                    'type' => 'service',
+                    'id' => EventLogHandler::class,
                 ],
             ],
         ]);

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Message;
 
+use Ferienpass\CoreBundle\Entity\Offer;
+
 /**
  * This message is dispatched when an attendance of a particular offer is added, removed, or changed.
  */
@@ -30,7 +32,7 @@ class ParticipantListChanged implements LoggableMessageInterface
     public function getRelated(): array
     {
         return [
-            'Offer' => $this->offerId,
+            Offer::class => $this->offerId,
         ];
     }
 }

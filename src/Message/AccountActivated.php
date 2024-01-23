@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Message;
 
+use Ferienpass\CoreBundle\Entity\User;
+
 /**
  * This message is dispatched after a front end user has activated their account.
  */
@@ -30,7 +32,7 @@ class AccountActivated implements LoggableMessageInterface
     public function getRelated(): array
     {
         return [
-            'tl_member' => $this->userId,
+            User::class => $this->userId,
         ];
     }
 }

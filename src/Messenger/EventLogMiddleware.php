@@ -21,9 +21,6 @@ use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 use Symfony\Component\Messenger\Middleware\StackInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
 
-/**
- * When a message is of type {LoggableMessageInterface}, this middleware will log the message.
- */
 class EventLogMiddleware implements MiddlewareInterface
 {
     public function __construct(private readonly LoggerInterface $logger)
@@ -49,22 +46,7 @@ class EventLogMiddleware implements MiddlewareInterface
         // The EventLogHandler will persist the message log in the database.
         $messageContext = new MessageContext($message);
 
-        if ($handledStamp = $envelope->last(HandledStamp::class)) {
-            $result = $handledStamp->getResult();
-
-            // If message sent a notification, log it.
-            if ($result instanceof NotificationHandlerResult) {
-                foreach ($result->getResult() as $notificationContext) {
-                    $this->logger->notice('Sent a notification in message', [
-                        'id' => $stamp->getUniqueId(),
-                        'message' => $messageContext,
-                        'notification' => $notificationContext,
-                    ]);
-                }
-
-                return $envelope;
-            }
-
+        if ($envelope->last(HandledStamp::class)) {
             $this->logger->notice('Handled message', ['id' => $stamp->getUniqueId(), 'message' => $messageContext]);
         }
 

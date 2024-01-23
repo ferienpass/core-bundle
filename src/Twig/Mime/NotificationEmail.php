@@ -29,6 +29,18 @@ class NotificationEmail extends TemplatedEmail
         parent::__construct();
     }
 
+    public function __serialize(): array
+    {
+        return [$this->type, parent::__serialize()];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        [$this->type, $parentData] = $data;
+
+        parent::__unserialize($parentData);
+    }
+
     /**
      * @return $this
      */

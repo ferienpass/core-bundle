@@ -15,7 +15,6 @@ namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Message\RemindAttendance;
-use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
 use Ferienpass\CoreBundle\Notifier;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -28,21 +27,19 @@ class WhenRemindAttendanceThenNotify
     {
     }
 
-    public function __invoke(RemindAttendance $message): ?NotificationHandlerResult
+    public function __invoke(RemindAttendance $message): void
     {
         /** @var Attendance $attendance */
-        $attendance = $this->repository->find($message->getAttendance());
+        $attendance = $this->repository->find($message->getAttendanceId());
         if (null === $attendance || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
-            return null;
+            return;
         }
 
         $notification = $this->notifier->remindAttendance($attendance);
         if (null === $notification) {
-            return null;
+            return;
         }
 
         $this->notifier->send($notification, new Recipient($email));
-
-        return null;
     }
 }

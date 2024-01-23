@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Ferienpass\CoreBundle\Message\OfferRelaunched;
-use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
 use Ferienpass\CoreBundle\Notifier;
 use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -27,11 +26,11 @@ class WhenOfferRelaunchedThenNotify
     {
     }
 
-    public function __invoke(OfferRelaunched $message): ?NotificationHandlerResult
+    public function __invoke(OfferRelaunched $message): void
     {
         $offer = $this->repository->find($message->getOfferId());
         if (null === $offer) {
-            return null;
+            return;
         }
 
         foreach ($offer->getAttendances() as $attendance) {
@@ -43,7 +42,5 @@ class WhenOfferRelaunchedThenNotify
             // Todo if not reactive participants then discard attendances
             $this->notifier->send($notification, new Recipient($email));
         }
-
-        return null;
     }
 }

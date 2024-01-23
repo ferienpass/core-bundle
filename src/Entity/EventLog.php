@@ -34,18 +34,52 @@ class EventLog
     #[ORM\Column(name: 'message', type: 'text')]
     private string $message;
 
-    #[ORM\OneToMany(mappedBy: 'logEntry', targetEntity: 'Ferienpass\CoreBundle\Entity\EventLogRelated', cascade: ['persist', 'remove'])]
-    private Collection $related;
+    #[ORM\OneToOne(targetEntity: Attendance::class)]
+    #[ORM\JoinColumn(name: 'attendance_id', referencedColumnName: 'id')]
+    private Attendance|null $attendance;
+
+    #[ORM\OneToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    private User|null $user;
+
+    #[ORM\OneToOne(targetEntity: Offer::class)]
+    #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id')]
+    private Offer|null $offer;
+
+    #[ORM\OneToOne(targetEntity: Payment::class)]
+    #[ORM\JoinColumn(name: 'payment_id', referencedColumnName: 'id')]
+    private Payment|null $payment;
 
     #[ORM\OneToMany(mappedBy: 'logEntry', targetEntity: 'Ferienpass\CoreBundle\Entity\NotificationLog', cascade: ['persist', 'remove'])]
     private Collection $notifications;
 
-    public function __construct(string $uniqueId, string $message)
+    public function __construct(string $uniqueId, string $message, Attendance $attendance = null, User $user = null, Offer $offer = null, Payment $payment = null, array $related = [])
     {
         $this->uniqueId = $uniqueId;
         $this->message = $message;
+        $this->attendance = $attendance;
+        $this->user = $user;
+        $this->offer = $offer;
+        $this->payment = $payment;
         $this->createdAt = new \DateTimeImmutable();
-        $this->related = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
+
+        foreach ($related as $item) {
+            switch ($item::class) {
+                case Attendance::class:
+                    $this->attendance = $item;
+                    break;
+                case User::class:
+                    $this->user = $item;
+                    break;
+                case Offer::class:
+                    $this->offer = $item;
+                    break;
+                case Payment::class:
+                    $this->payment = $item;
+                    break;
+            }
+        }
     }
 
     public function getId(): int
@@ -73,18 +107,28 @@ class EventLog
         return $this->message;
     }
 
-    public function getRelated(): Collection
+    public function getAttendance(): ?Attendance
     {
-        return $this->related;
+        return $this->attendance;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function getOffer(): ?Offer
+    {
+        return $this->offer;
+    }
+
+    public function getPayment(): ?Payment
+    {
+        return $this->payment;
     }
 
     public function getNotifications(): Collection
     {
         return $this->notifications;
-    }
-
-    public function setRelated(ArrayCollection $related): void
-    {
-        $this->related = $related;
     }
 }

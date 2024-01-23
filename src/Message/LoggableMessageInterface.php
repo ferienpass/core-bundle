@@ -22,7 +22,7 @@ interface LoggableMessageInterface
      * Returns the related entries, e.g. [ 'tl_member' => 5 ] that implies, that those message
      * concerns that entity (e.g. account of member ID 5 was deleted).
      *
-     * @return array<string, int|array>
+     * @return array<string, int>
      */
     public function getRelated(): array;
 }

@@ -15,7 +15,6 @@ namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Message\AttendanceStatusChanged;
-use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
 use Ferienpass\CoreBundle\Notifier;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -28,25 +27,23 @@ class WhenAttendanceConfirmedThenNotify
     {
     }
 
-    public function __invoke(AttendanceStatusChanged $message): ?NotificationHandlerResult
+    public function __invoke(AttendanceStatusChanged $message): void
     {
         if (!$message->shallNotify()) {
-            return null;
+            return;
         }
 
         /** @var Attendance $attendance */
         $attendance = $this->repository->find($message->getAttendanceId());
         if (null === $attendance || !$attendance->isConfirmed()) {
-            return null;
+            return;
         }
 
         $notification = $this->notifier->attendanceChangedConfirmed($attendance);
         if (null === $notification || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
-            return null;
+            return;
         }
 
         $this->notifier->send($notification, new Recipient($email, (string) $attendance->getParticipant()->getMobile()));
-
-        return null;
     }
 }

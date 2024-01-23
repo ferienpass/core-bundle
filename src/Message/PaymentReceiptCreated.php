@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Message;
 
+use Ferienpass\CoreBundle\Entity\Payment;
+
 class PaymentReceiptCreated implements LoggableMessageInterface
 {
     public function __construct(private readonly int $paymentId)
@@ -27,7 +29,7 @@ class PaymentReceiptCreated implements LoggableMessageInterface
     public function getRelated(): array
     {
         return [
-            'Payment' => $this->paymentId,
+            Payment::class => $this->paymentId,
         ];
     }
 }

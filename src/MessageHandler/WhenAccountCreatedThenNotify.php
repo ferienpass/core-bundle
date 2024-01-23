@@ -15,7 +15,6 @@ namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Message\AccountCreated;
-use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
 use Ferienpass\CoreBundle\Notifier;
 use Ferienpass\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -28,21 +27,19 @@ class WhenAccountCreatedThenNotify
     {
     }
 
-    public function __invoke(AccountCreated $message): ?NotificationHandlerResult
+    public function __invoke(AccountCreated $message): void
     {
         /** @var User $user */
         $user = $this->repository->find($message->getUserId());
         if (null === $user) {
-            return null;
+            return;
         }
 
         $notification = $this->notifier->accountCreated($user);
         if (null === $notification || '' === $email = (string) $user->getEmail()) {
-            return null;
+            return;
         }
 
         $this->notifier->send($notification, new Recipient($email));
-
-        return null;
     }
 }

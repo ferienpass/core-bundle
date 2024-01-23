@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Message;
 
 #[ORM\Entity(repositoryClass: 'Ferienpass\CoreBundle\Repository\NotificationLogRepository')]
 class NotificationLog
@@ -30,25 +32,21 @@ class NotificationLog
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
-    private int $notification;
+    #[ORM\Column(name: 'message', type: 'json_document')]
+    private object $message;
 
-    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
-    private int $message;
+    #[ORM\Column(name: 'recipients', type: 'json')]
+    private array $recipients;
 
-    #[ORM\Column(name: 'vars', type: 'json')]
-    private array $variables;
+    #[ORM\Column(name: 'message', type: 'string')]
+    private string $sender;
 
-    #[ORM\Column(type: 'string', length: 6)]
-    private string $language;
-
-    public function __construct(EventLog $logEntry, int $notification, int $message, array $variables, string $language)
+    public function __construct(EventLog $logEntry, Message $message, Address $sender, Address ...$recipients)
     {
         $this->logEntry = $logEntry;
-        $this->notification = $notification;
         $this->message = $message;
-        $this->variables = $variables;
-        $this->language = $language;
+        $this->sender = $sender->toString();
+        $this->recipients = array_map(fn (Address $a) => $a->toString(), $recipients);
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -67,13 +65,18 @@ class NotificationLog
         return $this->logEntry;
     }
 
-    public function getVariables(): array
+    public function getMessage(): Message
     {
-        return $this->variables;
+        return $this->message;
     }
 
-    public function getLanguage(): string
+    public function getRecipients(): array
     {
-        return $this->language;
+        return $this->recipients;
+    }
+
+    public function getSender(): string
+    {
+        return $this->sender;
     }
 }

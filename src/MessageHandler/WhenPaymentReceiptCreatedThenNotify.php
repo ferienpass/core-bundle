@@ -15,7 +15,6 @@ namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Ferienpass\CoreBundle\Entity\Payment;
 use Ferienpass\CoreBundle\Message\PaymentReceiptCreated;
-use Ferienpass\CoreBundle\Messenger\NotificationHandlerResult;
 use Ferienpass\CoreBundle\Notifier;
 use Ferienpass\CoreBundle\Repository\PaymentRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -28,21 +27,19 @@ class WhenPaymentReceiptCreatedThenNotify
     {
     }
 
-    public function __invoke(PaymentReceiptCreated $message): ?NotificationHandlerResult
+    public function __invoke(PaymentReceiptCreated $message): void
     {
         /** @var Payment $payment */
         $payment = $this->repository->find($message->getPaymentId());
         if (null === $payment || '' === (string) $payment->getBillingEmail()) {
-            return null;
+            return;
         }
 
         $notification = $this->notifier->paymentCreated($payment);
         if (null === $notification) {
-            return null;
+            return;
         }
 
         $this->notifier->send($notification, new Recipient($payment->getBillingEmail()));
-
-        return null;
     }
 }
