@@ -24,6 +24,7 @@ use Ferienpass\CoreBundle\Notification\AttendanceConfirmedNotification;
 use Ferienpass\CoreBundle\Notification\AttendanceDecisions;
 use Ferienpass\CoreBundle\Notification\AttendanceNewlyConfirmedNotification;
 use Ferienpass\CoreBundle\Notification\AttendanceWithdrawnNotification;
+use Ferienpass\CoreBundle\Notification\HostCreatedNotification;
 use Ferienpass\CoreBundle\Notification\OfferCancelledNotification;
 use Ferienpass\CoreBundle\Notification\OfferRelaunchedNotification;
 use Ferienpass\CoreBundle\Notification\PaymentCreatedNotification;
@@ -66,6 +67,26 @@ class Notifier implements NotifierInterface
         }
 
         return $notification->user($user);
+    }
+
+    public function hostCreated(Host $host, User $user): ?HostCreatedNotification
+    {
+        $notification = $this->get(HostCreatedNotification::getName());
+        if (!$notification instanceof HostCreatedNotification) {
+            return null;
+        }
+
+        return $notification->host($host)->user($user);
+    }
+
+    public function userPassword(string $token, User $user): ?UserPasswordNotification
+    {
+        $notification = $this->get(UserPasswordNotification::getName());
+        if (!$notification instanceof UserPasswordNotification) {
+            return null;
+        }
+
+        return $notification->token($token)->user($user);
     }
 
     public function attendanceNewlyConfirmed(Attendance $attendance, Edition $edition = null): ?AttendanceNewlyConfirmedNotification
@@ -162,16 +183,6 @@ class Notifier implements NotifierInterface
         return $notification->user($user)->host($host)->email($email);
     }
 
-    public function userPassword(User $user): ?UserPasswordNotification
-    {
-        $notification = $this->get(UserPasswordNotification::getName());
-        if (!$notification instanceof UserPasswordNotification) {
-            return null;
-        }
-
-        return $notification->user($user);
-    }
-
     public function send(Notification $notification, RecipientInterface ...$recipients): void
     {
         $this->notifier->send($notification, ...$recipients);
@@ -182,12 +193,21 @@ class Notifier implements NotifierInterface
         return array_keys($this->notifications);
     }
 
-    public function isActive(string $key, Edition $edition = null): bool
+    public function isActive(string $key, Edition $edition = null, bool $strict = false): bool
     {
-        return null !== $this->get($key, $edition);
+        return null !== $this->get($key, $edition, $strict);
     }
 
-    private function get(string $key, Edition $edition = null): ?Notification
+    public function getClass(string $key): ?string
+    {
+        if (!\array_key_exists($key, $this->notifications)) {
+            return null;
+        }
+
+        return $this->notifications[$key]::class;
+    }
+
+    private function get(string $key, Edition $edition = null, bool $strict = false): ?Notification
     {
         if (!\array_key_exists($key, $this->notifications)) {
             return null;
@@ -195,7 +215,25 @@ class Notifier implements NotifierInterface
 
         $notification = $this->notifications[$key];
 
-        $entity = $this->notificationRepository->findOneBy(['type' => $key, 'disable' => false]/* ['edition = '.(int) $edition?->getId() => 'DESC'] */);
+        $entity = $this->notificationRepository
+            ->createQueryBuilder('n')
+            ->where('n.type = :type')
+            ->andWhere('n.disable = 0')
+            ->setParameter('type', $key)
+        ;
+
+        if (null !== $edition) {
+            $entity->setParameter('edition', $edition);
+            if ($strict) {
+                $entity->andWhere('n.edition = :edition');
+            } else {
+                $entity->addSelect('(CASE WHEN n.edition = :edition THEN 1 ELSE 0 END) AS HIDDEN mainSort')->addOrderBy('mainSort', 'DESC');
+            }
+        } elseif ($strict) {
+            $entity->andWhere('n.edition IS NULL');
+        }
+
+        $entity = $entity->setMaxResults(1)->getQuery()->getOneOrNullResult();
         if (!($entity instanceof Entity\Notification)) {
             return null;
         }

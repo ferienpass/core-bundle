@@ -15,22 +15,17 @@ namespace Ferienpass\CoreBundle\Notification;
 
 use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
-use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AccountCreatedNotification extends Notification implements NotificationInterface, EmailNotificationInterface
 {
-    private User $user;
+    use ActionUrlTrait;
 
-    public function __construct(private readonly UrlGeneratorInterface $urlGenerator, private readonly UriSigner $uriSigner)
-    {
-        parent::__construct();
-    }
+    private User $user;
 
     public static function getName(): string
     {
@@ -51,8 +46,6 @@ class AccountCreatedNotification extends Notification implements NotificationInt
 
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
-        $actionUrl = $this->uriSigner->sign($this->urlGenerator->generate('registration_activate', ['id' => $this->user->getId()], UrlGeneratorInterface::ABSOLUTE_URL));
-
         $email = (new NotificationEmail(self::getName()))
             ->to($recipient->getEmail())
             ->subject($this->getSubject())
@@ -60,8 +53,11 @@ class AccountCreatedNotification extends Notification implements NotificationInt
             ->context([
                 'user' => $this->user,
             ])
-            ->action('email.account_created.activate', $actionUrl)
         ;
+
+        if (null !== $this->actionUrl) {
+            $email->action('email.account_created.activate', $this->actionUrl);
+        }
 
         return new EmailMessage($email);
     }

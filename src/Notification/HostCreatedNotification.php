@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Notification;
 
-use Ferienpass\CoreBundle\Entity\Attendance;
+use Ferienpass\CoreBundle\Entity\Host;
+use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
@@ -21,13 +22,14 @@ use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class OfferCancelledNotification extends Notification implements NotificationInterface, EditionAwareNotificationInterface, EmailNotificationInterface
+class HostCreatedNotification extends Notification implements NotificationInterface, EmailNotificationInterface
 {
-    private Attendance $attendance;
+    private Host $host;
+    private User $user;
 
     public static function getName(): string
     {
-        return 'offer_cancelled';
+        return 'host_created';
     }
 
     public function getChannels(RecipientInterface $recipient): array
@@ -35,9 +37,16 @@ class OfferCancelledNotification extends Notification implements NotificationInt
         return ['email'];
     }
 
-    public function attendance(Attendance $attendance): static
+    public function host(Host $host): static
     {
-        $this->attendance = $attendance;
+        $this->host = $host;
+
+        return $this;
+    }
+
+    public function user(User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
@@ -49,10 +58,12 @@ class OfferCancelledNotification extends Notification implements NotificationInt
             ->subject($this->getSubject())
             ->content($this->getContent())
             ->context([
-                'attendance' => $this->attendance,
+                'host' => $this->host,
+                'user' => $this->user,
             ])
         ;
 
+        // TODO add CC header
         return new EmailMessage($email);
     }
 }

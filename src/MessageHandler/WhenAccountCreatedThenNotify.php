@@ -17,13 +17,15 @@ use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Message\AccountCreated;
 use Ferienpass\CoreBundle\Notifier;
 use Ferienpass\CoreBundle\Repository\UserRepository;
+use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Notifier\Recipient\Recipient;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[AsMessageHandler]
 class WhenAccountCreatedThenNotify
 {
-    public function __construct(private readonly Notifier $notifier, private readonly UserRepository $repository)
+    public function __construct(private readonly Notifier $notifier, private readonly UserRepository $repository, private readonly UrlGeneratorInterface $urlGenerator, private readonly UriSigner $uriSigner)
     {
     }
 
@@ -40,6 +42,9 @@ class WhenAccountCreatedThenNotify
             return;
         }
 
-        $this->notifier->send($notification, new Recipient($email));
+        $this->notifier->send(
+            $notification->actionUrl($this->uriSigner->sign($this->urlGenerator->generate('registration_activate', ['id' => $user->getId()], UrlGeneratorInterface::ABSOLUTE_URL))),
+            new Recipient($email, (string) $user->getMobile())
+        );
     }
 }

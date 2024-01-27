@@ -17,6 +17,7 @@ use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
 use Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports;
 use Ferienpass\CoreBundle\Export\ParticipantList\WordExport;
 use Ferienpass\CoreBundle\Monolog\EventLogHandler;
+use Ferienpass\CoreBundle\Repository\ResetPasswordRequestRepository;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -70,6 +71,10 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
                     'sender' => '%env(ADMIN_EMAIL)%',
                 ],
             ],
+        ]);
+
+        $container->prependExtensionConfig('symfonycasts_reset_password', [
+            'request_password_repository' => ResetPasswordRequestRepository::class,
         ]);
 
         $container->prependExtensionConfig('monolog', [

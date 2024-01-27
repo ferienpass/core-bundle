@@ -27,6 +27,9 @@ class Edition
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private \DateTimeInterface $createdAt;
+
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $name = null;
 
@@ -49,12 +52,16 @@ class Edition
     #[ORM\Column(type: 'integer', options: ['unsigned' => true], nullable: true)]
     private ?int $listPage = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $archived = false;
+
     private ApplicationSystemInterface $applicationSystem;
 
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
         $this->offers = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -112,6 +119,16 @@ class Edition
     public function removeTask(EditionTask $editionTask): void
     {
         $this->tasks->removeElement($editionTask);
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->archived;
+    }
+
+    public function setArchived(bool $archived = true): void
+    {
+        $this->archived = $archived;
     }
 
     public function getListPage(): ?int

@@ -22,7 +22,7 @@ use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class AttendanceNewlyConfirmedNotification extends Notification implements NotificationInterface, EmailNotificationInterface
+class AttendanceNewlyConfirmedNotification extends Notification implements NotificationInterface, EditionAwareNotificationInterface, EmailNotificationInterface
 {
     private Attendance $attendance;
 

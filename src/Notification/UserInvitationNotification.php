@@ -24,6 +24,8 @@ use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
 class UserInvitationNotification extends Notification implements NotificationInterface, EmailNotificationInterface
 {
+    use ActionUrlTrait;
+
     private User $user;
     private Host $host;
     private string $email;
@@ -71,6 +73,10 @@ class UserInvitationNotification extends Notification implements NotificationInt
                 'email' => $this->email,
             ])
         ;
+
+        if (null !== $this->actionUrl) {
+            $email->action('email.user_invitation.accept', $this->actionUrl);
+        }
 
         return new EmailMessage($email);
     }

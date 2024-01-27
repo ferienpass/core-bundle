@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: 'Ferienpass\CoreBundle\Repository\NotificationRepository')]
 #[ORM\Table]
+#[ORM\UniqueConstraint(columns: ['type', 'edition_id'])]
 class Notification
 {
     #[ORM\Id]
@@ -30,7 +31,7 @@ class Notification
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $modifiedAt;
 
-    #[ORM\Column(type: 'string', length: 64, unique: true)]
+    #[ORM\Column(type: 'string', length: 64)]
     private string $type;
 
     #[ORM\ManyToOne(targetEntity: Edition::class)]

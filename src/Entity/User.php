@@ -24,11 +24,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const EDITABLE_ROLES = [
+        'ROLE_PARTICIPANTS_ADMIN',
+        'ROLE_PAYMENTS_ADMIN',
+        'ROLE_CMS_ADMIN',
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
+    #[Assert\Email]
+    #[Assert\NotBlank]
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private ?string $email = null;
 
@@ -62,20 +70,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
+    #[ORM\Column(type: 'json')]
+    private ?array $editableRoles = [];
+
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $password;
 
-    #[Assert\NotBlank]
     #[Assert\Length(max: 4096)]
     private ?string $plainPassword;
 
     #[ORM\Column(type: 'boolean')]
     private bool $disable = false;
 
-    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\HostMemberAssociation', mappedBy: 'user', cascade: ['persist'])]
+    #[ORM\Column(type: 'boolean')]
+    private bool $superAdmin = false;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: HostMemberAssociation::class, cascade: ['persist'])]
     private Collection $hostAssociations;
 
-    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\Participant', mappedBy: 'user', cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Participant::class, cascade: ['persist'])]
     private Collection $participants;
 
     public function __construct()
@@ -204,6 +217,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
+        if (\in_array('ROLE_ADMIN', $roles, true) && $this->isSuperAdmin()) {
+            $roles[] = 'ROLE_SUPER_ADMIN';
+        }
+
+        foreach (self::EDITABLE_ROLES as $role) {
+            if (\in_array($role, $this->getEditableRoles(), true)) {
+                $roles[] = $role;
+            }
+        }
+
         return array_unique($roles);
     }
 
@@ -214,7 +237,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPassword(): string
+    public function getEditableRoles(): array
+    {
+        return (array) $this->editableRoles;
+    }
+
+    public function setEditableRoles(array $editableRoles): void
+    {
+        $this->editableRoles = $editableRoles;
+    }
+
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -244,6 +277,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDisabled(bool $disable = true): void
     {
         $this->disable = $disable;
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->superAdmin;
+    }
+
+    public function setSuperAdmin(bool $superAdmin): void
+    {
+        $this->superAdmin = $superAdmin;
     }
 
     public function getHosts(): Collection
