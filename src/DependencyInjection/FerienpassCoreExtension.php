@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\DependencyInjection;
 
+use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
 use Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports;
 use Ferienpass\CoreBundle\Export\ParticipantList\WordExport;
@@ -84,6 +85,31 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
                     'channels' => ['ferienpass_event'],
                     'type' => 'service',
                     'id' => EventLogHandler::class,
+                ],
+            ],
+        ]);
+
+        $this->prependWorkflow($container);
+    }
+
+    private function prependWorkflow(ContainerBuilder $container): void
+    {
+        $container->prependExtensionConfig('framework', [
+            'workflows' => [
+                'offer' => [
+                    'type' => 'state_machine',
+                    'marking_store' => ['type' => 'method', 'property' => 'state'],
+                    'supports' => [Offer::class],
+                    'initial_marking' => Offer::STATE_DRAFT,
+                    'places' => [Offer::STATE_DRAFT, Offer::STATE_COMPLETED, Offer::STATE_REVIEWED, Offer::STATE_PUBLISHED, Offer::STATE_CANCELLED, Offer::STATE_UNPUBLISHED],
+                    'transitions' => [
+                        Offer::TRANSITION_COMPLETE => ['from' => Offer::STATE_DRAFT, 'to' => Offer::STATE_COMPLETED],
+                        Offer::TRANSITION_APPROVE => ['from' => [Offer::STATE_DRAFT, Offer::STATE_COMPLETED], 'to' => Offer::STATE_REVIEWED],
+                        Offer::TRANSITION_PUBLISH => ['from' => [Offer::STATE_DRAFT, Offer::STATE_COMPLETED, Offer::STATE_REVIEWED, Offer::STATE_UNPUBLISHED], 'to' => Offer::STATE_PUBLISHED],
+                        Offer::TRANSITION_CANCEL => ['from' => [Offer::STATE_PUBLISHED], 'to' => Offer::STATE_CANCELLED],
+                        Offer::TRANSITION_RELAUNCH => ['from' => [Offer::STATE_CANCELLED], 'to' => Offer::STATE_PUBLISHED],
+                        Offer::TRANSITION_UNPUBLISH => ['from' => [Offer::STATE_CANCELLED, Offer::STATE_PUBLISHED, Offer::STATE_COMPLETED, Offer::STATE_DRAFT, Offer::STATE_REVIEWED], 'to' => Offer::STATE_UNPUBLISHED],
+                    ],
                 ],
             ],
         ]);

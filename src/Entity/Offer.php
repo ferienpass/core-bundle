@@ -17,7 +17,6 @@ use Contao\StringUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -25,8 +24,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity]
 class Offer
 {
-    final public const STATUS_SUBMITTED = 'submitted';
-    final public const STATUS_PUBLISHED = 'published';
+    final public const STATE_DRAFT = 'draft';
+    final public const STATE_COMPLETED = 'completed';
+    final public const STATE_REVIEWED = 'reviewed';
+    final public const STATE_PUBLISHED = 'published';
+    final public const STATE_UNPUBLISHED = 'unpublished';
+    final public const STATE_CANCELLED = 'cancelled';
+    final public const TRANSITION_COMPLETE = 'complete';
+    final public const TRANSITION_APPROVE = 'approve';
+    final public const TRANSITION_PUBLISH = 'publish';
+    final public const TRANSITION_UNPUBLISH = 'unpublish';
+    final public const TRANSITION_CANCEL = 'cancel';
+    final public const TRANSITION_RELAUNCH = 'relaunch';
 
     /**
      * @Groups("docx_export")
@@ -52,7 +61,7 @@ class Offer
     /**
      * @psalm-var Collection<int, OfferMemberAssociation>
      */
-    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\OfferMemberAssociation', mappedBy: 'offer')]
+    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: OfferMemberAssociation::class)]
     private Collection $memberAssociations;
 
     /**
@@ -68,8 +77,8 @@ class Offer
     #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
     private ?string $alias = null;
 
-    #[ORM\Column(type: 'string', length: 32, nullable: true)]
-    private ?string $status = null;
+    #[ORM\Column(type: 'string', length: 32, options: ['default' => self::STATE_DRAFT])]
+    private string $state;
 
     /**
      * @Groups("docx_export")
@@ -130,12 +139,6 @@ class Offer
      */
     #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTimeInterface $applicationDeadline = null;
-
-    /**
-     * @Groups("docx_export")
-     */
-    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
-    private bool $cancelled = false;
 
     private bool $saved = false;
 
@@ -202,7 +205,7 @@ class Offer
     /**
      * @psalm-var Collection<int, OfferDate>
      */
-    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\OfferDate', mappedBy: 'offer', cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: OfferDate::class, cascade: ['persist'], orphanRemoval: true)]
     #[ORM\OrderBy(['begin' => 'ASC'])]
     private Collection $dates;
 
@@ -228,19 +231,22 @@ class Offer
     /**
      * @psalm-var Collection<int, Offer>
      */
-    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\Offer', mappedBy: 'variantBase')]
+    #[ORM\OneToMany(mappedBy: 'variantBase', targetEntity: self::class)]
     private Collection $variants;
 
     /**
      * @psalm-var Collection<int, Attendance>
      */
-    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\Attendance', mappedBy: 'offer')]
+    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: Attendance::class)]
     #[ORM\OrderBy(['status' => 'ASC', 'sorting' => 'ASC'])]
     private Collection $attendances;
 
-    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\Offer', inversedBy: 'variants')]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'variants')]
     #[ORM\JoinColumn(name: 'varbase', referencedColumnName: 'id')]
     private ?Offer $variantBase = null;
+
+    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: OfferLog::class, cascade: ['persist', 'remove'])]
+    private Collection $activity;
 
     public function __construct()
     {
@@ -249,6 +255,8 @@ class Offer
         $this->variants = new ArrayCollection();
         $this->categories = new ArrayCollection();
         $this->attendances = new ArrayCollection();
+        $this->activity = new ArrayCollection();
+        $this->state = self::STATE_DRAFT;
     }
 
     public function addDate(OfferDate $offerDate): void
@@ -388,7 +396,7 @@ class Offer
 
     public function isCancelled(): bool
     {
-        return $this->cancelled;
+        return self::STATE_CANCELLED === $this->state;
     }
 
     public function getMinParticipants(): ?int
@@ -449,11 +457,6 @@ class Offer
     public function setOnlineApplication(bool $onlineApplication): void
     {
         $this->onlineApplication = $onlineApplication;
-    }
-
-    public function setCancelled(bool $cancelled): void
-    {
-        $this->cancelled = $cancelled;
     }
 
     public function setMinParticipants(?int $minParticipants): void
@@ -666,18 +669,14 @@ class Offer
         $this->comment = $comment;
     }
 
-    public function getStatus(): ?string
+    public function getState(): ?string
     {
-        return $this->status;
+        return $this->state;
     }
 
-    public function setStatus(?string $status): void
+    public function setState(?string $state): void
     {
-        if (null !== $status && !\in_array($status, [self::STATUS_SUBMITTED, self::STATUS_PUBLISHED], true)) {
-            throw new InvalidArgumentException('Invalid offer workflow status');
-        }
-
-        $this->status = $status;
+        $this->state = $state;
     }
 
     public function isAktivPass(): ?bool
@@ -718,6 +717,11 @@ class Offer
     public function setContact(?string $contact): void
     {
         $this->contact = $contact;
+    }
+
+    public function getActivity(): Collection
+    {
+        return $this->activity;
     }
 
     public function getDatesExport(): ?string

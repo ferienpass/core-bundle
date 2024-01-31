@@ -1,6 +1,0 @@
-framework:
-  messenger:
-    buses:
-      messenger.bus.default:
-        middleware:
-          - Ferienpass\CoreBundle\Messenger\EventLogMiddleware

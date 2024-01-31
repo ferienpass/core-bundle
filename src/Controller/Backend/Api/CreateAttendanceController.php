@@ -50,7 +50,6 @@ final class CreateAttendanceController extends \Symfony\Bundle\FrameworkBundle\C
 
         $qb
             ->andWhere('o.onlineApplication = 1')
-            ->andWhere('o.cancelled <> 1')
             ->leftJoin(OfferDate::class, 'd', Join::WITH, 'd.offer = o.id')
             ->andWhere($qb->expr()->orX('d.id IS NULL', 'd.begin > CURRENT_TIMESTAMP()'))
             ->setMaxResults(50)

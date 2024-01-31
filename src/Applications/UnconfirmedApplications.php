@@ -79,7 +79,6 @@ class UnconfirmedApplications
                 'o.name as offer_name',
                 'd.begin as offer_date_start',
                 'o.requiresAgreementLetter as offer_agreement_letter',
-                'o.cancelled as offer_cancelled',
                 'm.id as member_id',
                 'm.email as member_email',
                 'm.firstname as member_firstname',

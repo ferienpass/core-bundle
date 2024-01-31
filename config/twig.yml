@@ -1,2 +1,0 @@
-twig:
-  form_themes: ['@FerienpassCore/Form/ferienpass_theme.html.twig']

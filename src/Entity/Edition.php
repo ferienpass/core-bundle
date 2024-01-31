@@ -39,17 +39,16 @@ class Edition
     /**
      * @psalm-var Collection<int, EditionTask>
      */
-    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\EditionTask', mappedBy: 'edition')]
-    #[ORM\OrderBy(['sorting' => 'ASC'])]
+    #[ORM\OneToMany(mappedBy: 'edition', targetEntity: EditionTask::class, cascade: ['persist', 'remove'])]
     private Collection $tasks;
 
     /**
      * @psalm-var Collection<int, Offer>
      */
-    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\Offer', mappedBy: 'edition')]
+    #[ORM\OneToMany(mappedBy: 'edition', targetEntity: Offer::class)]
     private Collection $offers;
 
-    #[ORM\Column(type: 'integer', options: ['unsigned' => true], nullable: true)]
+    #[ORM\Column(type: 'integer', nullable: true, options: ['unsigned' => true])]
     private ?int $listPage = null;
 
     #[ORM\Column(type: 'boolean')]

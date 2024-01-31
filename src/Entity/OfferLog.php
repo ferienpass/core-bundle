@@ -16,16 +16,16 @@ namespace Ferienpass\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class AttendanceLog
+class OfferLog
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Attendance::class, inversedBy: 'activity')]
-    #[ORM\JoinColumn(name: 'attendance_id', referencedColumnName: 'id')]
-    private Attendance $attendance;
+    #[ORM\ManyToOne(targetEntity: Offer::class, inversedBy: 'activity')]
+    #[ORM\JoinColumn(name: 'participant_id', referencedColumnName: 'id')]
+    private Offer $offer;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
@@ -34,13 +34,13 @@ class AttendanceLog
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
     private User $user;
 
-    #[ORM\Column(type: 'string', length: 32)]
-    private string $action;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $comment;
 
-    public function __construct(Attendance $attendance, string $action, User $user)
+    public function __construct(Offer $offer, string $comment, User $user)
     {
-        $this->attendance = $attendance;
-        $this->action = $action;
+        $this->offer = $offer;
+        $this->comment = $comment;
         $this->user = $user;
 
         $this->createdAt = new \DateTimeImmutable();
@@ -56,14 +56,14 @@ class AttendanceLog
         return $this->createdAt;
     }
 
-    public function getAttendance(): Attendance
+    public function getOffer(): Offer
     {
-        return $this->attendance;
+        return $this->offer;
     }
 
-    public function getAction(): string
+    public function getComment(): ?string
     {
-        return $this->action;
+        return $this->comment;
     }
 
     public function getUser(): User

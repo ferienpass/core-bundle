@@ -25,12 +25,12 @@ class EditionTask
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Edition', inversedBy: 'tasks')]
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private \DateTimeInterface $createdAt;
+
+    #[ORM\ManyToOne(targetEntity: Edition::class, inversedBy: 'tasks')]
     #[ORM\JoinColumn(name: 'pid', referencedColumnName: 'id')]
     private Edition $edition;
-
-    #[ORM\Column(type: 'integer')]
-    private int $sorting;
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $type = null;
@@ -73,6 +73,7 @@ class EditionTask
 
     public function __construct(Edition $edition)
     {
+        $this->createdAt = new \DateTimeImmutable();
         $this->edition = $edition;
     }
 
@@ -86,6 +87,11 @@ class EditionTask
         $this->id = $id;
     }
 
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
     public function getEdition(): Edition
     {
         return $this->edition;
@@ -94,16 +100,6 @@ class EditionTask
     public function setEdition(Edition $edition): void
     {
         $this->edition = $edition;
-    }
-
-    public function getSorting(): int
-    {
-        return $this->sorting;
-    }
-
-    public function setSorting(int $sorting): void
-    {
-        $this->sorting = $sorting;
     }
 
     public function getType(): ?string
@@ -146,7 +142,7 @@ class EditionTask
         $this->maxApplicationsDay = $maxApplicationsDay;
     }
 
-    public function getPeriodBegin(): \DateTimeImmutable
+    public function getPeriodBegin(): ?\DateTimeImmutable
     {
         return $this->periodBegin;
     }
@@ -156,7 +152,7 @@ class EditionTask
         $this->periodBegin = $periodBegin;
     }
 
-    public function getPeriodEnd(): \DateTimeImmutable
+    public function getPeriodEnd(): ?\DateTimeImmutable
     {
         return $this->periodEnd;
     }
@@ -275,16 +271,8 @@ class EditionTask
         $this->description = $description;
     }
 
-    public function getApplicationSystem(): string
+    public function getApplicationSystem(): ?string
     {
-        if (!$this->isAnApplicationSystem()) {
-            throw new \BadMethodCallException('This task is not a application system');
-        }
-
-        if (!$this->applicationSystem) {
-            throw new \RuntimeException('Uh oh! Misconfigured task of type "application system"');
-        }
-
         return $this->applicationSystem;
     }
 

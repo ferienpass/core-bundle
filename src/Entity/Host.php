@@ -29,81 +29,60 @@ class Host
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
+    #[Groups('admin_list')]
     private int $id;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[Groups('admin_list')]
     private \DateTimeInterface $createdAt;
 
-    /**
-     * @Groups("notification")
-     */
     #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
     #[Assert\NotBlank(message: 'notBlank')]
+    #[Groups('admin_list')]
     private ?string $name = null;
 
-    /**
-     * @Groups("notification")
-     */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $alias = null;
 
-    /**
-     * @Groups("notification")
-     */
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
     #[PhoneNumber(defaultRegion: 'DE')]
+    #[Groups('admin_list')]
     private ?string $phone = null;
 
-    /**
-     * @Groups("notification")
-     */
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
     #[PhoneNumber(defaultRegion: 'DE')]
+    #[Groups('admin_list')]
     private ?string $fax = null;
 
-    /**
-     * @Groups("notification")
-     */
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[PhoneNumber(type: PhoneNumber::MOBILE, defaultRegion: 'DE')]
+    #[Groups('admin_list')]
     private ?string $mobile = null;
 
-    /**
-     * @Groups("notification")
-     */
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Email]
+    #[Groups('admin_list')]
     private ?string $email = null;
 
-    /**
-     * @Groups("notification")
-     */
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Url]
+    #[Groups('admin_list')]
     private ?string $website = null;
 
-    /**
-     * @Groups("notification")
-     */
     #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    #[Groups('admin_list')]
     private ?string $postal = null;
 
-    /**
-     * @Groups("notification")
-     */
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
+    #[Groups('admin_list')]
     private ?string $city = null;
 
-    /**
-     * @Groups("notification")
-     */
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
+    #[Groups('admin_list')]
     private ?string $street = null;
 
-    /**
-     * @Groups("notification")
-     */
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups('admin_list')]
     private ?string $text = null;
 
     #[ORM\Column(type: 'binary_string', length: 16, nullable: true)]
@@ -112,7 +91,7 @@ class Host
     #[ORM\Column(type: 'string', length: 1, nullable: true)]
     private ?string $active = null;
 
-    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\HostMemberAssociation', mappedBy: 'host', cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'host', targetEntity: HostMemberAssociation::class, cascade: ['persist'])]
     private Collection $memberAssociations;
 
     #[ORM\ManyToMany(targetEntity: Offer::class, mappedBy: 'hosts')]

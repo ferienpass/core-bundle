@@ -69,7 +69,7 @@ class Participant
     /**
      * @psalm-var Collection<int, Attendance>
      */
-    #[ORM\OneToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\Attendance', mappedBy: 'participant')]
+    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: Attendance::class)]
     private Collection $attendances;
 
     #[ORM\OneToMany(mappedBy: 'participant', targetEntity: ParticipantLog::class, cascade: ['persist', 'remove'])]

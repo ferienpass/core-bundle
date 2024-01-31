@@ -1,6 +1,0 @@
-prod:
-    resource: './routes.yml'
-
-ferienpass.fragment.account_deleted:
-    path: /fragment/account_deleted
-    controller: Ferienpass\CoreBundle\Controller\Fragment\AccountDeletedController
