@@ -53,6 +53,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $postal = null;
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $city = null;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $country = null;
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
     private ?string $phone = null;
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
@@ -157,6 +159,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCity(?string $city): void
     {
         $this->city = $city;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): void
+    {
+        $this->country = $country;
     }
 
     public function getPhone(): ?string

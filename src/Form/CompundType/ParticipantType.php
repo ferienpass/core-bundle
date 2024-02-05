@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Form\CompundType;
 
-use Contao\MemberModel;
 use Ferienpass\CoreBundle\Entity\Participant;
 use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -29,6 +29,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ParticipantType extends AbstractType
 {
+    public function __construct(private readonly Security $security)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -55,7 +59,8 @@ class ParticipantType extends AbstractType
             ])
         ;
 
-        if (!$options['member']) {
+        $user = $this->security->getUser();
+        if (!$user) {
             $builder->add('email', EmailType::class, [
                 'label' => 'E-Mail-Adresse',
                 'attr' => [
@@ -68,7 +73,7 @@ class ParticipantType extends AbstractType
             ]);
         }
 
-        if (!$options['member']) {
+        if (!$user) {
             $builder->add('mobile', TelType::class, [
                 'label' => 'Handynummer',
                 'required' => false,
@@ -84,19 +89,11 @@ class ParticipantType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
+        $user = $this->security->getUser();
+
         $resolver->setDefaults([
             'data_class' => Participant::class,
-            'empty_data' => function (FormInterface $form) {
-                $member = $form->getConfig()->getOption('member');
-                if ($member instanceof MemberModel) {
-                    return new Participant((int) $member->id);
-                }
-
-                return new Participant();
-            },
+            'empty_data' => fn (FormInterface $form) => new Participant($user ?? null),
         ]);
-
-        $resolver->setDefined('member');
-        $resolver->setAllowedTypes('member', [MemberModel::class, 'null']);
     }
 }

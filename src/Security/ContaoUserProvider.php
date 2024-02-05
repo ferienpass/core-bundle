@@ -48,7 +48,7 @@ class ContaoUserProvider extends EntityUserProvider
 
         $user = parent::loadUserByIdentifier($identifier);
 
-        if (!$user instanceof FerienpassUser || !\in_array('ROLE_CMS_USER', $user->getRoles(), true)) {
+        if (!$user instanceof FerienpassUser || (!\in_array('ROLE_SUPER_ADMIN', $user->getRoles(), true) && !\in_array('ROLE_CMS_USER', $user->getRoles(), true))) {
             throw new UserNotFoundException(sprintf('Could not find user "%s"', $identifier));
         }
 

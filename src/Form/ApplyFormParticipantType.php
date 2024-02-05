@@ -15,8 +15,8 @@ namespace Ferienpass\CoreBundle\Form;
 
 use Contao\FrontendUser;
 use Contao\MemberModel;
+use Ferienpass\CmsBundle\Form\SimpleType\ContaoRequestTokenType;
 use Ferienpass\CoreBundle\Form\CompundType\ParticipantType;
-use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;

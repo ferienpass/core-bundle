@@ -20,6 +20,7 @@ use Ferienpass\CoreBundle\Entity\Payment;
 use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Notification\AccountActivatedNotification;
 use Ferienpass\CoreBundle\Notification\AccountCreatedNotification;
+use Ferienpass\CoreBundle\Notification\AccountRegistrationHelpNotification;
 use Ferienpass\CoreBundle\Notification\AttendanceConfirmedNotification;
 use Ferienpass\CoreBundle\Notification\AttendanceDecisions;
 use Ferienpass\CoreBundle\Notification\AttendanceNewlyConfirmedNotification;
@@ -63,6 +64,16 @@ class Notifier implements NotifierInterface
     {
         $notification = $this->get(AccountCreatedNotification::getName());
         if (!$notification instanceof AccountCreatedNotification) {
+            return null;
+        }
+
+        return $notification->user($user);
+    }
+
+    public function accountRegistrationHelp(User $user): ?AccountRegistrationHelpNotification
+    {
+        $notification = $this->get(AccountRegistrationHelpNotification::getName());
+        if (!$notification instanceof AccountRegistrationHelpNotification) {
             return null;
         }
 

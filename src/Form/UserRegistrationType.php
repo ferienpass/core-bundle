@@ -24,7 +24,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 
 class UserRegistrationType extends AbstractType
 {
@@ -32,22 +31,16 @@ class UserRegistrationType extends AbstractType
     {
         $builder
             ->add('firstname', TextType::class, [
-                'label' => 'tl_member.firstname.0',
-                'translation_domain' => 'contao_tl_member',
                 'constraints' => [
                     new NotBlank(),
                 ],
             ])
             ->add('lastname', TextType::class, [
-                'label' => 'tl_member.lastname.0',
-                'translation_domain' => 'contao_tl_member',
                 'constraints' => [
                     new NotBlank(),
                 ],
             ])
             ->add('email', EmailType::class, [
-                'label' => 'tl_member.email.0',
-                'translation_domain' => 'contao_tl_member',
                 'attr' => [
                     'placeholder' => 'email@beispiel.de',
                 ],
@@ -57,12 +50,12 @@ class UserRegistrationType extends AbstractType
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
-                'label' => 'MSC.password.0',
-                'translation_domain' => 'contao_default',
+                'hash_property_path' => 'password',
+                'mapped' => false,
+                'always_empty' => false,
                 'help' => 'Ihr Passwort muss aus mindestens 8 Zeichen bestehen.',
                 'constraints' => [
                     new NotBlank(),
-                    new NotCompromisedPassword(),
                     new Length(['min' => 8]),
                 ],
             ])
@@ -71,8 +64,6 @@ class UserRegistrationType extends AbstractType
         if ($options['ask_mobile']) {
             $builder
                 ->add('mobile', TelType::class, [
-                    'label' => 'tl_member.mobile.0',
-                    'translation_domain' => 'contao_tl_member',
                     'help' => 'Wir schicken Ihnen Zusagen per SMS.',
                     'constraints' => [
                         new PhoneNumber(['type' => PhoneNumber::MOBILE, 'defaultRegion' => 'DE']),
@@ -88,8 +79,6 @@ class UserRegistrationType extends AbstractType
         if ($options['ask_phone']) {
             $builder
                 ->add('phone', TelType::class, [
-                    'label' => 'tl_member.phone.0',
-                    'translation_domain' => 'contao_tl_member',
                     'constraints' => [
                         new PhoneNumber(['type' => PhoneNumber::FIXED_LINE, 'defaultRegion' => 'DE']),
                     ],

@@ -1,18 +1,8 @@
-{% use "form_div_layout.html.twig" %}
+{% use "tailwind_2_layout.html.twig" %}
 
 {% block text_widget %}
     {%- set type = type|default('text') -%}
     {{ block('form_widget_simple') }}
-{% endblock %}
-
-{% block password_widget %}
-    {%- set type = type|default('password') -%}
-    {{ block('form_widget_password') }}
-{% endblock %}
-
-{% block email_widget %}
-    {%- set type = type|default('email') -%}
-    {{ block('form_widget_email') }}
 {% endblock %}
 
 {% block money_widget %}
@@ -73,14 +63,6 @@
                :class="{ 'text-red-600': checked, 'text-gray-600': !checked }"
                for="{{ id }}">gemerkte<br>Angebote</label>
     </div>
-{% endblock %}
-
-{% block filter_host_widget %}
-    {# {%- set attr = attr|merge({'x-data': '{}', 'x-init': "new Choices($el, { #}
-    {# classNames: { #}
-    {# } #}
-    {# })"}) -%} #}
-    {{ block('choice_widget') }}
 {% endblock %}
 
 {%- block choice_widget -%}
@@ -189,16 +171,6 @@
 
 {%- endblock button_widget %}
 
-{%- block form_widget_simple -%}
-    {% if type is defined and not type == 'hidden' %}
-        <div class="mt-1">
-            {{ parent() }}
-        </div>
-    {% else %}
-        {{ parent() }}
-    {% endif %}
-{%- endblock form_widget_simple -%}
-
 {%- block form_widget_age -%}
     <div class="mt-1 relative rounded-md shadow-sm">
         <input type="{{ type }}" {{ block('widget_attributes') }} {{ block('widget_attributes') }}
@@ -209,60 +181,6 @@
         </div>
     </div>
 {%- endblock form_widget_age -%}
-
-{%- block form_widget_email -%}
-    {% macro exclamation() %}
-        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-            <span class="h-5 w-5 text-red-500 block">{% include '@FerienpassCore/Icons/exclamation-circle-solid.svg.twig' %}</span>
-        </div>
-    {% endmacro %}
-
-    <div x-data="{ validEmail: null }">
-        <div class="mt-1 rounded-md shadow-sm relative">
-            <input type="{{ type }}"
-                   id="{{ id }}"
-                   name="{{ full_name }}"
-                   x-on:change="validEmail = !!isValidEmailAddress($event.target.value)"
-                    {% if form.vars.errors|length %}
-                        class="appearance-none block w-full px-3 py-2 border rounded-md placeholder-gray-400 focus:outline-none transition duration-150 ease-in-out sm:text-sm sm:leading-5 border-red-300 text-red-900 focus:shadow-outline-red"
-                    {% else %}
-                        class="appearance-none block w-full px-3 py-2 border rounded-md placeholder-gray-400 focus:outline-none transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                        :class="{ 'border-red-300 text-red-900 focus:shadow-outline-red': validEmail === false, 'border-gray-300 focus:shadow-outline-blue focus:border-blue-300': validEmail !== false }"
-                    {% endif %}
-                    {% if value is not empty %}value="{{ value }}" {% endif %}
-                    {% if required|default %}required {% endif %}/>
-            {% if form.vars.errors|length %}
-                {{ _self.exclamation() }}
-            {% else %}
-                <template x-if="validEmail === false">
-                    {{ _self.exclamation() }}
-                </template>
-            {% endif %}
-        </div>
-        <template x-if="validEmail === false">
-            <p class="mt-2 text-sm text-red-600">Das ist keine gültige E-Mail-Adresse.</p>
-        </template>
-    </div>
-{%- endblock form_widget_email -%}
-
-{%- block form_widget_password -%}
-    <div class="mt-1 rounded-md shadow-sm relative" x-data="{ conceal: true }">
-        <input type="{{ type }}"
-               :type="conceal ? 'password' : 'text'"
-               id="{{ id }}"
-               name="{{ full_name }}"
-               class="{{ block('input_class') }}"
-               {% if value is not empty %}value="{{ value }}" {% endif %}
-                {% if required is defined %}required {% endif %}/>
-        <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-            <button type="button"
-                    class="text-gray-500 font-medium text-sm hover:text-gray-700 transition duration-150 ease-in-out"
-                    @click="conceal = !conceal"
-                    x-text="conceal ? 'Zeigen' : 'Verbergen'"></button>
-        </div>
-    </div>
-
-{%- endblock form_widget_password -%}
 
 {%- block toggle_widget -%}
     <div class="" x-data="{ checked: !!{{ checked ? '1' : '0' }} }">

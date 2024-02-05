@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Form;
 
-use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
+use Ferienpass\CmsBundle\Form\SimpleType\ContaoRequestTokenType;
+use Ferienpass\CoreBundle\Entity\User;
 use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
@@ -34,6 +35,7 @@ class UserPersonalDataType extends AbstractType
             ->add('firstname', TextType::class, [
                 'label' => 'tl_member.firstname.0',
                 'translation_domain' => 'contao_tl_member',
+                'required' => true,
                 'constraints' => [
                     new NotBlank(),
                 ],
@@ -41,6 +43,7 @@ class UserPersonalDataType extends AbstractType
             ->add('lastname', TextType::class, [
                 'label' => 'tl_member.lastname.0',
                 'translation_domain' => 'contao_tl_member',
+                'required' => true,
                 'constraints' => [
                     new NotBlank(),
                 ],
@@ -52,6 +55,7 @@ class UserPersonalDataType extends AbstractType
                 'attr' => [
                     'placeholder' => 'email@beispiel.de',
                 ],
+                'required' => true,
                 'constraints' => [
                     new NotBlank(),
                     new Email(),
@@ -67,7 +71,6 @@ class UserPersonalDataType extends AbstractType
                 'attr' => [
                     'placeholder' => '030-00000',
                 ],
-                'required' => false,
             ])
             ->add('mobile', TelType::class, [
                 'label' => 'tl_member.mobile.0',
@@ -78,29 +81,24 @@ class UserPersonalDataType extends AbstractType
                 'attr' => [
                     'placeholder' => '0172-0000000',
                 ],
-                'required' => false,
             ])
 
             ->add('street', TextType::class, [
                 'label' => 'tl_member.street.0',
                 'translation_domain' => 'contao_tl_member',
-                'required' => false,
             ])
             ->add('postal', TextType::class, [
                 'label' => 'tl_member.postal.0',
                 'translation_domain' => 'contao_tl_member',
-                'required' => false,
             ])
             ->add('city', TextType::class, [
                 'label' => 'tl_member.city.0',
                 'translation_domain' => 'contao_tl_member',
-                'required' => false,
             ])
             ->add('country', CountryType::class, [
                 'label' => 'tl_member.country.0',
                 'translation_domain' => 'contao_tl_member',
                 'preferred_choices' => ['DE'],
-                'required' => false,
             ])
 
             ->add('request_token', ContaoRequestTokenType::class)
@@ -113,6 +111,10 @@ class UserPersonalDataType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
+            'data_class' => User::class,
+            'required' => false,
+            'label_format' => 'user.label.%name%',
+            'translation_domain' => 'cms',
             'csrf_protection' => false,
         ]);
     }

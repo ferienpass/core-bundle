@@ -9,8 +9,8 @@ use Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports;
 use Ferienpass\CoreBundle\Filter\Type\FilterType;
 use Ferienpass\CoreBundle\Messenger\EventLogMiddleware;
 use Ferienpass\CoreBundle\Security\ContaoBackendUser;
-use Ferienpass\CoreBundle\Security\ContaoFrontendUser;
 use Ferienpass\CoreBundle\Security\ContaoUserProvider;
+use Ferienpass\CoreBundle\Security\UserChecker;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
@@ -56,6 +56,8 @@ return function(ContainerConfigurator $container): void {
         ->tag('ferienpass.offer_export_type', ['key' => 'xml'])
     ;
 
+    $services->alias('ferienpass.security.user_checker', UserChecker::class);
+
     $services->set('ferienpass.security.contao_backend_user_provider', ContaoUserProvider::class)
         ->args([
             service('contao.framework'),
@@ -65,13 +67,13 @@ return function(ContainerConfigurator $container): void {
             'email'
         ])
     ;
-    $services->set('ferienpass.security.contao_frontend_user_provider', ContaoUserProvider::class)
-        ->args([
-            service('contao.framework'),
-            ContaoFrontendUser::class,
-            service('doctrine'),
-            User::class,
-            'email'
-        ])
-    ;
+//    $services->set('ferienpass.security.contao_frontend_user_provider', ContaoUserProvider::class)
+//        ->args([
+//            service('contao.framework'),
+//            ContaoFrontendUser::class,
+//            service('doctrine'),
+//            User::class,
+//            'email'
+//        ])
+//    ;
 };
