@@ -15,6 +15,7 @@ namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Ferienpass\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -306,9 +307,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->hostAssociations->map(fn (HostMemberAssociation $a) => $a->getHost());
     }
 
-    public function setHosts(Collection $hosts): void
+    public function hasHost(Host $host): bool
     {
-        $this->hostAssociations = $hosts->map(fn (Host $h) => new HostMemberAssociation($this, $h));
+        return !$this->hostAssociations
+            ->matching(Criteria::create()->where(Criteria::expr()->eq('host', $host)))
+            ->isEmpty();
+    }
+
+    public function addHost(Host $host)
+    {
+        if ($this->hasHost($host)) {
+            return;
+        }
+
+        $this->hostAssociations[] = new HostMemberAssociation($this, $host);
+    }
+
+    public function removeHost(Host $host)
+    {
+        /** @var HostMemberAssociation $hostAssociation */
+        foreach ($this->hostAssociations as $hostAssociation) {
+            if ($hostAssociation->getHost() === $host) {
+                $this->hostAssociations->removeElement($hostAssociation);
+
+                return;
+            }
+        }
     }
 
     public function getLastLogin(): ?\DateTimeInterface
