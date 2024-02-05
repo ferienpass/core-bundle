@@ -15,6 +15,7 @@ namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -104,8 +105,19 @@ class Host
         $this->createdAt = new \DateTimeImmutable();
     }
 
+    public function hasMember(User $user): bool
+    {
+        return !$this->memberAssociations
+            ->matching(Criteria::create()->where(Criteria::expr()->eq('user', $user)))
+            ->isEmpty();
+    }
+
     public function addMember(User $user): self
     {
+        if ($this->hasMember($user)) {
+            return $this;
+        }
+
         return $this->addMemberAssociation(new HostMemberAssociation($user, $this));
     }
 
