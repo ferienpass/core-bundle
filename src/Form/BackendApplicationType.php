@@ -17,7 +17,6 @@ use Doctrine\ORM\EntityRepository;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\Participant;
-use Ferienpass\CoreBundle\Form\SimpleType\ContaoRequestTokenType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
@@ -80,7 +79,6 @@ class BackendApplicationType extends AbstractType
                 'label' => 'Teilnehmer:in benachrichtigen',
                 'help' => 'Erfordert eine E-Mail-Adresse und/oder Mobilnummer',
             ])
-            ->add('requestToken', ContaoRequestTokenType::class)
             ->add('submit', SubmitType::class)
         ;
     }

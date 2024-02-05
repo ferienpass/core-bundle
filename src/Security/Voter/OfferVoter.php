@@ -37,9 +37,13 @@ class OfferVoter extends Voter
             'edit',
             'copy',
             'delete',
-            'cancel',
             'freeze',
-            'relaunch',
+            Offer::TRANSITION_COMPLETE,
+            Offer::TRANSITION_APPROVE,
+            Offer::TRANSITION_PUBLISH,
+            Offer::TRANSITION_UNPUBLISH,
+            Offer::TRANSITION_RELAUNCH,
+            Offer::TRANSITION_CANCEL,
             'participants.view',
             'participants.add',
             'participants.reject',
@@ -65,9 +69,13 @@ class OfferVoter extends Voter
             'create' => $this->canCreate($offer),
             'copy' => $this->canCopy($offer, $user),
             'delete' => $this->canDelete($offer, $user),
-            'cancel' => $this->canCancel($offer, $user),
             'freeze' => $this->canFreeze($offer, $user),
-            'relaunch' => $this->canRelaunch($offer, $user),
+            Offer::TRANSITION_CANCEL => $this->canCancel($offer, $user),
+            Offer::TRANSITION_RELAUNCH => $this->canRelaunch($offer, $user),
+            Offer::TRANSITION_PUBLISH => $this->canPublish($offer, $user),
+            Offer::TRANSITION_UNPUBLISH => $this->canUnPublish($offer, $user),
+            Offer::TRANSITION_APPROVE => $this->canApprove($offer, $user),
+            Offer::TRANSITION_COMPLETE => $this->canComplete($offer, $user),
             'participants.view' => $this->canViewParticipants($offer, $user),
             'participants.add' => $this->canAddParticipants($offer, $user),
             'participants.reject' => $this->canRejectParticipants($offer, $user),
@@ -174,6 +182,26 @@ class OfferVoter extends Voter
             return false;
         }
 
+        return true;
+    }
+
+    private function canApprove(Offer $offer, User $user): bool
+    {
+        return $this->security->isGranted('ROLE_ADMIN');
+    }
+
+    private function canPublish(Offer $offer, User $user): bool
+    {
+        return $this->security->isGranted('ROLE_ADMIN');
+    }
+
+    private function canUnPublish(Offer $offer, User $user): bool
+    {
+        return $this->security->isGranted('ROLE_ADMIN');
+    }
+
+    private function canComplete(Offer $offer, User $user): bool
+    {
         return true;
     }
 
