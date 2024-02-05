@@ -25,7 +25,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    public const EDITABLE_ROLES = [
+    public const ACCOUNT_ROLES = [
+        'ROLE_MEMBER',
+        'ROLE_HOST',
+        'ROLE_ADMIN',
+    ];
+
+    public const ADMIN_ROLES = [
         'ROLE_PARTICIPANTS_ADMIN',
         'ROLE_PAYMENTS_ADMIN',
         'ROLE_CMS_ADMIN',
@@ -73,9 +79,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
-    #[ORM\Column(type: 'json')]
-    private ?array $editableRoles = [];
-
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $password;
 
@@ -84,9 +87,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'boolean')]
     private bool $disable = false;
-
-    #[ORM\Column(type: 'boolean')]
-    private bool $superAdmin = false;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: HostMemberAssociation::class, cascade: ['persist'])]
     private Collection $hostAssociations;
@@ -230,16 +230,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        if (\in_array('ROLE_ADMIN', $roles, true) && $this->isSuperAdmin()) {
-            $roles[] = 'ROLE_SUPER_ADMIN';
-        }
-
-        foreach (self::EDITABLE_ROLES as $role) {
-            if (\in_array($role, $this->getEditableRoles(), true)) {
-                $roles[] = $role;
-            }
-        }
-
         return array_unique($roles);
     }
 
@@ -250,14 +240,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getEditableRoles(): array
+    public function addAdminRole(string $role): void
     {
-        return (array) $this->editableRoles;
+        if (!\in_array($role, self::ADMIN_ROLES, true) || \in_array($role, $this->roles, true)) {
+            return;
+        }
+
+        $this->roles[] = $role;
     }
 
-    public function setEditableRoles(array $editableRoles): void
+    public function removeAdminRole(string $role): void
     {
-        $this->editableRoles = $editableRoles;
+        if (!\in_array($role, self::ADMIN_ROLES, true) || !\in_array($role, $this->roles, true)) {
+            return;
+        }
+
+        foreach (array_keys($this->roles, $role, true) as $key) {
+            unset($this->roles[$key]);
+        }
+    }
+
+    public function getAdminRoles(): array
+    {
+        return array_intersect($this->roles, self::ADMIN_ROLES);
+    }
+
+    public function addAccountRole(string $role): void
+    {
+        if (!\in_array($role, self::ACCOUNT_ROLES, true) || \in_array($role, $this->roles, true)) {
+            return;
+        }
+
+        $this->roles[] = $role;
+    }
+
+    public function removeAccountRole(string $role): void
+    {
+        if (!\in_array($role, self::ACCOUNT_ROLES, true) || !\in_array($role, $this->roles, true)) {
+            return;
+        }
+
+        foreach (array_keys($this->roles, $role, true) as $key) {
+            unset($this->roles[$key]);
+        }
+    }
+
+    public function getAccountRoles(): array
+    {
+        return array_intersect($this->roles, self::ACCOUNT_ROLES);
     }
 
     public function getPassword(): ?string
@@ -294,12 +324,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function isSuperAdmin(): bool
     {
-        return $this->superAdmin;
+        return \in_array('ROLE_SUPER_ADMIN', $this->roles, true);
     }
 
     public function setSuperAdmin(bool $superAdmin): void
     {
-        $this->superAdmin = $superAdmin;
+        if ($superAdmin) {
+            if (\in_array('ROLE_SUPER_ADMIN', $this->roles, true)) {
+                return;
+            }
+
+            $this->roles[] = 'ROLE_SUPER_ADMIN';
+
+            return;
+        }
+
+        if (!\in_array('ROLE_SUPER_ADMIN', $this->roles, true)) {
+            return;
+        }
+
+        foreach (array_keys($this->roles, 'ROLE_SUPER_ADMIN', true) as $key) {
+            unset($this->roles[$key]);
+        }
+
+        // Make sure the ROLE_ADMIN stays
+        if (!\in_array('ROLE_ADMIN', $this->roles, true)) {
+            $this->roles[] = 'ROLE_ADMIN';
+        }
     }
 
     public function getHosts(): Collection
