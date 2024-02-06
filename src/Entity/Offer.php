@@ -74,7 +74,7 @@ class Offer
     /**
      * @Groups("docx_export")
      */
-    #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
+    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
     private ?string $alias = null;
 
     #[ORM\Column(type: 'string', length: 32, options: ['default' => self::STATE_DRAFT])]
@@ -139,8 +139,6 @@ class Offer
      */
     #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTimeInterface $applicationDeadline = null;
-
-    private bool $saved = false;
 
     /**
      * @Groups("docx_export")
@@ -231,7 +229,7 @@ class Offer
     /**
      * @psalm-var Collection<int, Offer>
      */
-    #[ORM\OneToMany(mappedBy: 'variantBase', targetEntity: self::class)]
+    #[ORM\OneToMany(mappedBy: 'variantBase', targetEntity: Offer::class)]
     private Collection $variants;
 
     /**
@@ -779,16 +777,6 @@ class Offer
     public function getMemberAssociations(): Collection
     {
         return $this->memberAssociations;
-    }
-
-    public function isSaved(): bool
-    {
-        return $this->saved;
-    }
-
-    public function setSaved(bool $saved): void
-    {
-        $this->saved = $saved;
     }
 
     public function generateAlias(SluggerInterface $slugger)
