@@ -28,7 +28,7 @@ class EditionVoter extends Voter
 
     protected function supports($attribute, $subject): bool
     {
-        if (!\in_array($attribute, ['view', 'edit', 'stats'], true)) {
+        if (!\in_array($attribute, ['view', 'edit', 'stats', 'offer.create'], true)) {
             return false;
         }
 
@@ -52,11 +52,12 @@ class EditionVoter extends Voter
         return match ($attribute) {
             'view', 'stats' => $this->canView($edition, $user),
             'edit' => $this->canEdit($edition, $user),
+            'offer.create' => $this->canCreateOffer($edition),
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
 
-    private function canView(Edition $host, User $user): bool
+    private function canView(Edition $edition, User $user): bool
     {
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
@@ -65,8 +66,17 @@ class EditionVoter extends Voter
         return false;
     }
 
-    private function canEdit(Edition $host, User $user): bool
+    private function canEdit(Edition $edition, User $user): bool
     {
-        return $this->canView($host, $user);
+        return $this->canView($edition, $user);
+    }
+
+    private function canCreateOffer(Edition $edition): bool
+    {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        return !$edition->getActiveTasks('host_editing_stage')->isEmpty();
     }
 }

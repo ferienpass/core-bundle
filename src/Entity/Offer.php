@@ -229,7 +229,7 @@ class Offer
     /**
      * @psalm-var Collection<int, Offer>
      */
-    #[ORM\OneToMany(mappedBy: 'variantBase', targetEntity: Offer::class)]
+    #[ORM\OneToMany(mappedBy: 'variantBase', targetEntity: self::class)]
     private Collection $variants;
 
     /**
@@ -417,9 +417,9 @@ class Offer
         return $this->meetingPoint;
     }
 
-    public function setName(string $name): void
+    public function setName(?string $name): void
     {
-        $this->name = $name;
+        $this->name = (string) $name;
     }
 
     public function setAlias(string $alias): void
