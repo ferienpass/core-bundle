@@ -277,16 +277,6 @@ class Offer
         return $this->dates;
     }
 
-    /**
-     * @param  Collection|OfferDate[]
-     *
-     * @psalm-param  Collection<int, OfferDate>
-     */
-    public function setDates(Collection $dates): void
-    {
-        $this->dates = $dates;
-    }
-
     public function isVariantBase(): bool
     {
         return null === $this->variantBase;

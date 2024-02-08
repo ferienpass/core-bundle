@@ -23,7 +23,7 @@ class OfferDate
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\Offer', inversedBy: 'dates')]
+    #[ORM\ManyToOne(targetEntity: Offer::class, inversedBy: 'dates')]
     #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id')]
     private Offer $offer;
 

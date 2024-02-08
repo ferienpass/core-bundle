@@ -1,10 +1,5 @@
 {% use "tailwind_2_layout.html.twig" %}
 
-{% block text_widget %}
-    {%- set type = type|default('text') -%}
-    {{ block('form_widget_simple') }}
-{% endblock %}
-
 {% block money_widget %}
     <div class="relative rounded-md shadow-sm">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -214,10 +209,8 @@
 {%- endblock checkbox_widget -%}
 
 {% block form_label -%}
-    {% if 'checkbox' not in block_prefixes %}
-        {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ 'mb-1 block text-sm font-medium leading-5 text-gray-700 dark:text-gray-50')|trim}) -%}
-        {{- parent() -}}
-    {% endif %}
+    {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ 'mb-1 block text-sm font-medium leading-5 text-gray-700 dark:text-gray-50')|trim}) -%}
+    {{- parent() -}}
 {%- endblock form_label %}
 
 {% block form_help -%}
@@ -253,16 +246,14 @@
     {%- if errors|length > 0 -%}
         {% if compound %}
             {# display the global form errors #}
-            <div class="mb-6">
-                {% embed '@FerienpassCore/Alert/error.html.twig' with {headline: 'Ein Fehler sind aufgetreten'} %}
-                    {% block content %}
-                        <ul class="list-disc space-y-1">
-                            {%- for error in errors -%}
-                                <li>{{ error.message }}</li>
-                            {%- endfor -%}
-                        </ul>
-                    {% endblock %}
-                {% endembed %}
+            <div class="my-4">
+                <twig:Admin:Alert type="error">
+                    <ul class="list-disc space-y-1">
+                        {%- for error in errors -%}
+                            <li>{{ error.message }}</li>
+                        {%- endfor -%}
+                    </ul>
+                </twig:Admin:Alert>
             </div>
         {% else %}
             {%- for error in errors -%}
