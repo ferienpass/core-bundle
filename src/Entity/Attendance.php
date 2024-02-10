@@ -48,18 +48,15 @@ class Attendance
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $modifiedAt;
 
-    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\Offer', inversedBy: 'attendances')]
+    #[ORM\ManyToOne(targetEntity: Offer::class, inversedBy: 'attendances')]
     #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id')]
     private Offer $offer;
 
-    /**
-     * The participant becomes NULL if personal data is erased but attendances are kept for data retention.
-     */
-    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\Participant', inversedBy: 'attendances')]
+    #[ORM\ManyToOne(targetEntity: Participant::class, inversedBy: 'attendances')]
     #[ORM\JoinColumn(name: 'participant_id', referencedColumnName: 'id', nullable: true)]
-    private ?Participant $participant = null;
+    private ?Participant $participant;
 
-    #[ORM\ManyToOne(targetEntity: 'EditionTask')]
+    #[ORM\ManyToOne(targetEntity: EditionTask::class)]
     #[ORM\JoinColumn(name: 'task_id', referencedColumnName: 'id')]
     private ?EditionTask $task = null;
 
@@ -69,25 +66,24 @@ class Attendance
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $userPriority = 0;
 
-    /**
-     * The participant age, retained for statistics.
-     */
-    #[ORM\Column(length: 3, type: 'integer', nullable: true, options: ['unsigned' => true])]
+    #[ORM\Column(type: 'integer', length: 3, nullable: true, options: ['unsigned' => true])]
     private ?int $age = null;
 
-    /**
-     * The original participant id, retained for statistics.
-     */
+    // Only used for data retention.
     #[ORM\Column(name: 'participant_id_original', type: 'integer', nullable: true, options: ['unsigned' => true])]
     private ?int $participantId = null;
 
-    public function __construct(Offer $offer, Participant $participant, string $status = null)
+    #[ORM\OneToMany(mappedBy: 'attendance', targetEntity: PaymentItem::class)]
+    private Collection $paymentItems;
+
+    public function __construct(Offer $offer, ?Participant $participant, string $status = null)
     {
         $this->offer = $offer;
         $this->participant = $participant;
 
         $this->createdAt = new \DateTimeImmutable();
         $this->activity = new ArrayCollection();
+        $this->paymentItems = new ArrayCollection();
 
         $this->setStatus($status);
     }
@@ -227,33 +223,25 @@ class Attendance
         $this->userPriority = $userPriority;
     }
 
-    /**
-     * @Groups("docx_export")
-     */
+    #[Groups('docx_export')]
     public function getName(): string
     {
         return $this->participant->getName();
     }
 
-    /**
-     * @Groups("docx_export")
-     */
+    #[Groups('docx_export')]
     public function getPhone(): string
     {
         return $this->participant?->getPhone() ?? '';
     }
 
-    /**
-     * @Groups("docx_export")
-     */
+    #[Groups('docx_export')]
     public function getEmail(): string
     {
         return $this->participant?->getEmail() ?? '';
     }
 
-    /**
-     * @Groups("docx_export")
-     */
+    #[Groups('docx_export')]
     public function getFee(): string
     {
         $fee = $this->offer->getFee();
@@ -262,5 +250,15 @@ class Attendance
         }
 
         return sprintf('%s €', number_format($fee / 100, 2, ',', '.'));
+    }
+
+    /**
+     * @return Collection|PaymentItem[]
+     *
+     * @psalm-return Collection<int, PaymentItem>
+     */
+    public function getPaymentItems(): Collection
+    {
+        return $this->paymentItems;
     }
 }

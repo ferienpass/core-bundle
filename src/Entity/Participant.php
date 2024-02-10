@@ -33,7 +33,7 @@ class Participant
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeInterface $createdAt;
 
-    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\User', inversedBy: 'participants')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'participants')]
     #[ORM\JoinColumn(name: 'member_id', referencedColumnName: 'id')]
     private ?User $user;
 
@@ -69,7 +69,7 @@ class Participant
     /**
      * @psalm-var Collection<int, Attendance>
      */
-    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: Attendance::class)]
+    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: Attendance::class, cascade: ['remove'])]
     private Collection $attendances;
 
     #[ORM\OneToMany(mappedBy: 'participant', targetEntity: ParticipantLog::class, cascade: ['persist', 'remove'])]

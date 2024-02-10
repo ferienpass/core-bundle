@@ -18,11 +18,10 @@ use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
-use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class UserInvitationNotification extends Notification implements NotificationInterface, EmailNotificationInterface
+class UserInvitationNotification extends AbstractNotification implements NotificationInterface, EmailNotificationInterface
 {
     use ActionUrlTrait;
 
@@ -61,17 +60,22 @@ class UserInvitationNotification extends Notification implements NotificationInt
         return $this;
     }
 
+    public function getContext(): array
+    {
+        return array_merge(parent::getContext(), [
+            'user' => $this->user,
+            'host' => $this->host,
+            'email' => $this->email,
+        ]);
+    }
+
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
         $email = (new NotificationEmail(self::getName()))
             ->to($recipient->getEmail())
             ->subject($this->getSubject())
             ->content($this->getContent())
-            ->context([
-                'user' => $this->user,
-                'host' => $this->host,
-                'email' => $this->email,
-            ])
+            ->context($this->getContext())
         ;
 
         if (null !== $this->actionUrl) {

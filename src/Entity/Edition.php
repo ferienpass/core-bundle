@@ -39,13 +39,13 @@ class Edition
     /**
      * @psalm-var Collection<int, EditionTask>
      */
-    #[ORM\OneToMany(mappedBy: 'edition', targetEntity: EditionTask::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'edition', targetEntity: EditionTask::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $tasks;
 
     /**
      * @psalm-var Collection<int, Offer>
      */
-    #[ORM\OneToMany(mappedBy: 'edition', targetEntity: Offer::class)]
+    #[ORM\OneToMany(mappedBy: 'edition', targetEntity: Offer::class, cascade: ['remove'])]
     private Collection $offers;
 
     #[ORM\Column(type: 'integer', nullable: true, options: ['unsigned' => true])]

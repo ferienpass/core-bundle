@@ -93,7 +93,7 @@ class OfferVoter extends Voter
         $userHosts = $this->hostRepository->findByUser($user);
         $userHostIds = array_map(fn (Host $host) => $host->getId(), $userHosts);
 
-        return $offer->getHosts()->filter(fn (Host $host) => \in_array($host->getId(), $userHostIds, false))->count() > 0;
+        return $offer->getHosts()->filter(fn (Host $host) => \in_array($host->getId(), $userHostIds, true))->count() > 0;
     }
 
     private function canEdit(Offer $offer, User $user): bool
@@ -133,12 +133,12 @@ class OfferVoter extends Voter
             return false;
         }
 
-        if (!$offer->getAttendances()->isEmpty()) {
-            return false;
-        }
-
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
+        }
+
+        if (!$offer->getAttendances()->isEmpty()) {
+            return false;
         }
 
         return null === ($edition = $offer->getEdition()) || $edition->isEditableForHosts();

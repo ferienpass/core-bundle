@@ -25,8 +25,8 @@ class OfferCategory
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    #[ORM\Column(name: 'tstamp', type: 'integer', options: ['unsigned' => true])]
-    private int $timestamp;
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private \DateTimeInterface $createdAt;
 
     #[ORM\ManyToMany(targetEntity: Offer::class, mappedBy: 'categories')]
     private Collection $offers;
@@ -34,12 +34,13 @@ class OfferCategory
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
+    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
     private ?string $alias = null;
 
     public function __construct()
     {
         $this->offers = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getOffers(): Collection
@@ -55,5 +56,10 @@ class OfferCategory
     public function getAlias(): ?string
     {
         return $this->alias;
+    }
+
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
     }
 }

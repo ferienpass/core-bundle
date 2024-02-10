@@ -17,11 +17,10 @@ use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
-use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class AttendanceWithdrawnNotification extends Notification implements NotificationInterface, EditionAwareNotificationInterface, EmailNotificationInterface
+class AttendanceWithdrawnNotification extends AbstractNotification implements NotificationInterface, EditionAwareNotificationInterface, EmailNotificationInterface
 {
     private Attendance $attendance;
 
@@ -42,15 +41,21 @@ class AttendanceWithdrawnNotification extends Notification implements Notificati
         return $this;
     }
 
+    public function getContext(): array
+    {
+        return array_merge(parent::getContext(), [
+            'attendance' => $this->attendance,
+            'offer' => $this->attendance->getOffer(),
+        ]);
+    }
+
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
         $email = (new NotificationEmail(self::getName()))
             ->to($recipient->getEmail())
             ->subject($this->getSubject())
             ->content($this->getContent())
-            ->context([
-                'attendance' => $this->attendance,
-            ])
+            ->context($this->getContext())
         ;
 
         return new EmailMessage($email);

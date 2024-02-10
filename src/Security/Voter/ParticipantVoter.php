@@ -31,6 +31,7 @@ class ParticipantVoter extends Voter
             'view',
             'create',
             'edit',
+            'delete',
         ];
 
         return $subject instanceof Participant && \in_array($attribute, $operations, true);
@@ -50,6 +51,7 @@ class ParticipantVoter extends Voter
             'view' => $this->canView($participant, $user),
             'create' => $this->canCreate($participant),
             'edit' => $this->canEdit($participant, $user),
+            'delete' => $this->canDelete($participant, $user),
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
@@ -60,6 +62,11 @@ class ParticipantVoter extends Voter
     }
 
     private function canEdit(Participant $participant, User $user): bool
+    {
+        return $this->security->isGranted('ROLE_ADMIN');
+    }
+
+    private function canDelete(Participant $participant, User $user): bool
     {
         return $this->security->isGranted('ROLE_ADMIN');
     }

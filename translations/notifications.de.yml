@@ -1,0 +1,98 @@
+defaults:
+  account_registration_help:
+    emailText: >
+      Es sieht so aus, als wollten Sie sich gerade auf der Webseite {{ baseUrl }} registrieren. Allerdings existiert zu Ihrer E-Mail-Adresse {{ user.email }} bereits ein Nutzerkonto.
+
+      
+      Bitte melden Sie sich auf {{ baseUrl }} an und setzten dort ggf. Ihr Passwort zurück. Bei Fragen können Sie uns gerne kontaktieren.
+    emailSubject: Ihre Registrierung auf {{ baseUrl }}
+
+  account_created:
+    emailText: >
+      Vielen Dank für Ihre Registrierung beim Ferienpass!
+
+
+      Bitte klicken Sie auf den nachfolgenden Link, um Ihre Registrierung abzuschließen und Ihren Account zu aktivieren. Wenn Sie keinen Account angefordert haben, ignorieren Sie bitte diese Mail.
+    emailSubject: Ihre Registrierung auf {{ baseUrl }}
+
+  account_activated:
+    emailText: >
+      Sie sind nun erfolgreich auf der Webseite {{ baseUrl }} registriert und können Ihre Kinder zu Ferienpass-Angeboten anmelden. In der Online-Version des Ferienpasses haben Sie immer Überblick, zu welchen Angeboten Ihre Kinder angemeldet sind und zu welchen Angeboten Ihre Kinder auf der Warteliste stehen.
+
+
+      Wenn Ihr Kind von der Warteliste auf die Teilnehmerliste vorrückt, werden Sie automatisch kontaktiert. Wenn Sie Ihre persönlichen Daten um eine Handynummer ergänzen, können wir Sie auch per SMS kontaktieren.
+      An dieser Stelle bitten wir Sie, Ihre Kinder von den Angeboten abzumelden, wenn sie das Angebot nicht mehr wahrnehmen können/wollen.
+
+
+      Wir wünschen Ihnen eine schöne Ferienzeit!
+    emailSubject: Sie sind jetzt registriert
+
+  user_invitation:
+    emailText: >
+      Sie wurden von {{ user.firstname }} {{ user.lastname }} eingeladen, gemeinsam an den Ferienpass-Angeboten von {{ host.name }} zu arbeiten.
+
+
+      Bitte klicken Sie auf den folgenden Link, um die Einladung anzunehmen. Sie können sich dann anmelden oder registrieren.
+    emailSubject: Einladung zur Mitarbeit am Ferienpass
+
+  user_password:
+    emailText: >
+      Sie haben ein neues Passwort für die Webseite des {{ baseUrl }} angefragt. Bitte klicken Sie folgenden Link, um ein neues Passwort für Ihren Account zu erstellen.
+    emailSubject: Passwort zurücksetzen
+
+  offer_cancelled:
+    emailText: >
+      Bedauerlicherweise müssen wir Ihnen mitteilen, dass das Angebot {{ offer.name }} leider aus organisatorischen Gründen abgesagt wurde. 
+      
+      
+      Vielen Dank für Ihr Verständnis!
+      Bei Fragen oder Rückmeldungen stehen wir gerne zur Verfügung.
+    emailSubject: Ferienpass-Angebot abgesagt
+
+  offer_relaunched:
+    emailText: >
+      Das Angebot {{ offer.name }}, das wir zuvor absagen mussten, findet doch wieder statt.
+      
+      
+      Sie sind zum Angebot angemeldet.
+      
+      
+      Bei Fragen oder Rückmeldungen stehen wir gerne zur Verfügung.
+    emailSubject: Ferienpass-Angebot findet wieder statt
+
+  attendance_withdrawn:
+    emailText: >
+      Bedauerlicherweise müssen wir Ihnen mitteilen, dass wir Ihre Teilnahme zum Angebot {{ offer.name }} leider aus organisatorischen Gründen stornieren mussten. 
+      
+      
+      Vielen Dank für Ihr Verständnis!
+      Bei Fragen oder Rückmeldungen stehen wir gerne zur Verfügung.
+    emailSubject: Ferienpass-Angebot storniert
+
+  remind_attendance:
+    emailText: >
+      Es ist soweit und Ihr Kind nimmt bald am Ferienpass-Angebot {{ offer.name }} teil.
+
+
+      Ihr Kind ist angemeldet. Bei einer Verhinderung melden Sie Ihr Kind bitte unverzüglich auf {{ baseUrl }} ab, um anderen Kindern die Chance zu lassen.
+    emailSubject: Erinnerung Ferienpass-Anmeldung
+
+  attendance_newly_confirmed:
+    emailText: >
+      Ihr Kind ist nun verbindlich angemeldet. Sollten Sie nicht mehr teilnehmen wollen, so melden Sie Ihr Kind bitte auf o.g. Seite ab, um anderen Kindern die Chance zu lassen.
+    emailSubject: Ihr Kind ist auf die Teilnehmerliste gerückt
+
+  attendance_confirmed:
+    emailText: >
+      Wir bestätigen die Anmeldung zu folgendem Ferienpass-Angebot.
+    emailSubject: Anmeldebestätigung
+
+  payment_created:
+    emailText: >
+      Es wurde ein neuer Ferienpass-Beleg für Sie erstellt.
+    emailSubject: Neuer Beleg
+
+  attendance_decisions:
+    emailText: >
+      Für den Fall, dass Ihre Kinder nicht mehr teilnehmen können oder wollen, so bitten wir, sich vom Angebot abzumelden. Das können sie online machen. So lassen Sie andern Kindern die Möglichkeit, am Angebot teilzunehmen.
+    emailSubject: Anmeldungen für den Ferienpass

@@ -18,11 +18,10 @@ use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
-use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class HostCreatedNotification extends Notification implements NotificationInterface, EmailNotificationInterface
+class HostCreatedNotification extends AbstractNotification implements NotificationInterface, EmailNotificationInterface
 {
     private Host $host;
     private User $user;
@@ -51,16 +50,21 @@ class HostCreatedNotification extends Notification implements NotificationInterf
         return $this;
     }
 
+    public function getContext(): array
+    {
+        return array_merge(parent::getContext(), [
+            'user' => $this->user,
+            'user' => $this->user,
+        ]);
+    }
+
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
         $email = (new NotificationEmail(self::getName()))
             ->to($recipient->getEmail())
             ->subject($this->getSubject())
             ->content($this->getContent())
-            ->context([
-                'host' => $this->host,
-                'user' => $this->user,
-            ])
+            ->context($this->getContext())
         ;
 
         // TODO add CC header

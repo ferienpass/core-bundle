@@ -37,17 +37,21 @@ class Offer
     final public const TRANSITION_CANCEL = 'cancel';
     final public const TRANSITION_RELAUNCH = 'relaunch';
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
+    #[Groups('docx_export')]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: 'Edition', inversedBy: 'offers')]
     #[ORM\JoinColumn(name: 'edition', referencedColumnName: 'id')]
     private ?Edition $edition = null;
+
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private \DateTimeInterface $createdAt;
+
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private \DateTimeInterface $modifiedAt;
 
     /**
      * @psalm-var Collection<int, Host>
@@ -64,38 +68,28 @@ class Offer
     #[ORM\OneToMany(mappedBy: 'offer', targetEntity: OfferMemberAssociation::class)]
     private Collection $memberAssociations;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[Assert\NotBlank]
     #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
+    #[Groups('docx_export')]
     private string $name = '';
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
+    #[Groups('docx_export')]
     private ?string $alias = null;
 
     #[ORM\Column(type: 'string', length: 32, options: ['default' => self::STATE_DRAFT])]
     private string $state;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups('docx_export')]
     private ?string $comment = null;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups('docx_export')]
     private ?string $description = null;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups('docx_export')]
     private ?string $teaser = null;
 
     #[ORM\Column(type: 'binary_string', length: 16, nullable: true)]
@@ -107,10 +101,8 @@ class Offer
     #[ORM\Column(type: 'binary_string', nullable: true)]
     private ?string $downloads = null;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'boolean', options: ['default' => 0])]
+    #[Groups('docx_export')]
     private bool $published = false;
 
     #[ORM\Column(type: 'string', length: 16, nullable: false, options: ['default' => ''])]
@@ -122,64 +114,44 @@ class Offer
     #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $requiresAgreementLetter = null;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'boolean', options: ['default' => 0])]
+    #[Groups('docx_export')]
     private bool $requiresApplication = false;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'boolean', options: ['default' => 0])]
+    #[Groups('docx_export')]
     private bool $onlineApplication = false;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'date', nullable: true)]
+    #[Groups('docx_export')]
     private ?\DateTimeInterface $applicationDeadline = null;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'smallint', nullable: true, options: ['unsigned' => true])]
+    #[Groups('docx_export')]
     private ?int $minParticipants = null;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'smallint', nullable: true, options: ['unsigned' => true])]
+    #[Groups('docx_export')]
     private ?int $maxParticipants = null;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'smallint', length: 2, nullable: true, options: ['unsigned' => true])]
+    #[Groups('docx_export')]
     private ?int $minAge = null;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'smallint', length: 2, nullable: true, options: ['unsigned' => true])]
+    #[Groups('docx_export')]
     private ?int $maxAge = null;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'integer', nullable: true, options: ['unsigned' => true])]
+    #[Groups('docx_export')]
     private ?int $fee = null;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups('docx_export')]
     private ?string $meetingPoint = null;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups('docx_export')]
     private ?string $applyText = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -188,16 +160,12 @@ class Offer
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $datesExport = null;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups('docx_export')]
     private ?string $contact = null;
 
-    /**
-     * @Groups("docx_export")
-     */
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups('docx_export')]
     private ?string $bring = null;
 
     /**
@@ -208,16 +176,10 @@ class Offer
     private Collection $dates;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Ferienpass\CoreBundle\Entity\OfferCategory", inversedBy="offers")
-     *
-     * @ORM\JoinTable(
-     *     name="OfferCategoryAssociation",
-     *     joinColumns={@ORM\JoinColumn(name="offer_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="category_id", referencedColumnName="id")}
-     * )
-     *
      * @psalm-var Collection<int, OfferCategory>
      */
+    #[ORM\ManyToMany(targetEntity: OfferCategory::class, inversedBy: 'offers')]
+    #[ORM\JoinTable(name: 'OfferCategoryAssociation', joinColumns: new ORM\JoinColumn('offer_id', 'id', onDelete: 'CASCADE'), inverseJoinColumns: new ORM\JoinColumn('category_id', 'id'))]
     private Collection $categories;
 
     #[ORM\Column(type: 'json', nullable: true)]
@@ -235,7 +197,7 @@ class Offer
     /**
      * @psalm-var Collection<int, Attendance>
      */
-    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: Attendance::class)]
+    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: Attendance::class, cascade: ['remove'])]
     #[ORM\OrderBy(['status' => 'ASC', 'sorting' => 'ASC'])]
     private Collection $attendances;
 
@@ -248,6 +210,8 @@ class Offer
 
     public function __construct()
     {
+        $this->createdAt = new \DateTimeImmutable();
+        $this->modifiedAt = new \DateTimeImmutable();
         $this->hosts = new ArrayCollection();
         $this->dates = new ArrayCollection();
         $this->variants = new ArrayCollection();
@@ -543,7 +507,7 @@ class Offer
      */
     public function getAttendances(): Collection
     {
-        return $this->attendances->filter(fn (Attendance $attendance) => null !== $attendance->getParticipant());
+        return $this->attendances;
     }
 
     /**
@@ -717,9 +681,7 @@ class Offer
         return $this->datesExport;
     }
 
-    /**
-     * @Groups("docx_export")
-     */
+    #[Groups('docx_export')]
     public function getDate(): string
     {
         if (false === $date = $this->dates->first()) {
@@ -780,5 +742,20 @@ class Offer
         if (!$this->alias) {
             $this->alias = (string) $slugger->slug("{$this->getId()}-{$this->getName()}")->lower();
         }
+    }
+
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function getModifiedAt(): \DateTimeInterface
+    {
+        return $this->modifiedAt;
+    }
+
+    public function setModifiedAt(\DateTimeInterface $modifiedAt = new \DateTimeImmutable()): void
+    {
+        $this->modifiedAt = $modifiedAt;
     }
 }

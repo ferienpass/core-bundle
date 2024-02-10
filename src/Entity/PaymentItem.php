@@ -26,8 +26,8 @@ class PaymentItem
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\ManyToOne(targetEntity: Attendance::class)]
-    private Attendance $attendance;
+    #[ORM\ManyToOne(targetEntity: Attendance::class, inversedBy: 'paymentItem')]
+    private Attendance|null $attendance;
 
     #[ORM\Column(type: 'integer', options: ['unsigned' => false])]
     private int $amount;
@@ -49,7 +49,7 @@ class PaymentItem
         return $this->createdAt;
     }
 
-    public function getAttendance(): Attendance
+    public function getAttendance(): ?Attendance
     {
         return $this->attendance;
     }
@@ -62,5 +62,10 @@ class PaymentItem
     public function setAmount(int $amount): void
     {
         $this->amount = $amount;
+    }
+
+    public function removeAttendanceAssociation(): void
+    {
+        $this->attendance = null;
     }
 }

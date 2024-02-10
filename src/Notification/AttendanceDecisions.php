@@ -17,11 +17,10 @@ use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
-use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class AttendanceDecisions extends Notification implements NotificationInterface, EmailNotificationInterface
+class AttendanceDecisions extends AbstractNotification implements NotificationInterface, EmailNotificationInterface
 {
     /** @var array<int, array<int, Attendance>> */
     private array $attendances;
@@ -43,15 +42,20 @@ class AttendanceDecisions extends Notification implements NotificationInterface,
         return $this;
     }
 
+    public function getContext(): array
+    {
+        return array_merge(parent::getContext(), [
+            'attendance' => $this->attendances,
+        ]);
+    }
+
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
         $email = (new NotificationEmail(self::getName()))
             ->to($recipient->getEmail())
             ->subject($this->getSubject())
             ->content($this->getContent())
-            ->context([
-                'attendances' => $this->attendances,
-            ])
+            ->context($this->getContext())
         ;
 
         return new EmailMessage($email);

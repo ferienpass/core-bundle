@@ -17,11 +17,10 @@ use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
-use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class UserPasswordNotification extends Notification implements NotificationInterface, EmailNotificationInterface
+class UserPasswordNotification extends AbstractNotification implements NotificationInterface, EmailNotificationInterface
 {
     use ActionUrlTrait;
 
@@ -52,16 +51,21 @@ class UserPasswordNotification extends Notification implements NotificationInter
         return $this;
     }
 
+    public function getContext(): array
+    {
+        return array_merge(parent::getContext(), [
+            'user' => $this->user,
+            'token' => $this->token,
+        ]);
+    }
+
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
         $email = (new NotificationEmail(self::getName()))
             ->to($recipient->getEmail())
             ->subject($this->getSubject())
             ->content($this->getContent())
-            ->context([
-                'token' => $this->token,
-                'user' => $this->user,
-            ]);
+            ->context($this->getContext());
 
         if (null !== $this->actionUrl) {
             $email->action('email.user_password.reset', $this->actionUrl);

@@ -61,7 +61,8 @@
     "twig/intl-extra": "^3.0",
     "twig/twig": "^3.0",
     "scienta/doctrine-json-functions": "^5.3",
-    "symfony/workflow": "^6.4"
+    "symfony/workflow": "^6.4",
+    "symfony/expression-language": "^6.4"
   },
   "autoload": {
     "psr-4": {

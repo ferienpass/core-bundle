@@ -18,11 +18,10 @@ use Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport;
 use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
-use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class AttendanceNewlyConfirmedNotification extends Notification implements NotificationInterface, EditionAwareNotificationInterface, EmailNotificationInterface
+class AttendanceNewlyConfirmedNotification extends AbstractNotification implements NotificationInterface, EditionAwareNotificationInterface, EmailNotificationInterface
 {
     private Attendance $attendance;
 
@@ -48,6 +47,13 @@ class AttendanceNewlyConfirmedNotification extends Notification implements Notif
         return $this;
     }
 
+    public function getContext(): array
+    {
+        return array_merge(parent::getContext(), [
+            'attendance' => $this->attendance,
+        ]);
+    }
+
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
         $email = (new NotificationEmail(self::getName()))
@@ -55,9 +61,7 @@ class AttendanceNewlyConfirmedNotification extends Notification implements Notif
             ->subject($this->getSubject())
             ->content($this->getContent())
             ->attachFromPath($this->iCalExport->generate([$this->attendance->getOffer()]), $this->attendance->getOffer()->getAlias())
-            ->context([
-                'attendance' => $this->attendance,
-            ])
+            ->context($this->getContext())
         ;
 
         return new EmailMessage($email);

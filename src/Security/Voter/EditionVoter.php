@@ -28,7 +28,7 @@ class EditionVoter extends Voter
 
     protected function supports($attribute, $subject): bool
     {
-        if (!\in_array($attribute, ['view', 'edit', 'stats', 'offer.create'], true)) {
+        if (!\in_array($attribute, ['view', 'edit', 'stats', 'offer.create', 'delete'], true)) {
             return false;
         }
 
@@ -52,6 +52,7 @@ class EditionVoter extends Voter
         return match ($attribute) {
             'view', 'stats' => $this->canView($edition, $user),
             'edit' => $this->canEdit($edition, $user),
+            'delete' => $this->canDelete($edition, $user),
             'offer.create' => $this->canCreateOffer($edition),
             default => throw new \LogicException('This code should not be reached!'),
         };
@@ -69,6 +70,11 @@ class EditionVoter extends Voter
     private function canEdit(Edition $edition, User $user): bool
     {
         return $this->canView($edition, $user);
+    }
+
+    private function canDelete(Edition $edition, User $user): bool
+    {
+        return $this->canEdit($edition, $user);
     }
 
     private function canCreateOffer(Edition $edition): bool
