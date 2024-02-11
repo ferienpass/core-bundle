@@ -23,6 +23,8 @@ use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
 class HostCreatedNotification extends AbstractNotification implements NotificationInterface, EmailNotificationInterface
 {
+    use ActionUrlTrait;
+
     private Host $host;
     private User $user;
 
@@ -53,9 +55,14 @@ class HostCreatedNotification extends AbstractNotification implements Notificati
     public function getContext(): array
     {
         return array_merge(parent::getContext(), [
-            'user' => $this->user,
+            'host' => $this->host,
             'user' => $this->user,
         ]);
+    }
+
+    public static function getAvailableTokens(): array
+    {
+        return array_merge(parent::getAvailableTokens(), ['host', 'user']);
     }
 
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
@@ -66,6 +73,10 @@ class HostCreatedNotification extends AbstractNotification implements Notificati
             ->content($this->getContent())
             ->context($this->getContext())
         ;
+
+        if (null !== $this->actionUrl) {
+            $email->action('email.host_created.activate', $this->actionUrl);
+        }
 
         // TODO add CC header
         return new EmailMessage($email);

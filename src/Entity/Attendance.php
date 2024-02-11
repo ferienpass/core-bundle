@@ -43,6 +43,7 @@ class Attendance
     private bool $paid = false;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[Groups('notification')]
     private \DateTimeInterface $createdAt;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
@@ -108,6 +109,7 @@ class Attendance
         $this->sorting = $sorting;
     }
 
+    #[Groups('notification')]
     public function getStatus(): ?string
     {
         return $this->status;
@@ -226,7 +228,7 @@ class Attendance
     #[Groups('docx_export')]
     public function getName(): string
     {
-        return $this->participant->getName();
+        return $this->participant?->getName() ?? '';
     }
 
     #[Groups('docx_export')]

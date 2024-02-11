@@ -17,41 +17,30 @@ bodyClass: bg-gray-postmark-lighter
                                             <td class="p-45">
                                                 <div class="text-base">
                                                     <h1 class="mt-0 text-2xl font-bold text-left text-gray-postmark-darker">
-                                                        {{ attendance.offer.name }} wurde leider abgesagt!</h1>
+                                                        Veranstalter-Registrierung</h1>
                                                     <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
                                                         {{ content|nl2br }}
                                                     </p>
 
                                                     <table align="center" class="w-full p-24 bg-gray-postmark-lightest">
-                                                        {% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
                                                         <tr>
                                                             <td align="center">
-                                                                <h2 class="mt-0 mb-2 text-xl text-center font-bold text-gray-postmark-darker">{{ attendance.offer.name }}</h2>
+                                                                <h2 class="mt-0 mb-2 text-xl text-center font-bold text-gray-postmark-darker">{{ host.name }}</h2>
                                                                 <p class="mt-0 text-xs text-center text-gray-postmark-dark">
-                                                                    Veranstalter: {{ attendance.offer.hosts|map(h => h.name)|join(', ') }}</p>
+                                                                    {{ host.text }}</p>
                                                                 <div class="mt-6 mb-20">
                                                                     <p class="mt-0 mb-0 text-base leading-24 text-center text-gray-postmark-dark">
-                                                                        <span class="font-medium">Beginn:</span> {{ offer_macro.date_single(attendance.offer.dates|first) }}
+                                                                        <span class="font-medium">Registrierter
+                                                                            Nutzer:</span> {{ user.name }}
                                                                     </p>
-
+                                                                    <p class="mt-0 mb-0 text-base leading-24 text-center text-gray-postmark-dark">
+                                                                        <span class="font-medium">E-Mail:</span> {{ user.email }}
+                                                                    </p>
                                                                 </div>
-
-                                                                <p>
-                                                                    <span class="mt-2 rounded bg-red-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-red-100">
-                                                                        <span class="text-sm mt-0 mb-0 leading-5 text-red-700">Angebot
-                                                                            abgesagt</span>
-                                                                    </span>
-                                                                </p>
 
                                                             </td>
                                                         </tr>
                                                     </table>
-
-                                                    {% if post_content is defined %}
-                                                        <p class="mt-20 mb-20 text-base leading-24 text-gray-postmark-dark">
-                                                            {{ post_content|nl2br }}
-                                                        </p>
-                                                    {% endif %}
 
                                                     {% if action_url %}
                                                         <table align="center" class="w-full text-center my-30 mx-auto">
@@ -62,8 +51,8 @@ bodyClass: bg-gray-postmark-lighter
                                                                             <td align="center" class="text-base">
                                                                                 <a href="{{ action_url }}"
                                                                                    class="button button--blue"
-                                                                                   target="_blank">Anmeldungen
-                                                                                    einsehen</a>
+                                                                                   target="_blank">Account
+                                                                                    aktivieren</a>
                                                                             </td>
                                                                         </tr>
                                                                     </table>
@@ -71,6 +60,7 @@ bodyClass: bg-gray-postmark-lighter
                                                             </tr>
                                                         </table>
                                                     {% endif %}
+
                                                 </div>
                                             </td>
                                         </tr>

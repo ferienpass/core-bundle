@@ -76,7 +76,7 @@
                       <td style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; padding: 45px">
                         <div style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; font-size: 16px;">
                           <h1 style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-top: 0; text-align: left; font-size: 24px; font-weight: 700; color: #333333">{{ attendance.offer.name }} wurde leider abgesagt!</h1>
-                          <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-bottom: 20px; margin-top: 6px; font-size: 16px; line-height: 24px; color: #51545E">{{ attendance.participant.firstname }} kann leider nicht an {{ attendance.offer.name }} teilnehmen. Das Angebot wurde abgesagt.</p>
+                          <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-bottom: 20px; margin-top: 6px; font-size: 16px; line-height: 24px; color: #51545E">{{ content|nl2br }}</p>
                           <table align="center" style="width: 100%; background-color: #F4F4F7; padding: 24px" cellpadding="0" cellspacing="0" role="none">
                             {% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
                             <tr>
@@ -97,8 +97,9 @@
                               </td>
                             </tr>
                           </table>
-                          <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-bottom: 20px; margin-top: 20px; font-size: 16px; line-height: 24px; color: #51545E">{{ content|nl2br }}</p>
-                          {% if action_url %}
+                          {% if post_content is defined %}
+                          <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-bottom: 20px; margin-top: 20px; font-size: 16px; line-height: 24px; color: #51545E">{{ post_content|nl2br }}</p>
+                          {% endif %} {% if action_url %}
                           <table align="center" style="margin-left: auto; margin-right: auto; margin-top: 30px; margin-bottom: 30px; width: 100%; text-align: center" cellpadding="0" cellspacing="0" role="none">
                             <tr>
                               <td align="center" style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly;">

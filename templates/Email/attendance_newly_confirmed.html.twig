@@ -76,7 +76,7 @@
                       <td style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; padding: 45px">
                         <div style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; font-size: 16px;">
                           <h1 style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-top: 0; text-align: left; font-size: 24px; font-weight: 700; color: #333333">{{ attendance.participant.firstname }} nimmt nun am Angebot teil!</h1>
-                          <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-bottom: 20px; margin-top: 6px; font-size: 16px; line-height: 24px; color: #51545E">{{ attendance.participant.firstname }} stand auf der Warteliste von {{ attendance.offer.name }} und ist jetzt zu diesem Angebot angemeldet, nachdem jemand anderes abgesprungen ist.</p>
+                          <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-bottom: 20px; margin-top: 6px; font-size: 16px; line-height: 24px; color: #51545E">{{ content|nl2br }}</p>
                           <table align="center" style="width: 100%; background-color: #F4F4F7; padding: 24px" cellpadding="0" cellspacing="0" role="none">
                             {% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
                             <tr>
@@ -100,7 +100,7 @@
                                   {% endif %}
                                   <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-bottom: 0; margin-top: 0; text-align: center; font-size: 16px; line-height: 24px; color: #51545E">
                                     <span style="font-weight: 500;">Teilnahmegebühr:</span>
-                                    {{ (attendance.participant.discounted|default ? attendance.offer.fee/2 : attendance.offer.fee)/100 }} &euro;
+                                    {{ ((attendance.participant.discounted|default ? attendance.offer.fee/2 : attendance.offer.fee)/100)|format_currency('EUR') }}
                                   </p>
                                 </div>
                                 {% if attendance.offer.requiresAgreementLetter %}
@@ -111,14 +111,15 @@
                                 </p>
                                 <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-bottom: 20px; margin-top: 0; text-align: center; font-size: 13px; line-height: 24px; color: #51545E">
                                   Download unter:
-                                  <a href="{{ baseUrl|default ~ '/' ~ attendance.offer.id }}" style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; color: #51545E; text-decoration-line: underline">{{ baseUrl|default ~ '/' ~ attendance.offer.id }}</a>
+                                  <a href="{{ baseUrl ~ '/' ~ attendance.offer.id }}" style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; color: #51545E; text-decoration-line: underline">{{ baseUrl ~ '/' ~ attendance.offer.id }}</a>
                                 </p>
                                 {% endif %}
                               </td>
                             </tr>
                           </table>
-                          <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-bottom: 20px; margin-top: 20px; font-size: 16px; line-height: 24px; color: #51545E">{{ content|nl2br }}</p>
-                          {% if action_url %}
+                          {% if post_content is defined %}
+                          <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-bottom: 20px; margin-top: 20px; font-size: 16px; line-height: 24px; color: #51545E">{{ post_content|nl2br }}</p>
+                          {% endif %} {% if action_url %}
                           <table align="center" style="margin-left: auto; margin-right: auto; margin-top: 30px; margin-bottom: 30px; width: 100%; text-align: center" cellpadding="0" cellspacing="0" role="none">
                             <tr>
                               <td align="center" style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly;">

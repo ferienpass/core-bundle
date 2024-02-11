@@ -48,6 +48,7 @@ class Offer
     private ?Edition $edition = null;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[Groups('notification')]
     private \DateTimeInterface $createdAt;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
@@ -70,7 +71,7 @@ class Offer
 
     #[Assert\NotBlank]
     #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
-    #[Groups('docx_export')]
+    #[Groups(['docx_export', 'notification'])]
     private string $name = '';
 
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
@@ -81,11 +82,11 @@ class Offer
     private string $state;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups('docx_export')]
+    #[Groups(['docx_export'])]
     private ?string $comment = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    #[Groups('docx_export')]
+    #[Groups(['docx_export', 'notification'])]
     private ?string $description = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -681,7 +682,7 @@ class Offer
         return $this->datesExport;
     }
 
-    #[Groups('docx_export')]
+    #[Groups(['docx_export', 'notification'])]
     public function getDate(): string
     {
         if (false === $date = $this->dates->first()) {

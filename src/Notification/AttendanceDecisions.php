@@ -37,7 +37,7 @@ class AttendanceDecisions extends AbstractNotification implements NotificationIn
 
     public function attendance(Attendance $attendance): static
     {
-        $this->attendances[$attendance->getParticipant()->getId()][] = $this->attendances;
+        $this->attendances[$attendance->getParticipant()->getId()][] = $attendance;
 
         return $this;
     }
@@ -45,8 +45,13 @@ class AttendanceDecisions extends AbstractNotification implements NotificationIn
     public function getContext(): array
     {
         return array_merge(parent::getContext(), [
-            'attendance' => $this->attendances,
+            'attendances' => $this->attendances,
         ]);
+    }
+
+    public static function getAvailableTokens(): array
+    {
+        return array_merge(parent::getAvailableTokens(), ['attendances']);
     }
 
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage

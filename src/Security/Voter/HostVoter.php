@@ -28,7 +28,7 @@ class HostVoter extends Voter
 
     protected function supports($attribute, $subject): bool
     {
-        if (!\in_array($attribute, ['view', 'edit'], true)) {
+        if (!\in_array($attribute, ['view', 'edit', 'delete'], true)) {
             return false;
         }
 
@@ -52,6 +52,7 @@ class HostVoter extends Voter
         return match ($attribute) {
             'view' => $this->canView($host, $user),
             'edit' => $this->canEdit($host, $user),
+            'delete' => $this->canDelete($host, $user),
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
@@ -69,6 +70,11 @@ class HostVoter extends Voter
     }
 
     private function canEdit(Host $host, User $user): bool
+    {
+        return $this->canView($host, $user);
+    }
+
+    private function canDelete(Host $host, User $user): bool
     {
         return $this->canView($host, $user);
     }

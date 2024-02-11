@@ -18,7 +18,7 @@ bodyClass: bg-gray-postmark-lighter
                         <div class="text-base">
                           <h1 class="mt-0 text-2xl font-bold text-left text-gray-postmark-darker">Hi {{ payment.billingAddress|first }},</h1>
                           <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
-                            Anbei finden Sie den Beleg über Ihre Zahlung.
+                            {{ content|nl2br }}
                           </p>
 
                           <table class="w-full py-35">
@@ -35,10 +35,10 @@ bodyClass: bg-gray-postmark-lighter
                                 <table class="w-full pt-25">
                                   <tr>
                                     <th align="left" class="purchase_heading pb-8">
-                                      <p class="m-0 text-xxs leading-24 text-gray-postmark-meta">Angebot</p>
+                                      <p class="m-0 text-base leading-24 text-gray-postmark-meta">Angebot</p>
                                     </th>
                                     <th align="right" class="purchase_heading pb-8">
-                                      <p class="m-0 text-xxs leading-24 text-gray-postmark-meta">Gebühr</p>
+                                      <p class="m-0 text-base leading-24 text-gray-postmark-meta">Gebühr</p>
                                     </th>
                                   </tr>
                                   {% for item in payment.items %}
@@ -52,16 +52,18 @@ bodyClass: bg-gray-postmark-lighter
                                       <p align="right" class="m-0 pr-16 text-base leading-24 text-right text-gray-postmark-darker font-bold">Summe</p>
                                     </td>
                                     <td class="purchase_footer w-1/5">
-                                      <p align="right" class="m-0 text-base leading-24 text-right text-gray-postmark-darker font-bold">{{ (payment.totalAmount)|format_currency('EUR') }}</p>
+                                      <p align="right" class="m-0 text-base leading-24 text-right text-gray-postmark-darker font-bold">{{ (payment.totalAmount/100)|format_currency('EUR') }}</p>
                                     </td>
                                   </tr>
                                 </table>
                               </td>
                             </tr>
                           </table>
-                          <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
-                             {{ content|nl2br }}
-                          </p>
+                          {% if post_content is defined %}
+                            <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
+                              {{ post_content|nl2br }}
+                            </p>
+                          {% endif %}
                           {% if action_url %}
                           <table align="center" class="w-full my-30 mx-auto text-center">
                             <tr>

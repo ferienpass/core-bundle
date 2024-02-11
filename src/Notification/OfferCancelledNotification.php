@@ -49,6 +49,11 @@ class OfferCancelledNotification extends AbstractNotification implements Notific
         ]);
     }
 
+    public static function getAvailableTokens(): array
+    {
+        return array_merge(parent::getAvailableTokens(), ['attendance', 'offer']);
+    }
+
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
         $email = (new NotificationEmail(self::getName()))

@@ -19,7 +19,8 @@ bodyClass: bg-gray-postmark-lighter
                                                     <h1 class="mt-0 text-2xl font-bold text-left text-gray-postmark-darker">
                                                         {{ attendance.offer.name }} wurde leider abgesagt!</h1>
                                                     <p class="mt-6 mb-20 text-base leading-24 text-gray-postmark-dark">
-                                                        {{ attendance.participant.firstname }} kann leider nicht an {{ attendance.offer.name }} teilnehmen. Das Angebot wurde abgesagt.</p>
+                                                        {{ content|nl2br }}
+                                                    </p>
 
                                                     <table align="center" class="w-full p-24 bg-gray-postmark-lightest">
                                                         {% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
@@ -35,18 +36,21 @@ bodyClass: bg-gray-postmark-lighter
 
                                                                 </div>
 
-                                                                    <p>
-                                                                        <span class="mt-2 rounded bg-red-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-red-100">
-                                                                            <span class="text-sm mt-0 mb-0 leading-5 text-red-700">Angebot abgesagt</span>
-                                                                        </span>
-                                                                    </p>
+                                                                <p>
+                                                                    <span class="mt-2 rounded bg-red-100 border-l-8 border-r-8 border-t-4 border-b-4 border-solid border-red-100">
+                                                                        <span class="text-sm mt-0 mb-0 leading-5 text-red-700">Angebot
+                                                                            abgesagt</span>
+                                                                    </span>
+                                                                </p>
 
                                                             </td>
                                                         </tr>
                                                     </table>
 
-                                                    <p class="mt-20 mb-20 text-base leading-24 text-gray-postmark-dark">
-                                                        {{ content|nl2br }}</p>
+                                                    {% if post_content is defined %}
+                                                        <p class="mt-20 mb-20 text-base leading-24 text-gray-postmark-dark">
+                                                            {{ post_content|nl2br }}</p>
+                                                    {% endif %}
 
                                                     {% if action_url %}
                                                         <table align="center" class="w-full text-center my-30 mx-auto">

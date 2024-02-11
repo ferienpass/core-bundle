@@ -51,7 +51,14 @@ class AttendanceConfirmedNotification extends AbstractNotification implements No
     {
         return array_merge(parent::getContext(), [
             'attendance' => $this->attendance,
+            'offer' => $this->attendance->getOffer(),
+            'participant' => $this->attendance->getParticipant(),
         ]);
+    }
+
+    public static function getAvailableTokens(): array
+    {
+        return array_merge(parent::getAvailableTokens(), ['attendance', 'offer', 'participant']);
     }
 
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage

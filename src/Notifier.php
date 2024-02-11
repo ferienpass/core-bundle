@@ -18,6 +18,7 @@ use Ferienpass\CoreBundle\Entity\Edition;
 use Ferienpass\CoreBundle\Entity\Host;
 use Ferienpass\CoreBundle\Entity\Payment;
 use Ferienpass\CoreBundle\Entity\User;
+use Ferienpass\CoreBundle\Notification\AbstractNotification;
 use Ferienpass\CoreBundle\Notification\AccountActivatedNotification;
 use Ferienpass\CoreBundle\Notification\AccountCreatedNotification;
 use Ferienpass\CoreBundle\Notification\AccountRegistrationHelpNotification;
@@ -216,6 +217,27 @@ class Notifier implements NotifierInterface
         }
 
         return $this->notifications[$key]::class;
+    }
+
+    public function createMock(string $key, string $subject, string $content): ?Notification
+    {
+        if (!\array_key_exists($key, $this->notifications)) {
+            return null;
+        }
+
+        $notification = $this->notifications[$key];
+        if (!$notification instanceof AbstractNotification) {
+            return null;
+        }
+
+        $notification = $notification->createMock();
+
+        $notification
+            ->subject($subject)
+            ->content($content)
+        ;
+
+        return $notification;
     }
 
     private function get(string $key, Edition $edition = null, bool $strict = false): ?Notification

@@ -38,15 +38,15 @@ class Participant
     private ?User $user;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
-    #[Groups('admin_list')]
+    #[Groups(['admin_list', 'notification'])]
     private string $firstname;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => ''])]
-    #[Groups('admin_list')]
+    #[Groups(['admin_list', 'notification'])]
     private ?string $lastname = null;
 
     #[ORM\Column(type: 'date', nullable: true)]
-    #[Groups('admin_list')]
+    #[Groups(['admin_list', 'notification'])]
     private ?\DateTimeInterface $dateOfBirth = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -131,7 +131,7 @@ class Participant
         return $this->mobile;
     }
 
-    #[Groups('admin_list')]
+    #[Groups(['admin_list', 'notification'])]
     public function getMobile(): ?string
     {
         if ($this->mobile) {
@@ -150,7 +150,7 @@ class Participant
         return $this->email;
     }
 
-    #[Groups('admin_list')]
+    #[Groups(['admin_list', 'notification'])]
     public function getEmail(): ?string
     {
         if ($this->email) {

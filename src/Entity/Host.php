@@ -92,10 +92,11 @@ class Host
     #[ORM\Column(type: 'string', length: 1, nullable: true)]
     private ?string $active = null;
 
-    #[ORM\OneToMany(mappedBy: 'host', targetEntity: HostMemberAssociation::class, cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'host', targetEntity: HostMemberAssociation::class, cascade: ['persist', 'remove'])]
     private Collection $memberAssociations;
 
     #[ORM\ManyToMany(targetEntity: Offer::class, mappedBy: 'hosts')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private Collection $offers;
 
     public function __construct()

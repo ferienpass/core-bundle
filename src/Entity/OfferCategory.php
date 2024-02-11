@@ -43,6 +43,11 @@ class OfferCategory
         $this->createdAt = new \DateTimeImmutable();
     }
 
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
     public function getOffers(): Collection
     {
         return $this->offers;

@@ -37,7 +37,7 @@ defaults:
 
   user_password:
     emailText: >
-      Sie haben ein neues Passwort für die Webseite des {{ baseUrl }} angefragt. Bitte klicken Sie folgenden Link, um ein neues Passwort für Ihren Account zu erstellen.
+      Sie haben ein neues Passwort für die Webseite {{ baseUrl }} angefragt. Bitte klicken Sie folgenden Link, um ein neues Passwort für Ihren Account zu erstellen.
     emailSubject: Passwort zurücksetzen
 
   offer_cancelled:
@@ -54,10 +54,7 @@ defaults:
       Das Angebot {{ offer.name }}, das wir zuvor absagen mussten, findet doch wieder statt.
       
       
-      Sie sind zum Angebot angemeldet.
-      
-      
-      Bei Fragen oder Rückmeldungen stehen wir gerne zur Verfügung.
+      {{ participant.firstname }} ist zum Angebot angemeldet.
     emailSubject: Ferienpass-Angebot findet wieder statt
 
   attendance_withdrawn:
@@ -71,7 +68,7 @@ defaults:
 
   remind_attendance:
     emailText: >
-      Es ist soweit und Ihr Kind nimmt bald am Ferienpass-Angebot {{ offer.name }} teil.
+      Es ist soweit und {{ participant.firstname }} nimmt bald am Ferienpass-Angebot {{ offer.name }} teil.
 
 
       Ihr Kind ist angemeldet. Bei einer Verhinderung melden Sie Ihr Kind bitte unverzüglich auf {{ baseUrl }} ab, um anderen Kindern die Chance zu lassen.
@@ -79,6 +76,9 @@ defaults:
 
   attendance_newly_confirmed:
     emailText: >
+      {{ participant.firstname }} stand auf der Warteliste von {{ offer.name }} und ist jetzt zu diesem Angebot angemeldet, nachdem jemand anderes abgesprungen ist.
+      
+      
       Ihr Kind ist nun verbindlich angemeldet. Sollten Sie nicht mehr teilnehmen wollen, so melden Sie Ihr Kind bitte auf o.g. Seite ab, um anderen Kindern die Chance zu lassen.
     emailSubject: Ihr Kind ist auf die Teilnehmerliste gerückt
 
@@ -92,7 +92,15 @@ defaults:
       Es wurde ein neuer Ferienpass-Beleg für Sie erstellt.
     emailSubject: Neuer Beleg
 
+  host_created:
+    emailText: >
+      Ein neuer Veranstalter hat sich registriert. Bitte wechseln Sie zum Ferienpass-Admin und aktivieren den Veranstalter-Account.
+    emailSubject: Neue Veranstalter-Registrierung
+
   attendance_decisions:
     emailText: >
+      Heute erhalten Sie die Bestätigung für die Ferienpass-Anmeldung Ihres Kindes bzw. Ihrer Kinder.
+      
+      
       Für den Fall, dass Ihre Kinder nicht mehr teilnehmen können oder wollen, so bitten wir, sich vom Angebot abzumelden. Das können sie online machen. So lassen Sie andern Kindern die Möglichkeit, am Angebot teilzunehmen.
     emailSubject: Anmeldungen für den Ferienpass

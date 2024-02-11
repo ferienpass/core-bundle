@@ -50,6 +50,11 @@ class AccountRegistrationHelpNotification extends AbstractNotification implement
         ]);
     }
 
+    public static function getAvailableTokens(): array
+    {
+        return array_merge(parent::getAvailableTokens(), ['user']);
+    }
+
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
         $email = (new NotificationEmail(self::getName()))
