@@ -40,6 +40,15 @@
 
 {% block body %}
 
+    {% if 'staging' == app.environment %}
+        <div class="bg-red-600 px-6 py-2.5 sm:px-3.5 sm:before:flex-1">
+            <p class="text-sm leading-6 text-white text-center">
+                <strong class="font-semibold">Sie befinden sich auf dem Staging-Server.</strong> Änderungen werden nicht
+                beibehalten.
+            </p>
+        </div>
+    {% endif %}
+
     {% include '@FerienpassCore/Page/_flash_banners.html.twig' %}
 
     <div id="wrapper">

@@ -61,7 +61,7 @@ class Attendance
     #[ORM\JoinColumn(name: 'task_id', referencedColumnName: 'id')]
     private ?EditionTask $task = null;
 
-    #[ORM\OneToMany(mappedBy: 'attendance', targetEntity: AttendanceLog::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'attendance', targetEntity: AttendanceLog::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $activity;
 
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
@@ -126,8 +126,7 @@ class Attendance
         $this->setModifiedAt();
 
         if (null !== $user) {
-            $activity = new AttendanceLog($this, $status, $user);
-            $this->activity[] = $activity;
+            $this->activity[] = new AttendanceLog($this, $status, $user);
         }
     }
 
