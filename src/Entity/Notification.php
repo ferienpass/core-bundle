@@ -41,7 +41,7 @@ class Notification
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $emailSubject = null;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: 'text', length: 65535, nullable: true)]
     private ?string $emailText = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
