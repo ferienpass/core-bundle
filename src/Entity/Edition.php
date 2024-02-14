@@ -48,9 +48,6 @@ class Edition
     #[ORM\OneToMany(mappedBy: 'edition', targetEntity: Offer::class, cascade: ['remove'])]
     private Collection $offers;
 
-    #[ORM\Column(type: 'integer', nullable: true, options: ['unsigned' => true])]
-    private ?int $listPage = null;
-
     #[ORM\Column(type: 'boolean')]
     private bool $archived = false;
 
@@ -128,16 +125,6 @@ class Edition
     public function setArchived(bool $archived = true): void
     {
         $this->archived = $archived;
-    }
-
-    public function getListPage(): ?int
-    {
-        return $this->listPage;
-    }
-
-    public function setListPage(int $listPage): void
-    {
-        $this->listPage = $listPage;
     }
 
     /**
