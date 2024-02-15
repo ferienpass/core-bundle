@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Export\Offer\PrintSheet;
 
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\File;
 use Contao\FilesModel;
 use Ferienpass\CoreBundle\Entity\Host;
@@ -28,7 +29,7 @@ class PdfExport implements OffersExportInterface
 {
     private PdfExportConfig $config;
 
-    public function __construct(private Filesystem $filesystem, #[Autowire('%kernel.project_dir%')] private string $projectDir, private Environment $twig)
+    public function __construct(private Filesystem $filesystem, #[Autowire('%kernel.project_dir%')] private string $projectDir, private Environment $twig, private readonly ContaoFramework $contaoFramework)
     {
     }
 
@@ -61,6 +62,8 @@ class PdfExport implements OffersExportInterface
 
     private function render(iterable $items): string
     {
+        $this->contaoFramework->initialize();
+
         $images = [];
         /** @var Offer $item */
         foreach ($items as $item) {
