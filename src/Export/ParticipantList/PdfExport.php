@@ -30,7 +30,7 @@ final class PdfExport implements OfferExportInterface
     {
         $html = $this->renderHtml($offer);
         $hash = md5($html);
-        $tmpPath = sys_get_temp_dir().'/system/tmp/pdf';
+        $tmpPath = sys_get_temp_dir().'/pdf';
         $pdfPath = sprintf('%s/%s.pdf', $tmpPath, $hash);
 
         $this->filesystem->mkdir($tmpPath);
