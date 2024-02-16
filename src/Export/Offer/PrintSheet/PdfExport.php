@@ -83,6 +83,7 @@ class PdfExport implements OffersExportInterface
 
     private function createPdf(string $path, string $html, array $mPdfConfig): void
     {
+        $mPdfConfig = array_merge(['tempDir' => sys_get_temp_dir()], $mPdfConfig);
         if (file_exists($path)) {
             return;
         }
