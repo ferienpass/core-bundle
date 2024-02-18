@@ -48,7 +48,7 @@ class Offer
     private ?Edition $edition = null;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups('notification')]
+    #[Groups(['notification', 'admin_list'])]
     private \DateTimeInterface $createdAt;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
@@ -71,7 +71,7 @@ class Offer
 
     #[Assert\NotBlank]
     #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
-    #[Groups(['docx_export', 'notification'])]
+    #[Groups(['docx_export', 'notification', 'admin_list'])]
     private string $name = '';
 
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
@@ -86,7 +86,7 @@ class Offer
     private ?string $comment = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    #[Groups(['docx_export', 'notification'])]
+    #[Groups(['docx_export', 'notification', 'admin_list'])]
     private ?string $description = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -623,12 +623,12 @@ class Offer
         $this->comment = $comment;
     }
 
-    public function getState(): ?string
+    public function getState(): string
     {
         return $this->state;
     }
 
-    public function setState(?string $state): void
+    public function setState(string $state): void
     {
         $this->state = $state;
     }

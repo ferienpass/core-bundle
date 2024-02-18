@@ -46,39 +46,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email]
     #[Assert\NotBlank]
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Groups('notification')]
+    #[Groups(['notification', 'admin_list'])]
     private ?string $email = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
-    #[Groups('notification')]
+    #[Groups(['notification', 'admin_list'])]
     private ?string $firstname = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
-    #[Groups('notification')]
+    #[Groups(['notification', 'admin_list'])]
     private ?string $lastname = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
-    #[Groups('notification')]
+    #[Groups(['notification', 'admin_list'])]
     private ?string $street = null;
 
     #[ORM\Column(type: 'string', length: 16, nullable: true)]
-    #[Groups('notification')]
+    #[Groups(['notification', 'admin_list'])]
     private ?string $postal = null;
     #[ORM\Column(type: 'string', nullable: true)]
-    #[Groups('notification')]
+    #[Groups(['notification', 'admin_list'])]
     private ?string $city = null;
     #[ORM\Column(type: 'string', nullable: true)]
-    #[Groups('notification')]
+    #[Groups(['notification', 'admin_list'])]
     private ?string $country = null;
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
-    #[Groups('notification')]
+    #[Groups(['notification', 'admin_list'])]
     private ?string $phone = null;
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
-    #[Groups('notification')]
+    #[Groups(['notification', 'admin_list'])]
     private ?string $mobile = null;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups('notification')]
+    #[Groups(['notification', 'admin_list'])]
     private \DateTimeInterface $createdAt;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
@@ -327,6 +327,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->plainPassword = $plainPassword;
     }
 
+    #[Groups(['admin_list'])]
     public function isDisabled(): bool
     {
         return $this->disable;
