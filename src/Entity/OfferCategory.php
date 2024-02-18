@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[ORM\Entity]
 class OfferCategory
@@ -53,9 +54,19 @@ class OfferCategory
         return $this->offers;
     }
 
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
     public function getName(): ?string
     {
         return $this->name;
+    }
+
+    public function setAlias(string $alias): void
+    {
+        $this->alias = $alias;
     }
 
     public function getAlias(): ?string
@@ -66,5 +77,18 @@ class OfferCategory
     public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
+    }
+
+    public function generateAlias(SluggerInterface $slugger)
+    {
+        if (!$this->id) {
+            $this->alias = uniqid();
+
+            return;
+        }
+
+        if (!$this->alias) {
+            $this->alias = (string) $slugger->slug($this->getName())->lower();
+        }
     }
 }
