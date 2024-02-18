@@ -1,0 +1,8 @@
+xlsx.calculation.0: 'Kalkulation (XLSX)'
+xlsx.calculation.1: 'Exportiert alle Angebote mit Aufschlüsselung der kalkulierten Kosten als Excel-Datei.'
+zip.print.0: 'Druckbögen (ZIP)'
+zip.print.1: 'Exportiert alle Angebote als PDF-Druckbögen mit zugehörigen Bildern.'
+docx.print.0: 'Druckbögen (DOCX)'
+docx.print.1: 'Exportiert alle Angebote als DOCX-Druckbögen.'
+pdf.print.0: 'Druckbögen (PDF)'
+pdf.print.1: 'Exportiert alle Angebote im druckfertigen PDF-Format.'

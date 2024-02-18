@@ -31,6 +31,7 @@ class Edition
     private \DateTimeInterface $createdAt;
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Groups('notification')]
     private ?string $name = null;
 
     #[ORM\Column(type: 'string', nullable: true)]

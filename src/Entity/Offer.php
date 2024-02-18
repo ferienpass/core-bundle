@@ -161,9 +161,10 @@ class Offer
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $datesExport = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'contact_id', referencedColumnName: 'id')]
     #[Groups('docx_export')]
-    private ?string $contact = null;
+    private ?User $contactUser = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups('docx_export')]
@@ -662,14 +663,14 @@ class Offer
         $this->calculationNotes = $calculationNotes;
     }
 
-    public function getContact(): ?string
+    public function getContactUser(): ?User
     {
-        return $this->contact;
+        return $this->contactUser;
     }
 
-    public function setContact(?string $contact): void
+    public function setContactUser(?User $contactUser): void
     {
-        $this->contact = $contact;
+        $this->contactUser = $contactUser;
     }
 
     public function getActivity(): Collection
@@ -725,6 +726,11 @@ class Offer
     public function getAgreementLetter(): ?string
     {
         return $this->agreementLetter;
+    }
+
+    public function setAgreementLetter(?string $agreementLetter): void
+    {
+        $this->agreementLetter = $agreementLetter;
     }
 
     public function getMemberAssociations(): Collection

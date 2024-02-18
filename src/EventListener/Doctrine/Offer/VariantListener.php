@@ -57,7 +57,7 @@ class VariantListener
             $variant->setRequiresApplication($base->requiresApplication());
             $variant->setOnlineApplication($base->isOnlineApplication());
             $variant->setApplyText($base->getApplyText());
-            $variant->setContact($base->getContact());
+            $variant->setContactUser($base->getContactUser());
             $variant->setFee($base->getFee());
             $variant->setImage($base->getImage());
 
