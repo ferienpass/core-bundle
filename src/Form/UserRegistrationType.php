@@ -66,7 +66,7 @@ class UserRegistrationType extends AbstractType
                 ->add('mobile', TelType::class, [
                     'help' => 'Wir schicken Ihnen Zusagen per SMS.',
                     'constraints' => [
-                        new PhoneNumber(['type' => PhoneNumber::MOBILE, 'defaultRegion' => 'DE']),
+                        new PhoneNumber(type: PhoneNumber::MOBILE, defaultRegion: 'DE'),
                     ],
                     'attr' => [
                         'placeholder' => '0172-0000000',
@@ -80,7 +80,7 @@ class UserRegistrationType extends AbstractType
             $builder
                 ->add('phone', TelType::class, [
                     'constraints' => [
-                        new PhoneNumber(['type' => PhoneNumber::FIXED_LINE, 'defaultRegion' => 'DE']),
+                        new PhoneNumber(type: PhoneNumber::FIXED_LINE, defaultRegion: 'DE'),
                     ],
                     'attr' => [
                         'placeholder' => '030-00000',
