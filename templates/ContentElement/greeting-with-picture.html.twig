@@ -2,7 +2,12 @@
 
     <div class="md:mr-10">
         <div class="mx-auto mb-6 rounded-full bg-gray-100 h-32 w-32 sm:h-40 sm:w-40 md:h-56 md:w-56 overflow-hidden shadow-sm border">
-            {{ contao_figure(image, '_greeting_avatar') }}
+            {{ contao_figure(image, picture_config({
+                width: 400,
+                height: 400,
+                resizeMode: 'crop',
+                densities: '1x, 2x'
+            })) }}
         </div>
     </div>
 
