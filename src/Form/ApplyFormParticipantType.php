@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Form;
 
-use Contao\FrontendUser;
-use Contao\MemberModel;
 use Ferienpass\CmsBundle\Form\SimpleType\ContaoRequestTokenType;
 use Ferienpass\CoreBundle\Form\CompundType\ParticipantType;
 use Symfony\Component\Form\AbstractType;
@@ -34,9 +32,7 @@ class ApplyFormParticipantType extends AbstractType
         $user = $this->security->getUser();
 
         $builder
-            ->add('participant', ParticipantType::class, [
-                'member' => $user instanceof FrontendUser ? MemberModel::findByPk($user->id) : null,
-            ])
+            ->add('participant', ParticipantType::class)
             ->add('request_token', ContaoRequestTokenType::class)
             ->add('submit', SubmitType::class, ['label' => 'Speichern und weiter'])
         ;

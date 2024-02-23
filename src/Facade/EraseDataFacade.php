@@ -13,13 +13,17 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Facade;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManagerInterface;
+use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Participant;
+use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Repository\ParticipantRepository;
 
 class EraseDataFacade
 {
-    public function __construct(private readonly Connection $connection, private readonly ParticipantRepository $participantRepository)
+    public function __construct(private readonly Connection $connection, private readonly ParticipantRepository $participantRepository, private readonly EntityManagerInterface $doctrine)
     {
     }
 
@@ -46,7 +50,7 @@ FROM Participant p
          LEFT JOIN Edition e ON e.id = f.edition
          LEFT JOIN EditionTask et ON e.id = et.pid
 WHERE
-   (f.id IS NULL AND FROM_UNIXTIME(p.tstamp) < DATE_SUB(NOW(), INTERVAL 2 WEEK))
+   (f.id IS NULL AND p.createdAt < DATE_SUB(NOW(), INTERVAL 2 WEEK))
    OR
       (et.type = 'show_offers' AND et.periodEnd < DATE_SUB(NOW(), INTERVAL 2 WEEK))
 SQL
@@ -76,69 +80,56 @@ SQL
     {
         $participantIds = array_map(fn (Participant $participant) => $participant->getId(), $this->expiredParticipants());
 
-        $this->connection->executeQuery(<<<'SQL'
-DELETE l, r, n
-FROM EventLog l
-INNER JOIN EventLogRelated r ON r.log_id = l.id
-LEFT JOIN NotificationLog n ON n.log_id = l.id
-INNER JOIN Attendance a ON a.id = r.relatedId
-WHERE r.relatedTable = 'Attendance'
-  AND a.participant_id IN (?)
-SQL
-            , [$participantIds], [Connection::PARAM_INT_ARRAY]);
-
         // Retain participant ids for statistics
-        $this->connection->createQueryBuilder()
-            ->update('Attendance')
+        $this->doctrine->getRepository(Attendance::class)
+            ->createQueryBuilder('a')
+            ->update()
             ->set('participant_id_original', 'participant_id')
             ->where('participant_id IN (:ids)')
-            ->setParameter('ids', $participantIds, Connection::PARAM_INT_ARRAY)
-            ->executeStatement()
+            ->setParameter('ids', $participantIds, ArrayParameterType::INTEGER)
+            ->getQuery()
+            ->execute()
         ;
 
-        $this->connection->createQueryBuilder()
-            ->update('Attendance')
+        // Remove parent association, attendances do not get removed
+        $this->doctrine->getRepository(Attendance::class)
+            ->createQueryBuilder('a')
+            ->update()
             ->set('participant_id', 'NULL')
             ->where('participant_id IN (:ids)')
-            ->setParameter('ids', $participantIds, Connection::PARAM_INT_ARRAY)
-            ->executeStatement()
+            ->setParameter('ids', $participantIds, ArrayParameterType::INTEGER)
+            ->getQuery()
+            ->execute()
         ;
 
-        $this->connection->createQueryBuilder()
-            ->delete('Participant')
-            ->where('id IN (:ids)')
-            ->setParameter('ids', $participantIds, Connection::PARAM_INT_ARRAY)
-            ->executeStatement()
+        $this->doctrine->getRepository(Participant::class)
+            ->createQueryBuilder('p')
+            ->delete()
+            ->where('p.id IN (:ids)')
+            ->setParameter('ids', $participantIds, ArrayParameterType::INTEGER)
+            ->getQuery()
+            ->execute()
         ;
     }
 
     private function deleteMembersWithNoParticipants(): void
     {
-        $members = $this->connection->executeQuery(
-            <<<'SQL'
-SELECT m.id
-FROM tl_member m
-         LEFT JOIN Participant p ON p.member_id = m.id
-WHERE p.id IS NULL
-  AND m.lastLogin < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 2 WEEK))
-  AND m.`groups` = 'a:1:{i:0;s:1:"2";}'
-SQL
-        )->fetchAllNumeric();
-
-        $members = array_column($members, 0);
-
-        $this->connection->createQueryBuilder()
-            ->delete('tl_version')
-            ->where("fromTable = 'tl_member'")
-            ->andWhere('pid IN (:ids)')
-            ->setParameter('ids', $members, Connection::PARAM_INT_ARRAY)
-            ->executeStatement();
-
-        $this->connection->createQueryBuilder()
-            ->delete('tl_member')
-            ->where('id IN (:ids)')
-            ->setParameter('ids', $members, Connection::PARAM_INT_ARRAY)
-            ->executeStatement()
+        $this->doctrine->getRepository(User::class)
+            ->createQueryBuilder('u')
+            ->leftJoin('u.participants', 'p')
+            ->delete()
+            ->where('p IS NULL')
+            //->andWhere('u.lastLogin < DATE_SUB(NOW(), INTERVAL 2 WEEK)')
+            ->andWhere("JSON_SEARCH(u.roles, 'one', :role_member) IS NOT NULL")
+            ->andWhere("JSON_SEARCH(u.roles, 'one', :role_host) IS NULL")
+            ->andWhere("JSON_SEARCH(u.roles, 'one', :role_admin) IS NULL")
+            ->andWhere("JSON_SEARCH(u.roles, 'one', :role_sadmin) IS NULL")
+            ->setParameter('role_member', 'ROLE_MEMBER')
+            ->setParameter('role_host', 'ROLE_HOST')
+            ->setParameter('role_admin', 'ROLE_ADMIN')
+            ->setParameter('role_sadmin', 'ROLE_SUPER_ADMIN')
+            ->getQuery()
+            ->execute()
         ;
     }
 
