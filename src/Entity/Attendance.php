@@ -71,8 +71,8 @@ class Attendance
     private ?int $age = null;
 
     // Only used for data retention.
-    #[ORM\Column(name: 'participant_id_original', type: 'integer', nullable: true, options: ['unsigned' => true])]
-    private ?int $participantId = null;
+    #[ORM\Column(name: 'participant_id_original', type: 'string', length: 10, nullable: true)]
+    private ?string $participantPseudonym = null;
 
     #[ORM\OneToMany(mappedBy: 'attendance', targetEntity: PaymentItem::class)]
     private Collection $paymentItems;
@@ -261,5 +261,20 @@ class Attendance
     public function getPaymentItems(): Collection
     {
         return $this->paymentItems;
+    }
+
+    public function getParticipantPseudonym(): ?string
+    {
+        return $this->participantPseudonym;
+    }
+
+    public function setParticipantPseudonym(string $participantPseudonym): void
+    {
+        $this->participantPseudonym = $participantPseudonym;
+    }
+
+    public function unsetParticipant()
+    {
+        $this->participant = null;
     }
 }

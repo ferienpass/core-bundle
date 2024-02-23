@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Facade;
 
-use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Ferienpass\CoreBundle\Entity\Attendance;
@@ -43,7 +42,7 @@ class EraseDataFacade
     {
         $participantsToDelete = $this->connection->executeQuery(
             <<<'SQL'
-SELECT DISTINCT p.id
+SELECT DISTINCT p.id, p.lastname
 FROM Participant p
          LEFT JOIN Attendance a ON p.id = a.participant_id
          LEFT JOIN Offer f ON f.id = a.offer_id
@@ -53,6 +52,7 @@ WHERE
    (f.id IS NULL AND p.createdAt < DATE_SUB(NOW(), INTERVAL 2 WEEK))
    OR
       (et.type = 'show_offers' AND et.periodEnd < DATE_SUB(NOW(), INTERVAL 2 WEEK))
+ORDER BY p.lastname
 SQL
         )->fetchAllNumeric();
 
@@ -78,35 +78,28 @@ SQL
 
     private function deleteParticipants(): void
     {
-        $participantIds = array_map(fn (Participant $participant) => $participant->getId(), $this->expiredParticipants());
+        $participants = $this->expiredParticipants();
 
-        // Retain participant ids for statistics
-        $this->doctrine->getRepository(Attendance::class)
-            ->createQueryBuilder('a')
-            ->update()
-            ->set('participant_id_original', 'participant_id')
-            ->where('participant_id IN (:ids)')
-            ->setParameter('ids', $participantIds, ArrayParameterType::INTEGER)
-            ->getQuery()
-            ->execute()
-        ;
+        /** @var Participant $participant */
+        foreach ($participants as $participant) {
+            /** @var Attendance $attendance */
+            $pseudonym = bin2hex(random_bytes(5));
+            foreach ($participant->getAttendances() as $attendance) {
+                // Create a pseudonym for each participant
+                $attendance->setParticipantPseudonym($pseudonym);
 
-        // Remove parent association, attendances do not get removed
-        $this->doctrine->getRepository(Attendance::class)
-            ->createQueryBuilder('a')
-            ->update()
-            ->set('participant_id', 'NULL')
-            ->where('participant_id IN (:ids)')
-            ->setParameter('ids', $participantIds, ArrayParameterType::INTEGER)
-            ->getQuery()
-            ->execute()
-        ;
+                // Remove parent association so attendances do not get removed
+                $attendance->unsetParticipant();
+            }
+        }
+
+        $this->doctrine->flush();
 
         $this->doctrine->getRepository(Participant::class)
             ->createQueryBuilder('p')
             ->delete()
-            ->where('p.id IN (:ids)')
-            ->setParameter('ids', $participantIds, ArrayParameterType::INTEGER)
+            ->where('p IN (:ids)')
+            ->setParameter('ids', $participants)
             ->getQuery()
             ->execute()
         ;
@@ -119,7 +112,7 @@ SQL
             ->leftJoin('u.participants', 'p')
             ->delete()
             ->where('p IS NULL')
-            //->andWhere('u.lastLogin < DATE_SUB(NOW(), INTERVAL 2 WEEK)')
+            // ->andWhere('u.lastLogin < DATE_SUB(NOW(), INTERVAL 2 WEEK)')
             ->andWhere("JSON_SEARCH(u.roles, 'one', :role_member) IS NOT NULL")
             ->andWhere("JSON_SEARCH(u.roles, 'one', :role_host) IS NULL")
             ->andWhere("JSON_SEARCH(u.roles, 'one', :role_admin) IS NULL")

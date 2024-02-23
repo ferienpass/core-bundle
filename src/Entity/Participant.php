@@ -72,7 +72,7 @@ class Participant
     #[ORM\OneToMany(mappedBy: 'participant', targetEntity: Attendance::class, cascade: ['remove'])]
     private Collection $attendances;
 
-    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: ParticipantLog::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: ParticipantLog::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $activity;
 
     public function __construct(User $user = null)
