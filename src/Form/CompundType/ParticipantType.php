@@ -78,7 +78,7 @@ class ParticipantType extends AbstractType
                 'label' => 'Handynummer',
                 'required' => false,
                 'constraints' => [
-                    new PhoneNumber(['type' => PhoneNumber::MOBILE, 'defaultRegion' => 'DE']),
+                    new PhoneNumber(type: PhoneNumber::MOBILE, defaultRegion: 'DE'),
                 ],
                 'attr' => [
                     'placeholder' => '0172-0000000',
