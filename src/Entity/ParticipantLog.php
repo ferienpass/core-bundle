@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface;
+use Symfony\Component\Workflow\Transition;
 
 #[ORM\Entity]
 class ParticipantLog
@@ -27,21 +29,46 @@ class ParticipantLog
     #[ORM\JoinColumn(name: 'participant_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Participant $participant;
 
+    #[ORM\ManyToOne(targetEntity: Attendance::class, inversedBy: 'activity')]
+    #[ORM\JoinColumn(name: 'attendance_id', referencedColumnName: 'id')]
+    private ?Attendance $attendance;
+
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\User')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    private User $user;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true)]
+    private ?User $user;
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $comment;
 
-    public function __construct(Participant $participant, string $comment, User $user)
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    private ?string $applicationSystem = null;
+
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    private ?string $transitionName = null;
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    private ?string $transitionFrom = null;
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    private ?string $transitionTo = null;
+
+    public function __construct(Participant $participant, User $user = null, Attendance $attendance = null, ApplicationSystemInterface $applicationSystem = null, string $comment = null, Transition $transition = null)
     {
         $this->participant = $participant;
-        $this->comment = $comment;
         $this->user = $user;
+        $this->comment = $comment;
+        $this->attendance = $attendance;
+
+        if (null !== $transition) {
+            $this->transitionName = $transition->getName();
+            $this->transitionFrom = $transition->getFroms()[0];
+            $this->transitionTo = $transition->getTos()[0];
+        }
+
+        if (null !== $applicationSystem) {
+            $this->applicationSystem = $applicationSystem->getType();
+        }
 
         $this->createdAt = new \DateTimeImmutable();
     }
@@ -61,12 +88,41 @@ class ParticipantLog
         return $this->participant;
     }
 
+    public function getAttendance(): ?Attendance
+    {
+        return $this->attendance;
+    }
+
+    public function getApplicationSystem(): ?string
+    {
+        return $this->applicationSystem;
+    }
+
+    public function isComment(): bool
+    {
+        return null !== $this->comment;
+    }
+
+    public function isTransition(): bool
+    {
+        return null !== $this->transitionName;
+    }
+
     public function getComment(): ?string
     {
         return $this->comment;
     }
 
-    public function getUser(): User
+    public function getTransition(): ?Transition
+    {
+        if (!$this->isTransition()) {
+            return null;
+        }
+
+        return new Transition($this->transitionName, $this->transitionFrom, $this->transitionTo);
+    }
+
+    public function getUser(): ?User
     {
         return $this->user;
     }

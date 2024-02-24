@@ -50,7 +50,7 @@ abstract class AbstractApplicationSystem implements ApplicationSystemInterface
             return;
         }
 
-        $attendance->setStatus('waiting');
+        $attendance->setStatus('waiting', applicationSystem: $this);
     }
 
     protected function applySorting(Attendance $attendance): void

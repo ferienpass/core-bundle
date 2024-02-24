@@ -15,11 +15,11 @@ namespace Ferienpass\CoreBundle\EventListener\Workflow;
 
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Message\OfferCancelled;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Workflow\Attribute\AsEnteredListener;
 use Symfony\Component\Workflow\Event\EnteredEvent;
 
-#[AsEventListener('workflow.offer.entered.'.Offer::STATE_CANCELLED)]
+#[AsEnteredListener(workflow: 'offer', place: Offer::STATE_CANCELLED)]
 class OfferCancelTransactionListener
 {
     public function __construct(private readonly MessageBusInterface $messageBus)

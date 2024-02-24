@@ -41,7 +41,7 @@ class FirstComeApplicationSystem extends AbstractApplicationSystem
 
         // Offers with no participant limit
         if (!$max) {
-            $attendance->setStatus('confirmed');
+            $attendance->setStatus('confirmed', applicationSystem: $this);
 
             return;
         }
@@ -50,19 +50,19 @@ class FirstComeApplicationSystem extends AbstractApplicationSystem
 
         // Existing participant and spots left
         if (null !== $position && $position < $max) {
-            $attendance->setStatus('confirmed');
+            $attendance->setStatus('confirmed', applicationSystem: $this);
 
             return;
         }
 
         // New participant and spots left
         if (null === $position && $offer->getAttendancesConfirmedOrWaitlisted()->count() < $max) {
-            $attendance->setStatus('confirmed');
+            $attendance->setStatus('confirmed', applicationSystem: $this);
 
             return;
         }
 
-        $attendance->setStatus('waitlisted');
+        $attendance->setStatus('waitlisted', applicationSystem: $this);
     }
 
     /**

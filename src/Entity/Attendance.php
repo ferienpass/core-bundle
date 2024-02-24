@@ -15,8 +15,10 @@ namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Workflow\Transition;
 
 #[ORM\Entity]
 #[ORM\UniqueConstraint(columns: ['offer_id', 'participant_id'])]
@@ -27,6 +29,11 @@ class Attendance
     final public const STATUS_WITHDRAWN = 'withdrawn';
     final public const STATUS_WAITING = 'waiting';
     final public const STATUS_ERROR = 'error';
+
+    final public const TRANSITION_CONFIRM = 'confirm';
+    final public const TRANSITION_WAITLIST = 'waitlist';
+    final public const TRANSITION_WITHDRAW = 'withdraw';
+    final public const TRANSITION_RESET = 'reset';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -61,7 +68,7 @@ class Attendance
     #[ORM\JoinColumn(name: 'task_id', referencedColumnName: 'id')]
     private ?EditionTask $task = null;
 
-    #[ORM\OneToMany(mappedBy: 'attendance', targetEntity: AttendanceLog::class, cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'attendance', targetEntity: ParticipantLog::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $activity;
 
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
@@ -86,7 +93,12 @@ class Attendance
         $this->activity = new ArrayCollection();
         $this->paymentItems = new ArrayCollection();
 
-        $this->setStatus($status);
+        if (null !== $status && !\in_array($status, [self::STATUS_CONFIRMED, self::STATUS_WAITLISTED, self::STATUS_WITHDRAWN, self::STATUS_WAITING, self::STATUS_ERROR], true)) {
+            throw new InvalidArgumentException('Invalid attendance status');
+        }
+
+        $this->status = $status;
+        $this->setModifiedAt();
     }
 
     public function __toString(): string
@@ -115,19 +127,28 @@ class Attendance
         return $this->status;
     }
 
-    public function setStatus(?string $status, User $user = null): void
+    public function setStatus(?string $status, User $user = null, ApplicationSystemInterface $applicationSystem = null): void
     {
         if (null !== $status && !\in_array($status, [self::STATUS_CONFIRMED, self::STATUS_WAITLISTED, self::STATUS_WITHDRAWN, self::STATUS_WAITING, self::STATUS_ERROR], true)) {
             throw new InvalidArgumentException('Invalid attendance status');
         }
 
+        if (null !== $status) {
+            $transitionName = match ($status) {
+                self::STATUS_CONFIRMED => self::TRANSITION_CONFIRM,
+                self::STATUS_WAITLISTED => self::TRANSITION_WAITLIST,
+                self::STATUS_WITHDRAWN => self::STATUS_WITHDRAWN,
+                self::STATUS_WAITING => self::TRANSITION_RESET,
+            };
+
+            if (null !== $transitionName) {
+                $this->activity[] = new ParticipantLog($this->participant, $user, $this, $applicationSystem, transition: new Transition($transitionName, (string) $this->status, $status));
+            }
+        }
+
         $this->status = $status;
 
         $this->setModifiedAt();
-
-        if (null !== $user) {
-            $this->activity[] = new AttendanceLog($this, $status, $user);
-        }
     }
 
     public function getActivity(): Collection
@@ -143,11 +164,6 @@ class Attendance
     public function isPaid(): bool
     {
         return $this->paid;
-    }
-
-    public function setConfirmed(): void
-    {
-        $this->setStatus(self::STATUS_CONFIRMED);
     }
 
     public function isConfirmed(): bool

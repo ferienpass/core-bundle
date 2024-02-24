@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Workflow\Transition;
 
 #[ORM\Entity]
 class OfferLog
@@ -37,11 +38,24 @@ class OfferLog
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $comment;
 
-    public function __construct(Offer $offer, string $comment, User $user)
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    private ?string $transitionName = null;
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    private ?string $transitionFrom = null;
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    private ?string $transitionTo = null;
+
+    public function __construct(Offer $offer, User $user, string $comment = null, Transition $transition = null)
     {
         $this->offer = $offer;
         $this->comment = $comment;
         $this->user = $user;
+
+        if (null !== $transition) {
+            $this->transitionName = $transition->getName();
+            $this->transitionFrom = $transition->getFroms()[0];
+            $this->transitionTo = $transition->getTos()[0];
+        }
 
         $this->createdAt = new \DateTimeImmutable();
     }
@@ -61,9 +75,28 @@ class OfferLog
         return $this->offer;
     }
 
+    public function isComment(): bool
+    {
+        return null !== $this->comment;
+    }
+
+    public function isTransition(): bool
+    {
+        return null !== $this->transitionName;
+    }
+
     public function getComment(): ?string
     {
         return $this->comment;
+    }
+
+    public function getTransition(): ?Transition
+    {
+        if (!$this->isTransition()) {
+            return null;
+        }
+
+        return new Transition($this->transitionName, $this->transitionFrom, $this->transitionTo);
     }
 
     public function getUser(): User

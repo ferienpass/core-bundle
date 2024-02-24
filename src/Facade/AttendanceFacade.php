@@ -24,11 +24,12 @@ use Ferienpass\CoreBundle\Entity\Participant;
 use Ferienpass\CoreBundle\Message\AttendanceCreated;
 use Ferienpass\CoreBundle\Message\AttendanceStatusChanged;
 use Ferienpass\CoreBundle\Message\ParticipantListChanged;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class AttendanceFacade
 {
-    public function __construct(private readonly MessageBusInterface $messageBus, private readonly ManagerRegistry $doctrine, private readonly ApplicationSystems $applicationSystems)
+    public function __construct(private readonly MessageBusInterface $messageBus, private readonly ManagerRegistry $doctrine, private readonly ApplicationSystems $applicationSystems, private readonly Security $security)
     {
     }
 
@@ -154,7 +155,7 @@ class AttendanceFacade
     private function setStatus(Attendance $attendance, ?string $status): void
     {
         if (null !== $status) {
-            $attendance->setStatus($status);
+            $attendance->setStatus($status, user: $this->security->getUser());
 
             return;
         }
@@ -198,7 +199,7 @@ class AttendanceFacade
     private function withdrawAttendance(Attendance $attendance): void
     {
         $oldStatus = $attendance->getStatus();
-        $attendance->setStatus('withdrawn');
+        $attendance->setStatus('withdrawn', user: $this->security->getUser());
 
         $this->doctrine->getManager()->flush();
 

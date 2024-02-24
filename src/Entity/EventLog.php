@@ -16,8 +16,9 @@ namespace Ferienpass\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\Repository\EventLogRepository;
 
-#[ORM\Entity(repositoryClass: 'Ferienpass\CoreBundle\Repository\EventLogRepository')]
+#[ORM\Entity(repositoryClass: EventLogRepository::class)]
 class EventLog
 {
     #[ORM\Id]
