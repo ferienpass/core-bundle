@@ -5,7 +5,7 @@
     "build": "maizzle build production"
   },
   "dependencies": {
-    "@maizzle/framework": "^4.7.2"
+    "@maizzle/framework": "^4.7.6"
   },
   "browserslist": [
     "> 1%"
