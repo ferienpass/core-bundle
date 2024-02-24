@@ -24,7 +24,7 @@ class ParticipantLog
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: 'Participant', inversedBy: 'activity')]
-    #[ORM\JoinColumn(name: 'participant_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'participant_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Participant $participant;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]

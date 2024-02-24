@@ -49,7 +49,7 @@ FROM Participant p
          LEFT JOIN Edition e ON e.id = f.edition
          LEFT JOIN EditionTask et ON e.id = et.pid
 WHERE
-   (f.id IS NULL AND p.createdAt < DATE_SUB(NOW(), INTERVAL 2 WEEK))
+   (f.id IS NULL AND (p.createdAt IS NULL OR p.createdAt < DATE_SUB(NOW(), INTERVAL 2 WEEK)))
    OR
       (et.type = 'show_offers' AND et.periodEnd < DATE_SUB(NOW(), INTERVAL 2 WEEK))
 ORDER BY p.lastname
@@ -111,7 +111,7 @@ SQL
             ->createQueryBuilder('u')
             ->leftJoin('u.participants', 'p')
             ->delete()
-            ->where('p IS NULL')
+            ->where('p.id IS NULL')
             // ->andWhere('u.lastLogin < DATE_SUB(NOW(), INTERVAL 2 WEEK)')
             ->andWhere("JSON_SEARCH(u.roles, 'one', :role_member) IS NOT NULL")
             ->andWhere("JSON_SEARCH(u.roles, 'one', :role_host) IS NULL")
