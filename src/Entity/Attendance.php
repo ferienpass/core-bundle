@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface;
@@ -30,6 +31,7 @@ class Attendance
     final public const STATUS_WAITING = 'waiting';
     final public const STATUS_ERROR = 'error';
 
+    final public const TRANSITION_CREATE = 'create';
     final public const TRANSITION_CONFIRM = 'confirm';
     final public const TRANSITION_WAITLIST = 'waitlist';
     final public const TRANSITION_WITHDRAW = 'withdraw';
@@ -238,6 +240,11 @@ class Attendance
     public function setUserPriority(int $userPriority): void
     {
         $this->userPriority = $userPriority;
+    }
+
+    public function getAge(): ?int
+    {
+        return $this->age;
     }
 
     #[Groups('docx_export')]
