@@ -102,10 +102,6 @@ class Offer
     #[ORM\Column(type: 'binary_string', nullable: true)]
     private ?string $downloads = null;
 
-    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
-    #[Groups('docx_export')]
-    private bool $published = false;
-
     #[ORM\Column(type: 'string', length: 16, nullable: false, options: ['default' => ''])]
     private string $label = '';
 
@@ -126,6 +122,8 @@ class Offer
     #[ORM\Column(type: 'date', nullable: true)]
     #[Groups('docx_export')]
     private ?\DateTimeInterface $applicationDeadline = null;
+
+    private bool $saved = false;
 
     #[ORM\Column(type: 'smallint', nullable: true, options: ['unsigned' => true])]
     #[Groups('docx_export')]
@@ -335,7 +333,7 @@ class Offer
 
     public function isPublished(): bool
     {
-        return $this->published;
+        return self::STATE_PUBLISHED === $this->state;
     }
 
     public function requiresApplication(): bool
@@ -396,11 +394,6 @@ class Offer
     public function setImage(?string $image): void
     {
         $this->image = $image;
-    }
-
-    public function setPublished(bool $published): void
-    {
-        $this->published = $published;
     }
 
     public function setRequiresApplication(bool $requiresApplication): void
@@ -736,6 +729,16 @@ class Offer
     public function getMemberAssociations(): Collection
     {
         return $this->memberAssociations;
+    }
+
+    public function isSaved(): bool
+    {
+        return $this->saved;
+    }
+
+    public function setSaved(bool $saved): void
+    {
+        $this->saved = $saved;
     }
 
     public function generateAlias(SluggerInterface $slugger)

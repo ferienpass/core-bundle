@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
-use Ferienpass\CoreBundle\Form\ListFiltersType;
+use Ferienpass\CmsBundle\Form\ListFiltersType;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\Form\FormFactoryInterface;
 
