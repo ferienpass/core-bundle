@@ -204,6 +204,18 @@ class Edition
         return !$tasks->isEmpty();
     }
 
+    public function isOnline(): bool
+    {
+        if ($this->tasks->filter(fn (EditionTask $element) => 'show_offers' === $element->getType())->isEmpty()) {
+            return true;
+        }
+
+        $time = new \DateTimeImmutable();
+        $tasks = $this->tasks->filter(fn (EditionTask $element) => 'show_offers' === $element->getType() && $time >= $element->getPeriodBegin() && $time < $element->getPeriodEnd());
+
+        return !$tasks->isEmpty();
+    }
+
     /**
      * Check whether the host can edit the offers of this pass edition.
      */
