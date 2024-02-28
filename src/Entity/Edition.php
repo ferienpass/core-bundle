@@ -227,6 +227,9 @@ class Edition
         return $hasCurrentHostEditingStage || !$hasHostEditingStages;
     }
 
+    /**
+     * @return Collection<EditionTask>
+     */
     public function getActiveTasks(string $taskName): Collection
     {
         $time = new \DateTimeImmutable();
@@ -236,5 +239,16 @@ class Edition
                 && $time >= $element->getPeriodBegin()
                 && $time < $element->getPeriodEnd()
         );
+    }
+
+    public function getAccessCodeStrategy(): ?AccessCodeStrategy
+    {
+        foreach ($this->getActiveTasks('application_system') as $task) {
+            if ($strategy = $task->getAccessCodeStrategy()) {
+                return $strategy;
+            }
+        }
+
+        return null;
     }
 }

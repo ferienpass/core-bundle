@@ -107,6 +107,30 @@ class EditionRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
+    /**
+     * @return array<int, Edition>
+     */
+    public function findWithActiveAccessCodeStrategies(): array
+    {
+        $qb0 = $this->_em->createQueryBuilder();
+        $qb = $this->createQueryBuilder('edition')
+            ->innerJoin(
+                'edition.tasks',
+                'period',
+                Expr\Join::WITH,
+                $qb0->expr()->andX(
+                    $qb0->expr()->eq('period.type', ':period'),
+                    $qb0->expr()->isNotNull('period.accessCodeStrategy'),
+                    $qb0->expr()->lte('period.periodBegin', 'CURRENT_TIMESTAMP()'),
+                    $qb0->expr()->gte('period.periodEnd', 'CURRENT_TIMESTAMP()')
+                )
+            )
+            ->setParameter('period', 'application_system')
+            ->getQuery();
+
+        return $qb->getResult();
+    }
+
     public function findOneWithActiveTask(string $taskName): ?Edition
     {
         return $this->findWithActiveTask($taskName)[0] ?? null;

@@ -66,6 +66,9 @@ class Participant
     #[Groups('admin_list')]
     private bool $discounted = false;
 
+    #[ORM\ManyToMany(targetEntity: AccessCode::class, mappedBy: 'participants')]
+    private Collection $accessCodes;
+
     /**
      * @psalm-var Collection<int, Attendance>
      */
@@ -81,6 +84,7 @@ class Participant
         $this->createdAt = new \DateTimeImmutable();
         $this->attendances = new ArrayCollection();
         $this->activity = new ArrayCollection();
+        $this->accessCodes = new ArrayCollection();
     }
 
     public function getId(): int
@@ -353,5 +357,31 @@ class Participant
     public function hasUnpaidAttendances(): bool
     {
         return !$this->getAttendancesConfirmed()->filter(fn (Attendance $a) => !$a->isPaid())->isEmpty();
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function getAccessCodes(): Collection
+    {
+        return $this->accessCodes;
+    }
+
+    public function addAccessCode(AccessCode $code)
+    {
+        if (!$this->accessCodes->contains($code)) {
+            $this->accessCodes->add($code);
+            $code->addParticipant($this);
+        }
+    }
+
+    public function removeAccessCode(AccessCode $code)
+    {
+        if ($this->accessCodes->contains($code)) {
+            $this->accessCodes->removeElement($code);
+            $code->removeParticipant($this);
+        }
     }
 }

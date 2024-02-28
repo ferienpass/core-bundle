@@ -38,7 +38,7 @@ class AccessCode
 
     #[ORM\JoinTable(name: 'AccessCodeToParticipant')]
     #[ORM\JoinColumn(name: 'code_id', referencedColumnName: 'id')]
-    #[ORM\ManyToMany(targetEntity: Participant::class)]
+    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'accessCodes')]
     private Collection $participants;
 
     public function __construct(AccessCodeStrategy $strategy, string $code)
@@ -79,5 +79,15 @@ class AccessCode
     public function getParticipants(): Collection
     {
         return $this->participants;
+    }
+
+    public function addParticipant(Participant $participant)
+    {
+        $this->participants[] = $participant;
+    }
+
+    public function removeParticipant(Participant $participant)
+    {
+        $this->participants->removeElement($participant);
     }
 }

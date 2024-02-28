@@ -92,6 +92,16 @@ class AccessCodeStrategy
         $this->max = $max;
     }
 
+    public function findCode(string $code): ?AccessCode
+    {
+        $codes = $this->codes->filter(fn (AccessCode $accessCode) => $code === $accessCode->getCode());
+        if ($codes->isEmpty()) {
+            return null;
+        }
+
+        return $codes->first();
+    }
+
     public function isEnabledParticipant(Participant $participant): bool
     {
         return $this->codes->filter(fn (AccessCode $code) => $code->getParticipants()->contains($participant))->count() > 0;
