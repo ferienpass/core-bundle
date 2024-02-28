@@ -52,12 +52,22 @@ class Edition
     #[ORM\Column(type: 'boolean')]
     private bool $archived = false;
 
+    #[ORM\ManyToMany(targetEntity: Host::class)]
+    #[ORM\JoinTable(name: 'EditionToHost', )]
+    #[ORM\JoinColumn(name: 'edition_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'host_id', referencedColumnName: 'id')]
+    private Collection $hosts;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $hostsCanAssign = false;
+
     private ApplicationSystemInterface $applicationSystem;
 
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
         $this->offers = new ArrayCollection();
+        $this->hosts = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -136,6 +146,21 @@ class Edition
     public function getOffers(): Collection
     {
         return $this->offers;
+    }
+
+    public function getHosts(): Collection
+    {
+        return $this->hosts;
+    }
+
+    public function hostsCanAssign(): bool
+    {
+        return $this->hostsCanAssign;
+    }
+
+    public function setHostsCanAssign(bool $hostsCanAssign): void
+    {
+        $this->hostsCanAssign = $hostsCanAssign;
     }
 
     public function getHoliday(): ?EditionTask
