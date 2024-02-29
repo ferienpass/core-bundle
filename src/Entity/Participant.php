@@ -369,12 +369,18 @@ class Participant
         return $this->accessCodes;
     }
 
-    public function addAccessCode(AccessCode $code)
+    public function addAccessCode(?AccessCode $code)
     {
-        if (!$this->accessCodes->contains($code)) {
-            $this->accessCodes->add($code);
-            $code->addParticipant($this);
+        if (null === $code) {
+            return;
         }
+
+        if ($this->accessCodes->contains($code)) {
+            return;
+        }
+
+        $this->accessCodes->add($code);
+        $code->addParticipant($this);
     }
 
     public function removeAccessCode(AccessCode $code)

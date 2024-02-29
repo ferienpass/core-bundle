@@ -20,7 +20,7 @@ use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class AttendanceDecisions extends AbstractNotification implements NotificationInterface, EmailNotificationInterface
+class AttendanceDecisions extends AbstractNotification implements NotificationInterface, EmailNotificationInterface, EditionAwareNotificationInterface
 {
     /** @var array<int, array<int, Attendance>> */
     private array $attendances;

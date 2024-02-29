@@ -101,9 +101,3 @@ offerList.filter:
   latest_date: vor dem <strong>{value}</strong>
   favorites: nur gespeicherte Angebote
   category: '{value}'
-
-userAccount:
-  participants: Teilnehmer:innen
-  personal_data: Persönliche Daten
-  change_password: Passwort ändern
-  close_account: Account löschen

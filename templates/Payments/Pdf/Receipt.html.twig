@@ -76,7 +76,9 @@
                     {% endif %}
                 </td>
                 <td>
-                    <p>{{ item.attendance.participant.name }}</p>
+                    {% if item.attendance.participant %}
+                        <p>{{ item.attendance.participant.name }}</p>
+                    {% endif %}
                 </td>
                 <td>
                     <p>

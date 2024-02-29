@@ -87,6 +87,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $lastLogin = null;
 
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $dontDeleteBefore = null;
+
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
@@ -427,6 +430,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastLogin(?\DateTimeInterface $lastLogin): void
     {
         $this->lastLogin = $lastLogin;
+    }
+
+    public function getDontDeleteBefore(): ?\DateTimeInterface
+    {
+        return $this->dontDeleteBefore;
+    }
+
+    public function setDontDeleteBefore(?\DateTimeInterface $dontDeleteBefore): void
+    {
+        $this->dontDeleteBefore = $dontDeleteBefore;
     }
 
     /** @return Collection<Participant> */
