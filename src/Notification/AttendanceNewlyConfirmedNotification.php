@@ -65,6 +65,7 @@ class AttendanceNewlyConfirmedNotification extends AbstractNotification implemen
     {
         $email = (new NotificationEmail(self::getName()))
             ->to($recipient->getEmail())
+            ->replyTo($this->getReplyTo())
             ->subject($this->getSubject())
             ->content($this->getContent())
             ->attachFromPath($this->iCalExport->generate([$this->attendance->getOffer()]), $this->attendance->getOffer()->getAlias())

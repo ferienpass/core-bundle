@@ -49,6 +49,7 @@ class MailingNotification extends AbstractNotification implements EmailNotificat
     {
         $email = (new NotificationEmail('mailing'))
             ->to($recipient->getEmail())
+            ->replyTo($this->getReplyTo())
             ->subject($this->getSubject())
             ->content($this->getContent())
             ->context($this->getContext());

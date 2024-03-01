@@ -59,6 +59,7 @@ class AccountCreatedNotification extends AbstractNotification implements Notific
     {
         $email = (new NotificationEmail(self::getName()))
             ->to($recipient->getEmail())
+            ->replyTo($this->getReplyTo())
             ->subject($this->getSubject())
             ->content($this->getContent())
             ->context($this->getContext())

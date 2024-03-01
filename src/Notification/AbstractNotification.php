@@ -31,6 +31,15 @@ abstract class AbstractNotification extends Notification implements ServiceSubsc
 {
     use ServiceSubscriberTrait;
 
+    private ?string $replyTo = null;
+
+    public function replyTo(string $replyTo): static
+    {
+        $this->replyTo = $replyTo;
+
+        return $this;
+    }
+
     public function getSubject(): string
     {
         try {
@@ -47,6 +56,11 @@ abstract class AbstractNotification extends Notification implements ServiceSubsc
         } catch (Error) {
             return parent::getContent();
         }
+    }
+
+    public function getReplyTo(): ?string
+    {
+        return $this->replyTo;
     }
 
     /**
