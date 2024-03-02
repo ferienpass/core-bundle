@@ -63,7 +63,7 @@ class AttendanceFacade
             return;
         }
 
-        if ($attendance->getStatus() !== $status) {
+        if (null === $status || $attendance->getStatus() !== $status) {
             $this->setStatus($attendance, $status);
         }
 
