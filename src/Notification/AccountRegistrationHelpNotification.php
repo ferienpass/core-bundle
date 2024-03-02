@@ -59,11 +59,14 @@ class AccountRegistrationHelpNotification extends AbstractNotification implement
     {
         $email = (new NotificationEmail(self::getName()))
             ->to($recipient->getEmail())
-            ->replyTo($this->getReplyTo())
             ->subject($this->getSubject())
             ->content($this->getContent())
             ->context($this->getContext())
         ;
+
+        if (null !== $this->getReplyTo()) {
+            $email->replyTo($this->getReplyTo());
+        }
 
         if (null !== $this->actionUrl) {
             $email->action('email.account_registration_help.login', $this->actionUrl);

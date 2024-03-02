@@ -63,12 +63,15 @@ class PaymentCreatedNotification extends AbstractNotification implements Notific
     {
         $email = (new NotificationEmail(self::getName()))
             ->to($recipient->getEmail())
-            ->replyTo($this->getReplyTo())
             ->subject($this->getSubject())
             ->content($this->getContent())
             ->attachFromPath($this->receiptExport->generate($this->payment), sprintf('beleg-%s', $this->payment->getId()))
             ->context($this->getContext())
         ;
+
+        if (null !== $this->getReplyTo()) {
+            $email->replyTo($this->getReplyTo());
+        }
 
         return new EmailMessage($email);
     }
