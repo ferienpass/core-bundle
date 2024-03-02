@@ -272,10 +272,13 @@ class Notifier implements NotifierInterface
         }
 
         $notification
-            ->replyTo($entity->getEmailReplyTo())
             ->subject($entity->getEmailSubject() ?? '')
             ->content($entity->getEmailText() ?? '')
         ;
+
+        if ($entity->getEmailReplyTo()) {
+            $notification->replyTo($entity->getEmailReplyTo());
+        }
 
         return $notification;
     }
