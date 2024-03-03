@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Notification;
 
 use Ferienpass\CoreBundle\Entity\Attendance;
-use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
-use Symfony\Component\Notifier\Message\EmailMessage;
+use Ferienpass\CoreBundle\Notifier\Message\EmailMessage;
+use Symfony\Component\Notifier\Message\EmailMessage as SymfonyEmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
@@ -54,19 +54,8 @@ class OfferCancelledNotification extends AbstractNotification implements Notific
         return array_merge(parent::getAvailableTokens(), ['attendance', 'offer']);
     }
 
-    public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
+    public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?SymfonyEmailMessage
     {
-        $email = (new NotificationEmail(self::getName()))
-            ->to($recipient->getEmail())
-            ->subject($this->getSubject())
-            ->content($this->getContent())
-            ->context($this->getContext())
-        ;
-
-        if (null !== $this->getReplyTo()) {
-            $email->replyTo($this->getReplyTo());
-        }
-
-        return new EmailMessage($email);
+        return EmailMessage::fromFerienpassNotification($this, $recipient);
     }
 }

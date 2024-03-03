@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Notification;
 
-use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
+use Ferienpass\CoreBundle\Notifier\Mime\NotificationEmail;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;

@@ -11,27 +11,27 @@ declare(strict_types=1);
  * or the documentation under <https://docs.ferienpass.online>.
  */
 
-namespace Ferienpass\CoreBundle\EventListener\Notifier;
+namespace Ferienpass\CoreBundle\EventListener\Mailer;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Ferienpass\CoreBundle\Entity\SentEmail;
+use Ferienpass\CoreBundle\Notifier\Mime\NotificationEmail;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\Notifier\Event\SentMessageEvent;
+use Symfony\Component\Mailer\Event\SentMessageEvent;
 
 #[AsEventListener]
 class SentMessageListener
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
-    }
-
     public function __invoke(SentMessageEvent $event)
     {
         $message = $event->getMessage()->getOriginalMessage();
+        if (!$message instanceof NotificationEmail) {
+            return;
+        }
 
-        //        $logEntry = new NotificationLog('', $message, $message->);
-        //
-        //        $this->entityManager->persist($logEntry);
-        //
-        //        $this->entityManager->flush();
+        if (null === ($log = $message->getBelongsTo())) {
+            return;
+        }
+
+        $log->addSentNotification(SentEmail::fromNotificationEmail($message, $event->getMessage()->getMessageId()));
     }
 }

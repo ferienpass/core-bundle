@@ -13,8 +13,9 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
+use Ferienpass\CoreBundle\Entity\MessageLog;
 use Ferienpass\CoreBundle\Message\OfferRelaunched;
-use Ferienpass\CoreBundle\Notifier;
+use Ferienpass\CoreBundle\Notifier\Notifier;
 use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Notifier\Recipient\Recipient;
@@ -26,7 +27,7 @@ class WhenOfferRelaunchedThenNotify
     {
     }
 
-    public function __invoke(OfferRelaunched $message): void
+    public function __invoke(OfferRelaunched $message, MessageLog $log): void
     {
         $offer = $this->repository->find($message->getOfferId());
         if (null === $offer) {
@@ -40,7 +41,7 @@ class WhenOfferRelaunchedThenNotify
             }
 
             // Todo if not reactive participants then discard attendances
-            $this->notifier->send($notification, new Recipient($email, (string) $attendance->getParticipant()->getMobile()));
+            $this->notifier->send($notification->belongsTo($log), new Recipient($email, (string) $attendance->getParticipant()->getMobile()));
         }
     }
 }

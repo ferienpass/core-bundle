@@ -14,8 +14,9 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Ferienpass\CoreBundle\Entity\Attendance;
+use Ferienpass\CoreBundle\Entity\MessageLog;
 use Ferienpass\CoreBundle\Message\AttendanceCreated;
-use Ferienpass\CoreBundle\Notifier;
+use Ferienpass\CoreBundle\Notifier\Notifier;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Notifier\Recipient\Recipient;
@@ -27,7 +28,7 @@ class WhenAttendanceCreatedThenNotify
     {
     }
 
-    public function __invoke(AttendanceCreated $message): void
+    public function __invoke(AttendanceCreated $message, MessageLog $log): void
     {
         if (!$message->shallNotify()) {
             return;
@@ -44,6 +45,6 @@ class WhenAttendanceCreatedThenNotify
             return;
         }
 
-        $this->notifier->send($notification, new Recipient($email, (string) $attendance->getParticipant()->getMobile()));
+        $this->notifier->send($notification->belongsTo($log), new Recipient($email, (string) $attendance->getParticipant()->getMobile()));
     }
 }

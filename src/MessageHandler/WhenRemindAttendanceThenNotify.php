@@ -14,8 +14,9 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Ferienpass\CoreBundle\Entity\Attendance;
+use Ferienpass\CoreBundle\Entity\MessageLog;
 use Ferienpass\CoreBundle\Message\RemindAttendance;
-use Ferienpass\CoreBundle\Notifier;
+use Ferienpass\CoreBundle\Notifier\Notifier;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Notifier\Recipient\Recipient;
@@ -27,7 +28,7 @@ class WhenRemindAttendanceThenNotify
     {
     }
 
-    public function __invoke(RemindAttendance $message): void
+    public function __invoke(RemindAttendance $message, MessageLog $log): void
     {
         /** @var Attendance $attendance */
         $attendance = $this->repository->find($message->getAttendanceId());
@@ -40,6 +41,6 @@ class WhenRemindAttendanceThenNotify
             return;
         }
 
-        $this->notifier->send($notification, new Recipient($email, (string) $attendance->getParticipant()->getMobile()));
+        $this->notifier->send($notification->belongsTo($log), new Recipient($email, (string) $attendance->getParticipant()->getMobile()));
     }
 }

@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
+use Ferienpass\CoreBundle\Entity\MessageLog;
 use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Message\AccountResendActivation;
-use Ferienpass\CoreBundle\Notifier;
+use Ferienpass\CoreBundle\Notifier\Notifier;
 use Ferienpass\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Notifier\Recipient\Recipient;
@@ -27,7 +28,7 @@ class WhenAccountResendActivationThenNotify
     {
     }
 
-    public function __invoke(AccountResendActivation $message): void
+    public function __invoke(AccountResendActivation $message, MessageLog $log): void
     {
         /** @var User $user */
         $user = $this->repository->find($message->getUserId());
@@ -40,6 +41,6 @@ class WhenAccountResendActivationThenNotify
             return;
         }
 
-        $this->notifier->send($notification, new Recipient($email));
+        $this->notifier->send($notification->belongsTo($log), new Recipient($email));
     }
 }

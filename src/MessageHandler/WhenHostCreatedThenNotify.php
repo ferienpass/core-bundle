@@ -15,9 +15,10 @@ namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Ferienpass\AdminBundle\Controller\Page\AccountsController;
 use Ferienpass\CoreBundle\Entity\Host;
+use Ferienpass\CoreBundle\Entity\MessageLog;
 use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Message\HostCreated;
-use Ferienpass\CoreBundle\Notifier;
+use Ferienpass\CoreBundle\Notifier\Notifier;
 use Ferienpass\CoreBundle\Repository\HostRepository;
 use Ferienpass\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -31,7 +32,7 @@ class WhenHostCreatedThenNotify
     {
     }
 
-    public function __invoke(HostCreated $message): void
+    public function __invoke(HostCreated $message, MessageLog $log): void
     {
         /** @var User $user */
         $user = $this->userRepository->find($message->getUserId());
@@ -47,7 +48,7 @@ class WhenHostCreatedThenNotify
         }
 
         $this->notifier->send(
-            $notification->actionUrl($this->urlGenerator->generate('admin_accounts_index', ['role' => array_search('ROLE_HOST', AccountsController::ROLES, true)], UrlGeneratorInterface::ABSOLUTE_URL)),
+            $notification->belongsTo($log)->actionUrl($this->urlGenerator->generate('admin_accounts_index', ['role' => array_search('ROLE_HOST', AccountsController::ROLES, true)], UrlGeneratorInterface::ABSOLUTE_URL)),
             new Recipient($email, (string) $user->getMobile()));
     }
 }

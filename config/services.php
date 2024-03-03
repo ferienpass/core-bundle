@@ -7,7 +7,7 @@ use Ferienpass\CoreBundle\Export\Offer\Excel\ExcelExports;
 use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
 use Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports;
 use Ferienpass\CoreBundle\Filter\Type\FilterType;
-use Ferienpass\CoreBundle\Messenger\EventLogMiddleware;
+use Ferienpass\CoreBundle\Messenger\MessageLogPersistMiddleware;
 use Ferienpass\CoreBundle\Security\ContaoBackendUser;
 use Ferienpass\CoreBundle\Security\ContaoUserProvider;
 use Ferienpass\CoreBundle\Security\UserChecker;
@@ -43,9 +43,6 @@ return function(ContainerConfigurator $container): void {
         ->tag('security.voter')
     ;
 
-    $services->get(EventLogMiddleware::class)
-        ->tag('monolog.logger', ['channel' => 'ferienpass_event'])
-    ;
     $services->get(ExcelExports::class)
         ->tag('ferienpass.offer_export_type', ['key' => 'xlsx'])
     ;

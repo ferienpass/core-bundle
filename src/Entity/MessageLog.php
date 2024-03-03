@@ -16,47 +16,43 @@ namespace Ferienpass\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ferienpass\CoreBundle\Repository\EventLogRepository;
+use Ferienpass\CoreBundle\Repository\MessageLogRepository;
 
-#[ORM\Entity(repositoryClass: EventLogRepository::class)]
-class EventLog
+#[ORM\Entity(repositoryClass: MessageLogRepository::class)]
+class MessageLog
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    #[ORM\Column(type: 'string')]
-    private string $uniqueId;
-
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\Column(name: 'message', type: 'text')]
+    #[ORM\Column(name: 'message', type: 'string')]
     private string $message;
 
-    #[ORM\OneToOne(targetEntity: Attendance::class)]
+    #[ORM\ManyToOne(targetEntity: Attendance::class)]
     #[ORM\JoinColumn(name: 'attendance_id', referencedColumnName: 'id')]
     private Attendance|null $attendance;
 
-    #[ORM\OneToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
     private User|null $user;
 
-    #[ORM\OneToOne(targetEntity: Offer::class)]
+    #[ORM\ManyToOne(targetEntity: Offer::class)]
     #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id')]
     private Offer|null $offer;
 
-    #[ORM\OneToOne(targetEntity: Payment::class)]
+    #[ORM\ManyToOne(targetEntity: Payment::class)]
     #[ORM\JoinColumn(name: 'payment_id', referencedColumnName: 'id')]
     private Payment|null $payment;
 
-    #[ORM\OneToMany(mappedBy: 'logEntry', targetEntity: 'Ferienpass\CoreBundle\Entity\NotificationLog', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'logEntry', targetEntity: SentMessage::class, cascade: ['persist', 'remove'])]
     private Collection $notifications;
 
-    public function __construct(string $uniqueId, string $message, Attendance $attendance = null, User $user = null, Offer $offer = null, Payment $payment = null, array $related = [])
+    public function __construct(string $message, Attendance $attendance = null, User $user = null, Offer $offer = null, Payment $payment = null, array $related = [])
     {
-        $this->uniqueId = $uniqueId;
         $this->message = $message;
         $this->attendance = $attendance;
         $this->user = $user;
@@ -93,11 +89,6 @@ class EventLog
         $this->id = $id;
     }
 
-    public function getUniqueId(): string
-    {
-        return $this->uniqueId;
-    }
-
     public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
@@ -131,5 +122,13 @@ class EventLog
     public function getNotifications(): Collection
     {
         return $this->notifications;
+    }
+
+    public function addSentNotification(SentMessage $notification): void
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setLogEntry($this);
+        }
     }
 }

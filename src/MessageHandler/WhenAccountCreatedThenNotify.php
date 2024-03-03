@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
+use Ferienpass\CoreBundle\Entity\MessageLog;
 use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Message\AccountCreated;
-use Ferienpass\CoreBundle\Notifier;
+use Ferienpass\CoreBundle\Notifier\Notifier;
 use Ferienpass\CoreBundle\Repository\UserRepository;
 use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -29,7 +30,7 @@ class WhenAccountCreatedThenNotify
     {
     }
 
-    public function __invoke(AccountCreated $message): void
+    public function __invoke(AccountCreated $message, MessageLog $log): void
     {
         /** @var User $user */
         $user = $this->repository->find($message->getUserId());
@@ -43,7 +44,7 @@ class WhenAccountCreatedThenNotify
         }
 
         $this->notifier->send(
-            $notification->actionUrl($this->uriSigner->sign($this->urlGenerator->generate('registration_activate', ['id' => $user->getId()], UrlGeneratorInterface::ABSOLUTE_URL))),
+            $notification->belongsTo($log)->actionUrl($this->uriSigner->sign($this->urlGenerator->generate('registration_activate', ['id' => $user->getId()], UrlGeneratorInterface::ABSOLUTE_URL))),
             new Recipient($email, (string) $user->getMobile())
         );
     }

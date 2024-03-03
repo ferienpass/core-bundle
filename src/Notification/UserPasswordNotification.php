@@ -14,8 +14,9 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Notification;
 
 use Ferienpass\CoreBundle\Entity\User;
-use Ferienpass\CoreBundle\Twig\Mime\NotificationEmail;
-use Symfony\Component\Notifier\Message\EmailMessage;
+use Ferienpass\CoreBundle\Notifier\Message\EmailMessage;
+use Ferienpass\CoreBundle\Notifier\Mime\NotificationEmail;
+use Symfony\Component\Notifier\Message\EmailMessage as SymfonyEmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
@@ -64,23 +65,12 @@ class UserPasswordNotification extends AbstractNotification implements Notificat
         return array_merge(parent::getAvailableTokens(), ['user', 'token']);
     }
 
-    public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
+    public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?SymfonyEmailMessage
     {
-        $email = (new NotificationEmail(self::getName()))
-            ->to($recipient->getEmail())
-            ->subject($this->getSubject())
-            ->content($this->getContent())
-            ->context($this->getContext())
-        ;
-
-        if (null !== $this->getReplyTo()) {
-            $email->replyTo($this->getReplyTo());
-        }
-
-        if (null !== $this->actionUrl) {
-            $email->action('email.user_password.reset', $this->actionUrl);
-        }
-
-        return new EmailMessage($email);
+        return EmailMessage::fromFerienpassNotification($this, $recipient, function (NotificationEmail $email) {
+            if (null !== $this->actionUrl) {
+                $email->action('email.user_password.reset', $this->actionUrl);
+            }
+        });
     }
 }
