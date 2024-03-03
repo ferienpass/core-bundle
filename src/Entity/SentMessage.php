@@ -14,8 +14,9 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\Repository\SentMessageRepository;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: SentMessageRepository::class)]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
 #[ORM\DiscriminatorMap(['email' => SentEmail::class, 'sms' => SentSms::class])]
@@ -26,9 +27,9 @@ class SentMessage
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: MessageLog::class, inversedBy: 'notifications')]
+    #[ORM\ManyToOne(targetEntity: MessengerLog::class, inversedBy: 'notifications')]
     #[ORM\JoinColumn(name: 'log_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private ?MessageLog $logEntry = null;
+    private ?MessengerLog $logEntry = null;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
@@ -43,17 +44,27 @@ class SentMessage
         return $this->id;
     }
 
+    public function isEmail(): bool
+    {
+        return SentEmail::class === static::class;
+    }
+
+    public function isSms(): bool
+    {
+        return SentSms::class === static::class;
+    }
+
     public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setLogEntry(?MessageLog $logEntry): void
+    public function setLogEntry(?MessengerLog $logEntry): void
     {
         $this->logEntry = $logEntry;
     }
 
-    public function getLogEntry(): ?MessageLog
+    public function getLogEntry(): ?MessengerLog
     {
         return $this->logEntry;
     }

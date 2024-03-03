@@ -15,7 +15,7 @@ namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Ferienpass\AdminBundle\Controller\Page\AccountsController;
 use Ferienpass\CoreBundle\Entity\Host;
-use Ferienpass\CoreBundle\Entity\MessageLog;
+use Ferienpass\CoreBundle\Entity\MessengerLog;
 use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Message\HostCreated;
 use Ferienpass\CoreBundle\Notifier\Notifier;
@@ -32,7 +32,7 @@ class WhenHostCreatedThenNotify
     {
     }
 
-    public function __invoke(HostCreated $message, MessageLog $log): void
+    public function __invoke(HostCreated $message, MessengerLog $log): void
     {
         /** @var User $user */
         $user = $this->userRepository->find($message->getUserId());

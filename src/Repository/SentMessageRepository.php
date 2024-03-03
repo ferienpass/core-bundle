@@ -15,12 +15,12 @@ namespace Ferienpass\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Ferienpass\CoreBundle\Entity\MessageLog;
+use Ferienpass\CoreBundle\Entity\SentMessage;
 
-class MessageLogRepository extends ServiceEntityRepository
+class SentMessageRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, MessageLog::class);
+        parent::__construct($registry, SentMessage::class);
     }
 }

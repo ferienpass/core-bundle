@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Ferienpass\CoreBundle\Entity\Attendance;
-use Ferienpass\CoreBundle\Entity\MessageLog;
+use Ferienpass\CoreBundle\Entity\MessengerLog;
 use Ferienpass\CoreBundle\Message\AttendanceCreated;
 use Ferienpass\CoreBundle\Notifier\Notifier;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
@@ -28,7 +28,7 @@ class WhenAttendanceCreatedThenNotify
     {
     }
 
-    public function __invoke(AttendanceCreated $message, MessageLog $log): void
+    public function __invoke(AttendanceCreated $message, MessengerLog $log): void
     {
         if (!$message->shallNotify()) {
             return;

@@ -16,10 +16,10 @@ namespace Ferienpass\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ferienpass\CoreBundle\Repository\MessageLogRepository;
+use Ferienpass\CoreBundle\Repository\MessengerLogRepository;
 
-#[ORM\Entity(repositoryClass: MessageLogRepository::class)]
-class MessageLog
+#[ORM\Entity(repositoryClass: MessengerLogRepository::class)]
+class MessengerLog
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

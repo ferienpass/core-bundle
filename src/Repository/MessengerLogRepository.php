@@ -11,23 +11,16 @@ declare(strict_types=1);
  * or the documentation under <https://docs.ferienpass.online>.
  */
 
-namespace Ferienpass\CoreBundle\Notification;
+namespace Ferienpass\CoreBundle\Repository;
 
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\MessengerLog;
 
-trait LoggableNotificationTrait
+class MessengerLogRepository extends ServiceEntityRepository
 {
-    protected ?MessengerLog $belongsTo = null;
-
-    public function belongsTo(MessengerLog $messageLog): static
+    public function __construct(ManagerRegistry $registry)
     {
-        $this->belongsTo = $messageLog;
-
-        return $this;
-    }
-
-    public function getBelongsTo(): ?MessengerLog
-    {
-        return $this->belongsTo;
+        parent::__construct($registry, MessengerLog::class);
     }
 }

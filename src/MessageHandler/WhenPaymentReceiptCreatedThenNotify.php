@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
-use Ferienpass\CoreBundle\Entity\MessageLog;
+use Ferienpass\CoreBundle\Entity\MessengerLog;
 use Ferienpass\CoreBundle\Entity\Payment;
 use Ferienpass\CoreBundle\Message\PaymentReceiptCreated;
 use Ferienpass\CoreBundle\Notifier\Notifier;
@@ -28,7 +28,7 @@ class WhenPaymentReceiptCreatedThenNotify
     {
     }
 
-    public function __invoke(PaymentReceiptCreated $message, MessageLog $log): void
+    public function __invoke(PaymentReceiptCreated $message, MessengerLog $log): void
     {
         /** @var Payment $payment */
         $payment = $this->repository->find($message->getPaymentId());

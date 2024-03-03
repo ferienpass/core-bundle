@@ -14,13 +14,13 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Messenger;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Ferienpass\CoreBundle\Entity\MessageLog;
+use Ferienpass\CoreBundle\Entity\MessengerLog;
 use Ferienpass\CoreBundle\Message\LoggableMessageInterface;
 use Symfony\Component\Messenger\Stamp\StampInterface;
 
 class LogStamp implements StampInterface
 {
-    private MessageLog $messageLog;
+    private MessengerLog $messageLog;
 
     public function __construct(object $message, EntityManagerInterface $em)
     {
@@ -31,10 +31,10 @@ class LogStamp implements StampInterface
             }
         }
 
-        $em->persist($this->messageLog = new MessageLog($message::class, related: $related));
+        $em->persist($this->messageLog = new MessengerLog($message::class, related: $related));
     }
 
-    public function getLogEntity(): MessageLog
+    public function getLogEntity(): MessengerLog
     {
         return $this->messageLog;
     }

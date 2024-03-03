@@ -22,4 +22,14 @@ class SentSms extends SentMessage
     {
         parent::__construct();
     }
+
+    public function getTo(): ?string
+    {
+        return null;
+    }
+
+    public function getText(): ?string
+    {
+        return null;
+    }
 }

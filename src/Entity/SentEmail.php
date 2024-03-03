@@ -75,6 +75,11 @@ class SentEmail extends SentMessage
         return $this->emailData['subject'] ?? null;
     }
 
+    public function getText(): ?string
+    {
+        return $this->emailData['text'] ?? null;
+    }
+
     public function getHtml(): ?string
     {
         return $this->emailData['html'] ?? null;

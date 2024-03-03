@@ -23,7 +23,7 @@ use Ferienpass\CoreBundle\Entity\EventLogRelated;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Message\RemindAttendance;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
-use Ferienpass\CoreBundle\Repository\MessageLogRepository;
+use Ferienpass\CoreBundle\Repository\MessengerLogRepository;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
@@ -31,7 +31,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
  */
 class SendRemindersListener
 {
-    public function __construct(private readonly AttendanceRepository $attendanceRepository, private readonly MessageBusInterface $messageBus, private readonly MessageLogRepository $eventLogRepository)
+    public function __construct(private readonly AttendanceRepository $attendanceRepository, private readonly MessageBusInterface $messageBus, private readonly MessengerLogRepository $eventLogRepository)
     {
     }
 

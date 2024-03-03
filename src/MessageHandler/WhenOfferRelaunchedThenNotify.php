@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\MessageHandler;
 
-use Ferienpass\CoreBundle\Entity\MessageLog;
+use Ferienpass\CoreBundle\Entity\MessengerLog;
 use Ferienpass\CoreBundle\Message\OfferRelaunched;
 use Ferienpass\CoreBundle\Notifier\Notifier;
 use Ferienpass\CoreBundle\Repository\OfferRepository;
@@ -27,7 +27,7 @@ class WhenOfferRelaunchedThenNotify
     {
     }
 
-    public function __invoke(OfferRelaunched $message, MessageLog $log): void
+    public function __invoke(OfferRelaunched $message, MessengerLog $log): void
     {
         $offer = $this->repository->find($message->getOfferId());
         if (null === $offer) {

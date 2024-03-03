@@ -15,7 +15,7 @@ namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Attendance;
-use Ferienpass\CoreBundle\Entity\MessageLog;
+use Ferienpass\CoreBundle\Entity\MessengerLog;
 use Ferienpass\CoreBundle\Message\AttendanceStatusChanged;
 use Ferienpass\CoreBundle\Notifier\Notifier;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
@@ -30,7 +30,7 @@ class WhenAttendanceWithdrawnThenNotify
     {
     }
 
-    public function __invoke(AttendanceStatusChanged $message, MessageLog $log): void
+    public function __invoke(AttendanceStatusChanged $message, MessengerLog $log): void
     {
         if (!$message->shallNotify()) {
             return;
