@@ -13,12 +13,14 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Message;
 
+use Ferienpass\CoreBundle\Entity\Attendance;
+
 /**
  * This message is a user-initiated request to notify all participants for their attendance status.
  */
 class SendAttendanceDecisions implements LoggableMessageInterface
 {
-    public function __construct(private readonly int $editionId)
+    public function __construct(private readonly int $editionId, private readonly array $attendanceIds)
     {
     }
 
@@ -27,9 +29,15 @@ class SendAttendanceDecisions implements LoggableMessageInterface
         return $this->editionId;
     }
 
+    public function getAttendanceIds(): array
+    {
+        return $this->attendanceIds;
+    }
+
     public function getRelated(): array
     {
         return [
+            Attendance::class => $this->attendanceIds,
         ];
     }
 }

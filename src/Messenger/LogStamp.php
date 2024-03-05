@@ -26,8 +26,10 @@ class LogStamp implements StampInterface
     {
         $related = [];
         if ($message instanceof LoggableMessageInterface) {
-            foreach ($message->getRelated() as $entity => $id) {
-                $related[] = $em->getReference($entity, $id);
+            foreach ($message->getRelated() as $entity => $ids) {
+                foreach ((array) $ids as $id) {
+                    $related[] = $em->getReference($entity, $id);
+                }
             }
         }
 

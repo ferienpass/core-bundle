@@ -32,48 +32,52 @@ class MessengerLog
     #[ORM\Column(name: 'message', type: 'string')]
     private string $message;
 
-    #[ORM\ManyToOne(targetEntity: Attendance::class, inversedBy: 'messengerLogs')]
-    #[ORM\JoinColumn(name: 'attendance_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Attendance|null $attendance;
+    #[ORM\ManyToMany(targetEntity: Attendance::class, inversedBy: 'messengerLogs')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinTable(name: 'AttendanceMessengerLog')]
+    private Collection $attendances;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private User|null $user;
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinTable(name: 'UserMessengerLog')]
+    private Collection $users;
 
-    #[ORM\ManyToOne(targetEntity: Offer::class)]
-    #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Offer|null $offer;
+    #[ORM\ManyToMany(targetEntity: Offer::class)]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinTable(name: 'OfferMessengerLog')]
+    private Collection $offers;
 
-    #[ORM\ManyToOne(targetEntity: Payment::class)]
-    #[ORM\JoinColumn(name: 'payment_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Payment|null $payment;
+    #[ORM\ManyToMany(targetEntity: Payment::class)]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinTable(name: 'PaymentMessengerLog')]
+    private Collection $payments;
 
     #[ORM\OneToMany(mappedBy: 'logEntry', targetEntity: SentMessage::class, cascade: ['persist', 'remove'])]
     private Collection $notifications;
 
-    public function __construct(string $message, Attendance $attendance = null, User $user = null, Offer $offer = null, Payment $payment = null, array $related = [])
+    public function __construct(string $message, array $related = [])
     {
         $this->message = $message;
-        $this->attendance = $attendance;
-        $this->user = $user;
-        $this->offer = $offer;
-        $this->payment = $payment;
         $this->createdAt = new \DateTimeImmutable();
+        $this->attendances = new ArrayCollection();
+        $this->users = new ArrayCollection();
+        $this->offers = new ArrayCollection();
+        $this->payments = new ArrayCollection();
         $this->notifications = new ArrayCollection();
 
         foreach ($related as $item) {
-            switch ($item::class) {
-                case Attendance::class:
-                    $this->attendance = $item;
+            switch (true) {
+                case $item instanceof Attendance:
+                    $this->attendances[] = $item;
                     break;
-                case User::class:
-                    $this->user = $item;
+                case $item instanceof User:
+                    $this->users[] = $item;
                     break;
-                case Offer::class:
-                    $this->offer = $item;
+                case $item instanceof Offer:
+                    $this->offers[] = $item;
                     break;
-                case Payment::class:
-                    $this->payment = $item;
+                case $item instanceof Payment:
+                    $this->payments[] = $item;
                     break;
             }
         }
@@ -99,24 +103,24 @@ class MessengerLog
         return $this->message;
     }
 
-    public function getAttendance(): ?Attendance
+    public function getAttendances(): Collection
     {
-        return $this->attendance;
+        return $this->attendances;
     }
 
-    public function getUser(): ?User
+    public function getUsers(): Collection
     {
-        return $this->user;
+        return $this->users;
     }
 
-    public function getOffer(): ?Offer
+    public function getOffers(): Collection
     {
-        return $this->offer;
+        return $this->offers;
     }
 
-    public function getPayment(): ?Payment
+    public function getPayments(): Collection
     {
-        return $this->payment;
+        return $this->payments;
     }
 
     public function getNotifications(): Collection

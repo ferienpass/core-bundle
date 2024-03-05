@@ -15,32 +15,24 @@ namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\MessengerLog;
-use Ferienpass\CoreBundle\Facade\DecisionsFacade;
 use Ferienpass\CoreBundle\Message\SendAttendanceDecisions;
 use Ferienpass\CoreBundle\Notifier\Notifier;
-use Ferienpass\CoreBundle\Repository\EditionRepository;
+use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Notifier\Recipient\Recipient;
 
 #[AsMessageHandler]
 class WhenSendAttendanceDecisionsThenNotify
 {
-    public function __construct(private readonly Notifier $notifier, private readonly DecisionsFacade $decisionsFacade, private readonly EditionRepository $editionRepository)
+    public function __construct(private readonly Notifier $notifier, private readonly AttendanceRepository $repository)
     {
     }
 
     public function __invoke(SendAttendanceDecisions $message, MessengerLog $log): void
     {
-        $edition = $this->editionRepository->find($message->getEditionId());
-        if (null === $edition) {
-            return;
-        }
-
-        $attendances = $this->decisionsFacade->attendances($edition);
-
         $decisions = [];
         /** @var Attendance $attendance */
-        foreach ($attendances as $attendance) {
+        foreach ($this->repository->findBy(['id' => $message->getAttendanceIds()]) as $attendance) {
             $decisions[$attendance->getEmail()][] = $attendance;
         }
 

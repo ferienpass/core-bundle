@@ -86,7 +86,7 @@ class Attendance
     #[ORM\OneToMany(mappedBy: 'attendance', targetEntity: PaymentItem::class)]
     private Collection $paymentItems;
 
-    #[ORM\OneToMany(mappedBy: 'attendance', targetEntity: MessengerLog::class)]
+    #[ORM\ManyToMany(targetEntity: MessengerLog::class, mappedBy: 'attendances')]
     private Collection $messengerLogs;
 
     public function __construct(Offer $offer, ?Participant $participant, string $status = null)
