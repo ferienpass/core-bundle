@@ -29,7 +29,7 @@ class EditionTask
     private \DateTimeInterface $createdAt;
 
     #[ORM\ManyToOne(targetEntity: Edition::class, inversedBy: 'tasks')]
-    #[ORM\JoinColumn(name: 'pid', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'pid', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Edition $edition;
 
     #[ORM\Column(type: 'string', nullable: true)]

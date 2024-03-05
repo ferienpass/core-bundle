@@ -28,7 +28,7 @@ class SentMessage
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: MessengerLog::class, inversedBy: 'notifications')]
-    #[ORM\JoinColumn(name: 'log_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'log_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     private ?MessengerLog $logEntry = null;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]

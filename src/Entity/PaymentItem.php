@@ -27,6 +27,7 @@ class PaymentItem
     private \DateTimeInterface $createdAt;
 
     #[ORM\ManyToOne(targetEntity: Attendance::class, inversedBy: 'paymentItem')]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private Attendance|null $attendance;
 
     #[ORM\Column(type: 'integer', options: ['unsigned' => false])]

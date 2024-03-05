@@ -37,7 +37,8 @@ class AccessCode
     private string $code;
 
     #[ORM\JoinTable(name: 'AccessCodeToParticipant')]
-    #[ORM\JoinColumn(name: 'code_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'code_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
     #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'accessCodes')]
     private Collection $participants;
 

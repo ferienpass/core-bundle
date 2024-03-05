@@ -24,12 +24,12 @@ class HostMemberAssociation
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\User', inversedBy: 'hostAssociations')]
-    #[ORM\JoinColumn(name: 'member_id', referencedColumnName: 'id')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'hostAssociations')]
+    #[ORM\JoinColumn(name: 'member_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private User $user;
 
-    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\Host', inversedBy: 'memberAssociations')]
-    #[ORM\JoinColumn(name: 'host_id', referencedColumnName: 'id')]
+    #[ORM\ManyToOne(targetEntity: Host::class, inversedBy: 'memberAssociations')]
+    #[ORM\JoinColumn(name: 'host_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Host $host;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]

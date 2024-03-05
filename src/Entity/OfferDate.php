@@ -24,7 +24,7 @@ class OfferDate
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: Offer::class, inversedBy: 'dates')]
-    #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Offer $offer;
 
     #[ORM\Column(type: 'datetime', nullable: true)]

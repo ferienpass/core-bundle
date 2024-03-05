@@ -59,8 +59,8 @@ class Offer
      */
     #[ORM\ManyToMany(targetEntity: Host::class, inversedBy: 'offers', cascade: ['persist'])]
     #[ORM\JoinTable(name: 'HostOfferAssociation', )]
-    #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id')]
-    #[ORM\InverseJoinColumn(name: 'host_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'host_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Collection $hosts;
 
     /**
@@ -160,7 +160,7 @@ class Offer
     private ?string $datesExport = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'contact_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'contact_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     #[Groups('docx_export')]
     private ?User $contactUser = null;
 
@@ -202,7 +202,7 @@ class Offer
     private Collection $attendances;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'variants')]
-    #[ORM\JoinColumn(name: 'varbase', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'varbase', referencedColumnName: 'id', onDelete: 'SET NULL')]
     private ?Offer $variantBase = null;
 
     #[ORM\OneToMany(mappedBy: 'offer', targetEntity: OfferLog::class, cascade: ['persist', 'remove'])]

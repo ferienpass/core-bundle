@@ -32,20 +32,20 @@ class MessengerLog
     #[ORM\Column(name: 'message', type: 'string')]
     private string $message;
 
-    #[ORM\ManyToOne(targetEntity: Attendance::class)]
-    #[ORM\JoinColumn(name: 'attendance_id', referencedColumnName: 'id')]
+    #[ORM\ManyToOne(targetEntity: Attendance::class, inversedBy: 'messengerLogs')]
+    #[ORM\JoinColumn(name: 'attendance_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Attendance|null $attendance;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private User|null $user;
 
     #[ORM\ManyToOne(targetEntity: Offer::class)]
-    #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Offer|null $offer;
 
     #[ORM\ManyToOne(targetEntity: Payment::class)]
-    #[ORM\JoinColumn(name: 'payment_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'payment_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Payment|null $payment;
 
     #[ORM\OneToMany(mappedBy: 'logEntry', targetEntity: SentMessage::class, cascade: ['persist', 'remove'])]

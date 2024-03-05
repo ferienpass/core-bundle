@@ -27,7 +27,7 @@ class OfferMemberAssociation
     private int $member;
 
     #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\Offer', inversedBy: 'memberAssociations')]
-    #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Offer $offer;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]

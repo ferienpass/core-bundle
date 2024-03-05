@@ -66,6 +66,10 @@ class ContaoUserProvider extends EntityUserProvider
         $user = $this->registry->getManager()->getRepository($this->classOrAlias)->find($user->id);
 
         if (!$user instanceof FerienpassUser) {
+            if (null === $user) {
+                throw new UnsupportedUserException('Invalid user');
+            }
+
             throw new UnsupportedUserException(sprintf('Unsupported class "%s".', $user::class));
         }
 

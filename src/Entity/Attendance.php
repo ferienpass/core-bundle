@@ -67,7 +67,7 @@ class Attendance
     private ?Participant $participant;
 
     #[ORM\ManyToOne(targetEntity: EditionTask::class)]
-    #[ORM\JoinColumn(name: 'task_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'task_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     private ?EditionTask $task = null;
 
     #[ORM\OneToMany(mappedBy: 'attendance', targetEntity: ParticipantLog::class, cascade: ['persist'], orphanRemoval: true)]
@@ -86,6 +86,9 @@ class Attendance
     #[ORM\OneToMany(mappedBy: 'attendance', targetEntity: PaymentItem::class)]
     private Collection $paymentItems;
 
+    #[ORM\OneToMany(mappedBy: 'attendance', targetEntity: MessengerLog::class)]
+    private Collection $messengerLogs;
+
     public function __construct(Offer $offer, ?Participant $participant, string $status = null)
     {
         $this->offer = $offer;
@@ -93,6 +96,7 @@ class Attendance
 
         $this->createdAt = new \DateTimeImmutable();
         $this->activity = new ArrayCollection();
+        $this->messengerLogs = new ArrayCollection();
         $this->paymentItems = new ArrayCollection();
 
         if (null !== $status && !\in_array($status, [self::STATUS_CONFIRMED, self::STATUS_WAITLISTED, self::STATUS_WITHDRAWN, self::STATUS_WAITING, self::STATUS_ERROR], true)) {
@@ -284,6 +288,16 @@ class Attendance
     public function getPaymentItems(): Collection
     {
         return $this->paymentItems;
+    }
+
+    /**
+     * @return Collection|PaymentItem[]
+     *
+     * @psalm-return Collection<int, PaymentItem>
+     */
+    public function getMessengerLogs(): Collection
+    {
+        return $this->messengerLogs;
     }
 
     public function getParticipantPseudonym(): ?string
