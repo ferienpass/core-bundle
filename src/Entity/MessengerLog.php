@@ -33,22 +33,26 @@ class MessengerLog
     private string $message;
 
     #[ORM\ManyToMany(targetEntity: Attendance::class, inversedBy: 'messengerLogs')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'log_id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[ORM\JoinTable(name: 'AttendanceMessengerLog')]
     private Collection $attendances;
 
     #[ORM\ManyToMany(targetEntity: User::class)]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'log_id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[ORM\JoinTable(name: 'UserMessengerLog')]
     private Collection $users;
 
     #[ORM\ManyToMany(targetEntity: Offer::class)]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'log_id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[ORM\JoinTable(name: 'OfferMessengerLog')]
     private Collection $offers;
 
     #[ORM\ManyToMany(targetEntity: Payment::class)]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'log_id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[ORM\JoinTable(name: 'PaymentMessengerLog')]
     private Collection $payments;
 
