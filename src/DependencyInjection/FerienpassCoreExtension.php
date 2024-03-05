@@ -107,6 +107,7 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
                     'transitions' => [
                         Offer::TRANSITION_COMPLETE => ['from' => Offer::STATE_DRAFT, 'to' => Offer::STATE_COMPLETED],
                         Offer::TRANSITION_APPROVE => ['from' => [Offer::STATE_DRAFT, Offer::STATE_COMPLETED], 'to' => Offer::STATE_REVIEWED],
+                        Offer::TRANSITION_UNAPPROVE => ['from' => [Offer::STATE_REVIEWED], 'to' => Offer::STATE_COMPLETED],
                         Offer::TRANSITION_PUBLISH => ['from' => [Offer::STATE_DRAFT, Offer::STATE_COMPLETED, Offer::STATE_REVIEWED, Offer::STATE_UNPUBLISHED], 'to' => Offer::STATE_PUBLISHED],
                         Offer::TRANSITION_CANCEL => ['from' => [Offer::STATE_PUBLISHED], 'to' => Offer::STATE_CANCELLED],
                         Offer::TRANSITION_RELAUNCH => ['from' => [Offer::STATE_CANCELLED], 'to' => Offer::STATE_PUBLISHED],

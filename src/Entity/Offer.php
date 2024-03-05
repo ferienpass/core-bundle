@@ -32,6 +32,7 @@ class Offer
     final public const STATE_CANCELLED = 'cancelled';
     final public const TRANSITION_COMPLETE = 'complete';
     final public const TRANSITION_APPROVE = 'approve';
+    final public const TRANSITION_UNAPPROVE = 'unapprove';
     final public const TRANSITION_PUBLISH = 'publish';
     final public const TRANSITION_UNPUBLISH = 'unpublish';
     final public const TRANSITION_CANCEL = 'cancel';
