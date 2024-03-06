@@ -17,22 +17,21 @@ use Ferienpass\CmsBundle\Controller\Fragment\OfferDetailsController;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Export\Offer\OfferExportInterface;
 use Knp\Snappy\Image as SnappyImage;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 final class ImgExport implements OfferExportInterface
 {
-    public function __construct(private readonly HttpKernelInterface $httpKernel, private readonly Filesystem $filesystem, private readonly SnappyImage $snappyImage, #[Autowire('%kernel.project_dir%')] private readonly string $rootDir)
+    public function __construct(private readonly HttpKernelInterface $httpKernel, private readonly Filesystem $filesystem, private readonly SnappyImage $snappyImage)
     {
     }
 
     public function generate(Offer $offer, string $destination = null): string
     {
-        $hash = md5(sprintf('%s-%s', $offer->getId(), $offer->getTimestamp()));
+        $hash = md5(sprintf('%s-%s', $offer->getId(), $offer->getModifiedAt()->format('c')));
 
-        $imgPath = sprintf('%s/system/tmp/web/%s.jpg', $this->rootDir, $hash);
+        $imgPath = sprintf('%s/web/%s.jpg', sys_get_temp_dir(), $hash);
         if (!file_exists($imgPath)) {
             $this->snappyImage->generateFromHtml($this->getHtml($offer), $imgPath, [], true);
         }

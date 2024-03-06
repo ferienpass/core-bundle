@@ -27,6 +27,7 @@ use Ferienpass\CoreBundle\Notification\AttendanceConfirmedNotification;
 use Ferienpass\CoreBundle\Notification\AttendanceDecisions;
 use Ferienpass\CoreBundle\Notification\AttendanceNewlyConfirmedNotification;
 use Ferienpass\CoreBundle\Notification\AttendanceWithdrawnNotification;
+use Ferienpass\CoreBundle\Notification\EmailToAwareNotificationInterface;
 use Ferienpass\CoreBundle\Notification\HostCreatedNotification;
 use Ferienpass\CoreBundle\Notification\OfferCancelledNotification;
 use Ferienpass\CoreBundle\Notification\OfferRelaunchedNotification;
@@ -276,6 +277,10 @@ class Notifier implements NotifierInterface
             ->subject($entity->getEmailSubject() ?? '')
             ->content($entity->getEmailText() ?? '')
         ;
+
+        if ($notification instanceof EmailToAwareNotificationInterface) {
+            $notification->emailTo($entity->getEmailTo());
+        }
 
         if ($entity->getEmailReplyTo()) {
             $notification->replyTo($entity->getEmailReplyTo());

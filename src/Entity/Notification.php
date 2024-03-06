@@ -42,6 +42,9 @@ class Notification
     private ?string $emailReplyTo = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $emailTo = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $emailSubject = null;
 
     #[ORM\Column(type: 'text', length: 65535, nullable: true)]
@@ -104,6 +107,11 @@ class Notification
     public function getEmailReplyTo(): ?string
     {
         return $this->emailReplyTo;
+    }
+
+    public function getEmailTo(): ?string
+    {
+        return $this->emailTo;
     }
 
     public function setEmailReplyTo(?string $emailReplyTo): void

@@ -43,6 +43,11 @@ class Flash
         $this->add('modal-confirm', $headline, $text, $dismissable, $linkText, $href);
     }
 
+    public function addErrorModal(string|TranslatableInterface $headline = null, string|TranslatableInterface $text = null, bool $dismissable = false, string|TranslatableInterface $linkText = null, string $href = null)
+    {
+        $this->add('modal-error', $headline, $text, $dismissable, $linkText, $href);
+    }
+
     private function add(string $type, string|TranslatableInterface $headline = null, string|TranslatableInterface $text = null, bool $dismissable = false, string|TranslatableInterface $linkText = null, string $href = null): void
     {
         try {

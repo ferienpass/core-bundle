@@ -22,9 +22,10 @@ use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class HostCreatedNotification extends AbstractNotification implements NotificationInterface, EmailNotificationInterface
+class HostCreatedNotification extends AbstractNotification implements NotificationInterface, EmailNotificationInterface, EmailToAwareNotificationInterface
 {
     use ActionUrlTrait;
+    use EmailToTrait;
 
     private Host $host;
     private User $user;

@@ -43,12 +43,12 @@ class WhenHostCreatedThenNotify
         }
 
         $notification = $this->notifier->hostCreated($host, $user);
-        if (null === $notification || '' === $email = (string) $user->getEmail()) {
+        if (null === $notification || '' === $email = (string) $notification->getEmailTo()) {
             return;
         }
 
         $this->notifier->send(
             $notification->belongsTo($log)->actionUrl($this->urlGenerator->generate('admin_accounts_index', ['role' => array_search('ROLE_HOST', AccountsController::ROLES, true)], UrlGeneratorInterface::ABSOLUTE_URL)),
-            new Recipient($email, (string) $user->getMobile()));
+            new Recipient($email));
     }
 }
