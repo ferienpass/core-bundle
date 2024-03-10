@@ -17,7 +17,7 @@ trait EmailToTrait
 {
     private ?string $emailTo = null;
 
-    public function emailTo(string $to): static
+    public function emailTo(?string $to): static
     {
         $this->emailTo = $to;
 

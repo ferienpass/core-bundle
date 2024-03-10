@@ -15,7 +15,7 @@ namespace Ferienpass\CoreBundle\Notification;
 
 interface EmailToAwareNotificationInterface
 {
-    public function emailTo(string $to): static;
+    public function emailTo(?string $to): static;
 
     public function getEmailTo(): ?string;
 }

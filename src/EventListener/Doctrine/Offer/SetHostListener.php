@@ -18,7 +18,7 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Ferienpass\CoreBundle\Entity\Host;
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\User;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 #[AsDoctrineListener('prePersist')]
 class SetHostListener

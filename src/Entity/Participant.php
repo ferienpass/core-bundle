@@ -76,6 +76,7 @@ class Participant
     private Collection $attendances;
 
     #[ORM\OneToMany(mappedBy: 'participant', targetEntity: ParticipantLog::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $activity;
 
     public function __construct(User $user = null)

@@ -206,7 +206,8 @@ class Offer
     #[ORM\JoinColumn(name: 'varbase', referencedColumnName: 'id', onDelete: 'SET NULL')]
     private ?Offer $variantBase = null;
 
-    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: OfferLog::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: OfferLog::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $activity;
 
     public function __construct()
