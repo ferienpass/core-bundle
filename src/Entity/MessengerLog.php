@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Repository\MessengerLogRepository;
 
 #[ORM\Entity(repositoryClass: MessengerLogRepository::class)]
@@ -34,25 +35,25 @@ class MessengerLog
 
     #[ORM\ManyToMany(targetEntity: Attendance::class, inversedBy: 'messengerLogs')]
     #[ORM\JoinColumn(name: 'log_id', onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
     #[ORM\JoinTable(name: 'AttendanceMessengerLog')]
     private Collection $attendances;
 
     #[ORM\ManyToMany(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'log_id', onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
     #[ORM\JoinTable(name: 'UserMessengerLog')]
     private Collection $users;
 
-    #[ORM\ManyToMany(targetEntity: Offer::class)]
+    #[ORM\ManyToMany(targetEntity: OfferInterface::class)]
     #[ORM\JoinColumn(name: 'log_id', onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\InverseJoinColumn(name: 'offer_id', onDelete: 'CASCADE')]
     #[ORM\JoinTable(name: 'OfferMessengerLog')]
     private Collection $offers;
 
     #[ORM\ManyToMany(targetEntity: Payment::class)]
     #[ORM\JoinColumn(name: 'log_id', onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
     #[ORM\JoinTable(name: 'PaymentMessengerLog')]
     private Collection $payments;
 
@@ -77,7 +78,7 @@ class MessengerLog
                 case $item instanceof User:
                     $this->users[] = $item;
                     break;
-                case $item instanceof Offer:
+                case $item instanceof OfferInterface:
                     $this->offers[] = $item;
                     break;
                 case $item instanceof Payment:

@@ -13,18 +13,18 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Exception;
 
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Entity\Participant;
 use Symfony\Component\Translation\TranslatableMessage;
 
 class IneligibleParticipantException extends \Exception
 {
-    public function __construct(private readonly Offer $offer, private readonly Participant $participant, private readonly TranslatableMessage $userMessage)
+    public function __construct(private readonly OfferInterface $offer, private readonly Participant $participant, private readonly TranslatableMessage $userMessage)
     {
         parent::__construct((string) $userMessage);
     }
 
-    public function getOffer(): Offer
+    public function getOffer(): OfferInterface
     {
         return $this->offer;
     }

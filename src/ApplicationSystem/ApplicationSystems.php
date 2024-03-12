@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\ApplicationSystem;
 
 use Ferienpass\CoreBundle\Entity\EditionTask;
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Exception\AmbiguousApplicationSystemException;
 use Psr\Container\ContainerInterface;
 use Symfony\Contracts\Service\ServiceSubscriberInterface;
@@ -25,7 +25,7 @@ class ApplicationSystems implements ServiceSubscriberInterface
     {
     }
 
-    public function findApplicationSystem(Offer $offer): ?ApplicationSystemInterface
+    public function findApplicationSystem(OfferInterface $offer): ?ApplicationSystemInterface
     {
         // When the Ferienpass is configured without editions, use the "first come-first served" application procedure
         if (null === $edition = $offer->getEdition()) {

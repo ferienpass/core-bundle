@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[ORM\Entity]
@@ -29,7 +30,7 @@ class OfferCategory
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\ManyToMany(targetEntity: Offer::class, mappedBy: 'categories')]
+    #[ORM\ManyToMany(targetEntity: OfferInterface::class, mappedBy: 'categories')]
     private Collection $offers;
 
     #[ORM\Column(type: 'string', length: 255)]

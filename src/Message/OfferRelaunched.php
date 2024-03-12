@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Message;
 
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 
 /**
  * This message is dispatched when an offer that originally was cancelled is being relaunched.
@@ -32,7 +32,7 @@ class OfferRelaunched implements LoggableMessageInterface
     public function getRelated(): array
     {
         return [
-            Offer::class => $this->offerId,
+            OfferInterface::class => $this->offerId,
         ];
     }
 }

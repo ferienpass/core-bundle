@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Repository\HostRepository;
 use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -96,7 +97,7 @@ class Host
     #[ORM\OneToMany(mappedBy: 'host', targetEntity: HostMemberAssociation::class, cascade: ['persist', 'remove'])]
     private Collection $memberAssociations;
 
-    #[ORM\ManyToMany(targetEntity: Offer::class, mappedBy: 'hosts')]
+    #[ORM\ManyToMany(targetEntity: OfferInterface::class, mappedBy: 'hosts')]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private Collection $offers;
 
@@ -290,7 +291,7 @@ class Host
         return $this->offers;
     }
 
-    public function addOffer(Offer $offer): void
+    public function addOffer(OfferInterface $offer): void
     {
         $this->offers->add($offer);
     }

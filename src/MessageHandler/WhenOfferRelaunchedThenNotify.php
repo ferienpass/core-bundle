@@ -16,14 +16,14 @@ namespace Ferienpass\CoreBundle\MessageHandler;
 use Ferienpass\CoreBundle\Entity\MessengerLog;
 use Ferienpass\CoreBundle\Message\OfferRelaunched;
 use Ferienpass\CoreBundle\Notifier\Notifier;
-use Ferienpass\CoreBundle\Repository\OfferRepository;
+use Ferienpass\CoreBundle\Repository\OfferRepositoryInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Notifier\Recipient\Recipient;
 
 #[AsMessageHandler]
 class WhenOfferRelaunchedThenNotify
 {
-    public function __construct(private readonly Notifier $notifier, private readonly OfferRepository $repository)
+    public function __construct(private readonly Notifier $notifier, private readonly OfferRepositoryInterface $repository)
     {
     }
 

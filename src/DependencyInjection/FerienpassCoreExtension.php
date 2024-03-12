@@ -14,10 +14,12 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\DependencyInjection;
 
 use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
 use Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports;
 use Ferienpass\CoreBundle\Export\ParticipantList\WordExport;
 use Ferienpass\CoreBundle\Messenger\MessageLogMiddleware;
+use Ferienpass\CoreBundle\Repository\OfferRepositoryInterface;
 use Ferienpass\CoreBundle\Repository\ResetPasswordRequestRepository;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -28,12 +30,19 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 final class FerienpassCoreExtension extends Extension implements PrependExtensionInterface
 {
+    use PersistenceExtensionTrait;
+
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../config'));
         $loader->load('services.php');
+
+        $this->configurePersistence($config['entities'], $container);
+        $container->addAliases([
+            OfferRepositoryInterface::class => 'ferienpass.repository.offer',
+        ]);
 
         // Parameters
         $container->setParameter('ferienpass.logos_dir', $config['logos_dir']);
@@ -74,6 +83,19 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
             ],
         ]);
 
+        // TODO only register if NOT customized
+        $container->prependExtensionConfig('doctrine', [
+            'orm' => [
+                'entity_managers' => [
+                    'default' => [
+                        'schema_ignore_classes' => [
+                            Offer::class,
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
         $container->prependExtensionConfig('framework', [
             'messenger' => [
                 'buses' => [
@@ -101,17 +123,17 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
                 'offer' => [
                     'type' => 'state_machine',
                     'marking_store' => ['type' => 'method', 'property' => 'state'],
-                    'supports' => [Offer::class],
-                    'initial_marking' => Offer::STATE_DRAFT,
-                    'places' => [Offer::STATE_DRAFT, Offer::STATE_COMPLETED, Offer::STATE_REVIEWED, Offer::STATE_PUBLISHED, Offer::STATE_CANCELLED, Offer::STATE_UNPUBLISHED],
+                    'supports' => [OfferInterface::class],
+                    'initial_marking' => OfferInterface::STATE_DRAFT,
+                    'places' => [OfferInterface::STATE_DRAFT, OfferInterface::STATE_COMPLETED, OfferInterface::STATE_REVIEWED, OfferInterface::STATE_PUBLISHED, OfferInterface::STATE_CANCELLED, OfferInterface::STATE_UNPUBLISHED],
                     'transitions' => [
-                        Offer::TRANSITION_COMPLETE => ['from' => Offer::STATE_DRAFT, 'to' => Offer::STATE_COMPLETED],
-                        Offer::TRANSITION_APPROVE => ['from' => [Offer::STATE_DRAFT, Offer::STATE_COMPLETED], 'to' => Offer::STATE_REVIEWED],
-                        Offer::TRANSITION_UNAPPROVE => ['from' => [Offer::STATE_REVIEWED], 'to' => Offer::STATE_COMPLETED],
-                        Offer::TRANSITION_PUBLISH => ['from' => [Offer::STATE_DRAFT, Offer::STATE_COMPLETED, Offer::STATE_REVIEWED, Offer::STATE_UNPUBLISHED], 'to' => Offer::STATE_PUBLISHED],
-                        Offer::TRANSITION_CANCEL => ['from' => [Offer::STATE_PUBLISHED], 'to' => Offer::STATE_CANCELLED],
-                        Offer::TRANSITION_RELAUNCH => ['from' => [Offer::STATE_CANCELLED], 'to' => Offer::STATE_PUBLISHED],
-                        Offer::TRANSITION_UNPUBLISH => ['from' => [Offer::STATE_CANCELLED, Offer::STATE_PUBLISHED], 'to' => Offer::STATE_UNPUBLISHED],
+                        OfferInterface::TRANSITION_COMPLETE => ['from' => OfferInterface::STATE_DRAFT, 'to' => OfferInterface::STATE_COMPLETED],
+                        OfferInterface::TRANSITION_APPROVE => ['from' => [OfferInterface::STATE_DRAFT, OfferInterface::STATE_COMPLETED], 'to' => OfferInterface::STATE_REVIEWED],
+                        OfferInterface::TRANSITION_UNAPPROVE => ['from' => [OfferInterface::STATE_REVIEWED], 'to' => OfferInterface::STATE_COMPLETED],
+                        OfferInterface::TRANSITION_PUBLISH => ['from' => [OfferInterface::STATE_DRAFT, OfferInterface::STATE_COMPLETED, OfferInterface::STATE_REVIEWED, OfferInterface::STATE_UNPUBLISHED], 'to' => OfferInterface::STATE_PUBLISHED],
+                        OfferInterface::TRANSITION_CANCEL => ['from' => [OfferInterface::STATE_PUBLISHED], 'to' => OfferInterface::STATE_CANCELLED],
+                        OfferInterface::TRANSITION_RELAUNCH => ['from' => [OfferInterface::STATE_CANCELLED], 'to' => OfferInterface::STATE_PUBLISHED],
+                        OfferInterface::TRANSITION_UNPUBLISH => ['from' => [OfferInterface::STATE_CANCELLED, OfferInterface::STATE_PUBLISHED], 'to' => OfferInterface::STATE_UNPUBLISHED],
                     ],
                 ],
             ],

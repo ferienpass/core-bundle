@@ -15,9 +15,9 @@ namespace Ferienpass\CoreBundle\Form;
 
 use Doctrine\ORM\EntityRepository;
 use Ferienpass\CoreBundle\Entity\Attendance;
-use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\Participant;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -31,11 +31,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class BackendApplicationType extends AbstractType
 {
+    public function __construct(#[Autowire(param: 'ferienpass.model.offer.class')] private readonly string $offerEntityClass)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('offer', EntityType::class, [
-                'class' => Offer::class,
+                'class' => $this->offerEntityClass,
                 'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('o')->where('o.onlineApplication = 1'),
                 'choice_label' => 'id',
             ])

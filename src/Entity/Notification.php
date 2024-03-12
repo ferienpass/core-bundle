@@ -14,8 +14,9 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\Repository\NotificationRepository;
 
-#[ORM\Entity(repositoryClass: 'Ferienpass\CoreBundle\Repository\NotificationRepository')]
+#[ORM\Entity(repositoryClass: NotificationRepository::class)]
 #[ORM\Table]
 #[ORM\UniqueConstraint(columns: ['type', 'edition_id'])]
 class Notification

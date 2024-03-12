@@ -15,7 +15,7 @@ namespace Ferienpass\CoreBundle\EventListener\Doctrine\Offer;
 
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 #[AsDoctrineListener('postLoad')]
@@ -28,7 +28,7 @@ class SetSavedListener
     public function postLoad(LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
-        if (!$entity instanceof Offer) {
+        if (!$entity instanceof OfferInterface) {
             return;
         }
 

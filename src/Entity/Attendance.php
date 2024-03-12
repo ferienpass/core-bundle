@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Workflow\Transition;
@@ -58,9 +59,9 @@ class Attendance
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $modifiedAt;
 
-    #[ORM\ManyToOne(targetEntity: Offer::class, inversedBy: 'attendances')]
+    #[ORM\ManyToOne(targetEntity: OfferInterface::class, inversedBy: 'attendances')]
     #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id')]
-    private Offer $offer;
+    private OfferInterface $offer;
 
     #[ORM\ManyToOne(targetEntity: Participant::class, inversedBy: 'attendances')]
     #[ORM\JoinColumn(name: 'participant_id', referencedColumnName: 'id', nullable: true)]
@@ -89,7 +90,7 @@ class Attendance
     #[ORM\ManyToMany(targetEntity: MessengerLog::class, mappedBy: 'attendances')]
     private Collection $messengerLogs;
 
-    public function __construct(Offer $offer, ?Participant $participant, string $status = null)
+    public function __construct(OfferInterface $offer, ?Participant $participant, string $status = null)
     {
         $this->offer = $offer;
         $this->participant = $participant;
@@ -202,7 +203,7 @@ class Attendance
         return $this->createdAt;
     }
 
-    public function getOffer(): Offer
+    public function getOffer(): OfferInterface
     {
         return $this->offer;
     }

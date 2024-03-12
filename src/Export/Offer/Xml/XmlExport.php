@@ -16,7 +16,7 @@ namespace Ferienpass\CoreBundle\Export\Offer\Xml;
 use Contao\File;
 use Contao\FilesModel;
 use Ferienpass\CoreBundle\Entity\Host;
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\BaseOffer;
 use Ferienpass\CoreBundle\Export\Offer\OffersExportInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Twig\Environment;
@@ -55,7 +55,7 @@ class XmlExport implements OffersExportInterface
     private function render(iterable $items): string
     {
         $images = [];
-        /** @var Offer $item */
+        /** @var BaseOffer $item */
         foreach ($items as $item) {
             foreach (array_filter($item->getHosts()->map(fn (Host $h) => FilesModel::findByPk($h->getLogo()))->toArray()) as $logo) {
                 $images[$logo->uuid] = array_merge($logo->row(), [

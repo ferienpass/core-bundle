@@ -16,11 +16,11 @@ namespace Ferienpass\CoreBundle\Controller\Backend\Api;
 use Contao\StringUtil;
 use Doctrine\ORM\Query\Expr\Join;
 use Ferienpass\CoreBundle\Entity\Host;
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Entity\OfferDate;
 use Ferienpass\CoreBundle\Entity\Participant;
 use Ferienpass\CoreBundle\Facade\AttendanceFacade;
-use Ferienpass\CoreBundle\Repository\OfferRepository;
+use Ferienpass\CoreBundle\Repository\OfferRepositoryInterface;
 use Ferienpass\CoreBundle\Repository\ParticipantRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +31,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 final class CreateAttendanceController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
-    public function __construct(private readonly OfferRepository $offerRepository, private readonly ParticipantRepository $participantRepository, private readonly AttendanceFacade $attendanceFacade)
+    public function __construct(private readonly OfferRepositoryInterface $offerRepository, private readonly ParticipantRepository $participantRepository, private readonly AttendanceFacade $attendanceFacade)
     {
     }
 
@@ -57,7 +57,7 @@ final class CreateAttendanceController extends \Symfony\Bundle\FrameworkBundle\C
 
         $offers = $qb->getQuery()->getResult();
 
-        $data = array_map(fn (Offer $o) => [
+        $data = array_map(fn (OfferInterface $o) => [
             'id' => $o->getId(),
             'name' => $o->getName(),
             'hosts' => implode(', ', $o->getHosts()->map(fn (Host $h) => $h->getName())->toArray()),
@@ -106,7 +106,7 @@ final class CreateAttendanceController extends \Symfony\Bundle\FrameworkBundle\C
     }
 
     #[Route(path: '/status/{id}', methods: ['GET'])]
-    public function status(Offer $offer): JsonResponse
+    public function status(OfferInterface $offer): JsonResponse
     {
         $attendance = $this->attendanceFacade->preview($offer, new Participant());
 

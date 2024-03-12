@@ -38,7 +38,7 @@ class Payment
     #[ORM\JoinTable(name: 'PaymentItemAssociation')]
     #[ORM\JoinColumn(name: 'payment_id', referencedColumnName: 'id')]
     #[ORM\InverseJoinColumn(name: 'item_id', referencedColumnName: 'id')]
-    #[ORM\ManyToMany(targetEntity: 'Ferienpass\CoreBundle\Entity\PaymentItem', cascade: ['persist'])]
+    #[ORM\ManyToMany(targetEntity: PaymentItem::class, cascade: ['persist'])]
     private Collection $items;
 
     #[ORM\Column(type: 'integer', options: ['unsigned' => false])]

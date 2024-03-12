@@ -20,7 +20,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Query\Expr\Join;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\EventLogRelated;
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Message\RemindAttendance;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Ferienpass\CoreBundle\Repository\MessengerLogRepository;
@@ -73,7 +73,7 @@ class SendRemindersListener
             ->setParameter('status', Attendance::STATUS_CONFIRMED)
 
             ->andWhere('o.state = :state')
-            ->setParameter('state', Offer::STATE_PUBLISHED)
+            ->setParameter('state', OfferInterface::STATE_PUBLISHED)
 
             // The offer must not be in the past
             ->andWhere('d.begin > CURRENT_TIMESTAMP()')

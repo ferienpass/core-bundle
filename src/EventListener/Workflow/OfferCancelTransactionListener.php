@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\EventListener\Workflow;
 
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Message\OfferCancelled;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Workflow\Attribute\AsEnteredListener;
 use Symfony\Component\Workflow\Event\EnteredEvent;
 
-#[AsEnteredListener(workflow: 'offer', place: Offer::STATE_CANCELLED)]
+#[AsEnteredListener(workflow: 'offer', place: OfferInterface::STATE_CANCELLED)]
 class OfferCancelTransactionListener
 {
     public function __construct(private readonly MessageBusInterface $messageBus)
@@ -28,7 +28,7 @@ class OfferCancelTransactionListener
 
     public function __invoke(EnteredEvent $event)
     {
-        if (!($offer = $event->getSubject()) instanceof Offer) {
+        if (!($offer = $event->getSubject()) instanceof OfferInterface) {
             throw new \RuntimeException('Unexpected event subject');
         }
 

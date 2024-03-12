@@ -14,23 +14,23 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Ferienpass\CoreBundle\Entity\MessengerLog;
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\BaseOffer;
 use Ferienpass\CoreBundle\Message\OfferCancelled;
 use Ferienpass\CoreBundle\Notifier\Notifier;
-use Ferienpass\CoreBundle\Repository\OfferRepository;
+use Ferienpass\CoreBundle\Repository\OfferRepositoryInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Notifier\Recipient\Recipient;
 
 #[AsMessageHandler]
 class WhenOfferCancelledThenNotify
 {
-    public function __construct(private readonly Notifier $notifier, private readonly OfferRepository $repository)
+    public function __construct(private readonly Notifier $notifier, private readonly OfferRepositoryInterface $repository)
     {
     }
 
     public function __invoke(OfferCancelled $message, MessengerLog $log): void
     {
-        /** @var Offer $offer */
+        /** @var BaseOffer $offer */
         $offer = $this->repository->find($message->getOfferId());
         if (null === $offer) {
             return;

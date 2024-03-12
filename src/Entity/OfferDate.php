@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 
 #[ORM\Entity]
 class OfferDate
@@ -23,9 +24,9 @@ class OfferDate
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private int $id;
 
-    #[ORM\ManyToOne(targetEntity: Offer::class, inversedBy: 'dates')]
+    #[ORM\ManyToOne(targetEntity: OfferInterface::class, inversedBy: 'dates')]
     #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Offer $offer;
+    private OfferInterface $offer;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $begin = null;
@@ -33,12 +34,12 @@ class OfferDate
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $end = null;
 
-    public function __construct(Offer $offer)
+    public function __construct(OfferInterface $offer)
     {
         $this->offer = $offer;
     }
 
-    public function getOffer(): Offer
+    public function getOffer(): OfferInterface
     {
         return $this->offer;
     }

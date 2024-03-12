@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Export\Offer;
 
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\BaseOffer;
 
 interface OffersExportInterface
 {
     /**
-     * @param iterable<int, Offer>
+     * @param iterable<int, BaseOffer>
      */
     public function generate(iterable $offers, string $destination = null): string;
 }

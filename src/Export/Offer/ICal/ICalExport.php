@@ -20,7 +20,7 @@ use Eluceo\iCal\Domain\ValueObject\Location;
 use Eluceo\iCal\Domain\ValueObject\TimeSpan;
 use Eluceo\iCal\Presentation\Component;
 use Eluceo\iCal\Presentation\Factory\CalendarFactory;
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\BaseOffer;
 use Ferienpass\CoreBundle\Export\Offer\OffersExportInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -51,7 +51,7 @@ final class ICalExport implements OffersExportInterface
     }
 
     /**
-     * @param iterable<int, Offer>
+     * @param iterable<int, BaseOffer>
      */
     private function eventsGenerator(iterable $offers): \Generator
     {

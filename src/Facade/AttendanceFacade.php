@@ -18,7 +18,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems;
 use Ferienpass\CoreBundle\ApplicationSystem\LotApplicationSystem;
 use Ferienpass\CoreBundle\Entity\Attendance;
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Entity\OfferDate;
 use Ferienpass\CoreBundle\Entity\Participant;
 use Ferienpass\CoreBundle\Entity\ParticipantLog;
@@ -38,7 +38,7 @@ class AttendanceFacade
     /**
      * Preview an attendance status without persisting the attendance.
      */
-    public function preview(Offer $offer, Participant $participant): Attendance
+    public function preview(OfferInterface $offer, Participant $participant): Attendance
     {
         $attendance = new Attendance($offer, $participant);
 
@@ -56,7 +56,7 @@ class AttendanceFacade
      *
      * @throws \RuntimeException in case no unambiguous application system is applicable
      */
-    public function create(Offer $offer, Participant $participant, string $status = null, bool $notify = true): void
+    public function create(OfferInterface $offer, Participant $participant, string $status = null, bool $notify = true): void
     {
         $attendance = $this->findOrCreateAttendance($offer, $participant, $status);
         if (null === $attendance) {
@@ -129,7 +129,7 @@ class AttendanceFacade
         $this->doctrine->getManager()->flush();
     }
 
-    private function findOrCreateAttendance(Offer $offer, Participant $participant, ?string $status): ?Attendance
+    private function findOrCreateAttendance(OfferInterface $offer, Participant $participant, ?string $status): ?Attendance
     {
         $attendance = $this->doctrine->getRepository(Attendance::class)->findOneBy(['offer' => $offer, 'participant' => $participant]);
 

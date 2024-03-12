@@ -15,18 +15,18 @@ namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems;
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\BaseOffer;
 use Ferienpass\CoreBundle\Entity\OfferDate;
 use Ferienpass\CoreBundle\Message\AttendanceStatusChanged;
 use Ferienpass\CoreBundle\Message\ParticipantListChanged;
-use Ferienpass\CoreBundle\Repository\OfferRepository;
+use Ferienpass\CoreBundle\Repository\OfferRepositoryInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsMessageHandler]
 class WhenParticipantListChangedThenReorder
 {
-    public function __construct(private readonly ApplicationSystems $applicationSystems, private readonly MessageBusInterface $messageBus, private readonly OfferRepository $repository, private readonly EntityManagerInterface $em)
+    public function __construct(private readonly ApplicationSystems $applicationSystems, private readonly MessageBusInterface $messageBus, private readonly OfferRepositoryInterface $repository, private readonly EntityManagerInterface $em)
     {
     }
 
@@ -35,7 +35,7 @@ class WhenParticipantListChangedThenReorder
         $now = new \DateTimeImmutable();
         $offerId = $message->getOfferId();
 
-        /** @var Offer $offer */
+        /** @var BaseOffer $offer */
         $offer = $this->repository->find($offerId);
         /** @var OfferDate|false $date */
         $date = $offer->getDates()->first();

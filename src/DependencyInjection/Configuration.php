@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\DependencyInjection;
 
+use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Repository\OfferRepository;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -23,6 +25,18 @@ final class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('ferienpass');
         $treeBuilder->getRootNode()
             ->children()
+                ->arrayNode('entities')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('offer')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('model')->defaultValue(Offer::class)->end()
+                                ->scalarNode('repository')->defaultValue(OfferRepository::class)->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
                 ->arrayNode('participant_list')
                     ->children()
                         ->scalarNode('docx_template')

@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Export\Offer\Web;
 
 use Ferienpass\CmsBundle\Controller\Fragment\OfferDetailsController;
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Export\Offer\OfferExportInterface;
 use Knp\Snappy\Image as SnappyImage;
 use Symfony\Component\Filesystem\Filesystem;
@@ -27,7 +27,7 @@ final class ImgExport implements OfferExportInterface
     {
     }
 
-    public function generate(Offer $offer, string $destination = null): string
+    public function generate(OfferInterface $offer, string $destination = null): string
     {
         $hash = md5(sprintf('%s-%s', $offer->getId(), $offer->getModifiedAt()->format('c')));
 
@@ -43,7 +43,7 @@ final class ImgExport implements OfferExportInterface
         return $destination ?? $imgPath;
     }
 
-    private function getHtml(Offer $offer): string
+    private function getHtml(OfferInterface $offer): string
     {
         $request = new Request();
 

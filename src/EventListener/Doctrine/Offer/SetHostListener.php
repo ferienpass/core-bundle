@@ -16,7 +16,7 @@ namespace Ferienpass\CoreBundle\EventListener\Doctrine\Offer;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Ferienpass\CoreBundle\Entity\Host;
-use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -30,7 +30,7 @@ class SetHostListener
     public function prePersist(LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
-        if (!$entity instanceof Offer) {
+        if (!$entity instanceof OfferInterface) {
             return;
         }
 

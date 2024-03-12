@@ -14,10 +14,9 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Fixtures\Factory;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ferienpass\CoreBundle\Entity\Offer;
-use function Zenstruck\Foundry\faker;
 use Zenstruck\Foundry\Instantiator;
 use Zenstruck\Foundry\ModelFactory;
+use function Zenstruck\Foundry\faker;
 
 class OfferFactory extends ModelFactory
 {

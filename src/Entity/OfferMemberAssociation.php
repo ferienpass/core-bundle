@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 
 #[ORM\Entity]
 class OfferMemberAssociation
@@ -26,9 +27,9 @@ class OfferMemberAssociation
     #[ORM\Column(name: 'member_id', type: 'integer', options: ['unsigned' => true])]
     private int $member;
 
-    #[ORM\ManyToOne(targetEntity: 'Ferienpass\CoreBundle\Entity\Offer', inversedBy: 'memberAssociations')]
+    #[ORM\ManyToOne(targetEntity: OfferInterface::class, inversedBy: 'memberAssociations')]
     #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Offer $offer;
+    private OfferInterface $offer;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
@@ -38,7 +39,7 @@ class OfferMemberAssociation
         return $this->member;
     }
 
-    public function getOffer(): Offer
+    public function getOffer(): OfferInterface
     {
         return $this->offer;
     }

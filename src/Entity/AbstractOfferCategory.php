@@ -29,6 +29,6 @@ abstract class AbstractOfferCategory
     #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
     private string $title;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''], unique: true)]
+    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false, options: ['default' => ''])]
     private string $alias;
 }
