@@ -21,7 +21,6 @@ use Symfony\Component\Notifier\Message\EmailMessage as SymfonyEmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
-use Symfony\Component\Notifier\Recipient\SmsRecipientInterface;
 
 class AttendanceNewlyConfirmedNotification extends AbstractNotification implements NotificationInterface, EditionAwareNotificationInterface, EmailNotificationInterface
 {
@@ -39,9 +38,9 @@ class AttendanceNewlyConfirmedNotification extends AbstractNotification implemen
 
     public function getChannels(RecipientInterface $recipient): array
     {
-        if ($recipient instanceof SmsRecipientInterface && $recipient->getPhone()) {
-            return ['email', 'sms'];
-        }
+//        if ($recipient instanceof SmsRecipientInterface && $recipient->getPhone()) {
+//            return ['email', 'sms'];
+//        }
 
         return ['email'];
     }
