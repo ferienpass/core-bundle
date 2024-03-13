@@ -30,11 +30,27 @@ class OfferHydrationExtension implements HydrationExtensionInterface
 
     public function hydrate(mixed $value, string $className): ?object
     {
-        return $this->repository->find($value);
+        // an empty array means a non-persisted entity
+        // we support instantiating with no constructor args
+        if (\is_array($value) && 0 === \count($value)) {
+            return $this->repository->createNew();
+        }
+
+        // e.g. an empty string
+        if (!$value) {
+            return null;
+        }
+
+        // $data is the single identifier or array of identifiers
+        if (\is_scalar($value) || (\is_array($value) && isset($value[0]))) {
+            return $this->repository->find($value);
+        }
+
+        throw new \InvalidArgumentException(sprintf('Cannot hydrate Doctrine entity "%s". Value of type "%s" is not supported.', $className, get_debug_type($value)));
     }
 
     public function dehydrate(object $object): mixed
     {
-        return $object->getId();
+        return $object->getId() ?? [];
     }
 }

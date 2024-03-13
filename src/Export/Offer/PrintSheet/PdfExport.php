@@ -90,7 +90,8 @@ class PdfExport implements OffersExportInterface
 
         $mPdf = new Mpdf($mPdfConfig);
 
-        $mPdf->WriteHTML($html);
+        // disable errors for now (undefined array index inside mpdf)
+        @$mPdf->WriteHTML($html);
 
         $mPdf->Output($path, MpdfDestination::FILE);
     }

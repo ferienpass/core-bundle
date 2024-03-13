@@ -31,9 +31,9 @@ class AttendanceWithdrawnNotification extends AbstractNotification implements No
 
     public function getChannels(RecipientInterface $recipient): array
     {
-//        if ($recipient instanceof SmsRecipientInterface && $recipient->getPhone()) {
-//            return ['email', 'sms'];
-//        }
+        //        if ($recipient instanceof SmsRecipientInterface && $recipient->getPhone()) {
+        //            return ['email', 'sms'];
+        //        }
 
         return ['email'];
     }
