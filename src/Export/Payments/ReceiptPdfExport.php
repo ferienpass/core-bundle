@@ -56,6 +56,7 @@ final class ReceiptPdfExport implements ReceiptExportInterface
         }
 
         $mPdfConfig = array_merge([
+            'tempDir' => sys_get_temp_dir(),
             'default_font_size' => 12,
             'default_font' => 'roboto',
             'fontDir' => \dirname(__DIR__).'/../../fonts/Roboto',
