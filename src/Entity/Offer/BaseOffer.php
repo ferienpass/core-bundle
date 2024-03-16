@@ -109,22 +109,27 @@ class BaseOffer
     private bool $saved = false;
 
     #[ORM\Column(type: 'smallint', nullable: true, options: ['unsigned' => true])]
+    #[Assert\GreaterThan(0)]
     #[Groups('docx_export')]
     private ?int $minParticipants = null;
 
     #[ORM\Column(type: 'smallint', nullable: true, options: ['unsigned' => true])]
+    #[Assert\GreaterThan(0)]
     #[Groups('docx_export')]
     private ?int $maxParticipants = null;
 
     #[ORM\Column(type: 'smallint', length: 2, nullable: true, options: ['unsigned' => true])]
+    #[Assert\GreaterThan(0)]
     #[Groups('docx_export')]
     private ?int $minAge = null;
 
     #[ORM\Column(type: 'smallint', length: 2, nullable: true, options: ['unsigned' => true])]
+    #[Assert\GreaterThan(0)]
     #[Groups('docx_export')]
     private ?int $maxAge = null;
 
     #[ORM\Column(type: 'integer', nullable: true, options: ['unsigned' => true])]
+    #[Assert\GreaterThan(0)]
     #[Groups('docx_export')]
     private ?int $fee = null;
 
