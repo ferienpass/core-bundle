@@ -45,6 +45,6 @@ class WhenAttendanceWithdrawnThenNotify
             return;
         }
 
-        $this->notifier->send($notification->belongsTo($log), new Recipient($email, (string) $attendance->getParticipant()->getMobile()));
+        $this->notifier->send($notification->belongsTo($log), new Recipient($email, (string) $attendance->getParticipant()?->getMobile()));
     }
 }
