@@ -187,14 +187,14 @@ class Notifier implements NotifierInterface
         return $notification->attendance($attendance);
     }
 
-    public function userInvitation(User $user, Host $host, string $email): ?UserInvitationNotification
+    public function userInvitation(User $user, Host $host, string $inviteeEmail): ?UserInvitationNotification
     {
         $notification = $this->get(UserInvitationNotification::getName());
         if (!$notification instanceof UserInvitationNotification) {
             return null;
         }
 
-        return $notification->user($user)->host($host)->email($email);
+        return $notification->user($user)->host($host)->inviteeEmail($inviteeEmail);
     }
 
     public function send(Notification $notification, RecipientInterface ...$recipients): void

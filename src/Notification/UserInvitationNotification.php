@@ -28,7 +28,7 @@ class UserInvitationNotification extends AbstractNotification implements Notific
 
     private User $user;
     private Host $host;
-    private string $email;
+    private string $inviteeEmail;
 
     public static function getName(): string
     {
@@ -54,9 +54,9 @@ class UserInvitationNotification extends AbstractNotification implements Notific
         return $this;
     }
 
-    public function email(string $email): static
+    public function inviteeEmail(string $email): static
     {
-        $this->email = $email;
+        $this->inviteeEmail = $email;
 
         return $this;
     }
@@ -66,7 +66,7 @@ class UserInvitationNotification extends AbstractNotification implements Notific
         return array_merge(parent::getContext(), [
             'user' => $this->user,
             'host' => $this->host,
-            'email' => $this->email,
+            'inviteeEmail' => $this->inviteeEmail,
         ]);
     }
 
