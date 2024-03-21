@@ -20,6 +20,7 @@ use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Exception\AmbiguousHolidayTaskException;
 use Ferienpass\CoreBundle\Repository\EditionRepository;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[ORM\Entity(repositoryClass: EditionRepository::class)]
 class Edition
@@ -264,5 +265,12 @@ class Edition
         }
 
         return null;
+    }
+
+    public function generateAlias(SluggerInterface $slugger)
+    {
+        if (!$this->alias) {
+            $this->alias = (string) $slugger->slug($this->getName() ?? uniqid())->lower();
+        }
     }
 }
