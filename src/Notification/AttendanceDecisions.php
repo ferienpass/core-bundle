@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Notification;
 
 use Ferienpass\CoreBundle\Entity\Attendance;
+use Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport;
 use Ferienpass\CoreBundle\Notifier\Message\EmailMessage;
+use Ferienpass\CoreBundle\Notifier\Mime\NotificationEmail;
 use Symfony\Component\Notifier\Message\EmailMessage as SymfonyEmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
@@ -24,6 +26,11 @@ class AttendanceDecisions extends AbstractNotification implements NotificationIn
 {
     /** @var array<int, array<int, Attendance>> */
     private array $attendances;
+
+    public function __construct(private readonly ICalExport $iCalExport)
+    {
+        parent::__construct();
+    }
 
     public static function getName(): string
     {
@@ -56,6 +63,11 @@ class AttendanceDecisions extends AbstractNotification implements NotificationIn
 
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?SymfonyEmailMessage
     {
-        return EmailMessage::fromFerienpassNotification($this, $recipient);
+        return EmailMessage::fromFerienpassNotification($this, $recipient, function (NotificationEmail $email) {
+            $attendances = array_filter(array_merge(...$this->attendances), fn (Attendance $attendance) => $attendance->isConfirmed());
+            if ($attendances) {
+                $email->attachFromPath($this->iCalExport->generate(array_map(fn (Attendance $attendance) => $attendance->getOffer(), $attendances)), 'anmeldungen.ics');
+            }
+        });
     }
 }

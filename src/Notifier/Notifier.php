@@ -133,7 +133,7 @@ class Notifier implements NotifierInterface
         return $notification->attendance($attendance);
     }
 
-    public function attendanceDecisions(...$attendances): ?AttendanceDecisions
+    public function attendanceDecisions($attendances): ?AttendanceDecisions
     {
         $notification = $this->get(AttendanceDecisions::getName());
         if (!$notification instanceof AttendanceDecisions) {

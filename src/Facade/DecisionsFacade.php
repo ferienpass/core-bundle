@@ -32,6 +32,15 @@ class DecisionsFacade
     {
         $qb2 = $this->repository->createQueryBuilder('attendance');
 
+        $alreadyNotified = $qb2
+            ->select('attendance.id')
+            ->leftJoin('attendance.messengerLogs', 'message', Join::WITH, 'message.message = :sentDecisionsMessage AND message.createdAt >= attendance.modifiedAt')
+            ->setParameter('sentDecisionsMessage', SendAttendanceDecisions::class)
+            ->andWhere($qb2->expr()->isNotNull('message.id'))
+            ->getQuery()
+            ->getResult()
+        ;
+
         return $this->repository->createQueryBuilder('attendance')
             ->innerJoin('attendance.participant', 'participant')
             ->leftJoin('participant.user', 'user')
@@ -43,9 +52,7 @@ class DecisionsFacade
             ->setParameter('edition', $edition)
 
             // Exclude attendances for that this message was already sent
-            ->leftJoin('attendance.messengerLogs', 'message', Join::WITH, 'message.message = :sentDecisionsMessage AND message.createdAt >= attendance.modifiedAt')
-            ->setParameter('sentDecisionsMessage', SendAttendanceDecisions::class)
-            ->andWhere($qb2->expr()->isNull('message.id'))
+            ->andWhere($qb2->expr()->notIn('attendance.id', array_unique(array_column($alreadyNotified, 'id')) ?: [0]))
 
             // Exclude attendance that were created during first come procedure and are waitlisted
             // (those do not get a notification but have immediate feedback)
