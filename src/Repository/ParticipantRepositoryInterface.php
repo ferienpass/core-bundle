@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Repository;
 
-class ParticipantRepository extends EntityRepository implements ParticipantRepositoryInterface
+interface ParticipantRepositoryInterface extends RepositoryInterface
 {
 }

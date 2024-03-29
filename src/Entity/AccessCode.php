@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 
 #[ORM\Entity]
 #[ORM\UniqueConstraint(columns: ['strategy_id', 'code'])]
@@ -39,7 +40,7 @@ class AccessCode
     #[ORM\JoinTable(name: 'AccessCodeToParticipant')]
     #[ORM\JoinColumn(name: 'code_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
-    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'accessCodes')]
+    #[ORM\ManyToMany(targetEntity: ParticipantInterface::class, inversedBy: 'accessCodes')]
     private Collection $participants;
 
     public function __construct(AccessCodeStrategy $strategy, string $code)
@@ -82,12 +83,12 @@ class AccessCode
         return $this->participants;
     }
 
-    public function addParticipant(Participant $participant)
+    public function addParticipant(ParticipantInterface $participant)
     {
         $this->participants[] = $participant;
     }
 
-    public function removeParticipant(Participant $participant)
+    public function removeParticipant(ParticipantInterface $participant)
     {
         $this->participants->removeElement($participant);
     }

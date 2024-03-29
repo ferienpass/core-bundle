@@ -16,7 +16,7 @@ namespace Ferienpass\CoreBundle\Notification;
 use Doctrine\ORM\EntityManagerInterface;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Host;
-use Ferienpass\CoreBundle\Entity\Participant;
+use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 use Ferienpass\CoreBundle\Entity\Payment;
 use Ferienpass\CoreBundle\Entity\User;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -76,7 +76,7 @@ abstract class AbstractNotification extends Notification implements ServiceSubsc
         $notification = clone $this;
 
         if (\in_array('attendances', $notification::getAvailableTokens(), true) && method_exists($notification, 'attendance')) {
-            foreach ($this->doctrine()->getRepository(Participant::class)->createQueryBuilder('i')->getQuery()->setMaxResults(1)->getOneOrNullResult()->getAttendances() as $attendance) {
+            foreach ($this->doctrine()->getRepository(ParticipantInterface::class)->createQueryBuilder('i')->getQuery()->setMaxResults(1)->getOneOrNullResult()->getAttendances() as $attendance) {
                 $notification->attendance($attendance);
             }
         } elseif (method_exists($notification, 'attendance')) {

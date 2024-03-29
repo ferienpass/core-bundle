@@ -42,7 +42,7 @@ bodyClass: bg-gray-postmark-lighter
                                                                             {{ attendance.offer.bring }}</p>
                                                                     {% endif %}
                                                                     <p class="mt-0 mb-0 text-base leading-24 text-center text-gray-postmark-dark">
-                                                                        <span class="font-medium">Teilnahmegebühr:</span> {{ (attendance.participant.discounted|default ? attendance.offer.fee/2 : attendance.offer.fee)/100 }}
+                                                                        <span class="font-medium">Teilnahmegebühr:</span> {{ (offer_fee/100)|format_currency('EUR') }}
                                                                         &euro;</p>
                                                                 </div>
 

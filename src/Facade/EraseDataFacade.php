@@ -17,13 +17,13 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Ferienpass\CoreBundle\Entity\Attendance;
-use Ferienpass\CoreBundle\Entity\Participant;
+use Ferienpass\CoreBundle\Entity\Participant\BaseParticipant;
 use Ferienpass\CoreBundle\Entity\User;
-use Ferienpass\CoreBundle\Repository\ParticipantRepository;
+use Ferienpass\CoreBundle\Repository\ParticipantRepositoryInterface;
 
 class EraseDataFacade
 {
-    public function __construct(private readonly Connection $connection, private readonly ParticipantRepository $participantRepository, private readonly EntityManagerInterface $doctrine)
+    public function __construct(private readonly Connection $connection, private readonly ParticipantRepositoryInterface $participantRepository, private readonly EntityManagerInterface $doctrine)
     {
     }
 
@@ -82,7 +82,7 @@ SQL
     {
         $participants = $this->expiredParticipants();
 
-        /** @var Participant $participant */
+        /** @var BaseParticipant $participant */
         foreach ($participants as $participant) {
             /** @var Attendance $attendance */
             $pseudonym = bin2hex(random_bytes(5));
@@ -97,7 +97,7 @@ SQL
 
         $this->doctrine->flush();
 
-        $this->doctrine->getRepository(Participant::class)
+        $this->participantRepository
             ->createQueryBuilder('p')
             ->delete()
             ->where('p IN (:ids)')

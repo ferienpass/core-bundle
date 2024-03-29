@@ -18,11 +18,12 @@ use Ferienpass\CoreBundle\Export\Offer\OfferExportInterface;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination as MpdfDestination;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment as TwigEnvironment;
 
 final class PdfExport implements OfferExportInterface
 {
-    public function __construct(private readonly Filesystem $filesystem, private readonly TwigEnvironment $twig)
+    public function __construct(private readonly Filesystem $filesystem, private readonly TwigEnvironment $twig, private readonly EventDispatcherInterface $dispatcher)
     {
     }
 
@@ -47,6 +48,7 @@ final class PdfExport implements OfferExportInterface
     {
         return $this->twig->render('@FerienpassCore/ParticipantList/Pdf/Page.html.twig', [
             'offer' => $offer,
+            'dispatcher' => $this->dispatcher,
         ]);
     }
 

@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Fixtures\Factory;
 
-use Ferienpass\CoreBundle\Entity\Participant;
-use function Zenstruck\Foundry\faker;
+use Ferienpass\CoreBundle\Entity\Participant\BaseParticipant;
 use Zenstruck\Foundry\ModelFactory;
+use function Zenstruck\Foundry\faker;
 
 class ParticipantFactory extends ModelFactory
 {
@@ -37,6 +37,6 @@ class ParticipantFactory extends ModelFactory
 
     protected static function getClass(): string
     {
-        return Participant::class;
+        return BaseParticipant::class;
     }
 }

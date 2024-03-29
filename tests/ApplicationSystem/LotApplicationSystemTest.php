@@ -16,7 +16,7 @@ namespace Ferienpass\CoreBundle\Tests\ApplicationSystem;
 use Ferienpass\CoreBundle\ApplicationSystem\LotApplicationSystem;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer\BaseOffer;
-use Ferienpass\CoreBundle\Entity\Participant;
+use Ferienpass\CoreBundle\Entity\Participant\BaseParticipant;
 use Ferienpass\CoreBundle\Fixtures\Factory\EditionTaskFactory;
 use PHPUnit\Framework\TestCase;
 use Zenstruck\Foundry\Test\Factories;
@@ -31,7 +31,7 @@ class LotApplicationSystemTest extends TestCase
 
         $applicationSystem = (new LotApplicationSystem())->withTask($editionTask->object());
 
-        $attendance = new Attendance($offer = new BaseOffer(), $participant = new Participant());
+        $attendance = new Attendance($offer = new BaseOffer(), $participant = new BaseParticipant());
 
         $applicationSystem->assignStatus($attendance, null);
 

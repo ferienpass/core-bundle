@@ -15,6 +15,7 @@ namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface;
+use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 use Symfony\Component\Workflow\Transition;
 
 #[ORM\Entity]
@@ -25,9 +26,9 @@ class ParticipantLog
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Participant::class, inversedBy: 'activity')]
+    #[ORM\ManyToOne(targetEntity: ParticipantInterface::class, inversedBy: 'activity')]
     #[ORM\JoinColumn(name: 'participant_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
-    private ?Participant $participant;
+    private ?ParticipantInterface $participant;
 
     #[ORM\ManyToOne(targetEntity: Attendance::class, inversedBy: 'activity')]
     #[ORM\JoinColumn(name: 'attendance_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -53,7 +54,7 @@ class ParticipantLog
     #[ORM\Column(type: 'string', length: 32, nullable: true)]
     private ?string $transitionTo = null;
 
-    public function __construct(?Participant $participant, User $user = null, Attendance $attendance = null, ApplicationSystemInterface $applicationSystem = null, string $comment = null, Transition $transition = null)
+    public function __construct(?ParticipantInterface $participant, User $user = null, Attendance $attendance = null, ApplicationSystemInterface $applicationSystem = null, string $comment = null, Transition $transition = null)
     {
         $this->participant = $participant;
         $this->user = $user;
@@ -87,7 +88,7 @@ class ParticipantLog
         return $this->createdAt;
     }
 
-    public function getParticipant(): Participant
+    public function getParticipant(): ParticipantInterface
     {
         return $this->participant;
     }

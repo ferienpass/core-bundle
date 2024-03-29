@@ -21,12 +21,13 @@ use Symfony\Component\Notifier\Message\EmailMessage as SymfonyEmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class RemindAttendanceNotification extends AbstractNotification implements NotificationInterface, EditionAwareNotificationInterface, EmailNotificationInterface
 {
     private Attendance $attendance;
 
-    public function __construct(private readonly ICalExport $iCalExport)
+    public function __construct(private readonly ICalExport $iCalExport, private readonly EventDispatcherInterface $dispatcher)
     {
         parent::__construct();
     }
@@ -54,6 +55,7 @@ class RemindAttendanceNotification extends AbstractNotification implements Notif
             'attendance' => $this->attendance,
             'offer' => $this->attendance->getOffer(),
             'participant' => $this->attendance->getParticipant(),
+            'offer_fee' => $this->attendance->getOffer()->getFeePayable($this->attendance->getParticipant(), $this->dispatcher),
         ]);
     }
 

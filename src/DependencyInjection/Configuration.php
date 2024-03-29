@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\DependencyInjection;
 
 use Ferienpass\CoreBundle\Entity\Offer;
+use Ferienpass\CoreBundle\Entity\Participant;
 use Ferienpass\CoreBundle\Repository\OfferRepository;
+use Ferienpass\CoreBundle\Repository\ParticipantRepository;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -33,6 +35,13 @@ final class Configuration implements ConfigurationInterface
                             ->children()
                                 ->scalarNode('model')->defaultValue(Offer::class)->end()
                                 ->scalarNode('repository')->defaultValue(OfferRepository::class)->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('participant')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('model')->defaultValue(Participant::class)->end()
+                                ->scalarNode('repository')->defaultValue(ParticipantRepository::class)->end()
                             ->end()
                         ->end()
                     ->end()

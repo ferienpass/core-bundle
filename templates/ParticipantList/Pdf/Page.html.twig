@@ -38,7 +38,7 @@
 
 {% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
 
-{% macro table(attendances, offer) %}
+{% macro table(attendances, offer, dispatcher) %}
     <table class="attendances" cellspacing="0" cellpadding="0" style="width: 100%">
         {% for attendance in attendances -%}
             {% set participant = attendance.participant %}
@@ -71,7 +71,7 @@
                 </td>
                 <td style="color: cmyk(0,0,0,70)">
                     <p>
-                        Gebühr: {{ (participant.discounted ? offer.fee/2 : offer.fee)/100 }} €
+                        Gebühr: {{ (offer.getFeePayable(participant, dispatcher)/100)|format_currency('EUR', locale="de") }}
                     </p>
                     <p>
                         {{ attendance.paid ? 'bezahlt' : 'nicht bezahlt' }}
@@ -126,13 +126,13 @@
 
     {% set attendances = offer.attendancesConfirmed|sort((a, b) => a.participant.lastname|default <=> b.participant.lastname|default) %}
     <div>
-        {{ _self.table(attendances, offer) }}
+        {{ _self.table(attendances, offer, dispatcher) }}
     </div>
 
     {% set attendances = offer.attendancesWaitlisted %}
     {% if attendances|length %}
         <div style="page: waitlist; page-break-before: always;">
-            {{ _self.table(attendances, offer) }}
+            {{ _self.table(attendances, offer, dispatcher) }}
         </div>
 
     {% endif %}

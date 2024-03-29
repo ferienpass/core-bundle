@@ -22,13 +22,16 @@ use Ferienpass\CoreBundle\Entity\Host;
 use Ferienpass\CoreBundle\Entity\OfferDate;
 use Ferienpass\CoreBundle\Entity\OfferLog;
 use Ferienpass\CoreBundle\Entity\OfferMemberAssociation;
+use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 use Ferienpass\CoreBundle\Entity\User;
+use Ferienpass\CoreBundle\Payments\OfferFeeEvent;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[ORM\MappedSuperclass]
-class BaseOffer
+class BaseOffer implements OfferInterface
 {
     use OfferEditionTrait;
     use OfferVariantsTrait;
@@ -560,5 +563,10 @@ class BaseOffer
     public function setModifiedAt(\DateTimeInterface $modifiedAt = new \DateTimeImmutable()): void
     {
         $this->modifiedAt = $modifiedAt;
+    }
+
+    public function getFeePayable(ParticipantInterface $participant, EventDispatcherInterface $dispatcher): int
+    {
+        return $dispatcher->dispatch(new OfferFeeEvent($this->getFee(), $this, $participant))->getFee();
     }
 }

@@ -17,6 +17,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\Entity\Participant\BaseParticipant;
+use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 use Ferienpass\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -105,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: HostMemberAssociation::class, cascade: ['persist', 'remove'])]
     private Collection $hostAssociations;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Participant::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ParticipantInterface::class, cascade: ['persist', 'remove'])]
     private Collection $participants;
 
     public function __construct()
@@ -442,7 +444,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->dontDeleteBefore = $dontDeleteBefore;
     }
 
-    /** @return Collection<Participant> */
+    /** @return Collection<BaseParticipant> */
     public function getParticipants(): Collection
     {
         return $this->participants;

@@ -26,7 +26,7 @@ class PaymentItem
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\ManyToOne(targetEntity: Attendance::class, inversedBy: 'paymentItem')]
+    #[ORM\ManyToOne(targetEntity: Attendance::class, inversedBy: 'paymentItems')]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private Attendance|null $attendance;
 

@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 use Ferienpass\CoreBundle\Repository\AccessCodeStrategyRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -102,7 +103,7 @@ class AccessCodeStrategy
         return $codes->first();
     }
 
-    public function isEnabledParticipant(Participant $participant): bool
+    public function isEnabledParticipant(ParticipantInterface $participant): bool
     {
         return $this->codes->filter(fn (AccessCode $code) => $code->getParticipants()->contains($participant))->count() > 0;
     }

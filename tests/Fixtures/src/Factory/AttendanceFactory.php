@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Fixtures\Factory;
 
 use Ferienpass\CoreBundle\Entity\Attendance;
-use Ferienpass\CoreBundle\Entity\Participant;
+use Ferienpass\CoreBundle\Entity\Participant\BaseParticipant;
 use Zenstruck\Foundry\ModelFactory;
 
 class AttendanceFactory extends ModelFactory
@@ -29,7 +29,7 @@ class AttendanceFactory extends ModelFactory
         return $this->addState(['status' => $status]);
     }
 
-    public function withParticipant(Participant $participant): self
+    public function withParticipant(BaseParticipant $participant): self
     {
         return $this->addState(['participant' => $participant]);
     }

@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ferienpass\CoreBundle\Dto\Currency;
 use Ferienpass\CoreBundle\Repository\PaymentRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[ORM\Entity(repositoryClass: PaymentRepository::class)]
 class Payment
@@ -78,12 +79,12 @@ class Payment
     /**
      * @param array<Attendance> $attendances
      */
-    public static function fromAttendances(iterable $attendances, string $receiptNumber = null): static
+    public static function fromAttendances(iterable $attendances, EventDispatcherInterface $dispatcher, string $receiptNumber = null): static
     {
         $self = new self($receiptNumber);
 
         foreach ($attendances as $attendance) {
-            $self->items->add(new PaymentItem($attendance, $attendance->getOffer()->getFee() ?? 0));
+            $self->items->add(new PaymentItem($attendance, $attendance->getOffer()->getFeePayable($attendance->getParticipant(), $dispatcher)));
         }
 
         $self->calculateTotalAmount();

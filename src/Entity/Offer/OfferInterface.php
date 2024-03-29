@@ -16,7 +16,9 @@ namespace Ferienpass\CoreBundle\Entity\Offer;
 use Doctrine\Common\Collections\Collection;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Edition;
+use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 interface OfferInterface
 {
@@ -71,4 +73,6 @@ interface OfferInterface
     public function addAttendance(Attendance $attendance): void;
 
     public function generateAlias(SluggerInterface $slugger);
+
+    public function getFeePayable(ParticipantInterface $participant, EventDispatcherInterface $dispatcher): int;
 }

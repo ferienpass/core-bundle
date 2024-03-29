@@ -11,17 +11,20 @@ declare(strict_types=1);
  * or the documentation under <https://docs.ferienpass.online>.
  */
 
-namespace Ferienpass\CoreBundle\Exception;
+namespace Ferienpass\CoreBundle\Payments;
 
 use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
-use Symfony\Component\Translation\TranslatableMessage;
 
-class IneligibleParticipantException extends \Exception
+class OfferFeeEvent
 {
-    public function __construct(private readonly OfferInterface $offer, private readonly ParticipantInterface $participant, private readonly TranslatableMessage $userMessage)
+    public function __construct(private int $fee, private readonly OfferInterface $offer, private readonly ParticipantInterface $participant)
     {
-        parent::__construct((string) $userMessage);
+    }
+
+    public function getFee(): int
+    {
+        return $this->fee;
     }
 
     public function getOffer(): OfferInterface
@@ -34,8 +37,8 @@ class IneligibleParticipantException extends \Exception
         return $this->participant;
     }
 
-    public function getUserMessage(): TranslatableMessage
+    public function setFee(int $fee): void
     {
-        return $this->userMessage;
+        $this->fee = $fee;
     }
 }

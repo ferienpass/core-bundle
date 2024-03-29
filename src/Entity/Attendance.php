@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface;
 use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
+use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Workflow\Transition;
@@ -63,9 +64,9 @@ class Attendance
     #[ORM\JoinColumn(name: 'offer_id', referencedColumnName: 'id')]
     private OfferInterface $offer;
 
-    #[ORM\ManyToOne(targetEntity: Participant::class, inversedBy: 'attendances')]
+    #[ORM\ManyToOne(targetEntity: ParticipantInterface::class, inversedBy: 'attendances')]
     #[ORM\JoinColumn(name: 'participant_id', referencedColumnName: 'id', nullable: true)]
-    private ?Participant $participant;
+    private ?ParticipantInterface $participant;
 
     #[ORM\ManyToOne(targetEntity: EditionTask::class)]
     #[ORM\JoinColumn(name: 'task_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
@@ -90,7 +91,7 @@ class Attendance
     #[ORM\ManyToMany(targetEntity: MessengerLog::class, mappedBy: 'attendances')]
     private Collection $messengerLogs;
 
-    public function __construct(OfferInterface $offer, ?Participant $participant, string $status = null)
+    public function __construct(OfferInterface $offer, ?ParticipantInterface $participant, string $status = null)
     {
         $this->offer = $offer;
         $this->participant = $participant;
@@ -208,7 +209,7 @@ class Attendance
         return $this->offer;
     }
 
-    public function getParticipant(): ?Participant
+    public function getParticipant(): ?ParticipantInterface
     {
         return $this->participant;
     }

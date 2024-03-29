@@ -15,11 +15,13 @@ namespace Ferienpass\CoreBundle\DependencyInjection;
 
 use Ferienpass\CoreBundle\Entity\Offer;
 use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
+use Ferienpass\CoreBundle\Entity\Participant;
 use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
 use Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports;
 use Ferienpass\CoreBundle\Export\ParticipantList\WordExport;
 use Ferienpass\CoreBundle\Messenger\MessageLogMiddleware;
 use Ferienpass\CoreBundle\Repository\OfferRepositoryInterface;
+use Ferienpass\CoreBundle\Repository\ParticipantRepositoryInterface;
 use Ferienpass\CoreBundle\Repository\ResetPasswordRequestRepository;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -42,6 +44,7 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
         $this->configurePersistence($config['entities'], $container);
         $container->addAliases([
             OfferRepositoryInterface::class => 'ferienpass.repository.offer',
+            ParticipantRepositoryInterface::class => 'ferienpass.repository.participant',
         ]);
 
         // Parameters
@@ -90,6 +93,7 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
                     'default' => [
                         'schema_ignore_classes' => [
                             Offer::class,
+                            Participant::class,
                         ],
                     ],
                 ],

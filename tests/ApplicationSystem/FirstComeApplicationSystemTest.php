@@ -16,7 +16,7 @@ namespace Ferienpass\CoreBundle\Tests\ApplicationSystem;
 use Ferienpass\CoreBundle\ApplicationSystem\FirstComeApplicationSystem;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer\BaseOffer;
-use Ferienpass\CoreBundle\Entity\Participant;
+use Ferienpass\CoreBundle\Entity\Participant\BaseParticipant;
 use Ferienpass\CoreBundle\Fixtures\Factory\AttendanceFactory;
 use Ferienpass\CoreBundle\Fixtures\Factory\EditionTaskFactory;
 use Ferienpass\CoreBundle\Fixtures\Factory\OfferFactory;
@@ -33,7 +33,7 @@ class FirstComeApplicationSystemTest extends TestCase
 
         $applicationSystem = (new FirstComeApplicationSystem())->withTask($editionTask->object());
 
-        $attendance = new Attendance(new BaseOffer(), new Participant());
+        $attendance = new Attendance(new BaseOffer(), new BaseParticipant());
 
         $applicationSystem->assignStatus($attendance);
 
@@ -47,11 +47,11 @@ class FirstComeApplicationSystemTest extends TestCase
 
         $applicationSystem = (new FirstComeApplicationSystem())->withTask($editionTask->object());
 
-        $applicationSystem->assignStatus($attendance = new Attendance(new BaseOffer(), new Participant(), Attendance::STATUS_WITHDRAWN));
+        $applicationSystem->assignStatus($attendance = new Attendance(new BaseOffer(), new BaseParticipant(), Attendance::STATUS_WITHDRAWN));
 
         self::assertSame('withdrawn', $attendance->getStatus());
 
-        $applicationSystem->assignStatus($attendance = new Attendance(new BaseOffer(), new Participant(), Attendance::STATUS_WAITING));
+        $applicationSystem->assignStatus($attendance = new Attendance(new BaseOffer(), new BaseParticipant(), Attendance::STATUS_WAITING));
 
         self::assertSame('waiting', $attendance->getStatus());
     }
@@ -62,7 +62,7 @@ class FirstComeApplicationSystemTest extends TestCase
 
         $applicationSystem = (new FirstComeApplicationSystem())->withTask($editionTask->object());
 
-        $applicationSystem->assignStatus($attendance = new Attendance(new BaseOffer(), new Participant(), Attendance::STATUS_WAITLISTED));
+        $applicationSystem->assignStatus($attendance = new Attendance(new BaseOffer(), new BaseParticipant(), Attendance::STATUS_WAITLISTED));
 
         self::assertSame('confirmed', $attendance->getStatus());
     }
@@ -96,7 +96,7 @@ class FirstComeApplicationSystemTest extends TestCase
         $attendances = AttendanceFactory::new()->withStatus('confirmed')->many(4)->create();
         $offer = $offer->withAttendances(array_map(fn ($a) => $a->object(), $attendances))->create();
 
-        $attendance = new Attendance($offer->object(), new Participant());
+        $attendance = new Attendance($offer->object(), new BaseParticipant());
 
         $applicationSystem->assignStatus($attendance);
 
@@ -114,7 +114,7 @@ class FirstComeApplicationSystemTest extends TestCase
         $attendances = AttendanceFactory::new()->withStatus('confirmed')->many(4)->create();
         $offer = $offer->withAttendances(array_map(fn ($a) => $a->object(), $attendances))->create();
 
-        $attendance = new Attendance($offer->object(), new Participant());
+        $attendance = new Attendance($offer->object(), new BaseParticipant());
 
         $applicationSystem->assignStatus($attendance);
 

@@ -15,6 +15,7 @@ namespace Ferienpass\CoreBundle;
 
 use Ferienpass\CoreBundle\DependencyInjection\FerienpassCoreExtension;
 use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
+use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
@@ -39,6 +40,7 @@ class FerienpassCoreBundle extends AbstractBundle
 
         $this->buildPersistence([
             OfferInterface::class => 'ferienpass.model.offer.class',
+            ParticipantInterface::class => 'ferienpass.model.participant.class',
         ], $container);
     }
 }

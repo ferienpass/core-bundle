@@ -11,8 +11,8 @@ declare(strict_types=1);
  * or the documentation under <https://docs.ferienpass.online>.
  */
 
-namespace Ferienpass\CoreBundle\Repository;
+namespace Ferienpass\CoreBundle\Entity\Participant;
 
-class ParticipantRepository extends EntityRepository implements ParticipantRepositoryInterface
+interface ParticipantInterface
 {
 }

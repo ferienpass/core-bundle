@@ -13,6 +13,14 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Repository;
 
-class ParticipantRepository extends EntityRepository implements ParticipantRepositoryInterface
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Ferienpass\CoreBundle\Entity\SentSms;
+
+class SentSmsRepository extends ServiceEntityRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, SentSms::class);
+    }
 }

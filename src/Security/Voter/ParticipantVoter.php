@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Security\Voter;
 
-use Ferienpass\CoreBundle\Entity\Participant;
+use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 use Ferienpass\CoreBundle\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -34,7 +34,7 @@ class ParticipantVoter extends Voter
             'delete',
         ];
 
-        return $subject instanceof Participant && \in_array($attribute, $operations, true);
+        return $subject instanceof ParticipantInterface && \in_array($attribute, $operations, true);
     }
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
@@ -56,22 +56,22 @@ class ParticipantVoter extends Voter
         };
     }
 
-    private function canView(Participant $participant, User $user): bool
+    private function canView(ParticipantInterface $participant, User $user): bool
     {
         return $this->security->isGranted('ROLE_ADMIN');
     }
 
-    private function canEdit(Participant $participant, User $user): bool
+    private function canEdit(ParticipantInterface $participant, User $user): bool
     {
         return $this->security->isGranted('ROLE_ADMIN');
     }
 
-    private function canDelete(Participant $participant, User $user): bool
+    private function canDelete(ParticipantInterface $participant, User $user): bool
     {
         return $this->security->isGranted('ROLE_ADMIN');
     }
 
-    private function canCreate(Participant $participant): bool
+    private function canCreate(ParticipantInterface $participant): bool
     {
         return $this->security->isGranted('ROLE_HOST') || $this->security->isGranted('ROLE_ADMIN');
     }

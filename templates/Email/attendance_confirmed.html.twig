@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
   <meta charset="utf-8">
   <meta name="x-apple-disable-message-reformatting">
@@ -92,7 +92,7 @@
                                 </p>
                                 {% endif %}
                                 <p style="font-family: 'Segoe UI', sans-serif; mso-line-height-rule: exactly; margin-bottom: 0; margin-top: 0; text-align: center; font-size: 16px; line-height: 24px; color: #51545E">
-                                  <span style="font-weight: 500;">Teilnahmegebühr:</span> {{ (attendance.participant.discounted|default ? attendance.offer.fee/2 : attendance.offer.fee)/100 }}
+                                  <span style="font-weight: 500;">Teilnahmegebühr:</span> {{ (offer_fee/100)|format_currency('EUR') }}
                                   &euro;
                                 </p>
                               </div>
