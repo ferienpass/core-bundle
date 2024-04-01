@@ -94,7 +94,7 @@ abstract class AbstractNotification extends Notification implements ServiceSubsc
         if (method_exists($notification, 'token')) {
             $notification->token('example');
         }
-        if (method_exists($notification, 'email')) {
+        if (method_exists($notification, 'inviteeEmail')) {
             $notification->inviteeEmail('example@example.org');
         }
 

@@ -44,7 +44,7 @@ class BaseParticipant
 
     #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['default' => ''])]
     #[Groups(['admin_list', 'notification'])]
-    private string $firstname;
+    private ?string $firstname = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => ''])]
     #[Groups(['admin_list', 'notification'])]
@@ -94,7 +94,7 @@ class BaseParticipant
         return $this->id;
     }
 
-    public function getFirstname(): string
+    public function getFirstname(): ?string
     {
         return $this->firstname;
     }
