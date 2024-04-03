@@ -132,7 +132,7 @@ class BaseOffer implements OfferInterface
     private ?int $maxAge = null;
 
     #[ORM\Column(type: 'integer', nullable: true, options: ['unsigned' => true])]
-    #[Assert\GreaterThan(0)]
+    #[Assert\PositiveOrZero]
     #[Groups('docx_export')]
     private ?int $fee = null;
 
