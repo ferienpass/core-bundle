@@ -39,7 +39,7 @@ class AccessCode
 
     #[ORM\JoinTable(name: 'AccessCodeToParticipant')]
     #[ORM\JoinColumn(name: 'code_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'participant_id', onDelete: 'CASCADE')]
     #[ORM\ManyToMany(targetEntity: ParticipantInterface::class, inversedBy: 'accessCodes')]
     private Collection $participants;
 
