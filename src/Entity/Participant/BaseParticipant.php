@@ -27,7 +27,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\MappedSuperclass]
-class BaseParticipant
+class BaseParticipant implements ParticipantInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -361,7 +361,7 @@ class BaseParticipant
         return $this->accessCodes;
     }
 
-    public function addAccessCode(?AccessCode $code)
+    public function addAccessCode(?AccessCode $code): void
     {
         if (null === $code) {
             return;
@@ -375,7 +375,7 @@ class BaseParticipant
         $code->addParticipant($this);
     }
 
-    public function removeAccessCode(AccessCode $code)
+    public function removeAccessCode(AccessCode $code): void
     {
         if ($this->accessCodes->contains($code)) {
             $this->accessCodes->removeElement($code);

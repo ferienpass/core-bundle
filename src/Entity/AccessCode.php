@@ -67,7 +67,6 @@ class AccessCode
         return $this->strategy;
     }
 
-    // TODO make immutable
     public function setCode(?string $code): void
     {
         $this->code = (string) $code;
@@ -83,12 +82,12 @@ class AccessCode
         return $this->participants;
     }
 
-    public function addParticipant(ParticipantInterface $participant)
+    public function addParticipant(ParticipantInterface $participant): void
     {
         $this->participants[] = $participant;
     }
 
-    public function removeParticipant(ParticipantInterface $participant)
+    public function removeParticipant(ParticipantInterface $participant): void
     {
         $this->participants->removeElement($participant);
     }
