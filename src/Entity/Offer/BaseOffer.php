@@ -171,6 +171,9 @@ class BaseOffer implements OfferInterface
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $activity;
 
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $applicationExtra = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -530,6 +533,16 @@ class BaseOffer implements OfferInterface
     public function getMemberAssociations(): Collection
     {
         return $this->memberAssociations;
+    }
+
+    public function getApplicationExtra(): ?array
+    {
+        return $this->applicationExtra;
+    }
+
+    public function setApplicationExtra(?array $extra)
+    {
+        $this->applicationExtra = $extra;
     }
 
     public function isSaved(): bool

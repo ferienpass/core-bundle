@@ -91,6 +91,9 @@ class Attendance
     #[ORM\ManyToMany(targetEntity: MessengerLog::class, mappedBy: 'attendances')]
     private Collection $messengerLogs;
 
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $extra = null;
+
     public function __construct(OfferInterface $offer, ?ParticipantInterface $participant, string $status = null)
     {
         $this->offer = $offer;
@@ -251,6 +254,11 @@ class Attendance
     public function getAge(): ?int
     {
         return $this->age;
+    }
+
+    public function getExtra(string $key): string|bool|int|null
+    {
+        return $this->extra[$key] ?? null;
     }
 
     #[Groups('docx_export')]
