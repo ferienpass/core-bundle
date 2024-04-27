@@ -63,6 +63,10 @@ class ParticipantVoter extends Voter
 
     private function canEdit(ParticipantInterface $participant, User $user): bool
     {
+        if ($participant->getUser() === $user) {
+            return true;
+        }
+
         return $this->security->isGranted('ROLE_ADMIN');
     }
 
