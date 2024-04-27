@@ -300,6 +300,11 @@ class BaseParticipant implements ParticipantInterface
         return $this->activity;
     }
 
+    public function getComments(): Collection
+    {
+        return $this->activity->filter(fn (ParticipantLog $l) => $l->isComment());
+    }
+
     public function setFirstname(string $firstname): void
     {
         $this->firstname = $firstname;

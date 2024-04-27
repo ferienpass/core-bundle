@@ -472,6 +472,11 @@ class BaseOffer implements OfferInterface
         return $this->activity;
     }
 
+    public function getComments(): Collection
+    {
+        return $this->activity->filter(fn (OfferLog $l) => $l->isComment());
+    }
+
     #[Groups(['docx_export', 'notification'])]
     public function getDate(): string
     {
