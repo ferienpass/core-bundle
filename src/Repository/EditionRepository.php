@@ -183,4 +183,44 @@ class EditionRepository extends ServiceEntityRepository
             return null;
         }
     }
+
+    public function findUpcoming(string $taskName = 'holiday'): array
+    {
+        $qb0 = $this->_em->createQueryBuilder();
+        $qb = $this->createQueryBuilder('edition')
+            ->innerJoin(
+                'edition.tasks',
+                'period',
+                Expr\Join::WITH,
+                $qb0->expr()->andX(
+                    $qb0->expr()->eq('period.type', ':period'),
+                    $qb0->expr()->gt('period.periodBegin', 'CURRENT_TIMESTAMP()')
+                )
+            )
+            ->setParameter('period', $taskName)
+            ->orderBy('period.periodBegin', 'ASC')
+            ->getQuery();
+
+        return $qb->getResult();
+    }
+
+    public function findPrevious(string $taskName = 'holiday'): array
+    {
+        $qb0 = $this->_em->createQueryBuilder();
+        $qb = $this->createQueryBuilder('edition')
+            ->innerJoin(
+                'edition.tasks',
+                'period',
+                Expr\Join::WITH,
+                $qb0->expr()->andX(
+                    $qb0->expr()->eq('period.type', ':period'),
+                    $qb0->expr()->lt('period.periodEnd', 'CURRENT_TIMESTAMP()')
+                )
+            )
+            ->setParameter('period', $taskName)
+            ->orderBy('period.periodEnd', 'DESC')
+            ->getQuery();
+
+        return $qb->getResult();
+    }
 }

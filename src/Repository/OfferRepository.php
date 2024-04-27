@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Repository;
 
+use Doctrine\ORM\Query\Expr;
 use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 
 class OfferRepository extends EntityRepository implements OfferRepositoryInterface
@@ -73,5 +74,23 @@ class OfferRepository extends EntityRepository implements OfferRepositoryInterfa
         $variant->setContactUser($base->getContactUser());
         $variant->setFee($base->getFee());
         $variant->setImage($base->getImage());
+    }
+
+    public function findUpcoming(): array
+    {
+        $qb0 = $this->_em->createQueryBuilder();
+        $qb = $this->createQueryBuilder('offer')
+            ->innerJoin(
+                'offer.dates',
+                'date',
+                Expr\Join::WITH,
+                $qb0->expr()->andX(
+                    $qb0->expr()->gt('date.begin', 'CURRENT_TIMESTAMP()')
+                )
+            )
+            ->orderBy('date.begin', 'ASC')
+            ->getQuery();
+
+        return $qb->getResult();
     }
 }
