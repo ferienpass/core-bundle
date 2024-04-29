@@ -13,7 +13,10 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Notification;
 
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\FilesModel;
 use Ferienpass\CoreBundle\Entity\Attendance;
+use Ferienpass\CoreBundle\Entity\Offer\BaseOffer;
 use Ferienpass\CoreBundle\Export\Offer\ICal\ICalExport;
 use Ferienpass\CoreBundle\Notifier\Message\EmailMessage;
 use Ferienpass\CoreBundle\Notifier\Mime\NotificationEmail;
@@ -27,7 +30,7 @@ class AttendanceNewlyConfirmedNotification extends AbstractNotification implemen
 {
     private Attendance $attendance;
 
-    public function __construct(private readonly ICalExport $iCalExport, private readonly EventDispatcherInterface $dispatcher)
+    public function __construct(private readonly ICalExport $iCalExport, private readonly EventDispatcherInterface $dispatcher, private readonly ContaoFramework $contaoFramework)
     {
         parent::__construct();
     }
@@ -70,8 +73,17 @@ class AttendanceNewlyConfirmedNotification extends AbstractNotification implemen
 
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?SymfonyEmailMessage
     {
+        $this->contaoFramework->initialize();
+
         return EmailMessage::fromFerienpassNotification($this, $recipient, function (NotificationEmail $email) {
-            $email->attachFromPath($this->iCalExport->generate([$this->attendance->getOffer()]), $this->attendance->getOffer()->getAlias());
+            /** @var BaseOffer $offer */
+            $offer = $this->attendance->getOffer();
+
+            $email->attachFromPath($this->iCalExport->generate([$offer]), $offer->getAlias());
+
+            if (null !== $offer->getAgreementLetter() && null !== $file = FilesModel::findByPk($offer->getAgreementLetter())) {
+                $email->attachFromPath($file->getAbsolutePath(), $file->name);
+            }
         });
     }
 }
