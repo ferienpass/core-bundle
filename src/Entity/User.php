@@ -95,6 +95,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
+    #[ORM\Column(type: 'simple_array', nullable: true)]
+    private ?array $publicFields = [];
+
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $password;
 
@@ -432,6 +435,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastLogin(?\DateTimeInterface $lastLogin): void
     {
         $this->lastLogin = $lastLogin;
+    }
+
+    public function getPublicFields(): ?array
+    {
+        return $this->publicFields;
+    }
+
+    public function setPublicFields(array $publicFields): void
+    {
+        $this->publicFields = $publicFields;
     }
 
     public function getDontDeleteBefore(): ?\DateTimeInterface
