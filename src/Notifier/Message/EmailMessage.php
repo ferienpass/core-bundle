@@ -44,6 +44,10 @@ class EmailMessage extends BaseEmailMessage implements FromNotificationInterface
             $email->replyTo($notification->getReplyTo());
         }
 
+        if (null !== $notification->getAttachment()) {
+            $email->attachFromPath($notification->getAttachment());
+        }
+
         if (\is_callable($useEmail)) {
             $useEmail($email);
         }

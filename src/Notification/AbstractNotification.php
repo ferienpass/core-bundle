@@ -29,6 +29,7 @@ use Twig\Error\Error;
 
 abstract class AbstractNotification extends Notification implements ServiceSubscriberInterface
 {
+    use AttachmentTrait;
     use LoggableNotificationTrait;
     use ReplyToTrait;
     use ServiceSubscriberTrait;
@@ -54,6 +55,11 @@ abstract class AbstractNotification extends Notification implements ServiceSubsc
     public function getReplyTo(): ?string
     {
         return $this->replyTo;
+    }
+
+    public function getAttachment(): ?string
+    {
+        return $this->attachment;
     }
 
     /**

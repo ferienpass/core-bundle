@@ -54,6 +54,9 @@ class Notification
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $smsText = null;
 
+    #[ORM\Column(type: 'binary_string', length: 16, nullable: true)]
+    private ?string $emailAttachment = null;
+
     #[ORM\Column(type: 'boolean')]
     private bool $disable = false;
 
@@ -158,5 +161,15 @@ class Notification
     public function getEdition(): ?Edition
     {
         return $this->edition;
+    }
+
+    public function getEmailAttachment(): ?string
+    {
+        return $this->emailAttachment;
+    }
+
+    public function setEmailAttachment(?string $emailAttachment): void
+    {
+        $this->emailAttachment = $emailAttachment;
     }
 }

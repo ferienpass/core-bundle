@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Notifier;
 
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\FilesModel;
 use Ferienpass\CoreBundle\Entity;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Edition;
@@ -48,7 +50,7 @@ class Notifier implements NotifierInterface
      */
     private array $notifications;
 
-    public function __construct(#[TaggedIterator('ferienpass.notification', defaultIndexMethod: 'getName')] iterable $notifications, private readonly NotifierInterface $notifier, private readonly NotificationRepository $notificationRepository)
+    public function __construct(#[TaggedIterator('ferienpass.notification', defaultIndexMethod: 'getName')] iterable $notifications, private readonly NotifierInterface $notifier, private readonly NotificationRepository $notificationRepository, private readonly ContaoFramework $contaoFramework)
     {
         $this->notifications = $notifications instanceof \Traversable ? iterator_to_array($notifications) : $notifications;
     }
@@ -284,6 +286,14 @@ class Notifier implements NotifierInterface
 
         if ($entity->getEmailReplyTo()) {
             $notification->replyTo($entity->getEmailReplyTo());
+        }
+
+        if ($entity->getEmailAttachment()) {
+            $this->contaoFramework->initialize();
+
+            if (null !== $file = FilesModel::findByPk($entity->getEmailAttachment())) {
+                $notification->attachment($file->getAbsolutePath());
+            }
         }
 
         return $notification;
