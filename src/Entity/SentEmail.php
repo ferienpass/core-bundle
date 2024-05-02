@@ -44,7 +44,7 @@ class SentEmail extends SentMessage
             'type' => $email->getType(),
             'text' => (string) $email->getTextBody(),
             'html' => (string) $email->getHtmlBody(),
-            'attachments' => array_map(fn (DataPart $attachment) => ['body' => $attachment->getBody(), 'filename' => $attachment->getFilename()], $email->getAttachments()),
+            'attachments' => array_map(fn (DataPart $attachment) => ['body' => null, 'filename' => $attachment->getFilename()], $email->getAttachments()),
         ];
 
         return $entity;
