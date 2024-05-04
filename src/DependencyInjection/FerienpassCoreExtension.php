@@ -107,6 +107,7 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
                         'middleware' => [
                             MessageLogMiddleware::class,
                             'doctrine_transaction',
+                            'router_context',
                         ],
                     ],
                 ],

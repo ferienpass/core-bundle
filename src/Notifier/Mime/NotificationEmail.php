@@ -34,12 +34,12 @@ class NotificationEmail extends TemplatedEmail
 
     public function __serialize(): array
     {
-        return [$this->type, parent::__serialize()];
+        return [$this->type, $this->context, parent::__serialize()];
     }
 
     public function __unserialize(array $data): void
     {
-        [$this->type, $parentData] = $data;
+        [$this->type, $this->context, $parentData] = $data;
 
         parent::__unserialize($parentData);
     }

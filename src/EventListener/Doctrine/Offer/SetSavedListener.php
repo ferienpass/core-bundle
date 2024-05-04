@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\EventListener\Doctrine\Offer;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
+use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 #[AsDoctrineListener('postLoad')]
@@ -32,7 +33,11 @@ class SetSavedListener
             return;
         }
 
-        if (!$this->requestStack->getSession()->isStarted()) {
+        try {
+            if (!$this->requestStack->getSession()->isStarted()) {
+                return;
+            }
+        } catch (SessionNotFoundException $exception) {
             return;
         }
 
