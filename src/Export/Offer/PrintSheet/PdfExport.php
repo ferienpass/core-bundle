@@ -54,6 +54,10 @@ class PdfExport implements OffersExportInterface
         $this->createPdf($pdfPath, $html, $this->config->getMpdfConfig());
 
         if (null !== $destination) {
+            if ('pdf' !== pathinfo($destination, \PATHINFO_EXTENSION)) {
+                $destination = rtrim($destination, '.').'.pdf';
+            }
+
             $this->filesystem->copy($pdfPath, $destination);
         }
 
