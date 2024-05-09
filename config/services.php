@@ -2,11 +2,11 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Ferienpass\CmsBundle\Filter\Type\FilterType;
 use Ferienpass\CoreBundle\Entity\User;
 use Ferienpass\CoreBundle\Export\Offer\Excel\ExcelExports;
 use Ferienpass\CoreBundle\Export\Offer\PrintSheet\PdfExports;
 use Ferienpass\CoreBundle\Export\Offer\Xml\XmlExports;
-use Ferienpass\CoreBundle\Filter\Type\FilterType;
 use Ferienpass\CoreBundle\Security\ContaoBackendUser;
 use Ferienpass\CoreBundle\Security\ContaoUserProvider;
 use Ferienpass\CoreBundle\Security\UserChecker;
