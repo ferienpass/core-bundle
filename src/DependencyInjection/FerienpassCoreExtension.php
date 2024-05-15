@@ -23,6 +23,7 @@ use Ferienpass\CoreBundle\Messenger\MessageLogMiddleware;
 use Ferienpass\CoreBundle\Repository\OfferRepositoryInterface;
 use Ferienpass\CoreBundle\Repository\ParticipantRepositoryInterface;
 use Ferienpass\CoreBundle\Repository\ResetPasswordRequestRepository;
+use Ferienpass\CoreBundle\Webhook\PmPaymentRequestParser;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -82,6 +83,20 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
             'mailer' => [
                 'envelope' => [
                     'sender' => '%env(ADMIN_EMAIL)%',
+                ],
+            ],
+            'webhook' => [
+                'routing' => [
+                    'pmPayment' => [
+                        'service' => PmPaymentRequestParser::class,
+                    ],
+                ],
+            ],
+            'http_client' => [
+                'scoped_clients' => [
+                    'pmPayment.client' => [
+                        'base_uri' => 'https://payment-test.govconnect.de',
+                    ],
                 ],
             ],
         ]);

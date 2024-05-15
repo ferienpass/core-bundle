@@ -26,6 +26,7 @@ class Payment
 {
     final public const STATUS_PAID = 'paid';
     final public const STATUS_UNPAID = 'unpaid';
+    final public const STATUS_FAILED = 'failed';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -58,19 +59,35 @@ class Payment
     private ?string $receiptNumber;
 
     #[Groups('admin_list')]
-    #[ORM\Column(type: 'text', length: 64)]
+    #[ORM\Column(type: 'text', length: 64, nullable: true)]
     private ?string $status = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
     private ?User $user = null;
 
-    public function __construct(string $receiptNumber = null, User $user = null)
+    #[ORM\Column(name: 'pmpayment_txid', type: 'string', length: 64, nullable: true)]
+    private ?string $pmPaymentTransactionId = null;
+
+    public function __construct(string $receiptNumber = null, User $user = null, string $status = null)
     {
         $this->receiptNumber = $receiptNumber;
         $this->user = $user;
 
-        $this->status = self::STATUS_PAID;
+        if (null === $status) {
+            $this->status = $status;
+        }
+
+        if (null !== $user) {
+            $this->setBillingAddress(<<<EOF
+{$user->getName()}
+{$user->getStreet()}
+{$user->getPostal()} {$user->getCity()}
+{$user->getCountry()}
+EOF
+            );
+            $this->setBillingEmail($user->getEmail());
+        }
 
         $this->createdAt = new \DateTimeImmutable();
         $this->items = new ArrayCollection();
@@ -79,9 +96,9 @@ class Payment
     /**
      * @param array<Attendance> $attendances
      */
-    public static function fromAttendances(iterable $attendances, EventDispatcherInterface $dispatcher, string $receiptNumber = null): static
+    public static function fromAttendances(iterable $attendances, EventDispatcherInterface $dispatcher, string $receiptNumber = null, User $user = null): static
     {
-        $self = new self($receiptNumber);
+        $self = new self($receiptNumber, $user);
 
         foreach ($attendances as $attendance) {
             $self->items->add(new PaymentItem($attendance, $attendance->getOffer()->getFeePayable($attendance->getParticipant(), $dispatcher)));
@@ -156,6 +173,11 @@ class Payment
         return $this->status;
     }
 
+    public function setStatus(string $status): void
+    {
+        $this->status = $status;
+    }
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -167,13 +189,23 @@ class Payment
     }
 
     #[Groups('admin_list')]
-    public function getUserEmail()
+    public function getUserEmail(): ?string
     {
         return $this->user?->getEmail();
     }
 
-    public function calculateTotalAmount()
+    public function calculateTotalAmount(): void
     {
         $this->totalAmount = array_sum(array_map(fn (PaymentItem $item) => $item->getAmount(), $this->items->toArray()));
+    }
+
+    public function getPmPaymentTransactionId(): ?string
+    {
+        return $this->pmPaymentTransactionId;
+    }
+
+    public function setPmPaymentTransactionId(?string $pmPaymentTransactionId): void
+    {
+        $this->pmPaymentTransactionId = $pmPaymentTransactionId;
     }
 }

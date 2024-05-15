@@ -20,6 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ferienpass\CoreBundle\Entity\Participant\BaseParticipant;
 use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 use Ferienpass\CoreBundle\Repository\UserRepository;
+use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -53,10 +54,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', nullable: true)]
     #[Groups(['notification', 'admin_list'])]
+    #[Assert\NotBlank]
     private ?string $firstname = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
     #[Groups(['notification', 'admin_list'])]
+    #[Assert\NotBlank]
     private ?string $lastname = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
@@ -74,9 +77,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $country = null;
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
     #[Groups(['notification', 'admin_list'])]
+    #[PhoneNumber(type: PhoneNumber::FIXED_LINE, defaultRegion: 'DE')]
     private ?string $phone = null;
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
     #[Groups(['notification', 'admin_list'])]
+    #[PhoneNumber(type: PhoneNumber::MOBILE, defaultRegion: 'DE')]
     private ?string $mobile = null;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
