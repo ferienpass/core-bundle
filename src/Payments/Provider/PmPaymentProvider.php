@@ -25,20 +25,20 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class PmPaymentProvider implements PaymentProviderInterface
 {
-    public function __construct(private readonly HttpClientInterface $pmPaymentClient, private readonly EventDispatcherInterface $dispatcher, private readonly ReceiptNumberGenerator $receiptNumber, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator, #[Autowire(env: 'PMPAYMENT_AGS')] private readonly string $ags, #[Autowire(env: 'PMPAYMENT_PROCEDURE')] private readonly string $procedure, #[Autowire(env: 'PMPAYMENT_SALT')] private readonly string $salt)
+    public function __construct(private readonly HttpClientInterface $pmPaymentClient, private readonly EventDispatcherInterface $dispatcher, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator, #[Autowire(env: 'PMPAYMENT_AGS')] private readonly string $ags, #[Autowire(env: 'PMPAYMENT_PROCEDURE')] private readonly string $procedure, #[Autowire(env: 'PMPAYMENT_SALT')] private readonly string $salt)
     {
     }
 
     public function initializePayment(array $attendances, User $user): string
     {
-        $payment = Payment::fromAttendances($attendances, $this->dispatcher, $this->receiptNumber->generate(), $user);
+        $payment = Payment::fromAttendances($attendances, $this->dispatcher, user: $user);
 
         $values = [
             'ags' => $this->ags,
             'amount' => $payment->getTotalAmount(),
             'procedure' => $this->procedure,
-            'desc' => preg_replace('/[^a-zA-Z0-9\' ?.,\-()+\/]/', '', "Ferienpass {$payment->getReceiptNumber()}"),
-            'accountingRecord' => sprintf('%s|%s|%s', $this->procedure, $payment->getReceiptNumber(), preg_replace('/[\r\n]+/', '|', $payment->getBillingAddress())),
+            'desc' => preg_replace('/[^a-zA-Z0-9\' ?.,\-()+\/]/', '', "Ferienpass {$payment->getId()}"),
+            'accountingRecord' => sprintf('%s|%s|%s', $this->procedure, $payment->getId(), preg_replace('/[\r\n]+/', '|', $payment->getBillingAddress())),
             'notifyURL' => $this->urlGenerator->generate('_webhook_controller', ['type' => 'pmPayment'], UrlGeneratorInterface::ABSOLUTE_URL),
             'redirectURL' => '', // $this->generateUrl('cms_process_payment', ['id' => ''], UrlGeneratorInterface::ABSOLUTE_URL),
         ];

@@ -17,14 +17,9 @@ use Symfony\Component\RemoteEvent\RemoteEvent;
 
 class PmPaymentNotifyEvent extends RemoteEvent
 {
-    public function __construct(private readonly string $ags, string $txid, private readonly int $status, private readonly string $paymentMethod, private readonly \DateTimeImmutable $createdAt, array $payload)
+    public function __construct(string $txid, private readonly int $status, array $payload)
     {
         parent::__construct('pmPayment.notify', $txid, $payload);
-    }
-
-    public function getAgs(): string
-    {
-        return $this->ags;
     }
 
     public function getStatus(): int
@@ -35,15 +30,5 @@ class PmPaymentNotifyEvent extends RemoteEvent
     public function isSuccessful(): bool
     {
         return 1 === $this->getStatus();
-    }
-
-    public function getPaymentMethod(): string
-    {
-        return $this->paymentMethod;
-    }
-
-    public function getCreatedAt(): \DateTimeImmutable
-    {
-        return $this->createdAt;
     }
 }

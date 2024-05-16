@@ -97,6 +97,9 @@ class BaseOffer implements OfferInterface
     #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $requiresAgreementLetter = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $deferAgreementLetter = false;
+
     #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     #[Groups('docx_export')]
     private bool $requiresApplication = false;
@@ -518,6 +521,16 @@ class BaseOffer implements OfferInterface
     public function setRequiresAgreementLetter(?bool $requiresAgreementLetter): void
     {
         $this->requiresAgreementLetter = $requiresAgreementLetter;
+    }
+
+    public function isDeferAgreementLetter(): bool
+    {
+        return $this->deferAgreementLetter;
+    }
+
+    public function setDeferAgreementLetter(bool $deferAgreementLetter): void
+    {
+        $this->deferAgreementLetter = $deferAgreementLetter;
     }
 
     public function getAgreementLetter(): ?string

@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\RemoteEvent;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Ferienpass\CoreBundle\Entity\Payment;
+use Ferienpass\CoreBundle\Payments\ReceiptNumberGenerator;
 use Ferienpass\CoreBundle\Repository\PaymentRepository;
 use Ferienpass\CoreBundle\Webhook\PmPaymentNotifyEvent;
 use Symfony\Component\RemoteEvent\Attribute\AsRemoteEventConsumer;
@@ -23,7 +25,7 @@ use Symfony\Component\RemoteEvent\RemoteEvent;
 #[AsRemoteEventConsumer('pmPayment')]
 final class PmPaymentWebhookConsumer implements ConsumerInterface
 {
-    public function __construct(private readonly PaymentRepository $paymentRepository)
+    public function __construct(private readonly PaymentRepository $paymentRepository, private readonly EntityManagerInterface $entityManager, private readonly ReceiptNumberGenerator $receiptNumber)
     {
     }
 
@@ -46,8 +48,11 @@ final class PmPaymentWebhookConsumer implements ConsumerInterface
 
         if ($transaction->isSuccessful()) {
             $payment->setStatus(Payment::STATUS_PAID);
+            $payment->setReceiptNumber($this->receiptNumber->generate());
         } else {
             $payment->setStatus(Payment::STATUS_FAILED);
         }
+
+        $this->entityManager->flush();
     }
 }

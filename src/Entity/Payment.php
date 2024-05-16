@@ -168,6 +168,15 @@ EOF
         return $this->receiptNumber;
     }
 
+    public function setReceiptNumber(string $receiptNumber): void
+    {
+        if (null !== $this->receiptNumber) {
+            throw new \BadMethodCallException('Receipt number is already set.');
+        }
+
+        $this->receiptNumber = $receiptNumber;
+    }
+
     public function getStatus(): ?string
     {
         return $this->status;
