@@ -29,7 +29,7 @@ class ResolveTargetEntitiesPass implements CompilerPassInterface
         $this->interfaces = $interfaces;
     }
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $this->resolve($container);
     }

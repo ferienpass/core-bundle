@@ -77,7 +77,7 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
         return 'ferienpass';
     }
 
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         $container->prependExtensionConfig('framework', [
             'mailer' => [

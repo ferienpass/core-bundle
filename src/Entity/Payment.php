@@ -55,7 +55,7 @@ class Payment
     private ?string $billingEmail = null;
 
     #[Groups('admin_list')]
-    #[ORM\Column(type: 'text', length: 255)]
+    #[ORM\Column(type: 'text', length: 255, nullable: true)]
     private ?string $receiptNumber;
 
     #[Groups('admin_list')]
@@ -185,6 +185,11 @@ EOF
     public function setStatus(string $status): void
     {
         $this->status = $status;
+    }
+
+    public function isPaid(): bool
+    {
+        return self::STATUS_PAID === $this->status;
     }
 
     public function getUser(): ?User

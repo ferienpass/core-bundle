@@ -16,16 +16,16 @@ namespace Ferienpass\CoreBundle\Payments\Provider;
 use Doctrine\ORM\EntityManagerInterface;
 use Ferienpass\CoreBundle\Entity\Payment;
 use Ferienpass\CoreBundle\Entity\User;
-use Ferienpass\CoreBundle\Payments\ReceiptNumberGenerator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpClient\Exception\ClientException;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class PmPaymentProvider implements PaymentProviderInterface
 {
-    public function __construct(private readonly HttpClientInterface $pmPaymentClient, private readonly EventDispatcherInterface $dispatcher, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator, #[Autowire(env: 'PMPAYMENT_AGS')] private readonly string $ags, #[Autowire(env: 'PMPAYMENT_PROCEDURE')] private readonly string $procedure, #[Autowire(env: 'PMPAYMENT_SALT')] private readonly string $salt)
+    public function __construct(private readonly HttpClientInterface $pmPaymentClient, private readonly EventDispatcherInterface $dispatcher, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator, #[Autowire(env: 'PMPAYMENT_AGS')] private readonly string $ags, #[Autowire(env: 'PMPAYMENT_PROCEDURE')] private readonly string $procedure, #[Autowire(env: 'PMPAYMENT_SALT')] private readonly string $salt, private readonly RequestStack $requestStack)
     {
     }
 
@@ -40,7 +40,7 @@ class PmPaymentProvider implements PaymentProviderInterface
             'desc' => preg_replace('/[^a-zA-Z0-9\' ?.,\-()+\/]/', '', "Ferienpass {$payment->getId()}"),
             'accountingRecord' => sprintf('%s|%s|%s', $this->procedure, $payment->getId(), preg_replace('/[\r\n]+/', '|', $payment->getBillingAddress())),
             'notifyURL' => $this->urlGenerator->generate('_webhook_controller', ['type' => 'pmPayment'], UrlGeneratorInterface::ABSOLUTE_URL),
-            'redirectURL' => '', // $this->generateUrl('cms_process_payment', ['id' => ''], UrlGeneratorInterface::ABSOLUTE_URL),
+            'redirectURL' => $this->urlGenerator->generate('applications', ['step' => 'checkPayment'], UrlGeneratorInterface::ABSOLUTE_URL),
         ];
 
         $response = $this->pmPaymentClient->request('POST', '/payment/secure', [
@@ -56,6 +56,8 @@ class PmPaymentProvider implements PaymentProviderInterface
 
         $this->entityManager->persist($payment);
         $this->entityManager->flush();
+
+        $this->requestStack->getSession()->set('fp.processPayment', $payment->getId());
 
         return $redirect;
     }
