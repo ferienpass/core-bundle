@@ -18,13 +18,13 @@ use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 
 class OfferFeeEvent
 {
-    public function __construct(private int $fee, private readonly OfferInterface $offer, private readonly ParticipantInterface $participant)
+    public function __construct(private ?int $fee, private readonly OfferInterface $offer, private readonly ParticipantInterface $participant)
     {
     }
 
     public function getFee(): int
     {
-        return $this->fee;
+        return (int) $this->fee;
     }
 
     public function getOffer(): OfferInterface

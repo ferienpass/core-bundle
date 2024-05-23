@@ -49,7 +49,7 @@ class ContaoBackendUser extends BackendUser
                 $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
                 return match ($offset) {
-                    'admin' => \in_array('ROLE_ADMIN', $this->user->getRoles(), true),
+                    'admin' => \in_array('ROLE_CMS_ADMIN', $this->user->getRoles(), true),
                     'username' => $this->user->getEmail(),
                     'start', 'stop' => '',
                     default => $propertyAccessor->getValue($this->user, $offset)
