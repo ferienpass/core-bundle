@@ -18,6 +18,7 @@ use Ferienpass\CoreBundle\Entity\Payment;
 use Ferienpass\CoreBundle\Entity\User;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpClient\Exception\ClientException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -39,7 +40,7 @@ class PmPaymentProvider implements PaymentProviderInterface
             'procedure' => $this->procedure,
             'desc' => preg_replace('/[^a-zA-Z0-9\' ?.,\-()+\/]/', '', "Ferienpass {$payment->getId()}"),
             'accountingRecord' => sprintf('%s|%s|%s', $this->procedure, $payment->getId(), preg_replace('/[\r\n]+/', '|', $payment->getBillingAddress())),
-            'notifyURL' => $this->urlGenerator->generate('_webhook_controller', ['type' => 'pmPayment'], UrlGeneratorInterface::ABSOLUTE_URL),
+            'notifyURL' => 'https://handsome-grass-96.webhook.cool', // $this->urlGenerator->generate('_webhook_controller', ['type' => 'pmPayment'], UrlGeneratorInterface::ABSOLUTE_URL),
             'redirectURL' => $this->urlGenerator->generate('applications', ['step' => 'checkPayment'], UrlGeneratorInterface::ABSOLUTE_URL),
         ];
 
@@ -62,8 +63,41 @@ class PmPaymentProvider implements PaymentProviderInterface
         return $redirect;
     }
 
+    public function isRedirectSuccessful(Request $request): bool
+    {
+        $urlParams = [
+            'ags' => $request->query->get('ags', ''),
+            'txid' => $request->query->get('txid', ''),
+            'amount' => $request->query->get('amount', 0),
+            'desc' => $request->query->get('desc', ''),
+            'status' => $request->query->get('status', ''),
+            'payment_method' => $request->query->get('payment_method', ''),
+            'created_at' => $request->query->get('created_at', ''),
+        ];
+
+        if (!$this->hashIsValid($request->query->get('hash', ''), $urlParams)) {
+            return false;
+        }
+
+        if ('0' === $urlParams['status']) {
+            return false;
+        }
+
+        if ('' === $urlParams['payment_method'] && '-1' === $urlParams['status']) {
+            return false;
+        }
+
+        // Successful here means to wait for approval, not that the payment will be marked as paid
+        return true;
+    }
+
     private function calculateHash(array $values): string
     {
         return hash_hmac('sha256', implode('|', $values), $this->salt);
+    }
+
+    private function hashIsValid(string $hash, array $values): bool
+    {
+        return hash_equals($this->calculateHash($values), $hash);
     }
 }

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Payments\Provider;
 
 use Ferienpass\CoreBundle\Entity\User;
+use Symfony\Component\HttpFoundation\Request;
 
 interface PaymentProviderInterface
 {
@@ -21,4 +22,6 @@ interface PaymentProviderInterface
      * @return string the redirect URL
      */
     public function initializePayment(array $attendances, User $user): string;
+
+    public function isRedirectSuccessful(Request $request): bool;
 }
