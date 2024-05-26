@@ -49,6 +49,12 @@ class Edition
     #[ORM\Column(type: 'boolean')]
     private bool $archived = false;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $hasAgreementLetter = false;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $agreementLetterText = null;
+
     #[ORM\ManyToMany(targetEntity: Host::class)]
     #[ORM\JoinTable(name: 'EditionToHost', )]
     #[ORM\JoinColumn(name: 'edition_id', referencedColumnName: 'id')]
@@ -151,6 +157,26 @@ class Edition
     public function setHostsCanAssign(bool $hostsCanAssign): void
     {
         $this->hostsCanAssign = $hostsCanAssign;
+    }
+
+    public function hasAgreementLetter(): bool
+    {
+        return $this->hasAgreementLetter;
+    }
+
+    public function setHasAgreementLetter(bool $hasAgreementLetter): void
+    {
+        $this->hasAgreementLetter = $hasAgreementLetter;
+    }
+
+    public function getAgreementLetterText(): ?string
+    {
+        return $this->agreementLetterText;
+    }
+
+    public function setAgreementLetterText(?string $agreementLetterText): void
+    {
+        $this->agreementLetterText = $agreementLetterText;
     }
 
     public function getHoliday(): ?EditionTask
