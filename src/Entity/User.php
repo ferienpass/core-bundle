@@ -112,7 +112,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private bool $disable = false;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: HostMemberAssociation::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: HostMemberAssociation::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $hostAssociations;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: ParticipantInterface::class, cascade: ['persist', 'remove'])]
