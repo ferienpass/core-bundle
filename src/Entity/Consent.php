@@ -47,6 +47,11 @@ class Consent
         $this->validUntil = $validUntil;
     }
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
     public function getSignedAt(): \DateTimeInterface
     {
         return $this->signedAt;
