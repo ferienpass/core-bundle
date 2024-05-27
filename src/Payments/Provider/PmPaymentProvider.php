@@ -63,7 +63,7 @@ class PmPaymentProvider implements PaymentProviderInterface
         return $redirect;
     }
 
-    public function isRedirectSuccessful(Request $request): bool
+    public function interpretRedirect(Request $request): int
     {
         $urlParams = [
             'ags' => $request->query->get('ags', ''),
@@ -76,19 +76,26 @@ class PmPaymentProvider implements PaymentProviderInterface
         ];
 
         if (!$this->hashIsValid($request->query->get('hash', ''), $urlParams)) {
-            return false;
+            return self::REDIRECT_UNKNOWN_ERROR;
         }
 
-        if ('0' === $urlParams['status']) {
-            return false;
+        if ('-1' === $urlParams['status'] && '' === $urlParams['payment_method']) {
+            return self::REDIRECT_USER_CANCELLED;
         }
 
-        if ('' === $urlParams['payment_method'] && '-1' === $urlParams['status']) {
-            return false;
+        if ('1' === $urlParams['status']) {
+            return self::REDIRECT_PAYMENT_VALIDATE;
         }
 
-        // Successful here means to wait for approval, not that the payment will be marked as paid
-        return true;
+        if ('0' === $urlParams['status'] && 'giropay' === $urlParams['payment_method']) {
+            return self::REDIRECT_PAYMENT_VALIDATE;
+        }
+
+        if ('-1' === $urlParams['status']) {
+            return self::REDIRECT_PAYMENT_FAILED;
+        }
+
+        return self::REDIRECT_PAYMENT_ON_HOLD;
     }
 
     private function calculateHash(array $values): string
