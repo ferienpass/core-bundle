@@ -95,7 +95,7 @@ final class FerienpassCoreExtension extends Extension implements PrependExtensio
             'http_client' => [
                 'scoped_clients' => [
                     'pmPayment.client' => [
-                        'base_uri' => 'https://payment.govconnect.de',
+                        'base_uri' => 'https://www.payment.govconnect.de',
                     ],
                 ],
             ],
