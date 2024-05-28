@@ -14,21 +14,18 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Cron;
 
 use Contao\CoreBundle\Cron\Cron;
-use Contao\CoreBundle\ServiceAnnotation\CronJob;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCronJob;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Query\Expr\Join;
 use Ferienpass\CoreBundle\Entity\Attendance;
-use Ferienpass\CoreBundle\Entity\EventLogRelated;
 use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Message\RemindAttendance;
 use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Ferienpass\CoreBundle\Repository\MessengerLogRepository;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-/**
- * @CronJob("hourly")
- */
+#[AsCronJob('hourly')]
 class SendRemindersListener
 {
     public function __construct(private readonly AttendanceRepository $attendanceRepository, private readonly MessageBusInterface $messageBus, private readonly MessengerLogRepository $eventLogRepository)

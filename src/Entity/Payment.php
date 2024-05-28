@@ -24,9 +24,9 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 #[ORM\Entity(repositoryClass: PaymentRepository::class)]
 class Payment
 {
-    final public const STATUS_PAID = 'paid';
-    final public const STATUS_UNPAID = 'unpaid';
-    final public const STATUS_FAILED = 'failed';
+    final public const string STATUS_PAID = 'paid';
+    final public const string STATUS_UNPAID = 'unpaid';
+    final public const string STATUS_FAILED = 'failed';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -38,7 +38,7 @@ class Payment
     private \DateTimeInterface $createdAt;
 
     #[ORM\JoinTable(name: 'PaymentItemAssociation')]
-    #[ORM\JoinColumn(name: 'payment_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'payment_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'item_id', referencedColumnName: 'id')]
     #[ORM\ManyToMany(targetEntity: PaymentItem::class, cascade: ['persist'])]
     private Collection $items;
