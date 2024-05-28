@@ -90,7 +90,7 @@ class PmPaymentProvider implements PaymentProviderInterface
         // For some incomprehensible reasons, pmPayment does not send a webhook request when paid with SEPA,
         // this is why we immediately mark the payment as paid.
         if ('1' === $urlParams['status'] && 'sepa' === $urlParams['payment_method']) {
-            $payment = $this->payments->findOneBy(['pmpayment_txid' => $urlParams['txid']]);
+            $payment = $this->payments->findOneBy(['pmPaymentTransactionId' => $urlParams['txid']]);
             if (null === $payment) {
                 return self::REDIRECT_PAYMENT_FAILED;
             }

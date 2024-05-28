@@ -41,7 +41,7 @@ final class PmPaymentWebhookConsumer implements ConsumerInterface
     private function handleEvent(PmPaymentNotifyEvent $transaction): void
     {
         /** @var Payment $payment */
-        $payment = $this->paymentRepository->findOneBy(['pmpayment_txid' => $transaction->getId()]);
+        $payment = $this->paymentRepository->findOneBy(['pmPaymentTransactionId' => $transaction->getId()]);
         if (null === $payment) {
             return;
         }
