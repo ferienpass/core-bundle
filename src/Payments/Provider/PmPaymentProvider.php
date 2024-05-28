@@ -16,6 +16,8 @@ namespace Ferienpass\CoreBundle\Payments\Provider;
 use Doctrine\ORM\EntityManagerInterface;
 use Ferienpass\CoreBundle\Entity\Payment;
 use Ferienpass\CoreBundle\Entity\User;
+use Ferienpass\CoreBundle\Payments\ReceiptNumberGenerator;
+use Ferienpass\CoreBundle\Repository\PaymentRepository;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,13 +28,16 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class PmPaymentProvider implements PaymentProviderInterface
 {
-    public function __construct(private readonly HttpClientInterface $pmPaymentClient, private readonly EventDispatcherInterface $dispatcher, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator, #[Autowire(env: 'PMPAYMENT_AGS')] private readonly string $ags, #[Autowire(env: 'PMPAYMENT_PROCEDURE')] private readonly string $procedure, #[Autowire(env: 'PMPAYMENT_SALT')] private readonly string $salt, private readonly RequestStack $requestStack)
+    public function __construct(private readonly HttpClientInterface $pmPaymentClient, private readonly EventDispatcherInterface $dispatcher, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator, #[Autowire(env: 'PMPAYMENT_AGS')] private readonly string $ags, #[Autowire(env: 'PMPAYMENT_PROCEDURE')] private readonly string $procedure, #[Autowire(env: 'PMPAYMENT_SALT')] private readonly string $salt, private readonly RequestStack $requestStack, private readonly PaymentRepository $payments, private readonly ReceiptNumberGenerator $receiptNumber)
     {
     }
 
     public function initializePayment(array $attendances, User $user): string
     {
         $payment = Payment::fromAttendances($attendances, $this->dispatcher, user: $user);
+
+        $this->entityManager->persist($payment);
+        $this->entityManager->flush();
 
         $values = [
             'ags' => $this->ags,
@@ -55,7 +60,6 @@ class PmPaymentProvider implements PaymentProviderInterface
 
         $payment->setPmPaymentTransactionId($content['txid']);
 
-        $this->entityManager->persist($payment);
         $this->entityManager->flush();
 
         $this->requestStack->getSession()->set('fp.processPayment', $payment->getId());
@@ -83,6 +87,19 @@ class PmPaymentProvider implements PaymentProviderInterface
             return self::REDIRECT_USER_CANCELLED;
         }
 
+        // For some incomprehensible reasons, pmPayment does not send a webhook request when paid with SEPA,
+        // this is why we immediately mark the payment as paid.
+        if ('1' === $urlParams['status'] && 'sepa' === $urlParams['payment_method']) {
+            $payment = $this->payments->findOneBy(['pmpayment_txid' => $urlParams['txid']]);
+            if (null === $payment) {
+                return self::REDIRECT_PAYMENT_FAILED;
+            }
+
+            $this->finalizePayment($payment);
+
+            return self::REDIRECT_PAYMENT_ON_HOLD;
+        }
+
         if ('1' === $urlParams['status']) {
             return self::REDIRECT_PAYMENT_VALIDATE;
         }
@@ -106,5 +123,13 @@ class PmPaymentProvider implements PaymentProviderInterface
     private function hashIsValid(string $hash, array $values): bool
     {
         return hash_equals($this->calculateHash($values), $hash);
+    }
+
+    private function finalizePayment(Payment $payment): void
+    {
+        $payment->setStatus(Payment::STATUS_PAID);
+        $payment->setReceiptNumber($this->receiptNumber->generate());
+
+        $this->entityManager->flush();
     }
 }

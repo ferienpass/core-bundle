@@ -29,7 +29,7 @@ final class PmPaymentRequestParser extends AbstractRequestParser
     protected function getRequestMatcher(): RequestMatcherInterface
     {
         return new ChainRequestMatcher([
-            // new IpsRequestMatcher(['212.95.127.140', '212.95.127.138', '212.95.127.26']),
+            new IpsRequestMatcher(['212.95.127.140', '212.95.127.138', '212.95.127.26']),
             new MethodRequestMatcher('POST'),
         ]);
     }
