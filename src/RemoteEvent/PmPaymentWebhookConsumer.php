@@ -46,6 +46,10 @@ final class PmPaymentWebhookConsumer implements ConsumerInterface
             return;
         }
 
+        if ($payment->isFinalized()) {
+            return;
+        }
+
         if ($transaction->isSuccessful()) {
             $payment->setStatus(Payment::STATUS_PAID);
             $payment->setReceiptNumber($this->receiptNumber->generate());

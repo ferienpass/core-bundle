@@ -46,7 +46,7 @@
     </htmlpagefooter>
 
 
-    <p style="width: 8cm;font-size:8pt;border-bottom: 1px solid black;padding-bottom: 2px;">Stadt Bad Oldesloe • Postfach 1261 • 23832 Bad Oldesloe</p>
+    <p style="width: 8cm;font-size:8pt;border-bottom: 1px solid black;padding-bottom: 2px;">{{ block('sender_address') }}</p>
 
     <p style="font-size: 11pt;">{{ payment.billingAddress|nl2br }}<br><br><br></p>
 
@@ -98,6 +98,8 @@
 
     </table>
 
-    <p style="font-size:11pt;">{{ 'Bitte bringen Sie diese Quittung als Beleg Ihrer Zahlung zu den gebuchten Ferienpass-Angeboten mit.'|trans }}</p>
+    {% if block('below_table') is defined %}
+        {{ block('below_table') }}
+    {% endif %}
 
 </div>

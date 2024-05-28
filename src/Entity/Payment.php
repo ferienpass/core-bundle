@@ -222,4 +222,9 @@ EOF
     {
         $this->pmPaymentTransactionId = $pmPaymentTransactionId;
     }
+
+    public function isFinalized(): bool
+    {
+        return null !== $this->receiptNumber;
+    }
 }

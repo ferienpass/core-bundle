@@ -87,28 +87,15 @@ class PmPaymentProvider implements PaymentProviderInterface
             return self::REDIRECT_USER_CANCELLED;
         }
 
-        // For some incomprehensible reasons, pmPayment does not send a webhook request when paid with SEPA,
-        // this is why we immediately mark the payment as paid.
-        if ('1' === $urlParams['status'] && 'sepa' === $urlParams['payment_method']) {
-            $payment = $this->payments->findOneBy(['pmPaymentTransactionId' => $urlParams['txid']]);
-            if (null === $payment) {
-                return self::REDIRECT_PAYMENT_FAILED;
-            }
-
-            $this->finalizePayment($payment);
-
-            return self::REDIRECT_PAYMENT_ON_HOLD;
-        }
-
         if ('1' === $urlParams['status']) {
             return self::REDIRECT_PAYMENT_VALIDATE;
         }
 
-        if ('0' === $urlParams['status'] && 'giropay' === $urlParams['payment_method']) {
-            return self::REDIRECT_PAYMENT_VALIDATE;
+        if ('-1' === $urlParams['status']) {
+            return self::REDIRECT_PAYMENT_FAILED;
         }
 
-        if ('-1' === $urlParams['status']) {
+        if ('0' === $urlParams['status'] && 'giropay' === $urlParams['payment_method']) {
             return self::REDIRECT_PAYMENT_FAILED;
         }
 
@@ -123,13 +110,5 @@ class PmPaymentProvider implements PaymentProviderInterface
     private function hashIsValid(string $hash, array $values): bool
     {
         return hash_equals($this->calculateHash($values), $hash);
-    }
-
-    private function finalizePayment(Payment $payment): void
-    {
-        $payment->setStatus(Payment::STATUS_PAID);
-        $payment->setReceiptNumber($this->receiptNumber->generate());
-
-        $this->entityManager->flush();
     }
 }
