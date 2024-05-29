@@ -28,14 +28,14 @@
                         </span>
                 {% endif %}
                 <div class="overflow-hidden">
-                    <a href="{{ path('offer_details', { 'alias': offer.alias }) }}"
+                    <a href="{{ offer.alias ? path('offer_details', { 'alias': offer.alias }) : '' }}"
                        class="hover:underline">
                         <h2 class="text-xl leading-6 font-semibold truncate">{{ offer.name|raw }}</h2></a>
                     {% if offer.hosts|first|default %}
                         {% if app.request.get('_route') == 'host_details' %}
                             <span class="font-medium truncate text-gray-700">{{ offer.hosts|first.name|raw }}</span>
                         {% else %}
-                            <a href="{{ path('host_details', { 'alias': offer.hosts|first.alias }) }}"
+                            <a href="{{ offer.hosts|first.alias ? path('host_details', { 'alias': offer.hosts|first.alias }) : '' }}"
                                title="Infos zum Veranstalter"
                                class="hover:underline font-medium truncate text-gray-700">{{ offer.hosts|first.name|raw }}</a>
                         {% endif %}
@@ -75,7 +75,7 @@
 
             <div class="flex align-end text-right">
                 <a class="font-semibold text-primary-500 hover:underline"
-                   href="{{ path('offer_details', {alias: offer.alias}) }}">
+                   href="{{ offer.alias ? path('offer_details', {alias: offer.alias}) : '' }}">
                     {{ offer.onlineApplication ? 'Infos & Anmeldung' : 'Infos' }}&nbsp;&srarr;
                 </a>
             </div>
