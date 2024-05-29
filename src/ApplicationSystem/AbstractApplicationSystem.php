@@ -66,7 +66,7 @@ abstract class AbstractApplicationSystem implements ApplicationSystemInterface
             $attendance->setTask($this->getTask());
         }
 
-        $lastAttendance = $status ? $offer->getAttendancesWithStatus($status)->last() : null;
+        $lastAttendance = $status ? $offer->getAttendancesWithStatus($status)->filter(fn (Attendance $attendance) => $attendance->getSorting() > 0)->last() : null;
         /** @var Attendance|false $lastAttendanceParticipant */
         $lastAttendanceParticipant = $attendance->getParticipant()
             ?->getAttendancesWaiting()
@@ -74,7 +74,7 @@ abstract class AbstractApplicationSystem implements ApplicationSystemInterface
             ?->last()
         ;
 
-        $sorting = $lastAttendance ? $lastAttendance->getSorting() : 0;
+        $sorting = $lastAttendance?->getSorting() ?? 0;
         $sorting += 128;
 
         $priority = $lastAttendanceParticipant ? $lastAttendanceParticipant->getUserPriority() + 1 : 1;
