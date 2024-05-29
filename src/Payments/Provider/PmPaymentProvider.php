@@ -43,7 +43,7 @@ class PmPaymentProvider implements PaymentProviderInterface
             'ags' => $this->ags,
             'amount' => $payment->getTotalAmount(),
             'procedure' => $this->procedure,
-            'desc' => preg_replace('/[^a-zA-Z0-9\' ?.,\-()+\/]/', '', "Ferienpass {$payment->getId()}"),
+            'desc' => preg_replace('/[^a-zA-Z0-9\' ?.,\-()+\/]/', '', "{$this->procedure} {$payment->getId()}"),
             'accountingRecord' => sprintf('%s|%s|%s', $this->procedure, $payment->getId(), preg_replace('/[\r\n]+/', '|', $payment->getBillingAddress())),
             'notifyURL' => $this->urlGenerator->generate('_webhook_controller', ['type' => 'pmPayment'], UrlGeneratorInterface::ABSOLUTE_URL),
             'redirectURL' => $this->urlGenerator->generate('applications', ['step' => 'checkPayment'], UrlGeneratorInterface::ABSOLUTE_URL),

@@ -15,6 +15,7 @@ namespace Ferienpass\CoreBundle\RemoteEvent;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Ferienpass\CoreBundle\Entity\Payment;
+use Ferienpass\CoreBundle\Entity\PaymentItem;
 use Ferienpass\CoreBundle\Payments\ReceiptNumberGenerator;
 use Ferienpass\CoreBundle\Repository\PaymentRepository;
 use Ferienpass\CoreBundle\Webhook\PmPaymentNotifyEvent;
@@ -53,6 +54,8 @@ final class PmPaymentWebhookConsumer implements ConsumerInterface
         if ($transaction->isSuccessful()) {
             $payment->setStatus(Payment::STATUS_PAID);
             $payment->setReceiptNumber($this->receiptNumber->generate());
+
+            $payment->getItems()->map(fn (PaymentItem $item) => $item->getAttendance()->setPaid());
         } else {
             $payment->setStatus(Payment::STATUS_FAILED);
         }
