@@ -75,4 +75,17 @@ class Consent
 
         return hash_equals($this->hash, $hash);
     }
+
+    public function getType(): string
+    {
+        if ($this instanceof AgreementLetterSignature) {
+            return 'edition_agreement_letter';
+        }
+
+        if ($this instanceof HostConsent) {
+            return 'host_consent';
+        }
+
+        throw new \Exception('This code should not be reached.');
+    }
 }
