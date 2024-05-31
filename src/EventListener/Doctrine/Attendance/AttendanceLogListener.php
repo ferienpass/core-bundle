@@ -23,6 +23,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Workflow\Transition;
 
 #[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: Attendance::class)]
+#[AsEntityListener(event: Events::preUpdate, method: 'preUpdate', entity: Attendance::class)]
 class AttendanceLogListener
 {
     public function __construct(private readonly Security $security)
@@ -41,15 +42,14 @@ class AttendanceLogListener
 
     public function preUpdate(Attendance $attendance, PreUpdateEventArgs $eventArgs): void
     {
-        $status = $eventArgs->getNewValue('status');
-        if (null === $status || !$eventArgs->hasChangedField('status')) {
+        if (!$eventArgs->hasChangedField('status') || null === ($status = $eventArgs->getNewValue('status'))) {
             return;
         }
 
         $transitionName = match ($status) {
             Attendance::STATUS_CONFIRMED => Attendance::TRANSITION_CONFIRM,
             Attendance::STATUS_WAITLISTED => Attendance::TRANSITION_WAITLIST,
-            Attendance::STATUS_WITHDRAWN => Attendance::STATUS_WITHDRAWN,
+            Attendance::STATUS_WITHDRAWN => Attendance::TRANSITION_WITHDRAW,
             Attendance::STATUS_WAITING => Attendance::TRANSITION_RESET,
         };
 

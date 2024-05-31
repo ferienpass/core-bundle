@@ -378,41 +378,49 @@ class BaseOffer implements OfferInterface
         $this->applicationDeadline = $applicationDeadline;
     }
 
+    /** @return Collection<int, Attendance> */
     public function getAttendances(): Collection
     {
         return $this->attendances;
     }
 
+    /** @return Collection<int, Attendance> */
     public function getAttendancesNotWithdrawn(): Collection
     {
         return $this->getAttendances()->filter(fn (Attendance $attendance) => Attendance::STATUS_WITHDRAWN !== $attendance->getStatus());
     }
 
+    /** @return Collection<int, Attendance> */
     public function getAttendancesConfirmed(): Collection
     {
         return $this->getAttendancesWithStatus(Attendance::STATUS_CONFIRMED);
     }
 
+    /** @return Collection<int, Attendance> */
     public function getAttendancesWaiting(): Collection
     {
         return $this->getAttendancesWithStatus(Attendance::STATUS_WAITING);
     }
 
+    /** @return Collection<int, Attendance> */
     public function getAttendancesWaitlisted(): Collection
     {
         return $this->getAttendancesWithStatus(Attendance::STATUS_WAITLISTED);
     }
 
+    /** @return Collection<int, Attendance> */
     public function getAttendancesConfirmedOrWaitlisted(): Collection
     {
         return $this->getAttendancesWithStatuses([Attendance::STATUS_CONFIRMED, Attendance::STATUS_WAITLISTED]);
     }
 
+    /** @return Collection<int, Attendance> */
     public function getAttendancesWithStatus(string $status): Collection
     {
         return $this->getAttendances()->filter(fn (Attendance $attendance) => $status === $attendance->getStatus());
     }
 
+    /** @return Collection<int, Attendance> */
     public function getAttendancesWithStatuses(array $status): Collection
     {
         return $this->getAttendances()->filter(fn (Attendance $attendance) => \in_array($attendance->getStatus(), $status, true));

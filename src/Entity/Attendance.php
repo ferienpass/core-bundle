@@ -349,12 +349,7 @@ class Attendance
             $priority = min($maxApplications + 1, $priority);
         }
 
-        if ($eventArgs instanceof PreUpdateEventArgs) {
-            $eventArgs->setNewValue('sorting', $sorting);
-            $eventArgs->setNewValue('user_priority', $priority);
-        } else {
-            $this->setSorting($sorting);
-            $this->setUserPriority($priority);
-        }
+        $this->setSorting($sorting);
+        $this->setUserPriority($priority);
     }
 }
