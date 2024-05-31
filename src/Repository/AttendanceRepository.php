@@ -16,11 +16,18 @@ namespace Ferienpass\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Ferienpass\CoreBundle\Entity\Attendance;
+use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
+use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 
 class AttendanceRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Attendance::class);
+    }
+
+    public function findExisting(OfferInterface $offer, ParticipantInterface $participant): ?Attendance
+    {
+        return $this->findOneBy(['offer' => $offer, 'participant' => $participant]);
     }
 }

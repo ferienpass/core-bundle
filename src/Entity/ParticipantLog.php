@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface;
 use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 use Symfony\Component\Workflow\Transition;
 
@@ -54,7 +53,7 @@ class ParticipantLog
     #[ORM\Column(type: 'string', length: 32, nullable: true)]
     private ?string $transitionTo = null;
 
-    public function __construct(?ParticipantInterface $participant, User $user = null, Attendance $attendance = null, ApplicationSystemInterface $applicationSystem = null, string $comment = null, Transition $transition = null)
+    public function __construct(?ParticipantInterface $participant, User $user = null, Attendance $attendance = null, string $comment = null, Transition $transition = null)
     {
         $this->participant = $participant;
         $this->user = $user;
@@ -69,10 +68,6 @@ class ParticipantLog
             $this->transitionName = $transition->getName();
             $this->transitionFrom = $transition->getFroms()[0];
             $this->transitionTo = $transition->getTos()[0];
-        }
-
-        if (null !== $applicationSystem) {
-            $this->applicationSystem = $applicationSystem->getType();
         }
 
         $this->createdAt = new \DateTimeImmutable();
@@ -96,11 +91,6 @@ class ParticipantLog
     public function getAttendance(): ?Attendance
     {
         return $this->attendance;
-    }
-
-    public function getApplicationSystem(): ?string
-    {
-        return $this->applicationSystem;
     }
 
     public function isComment(): bool

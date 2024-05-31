@@ -13,13 +13,22 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\ApplicationSystem;
 
-/**
- * An application system that runs in the front end when the lot application procedure is active.
- */
+use Ferienpass\CoreBundle\Entity\Attendance;
+
 class LotApplicationSystem extends AbstractApplicationSystem
 {
     public function getType(): string
     {
         return 'lot';
+    }
+
+    protected function setStatus(Attendance $attendance): void
+    {
+        // The attendance status will always be set to "waiting" unless set differently.
+        if (null !== $attendance->getStatus()) {
+            return;
+        }
+
+        $attendance->setStatus(Attendance::STATUS_WAITING);
     }
 }

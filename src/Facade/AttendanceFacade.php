@@ -14,24 +14,23 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\Facade;
 
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystems;
 use Ferienpass\CoreBundle\ApplicationSystem\LotApplicationSystem;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Entity\OfferDate;
 use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
-use Ferienpass\CoreBundle\Entity\ParticipantLog;
 use Ferienpass\CoreBundle\Message\AttendanceCreated;
 use Ferienpass\CoreBundle\Message\AttendanceStatusChanged;
 use Ferienpass\CoreBundle\Message\ParticipantListChanged;
+use Ferienpass\CoreBundle\Repository\AttendanceRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Workflow\Transition;
 
 class AttendanceFacade
 {
-    public function __construct(private readonly MessageBusInterface $messageBus, private readonly ManagerRegistry $doctrine, private readonly ApplicationSystems $applicationSystems, private readonly Security $security)
+    public function __construct(private readonly MessageBusInterface $messageBus, private readonly EntityManagerInterface $entityManager, private readonly ApplicationSystems $applicationSystems, private readonly AttendanceRepository $attendances, private readonly Security $security)
     {
     }
 
@@ -49,7 +48,7 @@ class AttendanceFacade
     }
 
     /**
-     * Create (or update) an attendance for a given participant and offer.
+     * Create an attendance (or update an existing record) for a given participant and offer.
      *
      * If an explicit status is given, no application procedure is used.
      * Setting an explicit attendance status shall only be possible for admins.
@@ -64,10 +63,10 @@ class AttendanceFacade
         }
 
         if (null === $status || $attendance->getStatus() !== $status) {
-            $this->setStatus($attendance, $status);
+            $this->setStatusByApplicationSystem($attendance);
         }
 
-        $this->doctrine->getManager()->flush();
+        $this->entityManager->flush();
 
         $this->messageBus->dispatch(new AttendanceCreated($attendance->getId(), $notify));
         $this->messageBus->dispatch(new ParticipantListChanged($offer->getId()));
@@ -112,7 +111,7 @@ class AttendanceFacade
 
         if (null === $attendances || $attendances->isEmpty()) {
             $attendance->setUserPriority(1);
-            $this->doctrine->getManager()->flush();
+            $this->entityManager->flush();
 
             return;
         }
@@ -126,20 +125,15 @@ class AttendanceFacade
             $currentAttendance->setUserPriority($currentAttendance->getUserPriority() + 1);
         }
 
-        $this->doctrine->getManager()->flush();
+        $this->entityManager->flush();
     }
 
     private function findOrCreateAttendance(OfferInterface $offer, ParticipantInterface $participant, ?string $status): ?Attendance
     {
-        $attendance = $this->doctrine->getRepository(Attendance::class)->findOneBy(['offer' => $offer, 'participant' => $participant]);
-
+        $attendance = $this->attendances->findExisting($offer, $participant);
         if (null === $attendance) {
             $attendance = new Attendance($offer, $participant, $status);
-
-            $attendance->getActivity()[] = new ParticipantLog($attendance->getParticipant(), $this->security->getUser(), $attendance, transition: new Transition(Attendance::TRANSITION_CREATE, '', (string) $status));
-
             $offer->addAttendance($attendance);
-            $this->doctrine->getManager()->persist($attendance);
 
             return $attendance;
         }
@@ -151,22 +145,16 @@ class AttendanceFacade
         }
 
         // Reset status to allow re-assignment from current application system
-        $attendance->setStatus(null);
+        if (null !== $status) {
+            $attendance->setStatus(null);
+        }
 
         return $attendance;
     }
 
-    private function setStatus(Attendance $attendance, ?string $status): void
+    private function setStatusByApplicationSystem(Attendance $attendance): void
     {
-        if (null !== $status) {
-            $attendance->setStatus($status, user: $this->security->getUser());
-
-            return;
-        }
-
-        $offer = $attendance->getOffer();
-
-        $applicationSystem = $this->applicationSystems->findApplicationSystem($offer);
+        $applicationSystem = $this->applicationSystems->findApplicationSystem($attendance->getOffer());
         if (null === $applicationSystem) {
             throw new \RuntimeException('Cannot create attendance without an applicable application procedure');
         }
@@ -193,9 +181,8 @@ class AttendanceFacade
         }
 
         // Delete
-        $em = $this->doctrine->getManager();
-        $em->remove($attendance);
-        $em->flush();
+        $this->entityManager->remove($attendance);
+        $this->entityManager->flush();
 
         $this->messageBus->dispatch(new ParticipantListChanged($attendance->getOffer()->getId()));
     }
@@ -203,9 +190,9 @@ class AttendanceFacade
     private function withdrawAttendance(Attendance $attendance): void
     {
         $oldStatus = $attendance->getStatus();
-        $attendance->setStatus('withdrawn', user: $this->security->getUser());
+        $attendance->setStatus(Attendance::STATUS_WITHDRAWN);
 
-        $this->doctrine->getManager()->flush();
+        $this->entityManager->flush();
 
         $this->messageBus->dispatch(new AttendanceStatusChanged($attendance->getId(), $oldStatus, $attendance->getStatus()));
         $this->messageBus->dispatch(new ParticipantListChanged($attendance->getOffer()->getId()));

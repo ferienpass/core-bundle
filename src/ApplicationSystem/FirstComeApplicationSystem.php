@@ -16,9 +16,6 @@ namespace Ferienpass\CoreBundle\ApplicationSystem;
 use Doctrine\Common\Collections\Collection;
 use Ferienpass\CoreBundle\Entity\Attendance;
 
-/**
- * An application system that runs in the front end when the "first come-first served" application procedure is active.
- */
 class FirstComeApplicationSystem extends AbstractApplicationSystem
 {
     public function getType(): string
@@ -26,7 +23,7 @@ class FirstComeApplicationSystem extends AbstractApplicationSystem
         return 'firstcome';
     }
 
-    public function setStatus(Attendance $attendance): void
+    protected function setStatus(Attendance $attendance): void
     {
         $offer = $attendance->getOffer();
         $currentStatus = $attendance->getStatus();
@@ -41,32 +38,33 @@ class FirstComeApplicationSystem extends AbstractApplicationSystem
 
         // Offers with no participant limit
         if (!$max) {
-            $attendance->setStatus('confirmed', applicationSystem: $this);
+            $attendance->setStatus(Attendance::STATUS_CONFIRMED);
 
             return;
         }
 
-        $position = $this->calculatePosition($attendance, $offer->getAttendancesConfirmedOrWaitlisted());
+        $attendances = $offer->getAttendancesConfirmedOrWaitlisted();
+        $position = $this->calculatePosition($attendance, $attendances);
 
         // Existing participant and spots left
         if (null !== $position && $position < $max) {
-            $attendance->setStatus('confirmed', applicationSystem: $this);
+            $attendance->setStatus(Attendance::STATUS_CONFIRMED);
 
             return;
         }
 
         // New participant and spots left
-        if (null === $position && $offer->getAttendancesConfirmedOrWaitlisted()->count() < $max) {
-            $attendance->setStatus('confirmed', applicationSystem: $this);
+        if (null === $position && $attendances->count() < $max) {
+            $attendance->setStatus(Attendance::STATUS_CONFIRMED);
 
             return;
         }
 
-        $attendance->setStatus('waitlisted', applicationSystem: $this);
+        $attendance->setStatus(Attendance::STATUS_WAITLISTED);
     }
 
     /**
-     * Calculate the position of an participant in the participant list.
+     * Calculate the position of a participant in the participant list.
      * Returns NULL for new participants and the integer position (0 = first)
      * for existing participants on the list.
      */

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\ApplicationSystem;
 
-use Doctrine\Common\Collections\Criteria;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\EditionTask;
 
@@ -41,48 +40,11 @@ abstract class AbstractApplicationSystem implements ApplicationSystemInterface
     public function assignStatus(Attendance $attendance): void
     {
         $this->setStatus($attendance);
-        $this->applySorting($attendance);
-    }
-
-    protected function setStatus(Attendance $attendance): void
-    {
-        if (null !== $attendance->getStatus()) {
-            return;
-        }
-
-        $attendance->setStatus('waiting', applicationSystem: $this);
-    }
-
-    protected function applySorting(Attendance $attendance): void
-    {
-        if ($attendance->getId()) {
-            return;
-        }
-
-        $offer = $attendance->getOffer();
-        $status = $attendance->getStatus();
 
         if (null !== $this->getTask()) {
             $attendance->setTask($this->getTask());
         }
-
-        $lastAttendance = $status ? ($offer->getAttendancesWithStatus($status)->filter(fn (Attendance $attendance) => $attendance->getSorting() > 0)->last() ?: null) : null;
-        /** @var Attendance|false $lastAttendanceParticipant */
-        $lastAttendanceParticipant = $attendance->getParticipant()
-            ?->getAttendancesWaiting()
-            ?->matching(Criteria::create()->orderBy(['user_priority' => Criteria::ASC]))
-            ?->last()
-        ;
-
-        $sorting = $lastAttendance?->getSorting() ?? 0;
-        $sorting += 128;
-
-        $priority = $lastAttendanceParticipant ? $lastAttendanceParticipant->getUserPriority() + 1 : 1;
-        if ($maxApplications = $attendance->getTask()?->getMaxApplications()) {
-            $priority = min($maxApplications + 1, $priority);
-        }
-
-        $attendance->setSorting($sorting);
-        $attendance->setUserPriority($priority);
     }
+
+    abstract protected function setStatus(Attendance $attendance): void;
 }

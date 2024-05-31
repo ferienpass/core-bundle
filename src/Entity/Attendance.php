@@ -15,16 +15,20 @@ namespace Ferienpass\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Order;
+use Doctrine\ORM\Event\PrePersistEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use Ferienpass\CoreBundle\ApplicationSystem\ApplicationSystemInterface;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Workflow\Transition;
 
 #[ORM\Entity]
 #[ORM\UniqueConstraint(columns: ['offer_id', 'participant_id'])]
+#[ORM\HasLifecycleCallbacks]
 class Attendance
 {
     final public const STATUS_CONFIRMED = 'confirmed';
@@ -138,23 +142,10 @@ class Attendance
         return $this->status;
     }
 
-    public function setStatus(?string $status, User $user = null, ApplicationSystemInterface $applicationSystem = null): void
+    public function setStatus(?string $status): void
     {
         if (null !== $status && !\in_array($status, [self::STATUS_CONFIRMED, self::STATUS_WAITLISTED, self::STATUS_WITHDRAWN, self::STATUS_WAITING, self::STATUS_ERROR], true)) {
             throw new InvalidArgumentException('Invalid attendance status');
-        }
-
-        if (null !== $status) {
-            $transitionName = match ($status) {
-                self::STATUS_CONFIRMED => self::TRANSITION_CONFIRM,
-                self::STATUS_WAITLISTED => self::TRANSITION_WAITLIST,
-                self::STATUS_WITHDRAWN => self::STATUS_WITHDRAWN,
-                self::STATUS_WAITING => self::TRANSITION_RESET,
-            };
-
-            if (null !== $transitionName) {
-                $this->activity[] = new ParticipantLog($this->participant, $user, $this, $applicationSystem, transition: new Transition($transitionName, (string) $this->status, $status));
-            }
         }
 
         $this->status = $status;
@@ -323,5 +314,47 @@ class Attendance
     public function unsetParticipant()
     {
         $this->participant = null;
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updateSorting(LifecycleEventArgs $eventArgs): void
+    {
+        // Only called when new entity is created with explicit status (this is not the case in the front end)
+        if ($eventArgs instanceof PrePersistEventArgs && null === $this->status) {
+            return;
+        }
+
+        // Only called when status was updated (e.g., by an application system, or by an admin) and no explicit sorting was given
+        if ($eventArgs instanceof PreUpdateEventArgs && (!$eventArgs->hasChangedField('status') || $eventArgs->hasChangedField('sorting'))) {
+            return;
+        }
+
+        $lastAttendance = $this->offer
+            ->getAttendancesWithStatus($this->status)
+            ->filter(fn (Attendance $attendance) => $attendance->getSorting() > 0)->last() ?: null;
+
+        $sorting = $lastAttendance?->getSorting() ?? 0;
+        $sorting += 128;
+
+        /** @var Attendance|false $lastAttendanceParticipant */
+        $lastAttendanceParticipant = $this->participant
+            ?->getAttendancesWaiting()
+            ?->matching(Criteria::create()->orderBy(['user_priority' => Order::Ascending]))
+            ?->last()
+        ;
+
+        $priority = $lastAttendanceParticipant ? $lastAttendanceParticipant->getUserPriority() + 1 : 1;
+        if ($maxApplications = $this->task?->getMaxApplications()) {
+            $priority = min($maxApplications + 1, $priority);
+        }
+
+        if ($eventArgs instanceof PreUpdateEventArgs) {
+            $eventArgs->setNewValue('sorting', $sorting);
+            $eventArgs->setNewValue('user_priority', $priority);
+        } else {
+            $this->setSorting($sorting);
+            $this->setUserPriority($priority);
+        }
     }
 }

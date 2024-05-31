@@ -166,7 +166,7 @@ class BaseOffer implements OfferInterface
     #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $wheelchairAccessible = null;
 
-    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: Attendance::class, cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: Attendance::class, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['status' => 'ASC', 'sorting' => 'ASC'])]
     private Collection $attendances;
 
