@@ -13,28 +13,24 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\EventListener\Doctrine\Offer;
 
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Ferienpass\CoreBundle\Entity\Host;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Event\PrePersistEventArgs;
+use Doctrine\ORM\Events;
 use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Entity\User;
+use Ferienpass\CoreBundle\Repository\HostRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 
-#[AsDoctrineListener('prePersist')]
+#[AsEntityListener(event: Events::prePersist, entity: OfferInterface::class)]
 class SetHostListener
 {
-    public function __construct(private readonly Security $security)
+    public function __construct(private readonly HostRepository $hosts, private readonly Security $security)
     {
     }
 
-    public function prePersist(LifecycleEventArgs $args): void
+    public function prePersist(OfferInterface $offer, PrePersistEventArgs $args): void
     {
-        $entity = $args->getObject();
-        if (!$entity instanceof OfferInterface) {
-            return;
-        }
-
-        if (!$entity->getHosts()->isEmpty()) {
+        if (!$offer->getHosts()->isEmpty()) {
             return;
         }
 
@@ -43,11 +39,11 @@ class SetHostListener
             return;
         }
 
-        $hosts = $args->getObjectManager()->getRepository(Host::class)->findByUser($user);
+        $hosts = $this->hosts->findByUser($user);
         if (empty($hosts)) {
             return;
         }
 
-        $entity->addHost($hosts[0]);
+        $offer->addHost($hosts[0]);
     }
 }

@@ -296,10 +296,8 @@ class Host
         $this->offers->add($offer);
     }
 
-    public function generateAlias(SluggerInterface $slugger)
+    public function generateAlias(SluggerInterface $slugger): void
     {
-        if (!$this->alias) {
-            $this->alias = (string) $slugger->slug($this->getName() ?? '')->lower();
-        }
+        $this->alias = (string) $slugger->slug($this->getName() ?? uniqid())->lower();
     }
 }

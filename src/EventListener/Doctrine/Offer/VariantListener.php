@@ -13,28 +13,24 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\EventListener\Doctrine\Offer;
 
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Ferienpass\CoreBundle\Repository\OfferRepositoryInterface;
 
-#[AsDoctrineListener('preUpdate')]
+#[AsEntityListener(event: Events::preUpdate, entity: OfferInterface::class)]
 class VariantListener
 {
-    public static $processing = false;
+    public static bool $processing = false;
 
-    public function __construct(private readonly OfferRepositoryInterface $repository)
+    public function __construct(private readonly OfferRepositoryInterface $offers)
     {
     }
 
-    public function preUpdate(LifecycleEventArgs $args): void
+    public function preUpdate(OfferInterface $offer, LifecycleEventArgs $args): void
     {
-        $entity = $args->getObject();
-        if (!$entity instanceof OfferInterface) {
-            return;
-        }
-
-        if ($entity->isVariant()) {
+        if ($offer->isVariant()) {
             return;
         }
 
@@ -44,12 +40,10 @@ class VariantListener
 
         self::$processing = true;
 
-        $entityManager = $args->getObjectManager();
-
-        foreach ($entity->getVariants() as $variant) {
-            $this->repository->updateVariant($variant);
+        foreach ($offer->getVariants() as $variant) {
+            $this->offers->updateVariant($variant);
         }
 
-        $entityManager->flush();
+        $args->getObjectManager()->flush();
     }
 }

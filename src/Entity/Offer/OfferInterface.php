@@ -72,7 +72,7 @@ interface OfferInterface
 
     public function addAttendance(Attendance $attendance): void;
 
-    public function generateAlias(SluggerInterface $slugger);
+    public function generateAlias(SluggerInterface $slugger): void;
 
     public function getFeePayable(ParticipantInterface $participant, EventDispatcherInterface $dispatcher): int;
 }

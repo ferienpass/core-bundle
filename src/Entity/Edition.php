@@ -295,8 +295,6 @@ class Edition
 
     public function generateAlias(SluggerInterface $slugger)
     {
-        if (!$this->alias) {
-            $this->alias = (string) $slugger->slug($this->getName() ?? uniqid())->lower();
-        }
+        $this->alias = (string) $slugger->slug($this->getName() ?? uniqid())->lower();
     }
 }

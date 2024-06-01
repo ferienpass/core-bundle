@@ -26,12 +26,12 @@ class AliasListener
     {
     }
 
-    public function prePersist(Host $host)
+    public function prePersist(Host $host): void
     {
         $host->generateAlias($this->slugger);
     }
 
-    public function preUpdate(Host $host)
+    public function preUpdate(Host $host): void
     {
         $host->generateAlias($this->slugger);
     }

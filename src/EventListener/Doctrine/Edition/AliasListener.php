@@ -26,12 +26,12 @@ class AliasListener
     {
     }
 
-    public function prePersist(Edition $edition)
+    public function prePersist(Edition $edition): void
     {
         $edition->generateAlias($this->slugger);
     }
 
-    public function preUpdate(Edition $edition)
+    public function preUpdate(Edition $edition): void
     {
         $edition->generateAlias($this->slugger);
     }

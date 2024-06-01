@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\EventListener\Doctrine\Attendance;
 
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Ferienpass\CoreBundle\Entity\Attendance;
@@ -22,15 +21,15 @@ use Ferienpass\CoreBundle\Entity\ParticipantLog;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Workflow\Transition;
 
-#[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: Attendance::class)]
-#[AsEntityListener(event: Events::preUpdate, method: 'preUpdate', entity: Attendance::class)]
+#[AsEntityListener(event: Events::prePersist, entity: Attendance::class)]
+#[AsEntityListener(event: Events::preUpdate, entity: Attendance::class)]
 class AttendanceLogListener
 {
     public function __construct(private readonly Security $security)
     {
     }
 
-    public function prePersist(Attendance $attendance, PrePersistEventArgs $eventArgs): void
+    public function prePersist(Attendance $attendance): void
     {
         $attendance->getActivity()->add(new ParticipantLog(
             $attendance->getParticipant(),

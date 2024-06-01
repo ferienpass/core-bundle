@@ -576,17 +576,13 @@ class BaseOffer implements OfferInterface
         $this->saved = $saved;
     }
 
-    public function generateAlias(SluggerInterface $slugger)
+    public function generateAlias(SluggerInterface $slugger): void
     {
-        if (!$this->id) {
-            $this->alias = uniqid();
-
+        if ($this->isPublished() && $this->alias) {
             return;
         }
 
-        if (!$this->alias) {
-            $this->alias = (string) $slugger->slug("{$this->getId()}-{$this->getName()}")->lower();
-        }
+        $this->alias = (string) $slugger->slug("{$this->getId()}-{$this->getName()}")->trimEnd('-')->lower();
     }
 
     public function getCreatedAt(): \DateTimeInterface

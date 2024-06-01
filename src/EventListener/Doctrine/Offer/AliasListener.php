@@ -26,12 +26,12 @@ class AliasListener
     {
     }
 
-    public function prePersist(OfferInterface $offer)
+    public function prePersist(OfferInterface $offer): void
     {
         $offer->generateAlias($this->slugger);
     }
 
-    public function preUpdate(OfferInterface $offer)
+    public function preUpdate(OfferInterface $offer): void
     {
         $offer->generateAlias($this->slugger);
     }

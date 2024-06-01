@@ -13,31 +13,27 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\EventListener\Doctrine\Offer;
 
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Event\PostLoadEventArgs;
+use Doctrine\ORM\Events;
 use Ferienpass\CoreBundle\Entity\Offer\OfferInterface;
 use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-#[AsDoctrineListener('postLoad')]
+#[AsEntityListener(event: Events::postLoad, entity: OfferInterface::class)]
 class SetSavedListener
 {
     public function __construct(private readonly RequestStack $requestStack)
     {
     }
 
-    public function postLoad(LifecycleEventArgs $args): void
+    public function postLoad(OfferInterface $offer, PostLoadEventArgs $args): void
     {
-        $entity = $args->getObject();
-        if (!$entity instanceof OfferInterface) {
-            return;
-        }
-
         try {
             if (!$this->requestStack->getSession()->isStarted()) {
                 return;
             }
-        } catch (SessionNotFoundException $exception) {
+        } catch (SessionNotFoundException) {
             return;
         }
 
@@ -46,8 +42,8 @@ class SetSavedListener
             return;
         }
 
-        if (\in_array($entity->getId(), $savedOffers, true)) {
-            $entity->setSaved(true);
+        if (\in_array($offer->getId(), $savedOffers, true)) {
+            $offer->setSaved(true);
         }
     }
 }
