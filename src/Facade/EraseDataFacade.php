@@ -23,7 +23,7 @@ use Ferienpass\CoreBundle\Repository\ParticipantRepositoryInterface;
 
 class EraseDataFacade
 {
-    public function __construct(private readonly Connection $connection, private readonly ParticipantRepositoryInterface $participantRepository, private readonly EntityManagerInterface $doctrine)
+    public function __construct(private readonly Connection $connection, private readonly ParticipantRepositoryInterface $participants, private readonly EntityManagerInterface $doctrine)
     {
     }
 
@@ -50,9 +50,9 @@ FROM Participant p
          LEFT JOIN Edition e ON e.id = f.edition
          LEFT JOIN EditionTask et ON e.id = et.pid
 WHERE
-   (f.id IS NULL AND (p.createdAt IS NULL OR p.createdAt < DATE_SUB(NOW(), INTERVAL 2 WEEK)))
+   (f.id IS NULL AND (p.createdAt IS NULL OR p.createdAt < DATE_SUB(NOW(), INTERVAL 12 WEEK)))
    OR
-      (et.type = 'show_offers' AND et.periodEnd < DATE_SUB(NOW(), INTERVAL 2 WEEK))
+      (et.type = 'show_offers' AND et.periodEnd < DATE_SUB(NOW(), INTERVAL 12 WEEK))
 ORDER BY p.lastname
 SQL
         )->fetchAllNumeric();
@@ -75,7 +75,7 @@ SQL
         $participantsToDelete = array_column($participantsToDelete, 0);
         $participantsToKeep = array_column($participantsToKeep, 0);
 
-        return $this->participantRepository->findBy(['id' => array_diff($participantsToDelete, $participantsToKeep)]);
+        return $this->participants->findBy(['id' => array_diff($participantsToDelete, $participantsToKeep)]);
     }
 
     private function deleteParticipants(): void
@@ -97,7 +97,7 @@ SQL
 
         $this->doctrine->flush();
 
-        $this->participantRepository
+        $this->participants
             ->createQueryBuilder('p')
             ->delete()
             ->where('p IN (:ids)')
