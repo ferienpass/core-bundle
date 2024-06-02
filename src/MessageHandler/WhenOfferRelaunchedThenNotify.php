@@ -23,13 +23,13 @@ use Symfony\Component\Notifier\Recipient\Recipient;
 #[AsMessageHandler]
 class WhenOfferRelaunchedThenNotify
 {
-    public function __construct(private readonly Notifier $notifier, private readonly OfferRepositoryInterface $repository)
+    public function __construct(private readonly Notifier $notifier, private readonly OfferRepositoryInterface $offers)
     {
     }
 
     public function __invoke(OfferRelaunched $message, MessengerLog $log): void
     {
-        $offer = $this->repository->find($message->getOfferId());
+        $offer = $this->offers->find($message->getOfferId());
         if (null === $offer) {
             return;
         }

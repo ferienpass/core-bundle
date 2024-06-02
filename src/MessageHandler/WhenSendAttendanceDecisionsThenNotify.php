@@ -24,7 +24,7 @@ use Symfony\Component\Notifier\Recipient\Recipient;
 #[AsMessageHandler]
 class WhenSendAttendanceDecisionsThenNotify
 {
-    public function __construct(private readonly Notifier $notifier, private readonly AttendanceRepository $repository)
+    public function __construct(private readonly Notifier $notifier, private readonly AttendanceRepository $attendances)
     {
     }
 
@@ -32,7 +32,7 @@ class WhenSendAttendanceDecisionsThenNotify
     {
         $decisions = [];
         /** @var Attendance $attendance */
-        foreach ($this->repository->findBy(['id' => $message->getAttendanceIds()]) as $attendance) {
+        foreach ($this->attendances->findBy(['id' => $message->getAttendanceIds()]) as $attendance) {
             $decisions[$attendance->getEmail()][] = $attendance;
         }
 

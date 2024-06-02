@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class HostVoter extends Voter
 {
-    public function __construct(private readonly Security $security, private readonly HostRepository $hostRepository)
+    public function __construct(private readonly Security $security, private readonly HostRepository $hosts)
     {
     }
 
@@ -63,7 +63,7 @@ class HostVoter extends Voter
             return true;
         }
 
-        $hosts = $this->hostRepository->findByUser($user);
+        $hosts = $this->hosts->findByUser($user);
         $hostIds = array_map(fn (Host $host) => $host->getId(), $hosts);
 
         return \in_array($host->getId(), $hostIds, false);

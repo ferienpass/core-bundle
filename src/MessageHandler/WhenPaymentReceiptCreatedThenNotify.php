@@ -24,14 +24,14 @@ use Symfony\Component\Notifier\Recipient\Recipient;
 #[AsMessageHandler]
 class WhenPaymentReceiptCreatedThenNotify
 {
-    public function __construct(private readonly Notifier $notifier, private readonly PaymentRepository $repository)
+    public function __construct(private readonly Notifier $notifier, private readonly PaymentRepository $payments)
     {
     }
 
     public function __invoke(PaymentReceiptCreated $message, MessengerLog $log): void
     {
         /** @var Payment $payment */
-        $payment = $this->repository->find($message->getPaymentId());
+        $payment = $this->payments->find($message->getPaymentId());
         if (null === $payment || '' === (string) $payment->getBillingEmail()) {
             return;
         }

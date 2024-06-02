@@ -28,7 +28,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 #[AsCronJob('hourly')]
 class SendRemindersListener
 {
-    public function __construct(private readonly AttendanceRepository $attendanceRepository, private readonly MessageBusInterface $messageBus, private readonly MessengerLogRepository $eventLogRepository)
+    public function __construct(private readonly AttendanceRepository $attendances, private readonly MessageBusInterface $messageBus, private readonly MessengerLogRepository $events)
     {
     }
 
@@ -38,8 +38,8 @@ class SendRemindersListener
             return;
         }
 
-        $qb = $this->attendanceRepository->createQueryBuilder('a');
-        $qb2 = $this->eventLogRepository->createQueryBuilder('el');
+        $qb = $this->attendances->createQueryBuilder('a');
+        $qb2 = $this->events->createQueryBuilder('el');
 
         // Notice period: 1.5 days
         $noticePeriod = new \DateTime();

@@ -26,7 +26,7 @@ use Symfony\Component\RemoteEvent\RemoteEvent;
 #[AsRemoteEventConsumer('pmPayment')]
 final class PmPaymentWebhookConsumer implements ConsumerInterface
 {
-    public function __construct(private readonly PaymentRepository $paymentRepository, private readonly EntityManagerInterface $entityManager, private readonly ReceiptNumberGenerator $receiptNumber)
+    public function __construct(private readonly PaymentRepository $payments, private readonly EntityManagerInterface $entityManager, private readonly ReceiptNumberGenerator $receiptNumber)
     {
     }
 
@@ -42,7 +42,7 @@ final class PmPaymentWebhookConsumer implements ConsumerInterface
     private function handleEvent(PmPaymentNotifyEvent $transaction): void
     {
         /** @var Payment $payment */
-        $payment = $this->paymentRepository->findOneBy(['pmPaymentTransactionId' => $transaction->getId()]);
+        $payment = $this->payments->findOneBy(['pmPaymentTransactionId' => $transaction->getId()]);
         if (null === $payment) {
             return;
         }

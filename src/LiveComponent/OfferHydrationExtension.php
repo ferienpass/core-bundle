@@ -19,7 +19,7 @@ use Symfony\UX\LiveComponent\Hydration\HydrationExtensionInterface;
 
 class OfferHydrationExtension implements HydrationExtensionInterface
 {
-    public function __construct(private readonly OfferRepositoryInterface $repository)
+    public function __construct(private readonly OfferRepositoryInterface $offers)
     {
     }
 
@@ -33,7 +33,7 @@ class OfferHydrationExtension implements HydrationExtensionInterface
         // an empty array means a non-persisted entity
         // we support instantiating with no constructor args
         if (\is_array($value) && 0 === \count($value)) {
-            return $this->repository->createNew();
+            return $this->offers->createNew();
         }
 
         // e.g. an empty string
@@ -43,7 +43,7 @@ class OfferHydrationExtension implements HydrationExtensionInterface
 
         // $data is the single identifier or array of identifiers
         if (\is_scalar($value) || (\is_array($value) && isset($value[0]))) {
-            return $this->repository->find($value);
+            return $this->offers->find($value);
         }
 
         throw new \InvalidArgumentException(sprintf('Cannot hydrate Doctrine entity "%s". Value of type "%s" is not supported.', $className, get_debug_type($value)));

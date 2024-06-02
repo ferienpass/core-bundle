@@ -24,7 +24,7 @@ use Symfony\Component\Notifier\Recipient\Recipient;
 #[AsMessageHandler]
 class WhenAttendanceCreatedThenNotify
 {
-    public function __construct(private readonly Notifier $notifier, private readonly AttendanceRepository $repository)
+    public function __construct(private readonly Notifier $notifier, private readonly AttendanceRepository $attendances)
     {
     }
 
@@ -35,7 +35,7 @@ class WhenAttendanceCreatedThenNotify
         }
 
         /** @var Attendance $attendance */
-        $attendance = $this->repository->find($message->getAttendance());
+        $attendance = $this->attendances->find($message->getAttendance());
         if (null === $attendance || !$attendance->isConfirmed()) {
             return;
         }

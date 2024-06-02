@@ -27,13 +27,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 #[AsMessageHandler]
 class WhenExportOffersThenGenerate
 {
-    public function __construct(private readonly OfferRepositoryInterface $repository, private readonly OfferExporter $exporter, private readonly Notifier $notifier, private readonly UrlGeneratorInterface $urlGenerator, private readonly UriSigner $uriSigner, private readonly DownloadNotification $notification, #[Autowire('%kernel.project_dir%/%contao.upload_path%/Export')] private readonly string $destination)
+    public function __construct(private readonly OfferRepositoryInterface $offers, private readonly OfferExporter $exporter, private readonly Notifier $notifier, private readonly UrlGeneratorInterface $urlGenerator, private readonly UriSigner $uriSigner, private readonly DownloadNotification $notification, #[Autowire('%kernel.project_dir%/%contao.upload_path%/Export')] private readonly string $destination)
     {
     }
 
     public function __invoke(ExportOffers $message): void
     {
-        $offers = $this->repository->findBy(['id' => $message->getOfferIds()]);
+        $offers = $this->offers->findBy(['id' => $message->getOfferIds()]);
         if (empty($offers)) {
             return;
         }

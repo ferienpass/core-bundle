@@ -25,7 +25,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class OfferVoter extends Voter
 {
-    public function __construct(private readonly Security $security, private readonly AttendanceRepository $attendanceRepository, private readonly HostRepository $hostRepository)
+    public function __construct(private readonly Security $security, private readonly AttendanceRepository $attendances, private readonly HostRepository $hosts)
     {
     }
 
@@ -90,7 +90,7 @@ class OfferVoter extends Voter
             return true;
         }
 
-        $userHosts = $this->hostRepository->findByUser($user);
+        $userHosts = $this->hosts->findByUser($user);
         $userHostIds = array_map(fn (Host $host) => $host->getId(), $userHosts);
 
         return $offer->getHosts()->filter(fn (Host $host) => \in_array($host->getId(), $userHostIds, true))->count() > 0;
@@ -167,7 +167,7 @@ class OfferVoter extends Voter
             return false;
         }
 
-        $attendances = $this->attendanceRepository->findBy(['offer' => $offer]);
+        $attendances = $this->attendances->findBy(['offer' => $offer]);
 
         return 0 === \count($attendances);
     }

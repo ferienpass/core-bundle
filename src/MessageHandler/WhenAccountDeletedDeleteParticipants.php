@@ -24,14 +24,14 @@ use Symfony\Component\Messenger\MessageBusInterface;
 #[AsMessageHandler]
 class WhenAccountDeletedDeleteParticipants
 {
-    public function __construct(private readonly MessageBusInterface $messageBus, private readonly UserRepository $repository, private readonly EntityManagerInterface $em)
+    public function __construct(private readonly MessageBusInterface $messageBus, private readonly UserRepository $users, private readonly EntityManagerInterface $em)
     {
     }
 
     public function __invoke(AccountDelete $message): void
     {
         /** @var User $user */
-        $user = $this->repository->find($message->getUserId());
+        $user = $this->users->find($message->getUserId());
         if (null === $user) {
             return;
         }

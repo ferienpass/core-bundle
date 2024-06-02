@@ -20,7 +20,7 @@ class ReceiptNumberGenerator
 {
     private int $length = 0;
 
-    public function __construct(#[Autowire(param: 'ferienpass.receipt_number_prefix')] private readonly string $prefix, private readonly PaymentRepository $paymentRepository)
+    public function __construct(#[Autowire(param: 'ferienpass.receipt_number_prefix')] private readonly string $prefix, private readonly PaymentRepository $payments)
     {
     }
 
@@ -28,7 +28,7 @@ class ReceiptNumberGenerator
     {
         $offset1 = mb_strlen($this->prefix);
 
-        $qb = $this->paymentRepository->createQueryBuilder('p');
+        $qb = $this->payments->createQueryBuilder('p');
 
         $select = 'p.receiptNumber';
         if ($offset1) {

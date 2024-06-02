@@ -24,13 +24,13 @@ use Ferienpass\CoreBundle\Repository\AttendanceRepository;
  */
 class DecisionsFacade
 {
-    public function __construct(private readonly AttendanceRepository $repository)
+    public function __construct(private readonly AttendanceRepository $attendances)
     {
     }
 
     public function attendances(Edition $edition = null): array
     {
-        $qb2 = $this->repository->createQueryBuilder('attendance');
+        $qb2 = $this->attendances->createQueryBuilder('attendance');
 
         $alreadyNotified = $qb2
             ->select('attendance.id')
@@ -41,7 +41,7 @@ class DecisionsFacade
             ->getResult()
         ;
 
-        return $this->repository->createQueryBuilder('attendance')
+        return $this->attendances->createQueryBuilder('attendance')
             ->innerJoin('attendance.participant', 'participant')
             ->leftJoin('participant.user', 'user')
             ->innerJoin('attendance.offer', 'offer')

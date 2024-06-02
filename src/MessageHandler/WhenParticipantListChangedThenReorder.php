@@ -26,7 +26,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 #[AsMessageHandler]
 class WhenParticipantListChangedThenReorder
 {
-    public function __construct(private readonly ApplicationSystems $applicationSystems, private readonly MessageBusInterface $messageBus, private readonly OfferRepositoryInterface $repository, private readonly EntityManagerInterface $em)
+    public function __construct(private readonly ApplicationSystems $applicationSystems, private readonly MessageBusInterface $messageBus, private readonly OfferRepositoryInterface $offers, private readonly EntityManagerInterface $em)
     {
     }
 
@@ -36,7 +36,7 @@ class WhenParticipantListChangedThenReorder
         $offerId = $message->getOfferId();
 
         /** @var BaseOffer $offer */
-        $offer = $this->repository->find($offerId);
+        $offer = $this->offers->find($offerId);
         /** @var OfferDate|false $date */
         $date = $offer->getDates()->first();
 

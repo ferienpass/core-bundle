@@ -24,14 +24,14 @@ use Symfony\Component\Notifier\Recipient\Recipient;
 #[AsMessageHandler]
 class WhenAccountRegistrationHelpThenNotify
 {
-    public function __construct(private readonly Notifier $notifier, private readonly UserRepository $repository)
+    public function __construct(private readonly Notifier $notifier, private readonly UserRepository $users)
     {
     }
 
     public function __invoke(AccountRegistrationHelp $message, MessengerLog $log): void
     {
         /** @var User $user */
-        $user = $this->repository->find($message->getUserId());
+        $user = $this->users->find($message->getUserId());
         if (null === $user) {
             return;
         }

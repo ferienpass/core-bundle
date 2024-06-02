@@ -26,14 +26,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 #[AsMessageHandler]
 class WhenAccountCreatedThenNotify
 {
-    public function __construct(private readonly Notifier $notifier, private readonly UserRepository $repository, private readonly UrlGeneratorInterface $urlGenerator, private readonly UriSigner $uriSigner)
+    public function __construct(private readonly Notifier $notifier, private readonly UserRepository $users, private readonly UrlGeneratorInterface $urlGenerator, private readonly UriSigner $uriSigner)
     {
     }
 
     public function __invoke(AccountCreated $message, MessengerLog $log): void
     {
         /** @var User $user */
-        $user = $this->repository->find($message->getUserId());
+        $user = $this->users->find($message->getUserId());
         if (null === $user) {
             return;
         }

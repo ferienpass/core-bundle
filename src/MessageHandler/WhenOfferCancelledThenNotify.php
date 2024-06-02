@@ -24,14 +24,14 @@ use Symfony\Component\Notifier\Recipient\Recipient;
 #[AsMessageHandler]
 class WhenOfferCancelledThenNotify
 {
-    public function __construct(private readonly Notifier $notifier, private readonly OfferRepositoryInterface $repository)
+    public function __construct(private readonly Notifier $notifier, private readonly OfferRepositoryInterface $offers)
     {
     }
 
     public function __invoke(OfferCancelled $message, MessengerLog $log): void
     {
         /** @var BaseOffer $offer */
-        $offer = $this->repository->find($message->getOfferId());
+        $offer = $this->offers->find($message->getOfferId());
         if (null === $offer) {
             return;
         }

@@ -24,14 +24,14 @@ use Symfony\Component\Notifier\Recipient\Recipient;
 #[AsMessageHandler]
 class WhenRemindAttendanceThenNotify
 {
-    public function __construct(private readonly Notifier $notifier, private readonly AttendanceRepository $repository)
+    public function __construct(private readonly Notifier $notifier, private readonly AttendanceRepository $attendances)
     {
     }
 
     public function __invoke(RemindAttendance $message, MessengerLog $log): void
     {
         /** @var Attendance $attendance */
-        $attendance = $this->repository->find($message->getAttendanceId());
+        $attendance = $this->attendances->find($message->getAttendanceId());
         if (null === $attendance || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
             return;
         }
