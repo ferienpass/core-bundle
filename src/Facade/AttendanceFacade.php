@@ -55,11 +55,11 @@ class AttendanceFacade
      *
      * @throws \RuntimeException in case no unambiguous application system is applicable
      */
-    public function create(OfferInterface $offer, ParticipantInterface $participant, string $status = null, bool $notify = true): void
+    public function create(OfferInterface $offer, ParticipantInterface $participant, string $status = null, bool $notify = true): ?Attendance
     {
         $attendance = $this->findOrCreateAttendance($offer, $participant, $status);
         if (null === $attendance) {
-            return;
+            return null;
         }
 
         if (null === $status || $attendance->getStatus() !== $status) {
@@ -70,6 +70,8 @@ class AttendanceFacade
 
         $this->messageBus->dispatch(new AttendanceCreated($attendance->getId(), $notify));
         $this->messageBus->dispatch(new ParticipantListChanged($offer->getId()));
+
+        return $attendance;
     }
 
     public function delete(Attendance $attendance): void
