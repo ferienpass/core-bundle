@@ -98,6 +98,10 @@ class PmPaymentProvider implements PaymentProviderInterface
         if ('0' === $urlParams['status'] && 'giropay' === $urlParams['payment_method']) {
             return self::REDIRECT_PAYMENT_FAILED;
         }
+        
+        if ('0' === $urlParams['status'] && 'paypal' === $urlParams['payment_method']) {
+            return self::REDIRECT_PAYMENT_FAILED;
+        }
 
         return self::REDIRECT_PAYMENT_ON_HOLD;
     }
