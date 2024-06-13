@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\Entity\Offer;
 use Doctrine\Common\Collections\Collection;
 use Ferienpass\CoreBundle\Entity\Attendance;
 use Ferienpass\CoreBundle\Entity\Edition;
+use Ferienpass\CoreBundle\Entity\OfferDate;
 use Ferienpass\CoreBundle\Entity\Participant\ParticipantInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -60,6 +61,9 @@ interface OfferInterface
     // TODO refactor to own interface, make non-nullable
     public function getFee(): ?int;
 
+    /**
+     * @return Collection<int, OfferDate>
+     */
     public function getDates(): Collection;
 
     public function isPublished(): bool;
