@@ -1,6 +1,6 @@
 {% import "@FerienpassCore/Macro/offer.html.twig" as offer_macro %}
 
-<div class="bg-white relative flex rounded-md overflow-hidden shadow-sm divide-x">
+<div class="bg-white dark:bg-gray-800 relative md:flex rounded-md overflow-hidden shadow-sm md:divide-x md:dark:divide-gray-700">
 
     {% if offer.cancelled %}
         <span class="text-center font-medium absolute text-sm transform rotate-45 bg-red-600 text-white w-32 right-0 top-0 translate-x-7 translate-y-7 z-10">abgesagt</span>
@@ -17,7 +17,7 @@
             </div>
         {% endif %}
 
-        <div class="px-4 py-5 sm:p-6 ">
+        <div class="px-4 pt-5 md:p-6">
 
             <div class="flex items-center mb-3">
                 {% if offer.dates is not empty %}
@@ -33,23 +33,23 @@
                         <h2 class="text-xl leading-6 font-semibold truncate">{{ offer.name|raw }}</h2></a>
                     {% if offer.hosts|first|default %}
                         {% if app.request.get('_route') == 'host_details' %}
-                            <span class="font-medium truncate text-gray-700">{{ offer.hosts|first.name|raw }}</span>
+                            <span class="font-medium truncate text-gray-700 dark:text-gray-300">{{ offer.hosts|first.name|raw }}</span>
                         {% else %}
                             <a href="{{ offer.hosts|first.alias ? path('host_details', { 'alias': offer.hosts|first.alias }) : '' }}"
                                title="Infos zum Veranstalter"
-                               class="hover:underline font-medium truncate text-gray-700">{{ offer.hosts|first.name|raw }}</a>
+                               class="hover:underline font-medium truncate text-gray-700 dark:text-gray-300">{{ offer.hosts|first.name|raw }}</a>
                         {% endif %}
                     {% endif %}
                 </div>
             </div>
 
-            <p class="mt-2 text-gray-500 text-sm">{{ offer.description|encodeEmail }}</p>
+            <p class="mt-2 text-gray-500 dark:text-gray-100 text-sm">{{ offer.description|encodeEmail }}</p>
         </div>
     </div>
 
     <div class="px-4 py-4 flex-1 flex flex-col justify-between">
 
-        <div class="text-gray-500">
+        <div class="text-gray-500 dark:text-gray-300">
             {% block meta %}
                 <p><span class="font-semibold">Alter:</span> {{ offer_macro.age(offer) }}</p>
                 <p><span class="font-semibold">Kosten:</span> {{ offer.fee/100 }} €</p>
