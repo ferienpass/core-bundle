@@ -16,6 +16,7 @@ namespace Ferienpass\CoreBundle\Notifier\Message;
 use Ferienpass\CoreBundle\Notification\AbstractNotification;
 use Ferienpass\CoreBundle\Notification\NotificationInterface;
 use Ferienpass\CoreBundle\Notifier\Mime\NotificationEmail;
+use Symfony\Component\Mailer\Header\TagHeader;
 use Symfony\Component\Notifier\Exception\InvalidArgumentException;
 use Symfony\Component\Notifier\Message\EmailMessage as BaseEmailMessage;
 use Symfony\Component\Notifier\Message\FromNotificationInterface;
@@ -51,6 +52,8 @@ class EmailMessage extends BaseEmailMessage implements FromNotificationInterface
         if (\is_callable($useEmail)) {
             $useEmail($email);
         }
+
+        $email->getHeaders()->add(new TagHeader($email->getType()));
 
         $message = new self($email);
         $message->notification = $notification;
