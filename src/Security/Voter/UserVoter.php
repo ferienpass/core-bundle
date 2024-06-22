@@ -27,7 +27,7 @@ class UserVoter extends Voter
 
     protected function supports($attribute, $subject): bool
     {
-        if (!\in_array($attribute, ['view', 'edit', 'delete'], true)) {
+        if (!\in_array($attribute, ['view', 'edit', 'delete', 'password'], true)) {
             return false;
         }
 
@@ -52,6 +52,7 @@ class UserVoter extends Voter
             'view' => $this->canView($account, $user),
             'edit' => $this->canEdit($account, $user),
             'delete' => $this->canDelete($account, $user),
+            'password' => $this->canChangePassword($account, $user),
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
@@ -75,6 +76,15 @@ class UserVoter extends Voter
     }
 
     private function canDelete(User $account, User $user): bool
+    {
+        if ($account->isAdmin()) {
+            return $this->security->isGranted('ROLE_SUPER_ADMIN');
+        }
+
+        return $this->security->isGranted('ROLE_ADMIN');
+    }
+
+    private function canChangePassword(User $account, User $user): bool
     {
         if ($account->isAdmin()) {
             return $this->security->isGranted('ROLE_SUPER_ADMIN');
