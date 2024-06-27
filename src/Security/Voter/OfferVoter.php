@@ -207,6 +207,10 @@ class OfferVoter extends Voter
 
     private function canViewParticipants(OfferInterface $offer, User $user): bool
     {
+        if (null !== $offer->getEdition() && !$offer->getEdition()->isParticipantListReleased() && !$this->security->isGranted('ROLE_ADMIN')) {
+            return false;
+        }
+
         return $this->canView($offer, $user);
     }
 
