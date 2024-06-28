@@ -268,6 +268,15 @@ class Edition
         return $hasCurrentHostEditingStage || !$hasHostEditingStages;
     }
 
+    public function isCompleted(): bool
+    {
+        if (null === $this->getHoliday()) {
+            return false;
+        }
+
+        return $this->getHoliday()->getPeriodEnd() < new \DateTimeImmutable();
+    }
+
     /**
      * @return Collection<EditionTask>
      */
