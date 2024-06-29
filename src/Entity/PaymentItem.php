@@ -30,6 +30,9 @@ class PaymentItem
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private Attendance|null $attendance;
 
+    #[ORM\ManyToOne(targetEntity: Payment::class, inversedBy: 'items')]
+    private Payment|null $payment;
+
     #[ORM\Column(type: 'integer', options: ['unsigned' => false])]
     private int $amount;
 
@@ -43,6 +46,11 @@ class PaymentItem
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getPayment(): ?Payment
+    {
+        return $this->payment;
     }
 
     public function getCreatedAt(): \DateTimeInterface

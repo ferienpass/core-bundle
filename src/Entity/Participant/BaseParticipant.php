@@ -194,7 +194,7 @@ class BaseParticipant implements ParticipantInterface
      *
      * @psalm-return Collection<int, Attendance>
      */
-    public function getAttendances(): Collection
+    public function getAttendances(string $orderBy = null): Collection
     {
         return $this->attendances;
     }

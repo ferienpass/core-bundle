@@ -37,10 +37,7 @@ class Payment
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\JoinTable(name: 'PaymentItemAssociation')]
-    #[ORM\JoinColumn(name: 'payment_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(name: 'item_id', referencedColumnName: 'id')]
-    #[ORM\ManyToMany(targetEntity: PaymentItem::class, cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: PaymentItem::class, mappedBy: 'payment', cascade: ['persist'], orphanRemoval: true)]
     private Collection $items;
 
     #[ORM\Column(type: 'integer', options: ['unsigned' => false])]

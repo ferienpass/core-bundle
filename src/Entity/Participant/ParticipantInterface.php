@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Ferienpass\CoreBundle\Entity\Participant;
 
+use Doctrine\Common\Collections\Collection;
+
 interface ParticipantInterface
 {
+    public function getAttendances(): Collection;
 }
