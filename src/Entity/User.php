@@ -118,12 +118,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: ParticipantInterface::class, cascade: ['persist', 'remove'])]
     private Collection $participants;
 
+    #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'user')]
+    private Collection $payments;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->modifiedAt = new \DateTimeImmutable();
         $this->hostAssociations = new ArrayCollection();
         $this->participants = new ArrayCollection();
+        $this->payments = new ArrayCollection();
     }
 
     public function getId(): ?int

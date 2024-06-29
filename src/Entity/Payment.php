@@ -60,7 +60,7 @@ class Payment
     private ?string $status = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     private ?User $user = null;
 
     #[ORM\Column(name: 'pmpayment_txid', type: 'string', length: 64, nullable: true)]
