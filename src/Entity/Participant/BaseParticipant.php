@@ -71,9 +71,11 @@ class BaseParticipant implements ParticipantInterface
     private Collection $accessCodes;
 
     /**
+     * Use FETCH_MODE = EAGER here because it means the collection will not be re-fetched (we use a join condition in the ParticipantsController).
+     *
      * @psalm-var Collection<int, Attendance>
      */
-    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: Attendance::class, cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: Attendance::class, cascade: ['remove'], fetch: 'EAGER')]
     private Collection $attendances;
 
     #[ORM\OneToMany(mappedBy: 'participant', targetEntity: ParticipantLog::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
