@@ -59,7 +59,7 @@ class Payment
     #[ORM\Column(type: 'text', length: 64, nullable: true)]
     private ?string $status = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'payments')]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     private ?User $user = null;
 

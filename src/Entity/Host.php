@@ -97,7 +97,7 @@ class Host
     #[ORM\OneToMany(mappedBy: 'host', targetEntity: HostMemberAssociation::class, cascade: ['persist', 'remove'])]
     private Collection $memberAssociations;
 
-    #[ORM\ManyToMany(targetEntity: OfferInterface::class, mappedBy: 'hosts')]
+    #[ORM\ManyToMany(targetEntity: OfferInterface::class, mappedBy: 'hosts', fetch: 'EXTRA_LAZY')]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private Collection $offers;
 
