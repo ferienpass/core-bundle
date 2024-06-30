@@ -49,7 +49,7 @@ class PaymentItem
         return $this->id;
     }
 
-    public function getPayment(): ?Payment
+    public function getPayment(): Payment
     {
         return $this->payment;
     }
