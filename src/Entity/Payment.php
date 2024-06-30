@@ -98,7 +98,7 @@ EOF
         $self = new self($receiptNumber, $user);
 
         foreach ($attendances as $attendance) {
-            $self->items->add(new PaymentItem($attendance, $attendance->getOffer()->getFeePayable($attendance->getParticipant(), $dispatcher)));
+            $self->items->add(new PaymentItem($self, $attendance, $attendance->getOffer()->getFeePayable($attendance->getParticipant(), $dispatcher)));
         }
 
         $self->calculateTotalAmount();

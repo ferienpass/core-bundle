@@ -36,9 +36,10 @@ class PaymentItem
     #[ORM\Column(type: 'integer', options: ['unsigned' => false])]
     private int $amount;
 
-    public function __construct(Attendance $attendance, int $amount)
+    public function __construct(Payment $payment, Attendance $attendance, int $amount)
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->payment = $payment;
         $this->attendance = $attendance;
         $this->amount = $amount;
     }
