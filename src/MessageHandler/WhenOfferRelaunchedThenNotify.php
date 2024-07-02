@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ferienpass\CoreBundle\MessageHandler;
 
 use Ferienpass\CoreBundle\Entity\MessengerLog;
+use Ferienpass\CoreBundle\Entity\Offer\BaseOffer;
 use Ferienpass\CoreBundle\Message\OfferRelaunched;
 use Ferienpass\CoreBundle\Notifier\Notifier;
 use Ferienpass\CoreBundle\Repository\OfferRepositoryInterface;
@@ -29,12 +30,13 @@ class WhenOfferRelaunchedThenNotify
 
     public function __invoke(OfferRelaunched $message, MessengerLog $log): void
     {
+        /** @var BaseOffer $offer */
         $offer = $this->offers->find($message->getOfferId());
         if (null === $offer) {
             return;
         }
 
-        foreach ($offer->getAttendances() as $attendance) {
+        foreach ($offer->getAttendancesConfirmed() as $attendance) {
             $notification = $this->notifier->offerRelaunched($attendance, $attendance->getOffer()->getEdition());
             if (null === $notification || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
                 continue;

@@ -36,7 +36,7 @@ class WhenOfferCancelledThenNotify
             return;
         }
 
-        foreach ($offer->getAttendances() as $attendance) {
+        foreach ($offer->getAttendancesConfirmed() as $attendance) {
             $notification = $this->notifier->offerCancelled($attendance, $attendance->getOffer()->getEdition());
             if (null === $notification || '' === $email = (string) $attendance->getParticipant()?->getEmail()) {
                 continue;
