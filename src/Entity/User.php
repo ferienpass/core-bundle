@@ -121,6 +121,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'user')]
     private Collection $payments;
 
+    #[ORM\OneToMany(targetEntity: Consent::class, mappedBy: 'user')]
+    private Collection $consents;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -128,6 +131,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->hostAssociations = new ArrayCollection();
         $this->participants = new ArrayCollection();
         $this->payments = new ArrayCollection();
+        $this->consents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -475,5 +479,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;
+    }
+
+    public function getPayments(): Collection
+    {
+        return $this->payments;
+    }
+
+    public function getConsents(): Collection
+    {
+        return $this->consents;
     }
 }

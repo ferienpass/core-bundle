@@ -15,20 +15,19 @@ namespace Ferienpass\CoreBundle\Security\Voter;
 
 use Ferienpass\CoreBundle\Entity\Edition;
 use Ferienpass\CoreBundle\Entity\User;
-use Ferienpass\CoreBundle\Repository\EditionRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class EditionVoter extends Voter
 {
-    public function __construct(private readonly Security $security, private readonly EditionRepository $editionRepository)
+    public function __construct(private readonly Security $security)
     {
     }
 
     protected function supports($attribute, $subject): bool
     {
-        if (!\in_array($attribute, ['view', 'edit', 'stats', 'offer.create', 'delete'], true)) {
+        if (!\in_array($attribute, ['view', 'edit', 'stats', 'offer.create', 'delete', 'assign'], true)) {
             return false;
         }
 
@@ -50,7 +49,7 @@ class EditionVoter extends Voter
         $edition = $subject;
 
         return match ($attribute) {
-            'view', 'stats' => $this->canView($edition, $user),
+            'view', 'stats', 'assign' => $this->canView($edition, $user),
             'edit' => $this->canEdit($edition, $user),
             'delete' => $this->canDelete($edition, $user),
             'offer.create' => $this->canCreateOffer($edition),

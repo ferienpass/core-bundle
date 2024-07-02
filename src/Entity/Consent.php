@@ -32,8 +32,8 @@ class Consent
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $validUntil;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'consents')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'cascade')]
     private User $user;
 
     #[ORM\Column(type: 'string', length: 32)]
